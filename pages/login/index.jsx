@@ -1,6 +1,5 @@
 import style from "../../styles/login.module.css";
 import { Button, Input, Spacer } from "@nextui-org/react";
-import Logo from "../../components/page/navigation/navbar/logo";
 import Navigation from "../../components/page/navigation/navbar/navbar";
 import { Fragment } from "react";
 
