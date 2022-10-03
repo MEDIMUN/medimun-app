@@ -13,7 +13,7 @@ function PageFooter() {
 				<div />
 
 				<div>
-					<p>Social Media</p>
+					<p>Social Media Icons</p>
 				</div>
 			</div>
 		</footer>
