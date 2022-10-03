@@ -2,7 +2,7 @@ import { Dropdown, Navbar, Button, Link, Text, css } from "@nextui-org/react";
 import { icons } from "../icons/navbar-icons";
 import { Fragment } from "react";
 
-import Logo from "../../components/logo/logo";
+import Logo from "../logos/main-logo";
 import style from "./page-navbar.module.css";
 import NavigationNotification from "../notification/navigation-notification.jsx";
 
@@ -11,7 +11,7 @@ function Navigation(props) {
 	return (
 		<Fragment>
 			<NavigationNotification
-				text={"YARRAk"}
+				text={props.text || ""}
 				link={props.link || ""}
 			/>
 			<Navbar

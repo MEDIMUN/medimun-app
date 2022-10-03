@@ -1,22 +1,20 @@
 import style from "../../styles/login.module.css";
 import { Button, Input, Spacer } from "@nextui-org/react";
-import Navigation from "../../components/page/navigation/navbar/navbar";
+import Logo from "../../components/logos/main-logo";
+import Navigation from "../../components/navigation/page-navbar.jsx";
 import { Fragment } from "react";
 
 function LoginPage() {
 	return (
 		<Fragment>
-			<Navigation />
+			<Navigation text={""} />
 			<div className={style.background}>
 				<div className={style.container}>
 					<div className={style.panel}></div>
 
 					<div className={style.loginModal}>
 						<div className="loginItems">
-							<Logo
-								className={style.logo}
-								color={"blue"}
-							/>
+							<Logo color={"blue"} />
 							<Spacer y={2} />
 							<Input
 								color={"blue"}

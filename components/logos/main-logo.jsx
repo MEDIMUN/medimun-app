@@ -1,6 +1,6 @@
 import Image from "next/future/image";
 import Link from "next/link";
-import style from "./logo.module.css";
+import style from "./main-logo.module.css";
 
 function Logo(props) {
 	return (
