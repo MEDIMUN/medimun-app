@@ -16,7 +16,7 @@ import Logo from "../logos/main-logo";
 import SidebarUsersButton from "../elements/buttons/sidebar-button";
 
 function Sidebar() {
-	let buttonColor = "#1D263B";
+	let buttonColor = "#ff8028";
 
 	return (
 		<div className={style.sidebar}>

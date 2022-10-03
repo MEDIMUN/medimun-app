@@ -6,7 +6,7 @@ import Pagelayout from "../components/layouts/page-layout";
 
 function LoginPage() {
 	return (
-		<Pagelayout>
+		<Pagelayout margin="0">
 			<div className={style.background}>
 				<div className={style.container}>
 					<div className={style.panel}></div>

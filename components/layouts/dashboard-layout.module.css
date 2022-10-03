@@ -21,7 +21,8 @@
   padding: 10px;
   overflow: hidden;
   display: flex;
-  background: linear-gradient(90deg, #008cff 0%, #AD2D28 100%);
+  background: linear-gradient(80deg, #008cff 0%, #AD2D28 80%);
+  animation: gradient 10s ease-in-out infinite;
 }
 
 .navbar {
@@ -32,7 +33,6 @@
   top: 0;
 }
 
-/* on mobile no padding*/
 @media screen and (max-width: 600px) {
   .borderFrame {
     padding: 0;

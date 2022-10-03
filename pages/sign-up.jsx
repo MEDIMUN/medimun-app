@@ -26,6 +26,7 @@ export default function SignupPage() {
 
 	return (
 		<Pagelayout>
+			Basic Info
 			<div className={style.names}>
 				<Input
 					{...bindings}
@@ -41,12 +42,11 @@ export default function SignupPage() {
 				<div>
 					<Input
 						label="Phone Number"
-						placeholder="getnextui"
+						placeholder=""
 						helperText={"Optional but recommended"}
 						bordered
 					/>
 				</div>
-
 				<Input
 					clearable
 					bordered

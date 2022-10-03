@@ -3,7 +3,6 @@
   min-height: calc(100vh - 0px);
   flex-direction: column;
   background-color: none;
-  padding: 10px;
   display: flex;
   justify-content: center;
   align-items: center;

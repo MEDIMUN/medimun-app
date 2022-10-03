@@ -9,6 +9,9 @@ export function Fill() {
 	if (color === "pink") {
 		return "#6968a3";
 	}
+	if (color === "orange") {
+		return "#AD2D28";
+	}
 }
 
 export const UserIcon = ({ fill = "currentColor", filled, size, height, width, label, ...props }) => {
