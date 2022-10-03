@@ -1,0 +1,29 @@
+.footer {
+  background: linear-gradient(45deg,
+      rgba(0, 0, 0, 0.8) 100%,
+      rgba(134, 134, 134, 0.8) 80%);
+
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  border-top: rgb(106, 106, 106) solid 3px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+}
+
+.notices {
+  display: grid;
+  color: rgb(156, 156, 156);
+  grid-template-columns: 1fr 2fr 1fr;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-size: 0.8rem;
+  background: rgba(30, 30, 30, 0.8);
+  box-shadow: rgb(76, 76, 76) 0 0 10px 0;
+
+}

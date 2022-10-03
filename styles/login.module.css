@@ -1,9 +1,9 @@
 .background {
-  background-color: rgb(30, 39, 54);
-  background-color: var(--mediblue);
+  /*   cool gradient background color with blue red and purple
+ */
+  background: linear-gradient(45deg, #307AB7 0%, #AD2D28 100%);
   height: calc(100vh - 60px);
   width: 100%;
-  padding: 10px;
   overflow: hidden;
   align-items: center;
   display: flex;
@@ -74,6 +74,15 @@
 
   }
 
+  .gradient {
+    background-color: rgb(245, 245, 245);
+    padding: 50px;
+    padding-left: 75px;
+    padding-right: 75px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 1);
+  }
+
   .panel {
     display: NONE;
   }
@@ -83,16 +92,6 @@
     height: 100%;
     border-radius: 0;
     background-color: none;
-    background-image: url(/pages/login/images/backdrop.jpg);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-5rem);
-  }
-
-  to {
-    transform: translateY(0);
+    background: linear-gradient(45deg, #307AB7 0%, #AD2D28 100%);
   }
 }
