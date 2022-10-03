@@ -12,7 +12,7 @@ import {
 } from "../icons/sidebar-icons";
 import { Button, Spacer, Text } from "@nextui-org/react";
 import style from "./sidebar.module.css";
-import Logo from "../logo/logo";
+import Logo from "../logos/main-logo";
 import SidebarUsersButton from "../elements/buttons/sidebar-button";
 
 function Sidebar() {

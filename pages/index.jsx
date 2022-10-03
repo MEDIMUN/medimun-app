@@ -1,5 +1,5 @@
 import styles from "../styles/Home.module.css";
-import Navigation from "../components/Navigation/page-navbar";
+import Navigation from "../components/navigation/page-navbar";
 
 function HomePage() {
 	return (

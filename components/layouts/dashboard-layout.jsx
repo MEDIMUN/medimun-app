@@ -1,4 +1,4 @@
-import Logo from "../logo/logo";
+import Logo from "../logos/main-logo";
 import Sidebar from "../navigation/sidebar";
 import style from "./dashboard-layout.module.css";
 import { Dropdown, Navbar, Avatar, Button, Link, Text, css } from "@nextui-org/react";
