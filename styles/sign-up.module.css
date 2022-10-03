@@ -1,0 +1,15 @@
+.names {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  grid-gap: 30px;
+
+}
+
+@media screen and (max-width: 780px) {
+  .names {
+    grid-template-columns: 1fr;
+  }
+}

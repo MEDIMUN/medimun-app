@@ -23,14 +23,18 @@ export default NextAuth({
 				}
 				const isValid = await verifyPassword(credentials.password, user.password);
 				if (!isValid) {
+					/* REMOVE CONSOLE LOG
+					 */
 					console.log("incorrect password");
 					client.close();
 					throw new Error("could not log you in");
 				}
 				client.close();
+				/* REMOVE CONSOLE LOG
+				 */
 				console.log("logged in w password");
 
-				return { email: user.email };
+				return { email: user.email, role: user.role };
 			},
 		}),
 	],

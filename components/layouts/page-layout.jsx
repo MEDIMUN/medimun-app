@@ -7,8 +7,8 @@ function Pagelayout(props) {
 	return (
 		<Fragment>
 			<PageNavbar text={props.notificationText || ""} />
-			<div className={style.container}>
-				{props.children}
+			<div className={style.container}>{props.children}</div>
+			<div className={style.footer}>
 				<PageFooter />
 			</div>
 		</Fragment>

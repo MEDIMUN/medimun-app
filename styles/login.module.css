@@ -1,6 +1,4 @@
 .background {
-  /*   cool gradient background color with blue red and purple
- */
   background: linear-gradient(45deg, #307AB7 0%, #AD2D28 100%);
   height: calc(100vh - 60px);
   width: 100%;

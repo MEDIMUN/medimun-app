@@ -21,7 +21,7 @@ function LoginPage() {
 									width={"200px"}
 									clearable
 									bordered
-									labelPlaceholder="Name"
+									labelPlaceholder="Email"
 									active
 								/>
 								<Spacer y={2} />

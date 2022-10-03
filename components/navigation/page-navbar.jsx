@@ -96,7 +96,7 @@ function Navigation(props) {
 							}}
 							flat
 							as={Link}
-							href="#">
+							href="/sign-up">
 							Sign Up
 						</Button>
 					</Navbar.Item>
