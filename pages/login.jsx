@@ -1,13 +1,13 @@
 import style from "../../styles/login.module.css";
 import { Button, Input, Spacer } from "@nextui-org/react";
-import Logo from "../../components/logos/main-logo";
-import Navigation from "../../components/navigation/page-navbar.jsx";
+import Logo from "../components/logos/main-logo";
+import Navigation from "../components/navigation/page-navbar.jsx";
 import { Fragment } from "react";
+import Pagelayout from "../components/layouts/page-layout";
 
 function LoginPage() {
 	return (
-		<Fragment>
-			<Navigation text={""} />
+		<Pagelayout>
 			<div className={style.background}>
 				<div className={style.container}>
 					<div className={style.panel}></div>
@@ -51,7 +51,7 @@ function LoginPage() {
 					</div>
 				</div>
 			</div>
-		</Fragment>
+		</Pagelayout>
 	);
 }
 

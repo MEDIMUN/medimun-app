@@ -1,9 +1,13 @@
+import Pagelayout from "../components/layouts/page-layout";
+
 function NotFound() {
 	return (
-		<div>
-			<h1>404</h1>
-			<p>SALAKKKKKKKKKKKK</p>
-		</div>
+		<Pagelayout>
+			<div>
+				<h1>404</h1>
+				<p>SALAKKKKKKKKKKKK</p>
+			</div>
+		</Pagelayout>
 	);
 }
 

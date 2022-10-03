@@ -1,10 +1,9 @@
 import styles from "../styles/Home.module.css";
-import Navigation from "../components/navigation/page-navbar";
+import Pagelayout from "../components/layouts/page-layout";
 
 function HomePage() {
 	return (
-		<div>
-			<Navigation text={"HELLO"} />
+		<Pagelayout>
 			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
 			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
 			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
@@ -38,7 +37,7 @@ function HomePage() {
 			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
 			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
 			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-		</div>
+		</Pagelayout>
 	);
 }
 
