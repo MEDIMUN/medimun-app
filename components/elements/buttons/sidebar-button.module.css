@@ -1,0 +1,43 @@
+.sidebarItem {
+  padding: 10px 10px 10 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 40px;
+  width: 210px;
+  border-radius: 15px;
+  transition: 0.1s;
+  margin-bottom: 5px;
+
+}
+
+.sidebarItem:hover {
+  box-sizing: border-box !important;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  color: #FFFFFF !important;
+  background-color: #008cff;
+}
+
+.iconWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  height: 100%;
+  fill: white;
+  background-color: #FFFFFF;
+  border-radius: 15px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+
+}
+
+.text {
+  font-size: 20px;
+  font-weight: 450;
+  padding-left: 10px;
+  color: #FFFFFF;
+  -webkit-text-fill-color: #FFFFFF;
+}

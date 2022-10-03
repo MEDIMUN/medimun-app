@@ -1,0 +1,29 @@
+.logo {
+  width: 200px;
+  height: 50px;
+}
+
+.navbar {
+  animation: slideIn 0.0s ease-in-out;
+}
+
+.navbarItems {
+  padding-top: 12px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}

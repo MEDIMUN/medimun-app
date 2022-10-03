@@ -1,0 +1,98 @@
+.background {
+  background-color: rgb(30, 39, 54);
+  background-color: var(--mediblue);
+  height: calc(100vh - 60px);
+  width: 100%;
+  padding: 10px;
+  overflow: hidden;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 900px;
+  height: 600px;
+  animation: slideIn 0.5s ease-in-out;
+}
+
+.panel {
+  width: 450px;
+  height: 600px;
+  border-radius: 20px 0 0 20px;
+  background-image: url(/pages/login/images/backdrop.jpg);
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  padding: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.loginModal {
+  width: 300px;
+  height: 600px;
+  border-radius: 0 20px 20px 0;
+  background-color: rgb(245, 245, 245);
+  overflow: hidden;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  opacity: 0.9;
+}
+
+.loginItems {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  width: 100%;
+  height: 100%;
+}
+
+.ButtonGroup {
+  border-radius: 11px;
+  background-color: none;
+  border: 1px solid var(--mediblue);
+}
+
+
+@media (max-width: 780px) {
+  .container {
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    background-color: none;
+
+  }
+
+  .panel {
+    display: NONE;
+  }
+
+  .loginModal {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    background-color: none;
+    background-image: url(/pages/login/images/backdrop.jpg);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-5rem);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
