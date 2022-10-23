@@ -278,7 +278,9 @@ export default function SignupPage(props) {
 											label={<span>Verification Code</span>}
 										/>
 										<div>
-											<h4>In case you don't have access to your email</h4>
+											<h4>
+												In case you don<span>&apos;</span>t have access to your email
+											</h4>
 
 											<h6>
 												Give the code below to a member of staff to get your account verified. The staff may ask you to proove your identity.
