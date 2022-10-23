@@ -1,5 +1,7 @@
 import "../styles/globals.css";
 import { createTheme, NextUIProvider, Text } from "@nextui-org/react";
+import { useQuery, useMutation, useQueryClient, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const theme = createTheme({
 	type: "light", // it could be "light" or "dark"
@@ -41,10 +43,24 @@ const theme = createTheme({
 });
 
 function MyApp({ Component, pageProps }) {
+	const queryClient = new QueryClient();
 	return (
-		<NextUIProvider theme={theme}>
-			<Component {...pageProps} />
-		</NextUIProvider>
+		//		<GoogleReCaptchaProvider
+		//			reCaptchaKey="your_site-key"
+		//			scriptProps={{
+		//				async: false,
+		//				defer: false,
+		//				appendTo: "head",
+		//				nonce: undefined,
+		//			}}>
+		<QueryClientProvider client={queryClient}>
+			<NextUIProvider theme={theme}>
+				<Component {...pageProps} />
+				<ReactQueryDevtools />
+			</NextUIProvider>
+		</QueryClientProvider>
+
+		//		</GoogleReCaptchaProvider>
 	);
 }
 

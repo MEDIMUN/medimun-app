@@ -1,0 +1,228 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                       String           @id @default(auto()) @map("_id") @db.ObjectId
+  created_at               DateTime         @default(now())
+  password                 String           @map("pw")
+  is_active                Boolean          @default(false)
+  is_alumni                Boolean          @default(false)
+  //
+  email                    String           @unique
+  is_email_verified        Boolean          @default(false) @map("pev")
+  phone_number             String?          @unique
+  is_phone_number_verified Boolean?         @default(false) @map("pnv")
+  //
+  official_name            String           @map("name")
+  official_surname         String           @map("surname")
+  display_name             String?          @map("dname")
+  display_surname          String?          @map("dsurname")
+  //
+  nationality              String?
+  date_of_birth            DateTime?        @map("dob")
+  pronouns                 String?
+  //
+  TeamMember               TeamMember[]
+  Delegate                 Delegate[]
+  SchoolMember             SchoolMember[]
+  SchoolDirector           SchoolDirector[]
+  CommitteeChair           Chair[]
+  TeamManager              TeamManager[]
+  ProfilePicture           ProfilePicture[]
+}
+
+model ProfilePicture {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String @map("uid")
+  picture String @map("pic")
+}
+
+model Session {
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  is_current     Boolean          @default(true)
+  session_name   Int
+  year           Int
+  theme          String
+  ConferenceDay  SessionDay[]
+  Committee      Committee[]
+  Delegate       Delegate[]
+  Chair          Chair[]
+  TeamMember     TeamMember[]
+  TeamManager    TeamManager[]
+  SchoolDirector SchoolDirector[]
+}
+
+model SessionDay {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  day_name    String
+  date        DateTime
+  name        String
+  description String
+  location    String
+  type        DayType
+  session     Session  @relation(fields: [sessionId], references: [id])
+  sessionId   String
+}
+
+model School {
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  name           String           @unique @default("The English School")
+  slug           String           @unique
+  address        String
+  join_year      Int
+  SchoolMember   SchoolMember[]
+  SchoolDirector SchoolDirector[]
+}
+
+model SchoolMember {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  user      User   @relation(fields: [user_id], references: [id])
+  user_id   String
+  school    School @relation(fields: [school_id], references: [id])
+  school_id String
+}
+
+model SchoolDirector {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  user       User    @relation(fields: [user_id], references: [id])
+  user_id    String
+  school     School  @relation(fields: [school_id], references: [id])
+  school_id  String
+  session    Session @relation(fields: [session_id], references: [id])
+  session_id String
+}
+
+//
+//
+//
+
+model Committee {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  name       String     @unique
+  slug       String     @unique
+  delegate   Delegate[]
+  chair      Chair[]
+  session    Session    @relation(fields: [session_id], references: [id])
+  session_id String
+}
+
+model Delegate {
+  id          String                  @id @default(auto()) @map("_id") @db.ObjectId
+  role        ConferenceCommitteeRole @default(Delegate)
+  user        User                    @relation(fields: [userId], references: [id])
+  userId      String
+  committee   Committee               @relation(fields: [committeeId], references: [id])
+  committeeId String
+  session     Session                 @relation(fields: [sessionId], references: [id])
+  sessionId   String
+}
+
+model Chair {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  committee   Committee @relation(fields: [committeeId], references: [id])
+  committeeId String
+  session     Session   @relation(fields: [sessionId], references: [id])
+  sessionId   String
+}
+
+model Team {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  team        String        @unique
+  teamId      String
+  slug        String        @unique
+  join_year   Int
+  team_member TeamMember[]
+  TeamManager TeamManager[]
+}
+
+model TeamMember {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  role      String?
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  team      Team    @relation(fields: [teamId], references: [id])
+  teamId    String
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId String
+}
+
+model TeamManager {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  team      Team    @relation(fields: [teamId], references: [id])
+  teamId    String
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId String
+}
+
+model PendingUser {
+  id                            String   @id @default(auto()) @map("_id") @db.ObjectId
+  email                         String   @unique
+  official_name                 String   @map("name")
+  official_surname              String   @map("surname")
+  display_name                  String   @map("dname")
+  display_surname               String   @map("dsname")
+  password                      String?
+  date_of_birth                 String?
+  ttl                           DateTime @default(now())
+  role                          Role?    @default(user)
+  email_verification_token      String?  @map("evt")
+  email_verification_identifier String?  @map("evi")
+}
+
+model Terms {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  number Int    @unique @default(1) @map("num")
+  text   String
+}
+
+//
+//
+//      Enums
+
+enum AlumniRole {
+  Delegate
+  Chair
+  TeamManager
+}
+
+enum ConferenceCommitteeRole {
+  Chair
+  Delegate
+}
+
+enum OrganisationCommitteeRole {
+  Member
+  Manager
+}
+
+enum Role {
+  user
+  director
+  delegate
+  chair
+  member
+  manager
+  school_director
+  admin
+  global_admin
+  //
+  secretary_general
+  president_of_the_general_assembly
+  deputy_secretary_general
+}
+
+enum DayType {
+  Day
+  Workshop
+}

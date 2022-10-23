@@ -2,6 +2,8 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import { connectToDatabase } from "../../../lib/db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { verifyPassword } from "../../../lib/auth";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 export default NextAuth({
 	session: {
