@@ -33,7 +33,7 @@
 @media screen and (max-width: 780px) {
   .inner {
     width: 100%;
-    height: calc(100vh - (128px + 170px));
+    height: auto;
   }
 
   .title {

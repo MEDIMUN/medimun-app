@@ -5,6 +5,7 @@ import SignUpModal from "../components/modals/sign-up/sign-up-modal";
 import { Button, Loading, Spacer, Input } from "@nextui-org/react";
 import Pagelayout from "../components/layouts/page-layout";
 import { PrismaClient } from "@prisma/client";
+import Router from "next/router";
 
 const prisma = new PrismaClient();
 
@@ -14,8 +15,10 @@ export default function SignupPage(props) {
 	const [page, setPage] = useState("Terms and Conditions");
 	const [proceed, setProceed] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [passwordissue, setPasswordIssue] = useState("");
 	const [evi, setEvi] = useState("");
 	const [email, setEmail] = useState("");
+	const [pageNumberState, setPageNumberState] = useState(0);
 
 	const verification_code_ref = useRef(null);
 
@@ -44,9 +47,17 @@ export default function SignupPage(props) {
 			}),
 		})
 			.then((response) => {
+				if (response.status !== 201) {
+					setLoading(false);
+					setProceed(true);
+					return;
+				}
 				return response.json();
 			})
 			.then((data) => {
+				if (!data) {
+					return;
+				}
 				setEmail(data.email);
 				setEvi(data.code);
 				nextPage();
@@ -57,9 +68,19 @@ export default function SignupPage(props) {
 		setLoading(false);
 		setProceed(true);
 		setPage(pages[2]);
+		setProceed(false);
+		setPageNumberState(2);
 	}
 
 	let pages = ["Terms and Conditions", "Personal Details", "Email Verification", "Welcome to MEDIMUN"];
+
+	function CheckVerifyInput() {
+		if (verification_code_ref.current.value.length !== 6) {
+			setProceed(false);
+		} else {
+			setProceed(true);
+		}
+	}
 
 	function CheckInputs() {
 		if (pageNumber === 1) {
@@ -70,6 +91,7 @@ export default function SignupPage(props) {
 			let check5;
 			let check6;
 			let check7;
+			let check8;
 
 			if (!official_name_ref.current.value) {
 				check1 = false;
@@ -107,6 +129,66 @@ export default function SignupPage(props) {
 				check6 = true;
 			}
 
+			if (
+				!password_ref.current.value ||
+				password_ref.current.value.length < 8 ||
+				password_ref.current.value.length > 64 ||
+				password_ref.current.value.includes(" ") ||
+				password_ref.current.value !== confirm_password_ref.current.value ||
+				!password_ref.current.value.match(/[a-z]/) ||
+				!password_ref.current.value.match(/[A-Z]/) ||
+				!password_ref.current.value.match(/[0-9]/)
+			) {
+				check8 = false;
+			} else {
+				check8 = true;
+			}
+
+			let passwordProblem1;
+			let passwordProblem2;
+			let passwordProblem3;
+			let passwordProblem4;
+			let passwordProblem5;
+			let passwordProblem6;
+
+			if (password_ref.current.value && (password_ref.current.value.length < 8 || password_ref.current.value.length > 64)) {
+				passwordProblem1 = "Password must be between 8 and 64 characters long. ";
+			} else {
+				passwordProblem1 = "";
+			}
+
+			if (password_ref.current.value && password_ref.current.value.includes(" ")) {
+				passwordProblem2 = "Password cannot contain spaces. ";
+			} else {
+				passwordProblem2 = "";
+			}
+
+			if (password_ref.current.value && !password_ref.current.value.match(/[a-z]/)) {
+				passwordProblem3 = "Password must contain at least one lowercase letter. ";
+			} else {
+				passwordProblem3 = "";
+			}
+
+			if (password_ref.current.value && !password_ref.current.value.match(/[A-Z]/)) {
+				passwordProblem4 = "Password must contain at least one uppercase letter. ";
+			} else {
+				passwordProblem4 = "";
+			}
+
+			if (password_ref.current.value && !password_ref.current.value.match(/[0-9]/)) {
+				passwordProblem5 = "Password must contain at least one number. ";
+			} else {
+				passwordProblem5 = "";
+			}
+
+			if (password_ref.current.value !== confirm_password_ref.current.value) {
+				passwordProblem6 = "Passwords do not match. ";
+			} else {
+				passwordProblem6 = "";
+			}
+
+			setPasswordIssue(passwordProblem1 + passwordProblem2 + passwordProblem3 + passwordProblem4 + passwordProblem5 + passwordProblem6);
+
 			const validateEmail = (value) => {
 				if (!value) return false;
 				return value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
@@ -118,7 +200,7 @@ export default function SignupPage(props) {
 				check7 = false;
 			}
 
-			if (check1 && check2 && check3 && check4 && check5 && check6 && check7) {
+			if (check1 && check2 && check3 && check4 && check5 && check6 && check7 && check8) {
 				setProceed(true);
 			} else {
 				setProceed(false);
@@ -130,6 +212,23 @@ export default function SignupPage(props) {
 		console.log(evi_ref.current.value);
 	}
 
+	function EmailVerifyPoster() {
+		console.log(evi);
+		fetch("/api/user/create", {
+			method: "PATCH",
+			body: JSON.stringify({
+				req_evi: evi,
+				req_code: verification_code_ref.current.value,
+			}),
+		}).then((response) => {
+			if (response.status === 200) {
+				Router.replace("/login");
+				return;
+			}
+			return response.json();
+		});
+	}
+
 	return (
 		<Pagelayout>
 			<div className={style.backgroundImage}>
@@ -137,21 +236,21 @@ export default function SignupPage(props) {
 					<SignUpModal title={page}>
 						{page === "Terms and Conditions" ? (
 							<div>
-								<div className={style.scrollBox}>
+								<ul className={style.scrollBox}>
 									{props.terms.map((term) => {
 										return (
-											<div key={term.number}>
+											<li
+												className={style.tcitem}
+												key={term.number}>
 												<p>
 													<strong>{term.number} </strong>
 													{term.text} <br />
 												</p>
-												<br />
-												<hr />
-												<br />
-											</div>
+												<hr className={style.tcdivider} />
+											</li>
 										);
 									})}
-								</div>
+								</ul>
 							</div>
 						) : null}
 
@@ -242,6 +341,7 @@ export default function SignupPage(props) {
 										ref={password_ref}
 										width="100%"
 										color="secondary"
+										type="password"
 										clearable
 										bordered
 										helperText={<span className={style.required}> Required</span>}
@@ -260,13 +360,18 @@ export default function SignupPage(props) {
 										label={<span>Confirm Password</span>}
 										onInput={CheckInputs}
 									/>
+									{passwordissue && (
+										<div className={style.dobInput}>
+											<h6>{passwordissue}</h6>
+										</div>
+									)}
 								</div>
 							</div>
 						) : null}
 						{page === "Email Verification"
 							? VerifyEmail && (
 									<div className={style.centered}>
-										<h2>Please enter the verification code which has been sent to {email}.</h2>
+										<h2 className={style.evititle}>Please enter the verification code which has been sent to {email}.</h2>
 										<Input
 											className={style.finalButton}
 											ref={verification_code_ref}
@@ -275,23 +380,29 @@ export default function SignupPage(props) {
 											maxLength={6}
 											clearable
 											bordered
+											onInput={CheckVerifyInput}
 											label={<span>Verification Code</span>}
 										/>
+										<br></br>
 										<div>
-											<h4>
-												In case you don<span>&apos;</span>t have access to your email
-											</h4>
+											<div className={style.PAVmessage}>
+												<h4>
+													In case you don<span>&apos;</span>t have access to your email
+												</h4>
 
-											<h6>
-												Give the code below to a member of staff to get your account verified. The staff may ask you to proove your identity.
-												<br />
-												<strong>
-													<h6>
-														{"PAV CODE: "}
-														{evi.toUpperCase()}{" "}
-													</h6>
-												</strong>
-											</h6>
+												<h6>
+													Please disregard this notice if you have access to the email account you have provided above and are able to verify your account
+													normally. Give the code below to a member of staff to get your account verified temporarily if you do not have access to your email.
+													You will be asked to prove your identity.
+													<br />
+													<strong>
+														<h6 className={style.PAVcode}>
+															{"PAV CODE: "}
+															{evi && evi.toUpperCase()}
+														</h6>
+													</strong>
+												</h6>
+											</div>
 										</div>
 									</div>
 							  )
@@ -321,7 +432,7 @@ export default function SignupPage(props) {
 									{pageNumber === 0 ? "Agree and Proceed" : "Next"}
 								</Button>
 							) : null}
-							{pageNumber === 1 && proceed ? (
+							{pageNumber === 1 && proceed && !(pageNumberState === 2) ? (
 								<Button
 									color="primary"
 									auto
@@ -334,12 +445,35 @@ export default function SignupPage(props) {
 							{loading ? (
 								<Button
 									color="primary"
-									disabled
 									auto>
 									<Loading
 										type="points-opacity"
 										color="white"
 									/>
+								</Button>
+							) : null}
+							{!proceed && pageNumber === 1 && !(pageNumberState == 2) ? (
+								<Button
+									color="primary"
+									disabled
+									auto>
+									Next
+								</Button>
+							) : null}
+							{!proceed && pageNumberState === 2 ? (
+								<Button
+									color="primary"
+									disabled
+									auto>
+									Verify
+								</Button>
+							) : null}
+							{proceed && pageNumberState === 2 ? (
+								<Button
+									color="primary"
+									onPress={EmailVerifyPoster}
+									auto>
+									Verify
 								</Button>
 							) : null}
 						</div>
