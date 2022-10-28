@@ -1,5 +1,6 @@
 import styles from "../styles/Home.module.css";
 import Pagelayout from "../components/layouts/page-layout";
+import { getSession, useSession } from "next-auth/react";
 
 function HomePage() {
 	return (
@@ -42,3 +43,19 @@ function HomePage() {
 }
 
 export default HomePage;
+
+export async function getServerSideProps(context) {
+	const session = await getSession({ req: context.req });
+
+	if (session) {
+		return {
+			redirect: {
+				destination: "/dashboard",
+				permament: false,
+			},
+		};
+	}
+	return {
+		props: { session },
+	};
+}

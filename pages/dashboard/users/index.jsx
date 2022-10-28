@@ -9,7 +9,7 @@ function UsersPage() {
 				headerLined
 				aria-label="Example static collection table with multiple selection"
 				css={{
-					height: "auto",
+					height: "100%",
 					minWidth: "100%",
 					background: "#FFFFFF",
 				}}
@@ -45,7 +45,7 @@ function UsersPage() {
 				<Table.Pagination
 					noMargin
 					align="center"
-					rowsPerPage={15}
+					rowsPerPage={14}
 					onPageChange={(page) => console.log({ page })}
 				/>
 			</Table>

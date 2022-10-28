@@ -1,101 +1,71 @@
-import Logo from "../logos/main-logo";
 import Sidebar from "../navigation/sidebar";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import style from "./dashboard-layout.module.css";
-import { Dropdown, Navbar, Avatar, Button, Link, Text, css } from "@nextui-org/react";
 import { Fragment } from "react";
+import { getSession, useSession, signOut } from "next-auth/react";
+import DashboardNavbar from "../navigation/dashboard-navbar";
 
 export default function Layout(props) {
+	const { data: session, status } = useSession();
+	const loading = status === "loading";
+	console.log(session);
+	function logOutHandler() {
+		console.log("log out");
+		signOut({ callbackUrl: "/" });
+	}
+
+	const [isLoading, setIsLoading] = useState(true);
+	const router = useRouter();
+	useEffect(() => {
+		getSession().then((session) => {
+			if (!session) {
+				router.replace("/login");
+			} else {
+				setIsLoading(false);
+			}
+		});
+	}, []);
+
+	const [sidebarVisibility, setSidebarVisibility] = useState(true);
+	function sidebarVisibilityHandler() {
+		setSidebarVisibility(!sidebarVisibility);
+	}
+
+	console.log(sidebarVisibility);
+
 	return (
-		<div className={style.borderFrame}>
-			<Sidebar />
-
-			<div className={style.content}>
-				<div className={style.navbar}>
-					<Navbar
-						className={style.navbar}
-						isCompact
-						css={{
-							position: "absolute",
-							backgroundColor: "white",
-							borderRadius: "5px 5px 0 0",
-						}}
-						color={"none"}
-						maxWidth="xl"
-						variant="">
-						<Navbar.Content>
-							<Navbar.Item>Next up: Lunch Break</Navbar.Item>
-						</Navbar.Content>
-						<Navbar.Content
-							css={{
-								"@xs": {
-									w: "12%",
-									jc: "flex-end",
-								},
-							}}>
-							<Dropdown placement="bottom-right">
-								<Navbar.Item>
-									<Dropdown.Trigger>
-										<Avatar
-											bordered
-											as="button"
-											color="medimunBlue"
-											size="md"
-											src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-										/>
-									</Dropdown.Trigger>
-								</Navbar.Item>
-								<Dropdown.Menu
-									aria-label="User menu actions"
-									color="secondary"
-									onAction={(actionKey) => console.log({ actionKey })}>
-									<Dropdown.Item
-										key="profile"
-										css={{ height: "$18" }}>
-										<Text
-											b
-											color="inherit"
-											css={{ d: "flex" }}>
-											Signed in as
-										</Text>
-										<Text
-											b
-											color="inherit"
-											css={{ d: "flex" }}>
-											zoey@example.com
-										</Text>
-									</Dropdown.Item>
-									<Dropdown.Item
-										key="settings"
-										withDivider>
-										My Settings
-									</Dropdown.Item>
-									<Dropdown.Item key="team_settings">Team Settings</Dropdown.Item>
-									<Dropdown.Item
-										key="analytics"
-										withDivider>
-										Analytics
-									</Dropdown.Item>
-									<Dropdown.Item key="system">System</Dropdown.Item>
-									<Dropdown.Item key="configurations">Configurations</Dropdown.Item>
-									<Dropdown.Item
-										key="help_and_feedback"
-										withDivider>
-										Help Feedback
-									</Dropdown.Item>
-									<Dropdown.Item
-										key="logout"
-										withDivider
-										color="error">
-										Log Out
-									</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown>
-						</Navbar.Content>
-					</Navbar>
+		<Fragment>
+			<div className={style.borderFrame}>
+				<div className={style.content}>
+					<div className={style.navbar}>
+						<DashboardNavbar />
+					</div>
+					<div className={style.wrapper}>
+						{sidebarVisibility && <div className={style.sidebarPlaceHolder}></div>}
+						<div className={style.sidebar}>
+							<Sidebar props={session.user.official_name + session.user.official_surname} />
+						</div>
+						<div className={style.mainContent}>{props.children}</div>
+					</div>
 				</div>
-
-				<main className={style.mainContent}>{props.children}</main>
 			</div>
-		</div>
+		</Fragment>
 	);
+}
+
+export async function getServerSideProps(context) {
+	const session = await getSession({ req: context.req });
+
+	if (!session) {
+		return {
+			redirect: {
+				destination: "/login",
+				permament: false,
+			},
+		};
+	}
+	return {
+		props: { session },
+	};
 }

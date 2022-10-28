@@ -3,6 +3,7 @@ import randomString from "../../../lib/random-string";
 import CapitaliseEachWord from "../../../lib/capitalise-each-word";
 
 import prisma from "../../../client";
+import sendEmail from "../../../lib/email/verification";
 
 export default async function handler(req, res) {
 	if (req.method === "POST") {
@@ -126,6 +127,8 @@ export default async function handler(req, res) {
 			return;
 		}
 
+		const email_verification_token = randomString(6, "AA####");
+
 		const result = await prisma.pendingUser
 			.create({
 				data: {
@@ -136,7 +139,7 @@ export default async function handler(req, res) {
 					display_name: CapitaliseEachWord(display_name),
 					display_surname: CapitaliseEachWord(display_surname),
 					date_of_birth: dob,
-					email_verification_token: randomString(6, "AA####"),
+					email_verification_token: email_verification_token,
 					email_verification_identifier: evi,
 				},
 			})
@@ -149,6 +152,11 @@ export default async function handler(req, res) {
 
 		console.log(result);
 
+		const email_name = CapitaliseEachWord(official_name);
+		const email_email = email;
+		const email_code = email_verification_token.toUpperCase();
+
+		sendEmail(email_email, email_name, email_code, evi);
 		res.status(201).json({ message: "created_pending_user", code: evi, email: email.toLowerCase().trim() });
 	}
 }
