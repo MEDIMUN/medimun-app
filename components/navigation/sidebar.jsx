@@ -10,13 +10,16 @@ import {
 	TasksIcon,
 	HomeIcon,
 } from "../icons/sidebar-icons";
-import { Button, Spacer, Text, User } from "@nextui-org/react";
+import { Button, Spacer, Text, User, Popover } from "@nextui-org/react";
 import style from "./sidebar.module.css";
 import Logo from "../logos/main-logo";
 import SidebarUsersButton from "../elements/buttons/sidebar-button";
 import { useSession, getSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import { useState } from "react";
 
 function Sidebar(props) {
+	const [isOpen, setIsOpen] = useState(false);
 	let buttonColor = "#ff8028";
 	const { data: session, status } = useSession();
 	const loading = status === "loading";
@@ -100,12 +103,38 @@ function Sidebar(props) {
 			</div>
 			<div className={style.spacer}></div>
 			<div className={style.two}>
-				<User
-					bordered
-					src="https://avatars.githubusercontent.com/u/90158764?v=4"
-					name={(session.user.display_name || session.user.official_name) + " " + (session.user.display_surname || session.user.official_surname)}
-					description={session.user.role || "User"}
-				/>
+				{isOpen && (
+					<div className={style.userActions}>
+						<Button
+							onPress={logOutHandler}
+							flat
+							size="sm"
+							color="error">
+							Sign Out
+						</Button>
+						<Spacer y={0.5} />
+						<Button
+							css={{ width: "50px" }}
+							size="sm"
+							flat>
+							Account
+						</Button>
+					</div>
+				)}
+				<Spacer y={1} />
+				<Popover
+					background="white"
+					isOpen={isOpen}
+					onOpenChange={setIsOpen}>
+					<Popover.Trigger>
+						<User
+							squared
+							src="https://avatars.githubusercontent.com/u/90158764?v=4"
+							name={(session.user.display_name || session.user.official_name) + " " + (session.user.display_surname || session.user.official_surname)}
+							description={session.user.role || "User"}
+						/>
+					</Popover.Trigger>
+				</Popover>
 			</div>
 		</div>
 	);

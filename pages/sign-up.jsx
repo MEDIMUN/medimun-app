@@ -1,6 +1,6 @@
 import style from "../styles/sign-up.module.css";
 import { useState, useRef } from "react";
-import SignUpModal from "../components/modals/sign-up/sign-up-modal";
+import SignUpModal from "../components/modals/sign-up-modal";
 
 import { Button, Loading, Spacer, Input } from "@nextui-org/react";
 import Pagelayout from "../components/layouts/page-layout";

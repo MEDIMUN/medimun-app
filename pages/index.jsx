@@ -50,7 +50,7 @@ export async function getServerSideProps(context) {
 	if (session) {
 		return {
 			redirect: {
-				destination: "/dashboard",
+				destination: "/app",
 				permament: false,
 			},
 		};

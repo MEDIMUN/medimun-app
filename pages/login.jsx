@@ -23,7 +23,7 @@ function LoginPage() {
 		});
 
 		if (!result.error) {
-			router.replace("/dashboard");
+			router.replace("/app");
 		}
 
 		console.log(result);

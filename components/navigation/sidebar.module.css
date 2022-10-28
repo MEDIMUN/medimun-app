@@ -45,7 +45,15 @@
   width: 100%;
 }
 
+.userActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background-color: aliceblue;
+  border-radius: 17px;
 
+}
 
 
 
