@@ -8,7 +8,7 @@ const AppContext = createContext({
 });
 
 export function AppContextProvider(props) {
-	const [sidebarVisibility, setSidebarVisibility] = useState("Hidden");
+	const [sidebarVisibility, setSidebarVisibility] = useState("Shown");
 	const [sidebarOptionsVisibility, setSidebarOptionsVisibility] = useState(false);
 
 	async function toggleSidebarHandler() {
