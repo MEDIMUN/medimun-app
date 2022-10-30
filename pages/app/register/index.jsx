@@ -1,4 +1,4 @@
-import Layout from "../../../components/layouts/dashboard-layout";
+import Layout from "../../../components/app/layout/layout";
 
 function RegisterPage() {
 	return (

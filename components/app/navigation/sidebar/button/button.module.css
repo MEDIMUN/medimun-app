@@ -5,12 +5,9 @@
   align-items: center;
   height: 40px;
   width: 210px;
-  border-radius: 15px;
+  border-radius: 15px 0 0 15px;
   margin-bottom: 5px;
 }
-
-
-
 
 .sidebarItem:hover {
   box-sizing: border-box !important;

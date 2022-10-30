@@ -1,10 +1,12 @@
-import style from "../styles/login.module.css";
-import { Button, Input, Spacer } from "@nextui-org/react";
-import Logo from "../components/logos/main-logo";
 import { useRef, useState, useEffect } from "react";
-import Pagelayout from "../components/layouts/page-layout";
 import { useRouter } from "next/router";
 import { signIn, getSession } from "next-auth/react";
+
+import style from "../styles/login.module.css";
+
+import { Button, Input, Spacer } from "@nextui-org/react";
+import Logo from "../components/common/branding/logo/main";
+import Pagelayout from "../components/page/layout/layout";
 
 function LoginPage() {
 	const emailInputRef = useRef();

@@ -50,7 +50,7 @@ export default NextAuth({
 				token.display_name = user.display_name;
 				token.display_surname = user.display_surname;
 				token.email = user.email;
-				token.dob = user.dob;
+				token.dob = user.date_of_birth;
 			}
 			// Send properties to the client, like an access_token and user id from a provider.
 			console.log(token);

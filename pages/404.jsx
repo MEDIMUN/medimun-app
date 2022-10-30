@@ -1,4 +1,4 @@
-import Pagelayout from "../components/layouts/page-layout";
+import Pagelayout from "../components/page/layout/layout";
 
 function NotFound() {
 	return (

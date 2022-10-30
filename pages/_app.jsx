@@ -1,7 +1,9 @@
 import "../styles/globals.css";
+import Head from "next/head";
+
 import { createTheme, NextUIProvider } from "@nextui-org/react";
 import { SessionProvider } from "next-auth/react";
-import Head from "next/head";
+import { AppContextProvider } from "../components/app/context/Navigation";
 
 const theme = createTheme({
 	type: "light", // it could be "light" or "dark"
@@ -44,16 +46,18 @@ const theme = createTheme({
 
 function MyApp({ Component, pageProps }) {
 	return (
-		<SessionProvider session={pageProps.session}>
-			<NextUIProvider theme={theme}>
-				<Head>
-					<meta
-						name="viewport"
-						content="width=device-width, initial-scale=1.0"></meta>
-				</Head>
-				<Component {...pageProps} />
-			</NextUIProvider>
-		</SessionProvider>
+		<AppContextProvider>
+			<SessionProvider session={pageProps.session}>
+				<NextUIProvider theme={theme}>
+					<Head>
+						<meta
+							name="viewport"
+							content="width=device-width, initial-scale=1.0"></meta>
+					</Head>
+					<Component {...pageProps} />
+				</NextUIProvider>
+			</SessionProvider>
+		</AppContextProvider>
 	);
 }
 

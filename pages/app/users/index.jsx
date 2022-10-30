@@ -1,5 +1,6 @@
-import Layout from "../../../components/layouts/dashboard-layout";
 import { Table, useAsyncList } from "@nextui-org/react";
+
+import Layout from "../../../components/app/layout/layout";
 
 function UsersPage() {
 	return (

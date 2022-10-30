@@ -28,8 +28,8 @@ export default async function handler(req, res) {
 					official_surname: pendingUser.official_surname,
 					display_name: pendingUser.display_name,
 					display_surname: pendingUser.display_surname,
-					dob: pendingUser.dob,
-					is_email_verified: true,
+					date_of_birth: pendingUser.date_of_birth,
+					role: pendingUser.role,
 				},
 			});
 		}

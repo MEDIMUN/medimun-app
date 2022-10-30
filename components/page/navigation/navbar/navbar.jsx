@@ -1,10 +1,11 @@
-import { Dropdown, Navbar, Button, Link, Text, css } from "@nextui-org/react";
-import { icons } from "../icons/navbar-icons";
 import { Fragment } from "react";
 
-import Logo from "../logos/main-logo";
-import style from "./page-navbar.module.css";
-import NavigationNotification from "../notification/navigation-notification.jsx";
+import style from "./navbar.module.css";
+
+import { Dropdown, Navbar, Button, Link, Text, css } from "@nextui-org/react";
+
+import Logo from "../../../common/branding/logo/main";
+import NavigationNotification from "../notice/notice";
 
 function Navigation(props) {
 	const collapseItems = ["Conference", "Customers", "Pricing", "Company", "Legal", "Team", "Help & Feedback", "Login", "Sign Up"];

@@ -1,11 +1,12 @@
-import style from "../styles/sign-up.module.css";
 import { useState, useRef } from "react";
-import SignUpModal from "../components/modals/sign-up-modal";
+import Router from "next/router";
+import { PrismaClient } from "@prisma/client";
+
+import style from "../styles/sign-up.module.css";
 
 import { Button, Loading, Spacer, Input } from "@nextui-org/react";
-import Pagelayout from "../components/layouts/page-layout";
-import { PrismaClient } from "@prisma/client";
-import Router from "next/router";
+import Pagelayout from "../components/page/layout/layout";
+import SignUpModal from "../components/page/pages/sign-up/sign-up-modal";
 
 const prisma = new PrismaClient();
 

@@ -1,18 +1,15 @@
-import PageNavbar from "../../components/navigation/page-navbar";
 import { Fragment, useState, useEffect } from "react";
-import style from "./page-layout.module.css";
-import PageFooter from "../footers/page-footer";
 import { useRouter } from "next/router";
 import { getSession, useSession } from "next-auth/react";
+
+import style from "./layout.module.css";
+
+import PageNavbar from "../navigation/navbar/navbar";
+import PageFooter from "../navigation/footer/footer";
 
 function Pagelayout(props) {
 	const { data: session, status } = useSession();
 	const loading = status === "loading";
-	console.log(session);
-	function logOutHandler() {
-		console.log("log out");
-		signOut({ callbackUrl: "/" });
-	}
 
 	const [isLoading, setIsLoading] = useState(true);
 	const router = useRouter();

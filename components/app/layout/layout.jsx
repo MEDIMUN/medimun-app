@@ -1,19 +1,16 @@
-import Sidebar from "../navigation/sidebar";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import style from "./dashboard-layout.module.css";
-import { Fragment } from "react";
-import { getSession, useSession, signOut } from "next-auth/react";
-import DashboardNavbar from "../navigation/dashboard-navbar";
+import { Fragment, useContext, useState, useEffect } from "react";
+import { getSession, useSession } from "next-auth/react";
+
+import style from "./layout.module.css";
+
+import DashboardNavbar from "../navigation/navbar/navbar";
+import Sidebar from "../navigation/sidebar/sidebar";
+import AppContext from "../context/Navigation";
 
 export default function Layout(props) {
 	const { data: session, status } = useSession();
 	const loading = status === "loading";
-	console.log(session);
-	function logOutHandler() {
-		console.log("log out");
-		signOut({ callbackUrl: "/" });
-	}
 
 	const [isLoading, setIsLoading] = useState(true);
 	const router = useRouter();
@@ -27,12 +24,9 @@ export default function Layout(props) {
 		});
 	}, []);
 
-	const [sidebarVisibility, setSidebarVisibility] = useState(true);
-	function sidebarVisibilityHandler() {
-		setSidebarVisibility(!sidebarVisibility);
-	}
+	const SidebarCtx = useContext(AppContext);
 
-	console.log(sidebarVisibility);
+	const sidebarVisibility = SidebarCtx.sidebarVisibility;
 
 	return (
 		<Fragment>
@@ -43,9 +37,11 @@ export default function Layout(props) {
 					</div>
 					<div className={style.wrapper}>
 						{sidebarVisibility && <div className={style.sidebarPlaceHolder}></div>}
-						<div className={style.sidebar}>
-							<Sidebar props={session.user.official_name + session.user.official_surname} />
-						</div>
+						{sidebarVisibility && (
+							<div className={style.sidebar}>
+								<Sidebar props={session.user.official_name + session.user.official_surname} />
+							</div>
+						)}
 						<div className={style.mainContent}>{props.children}</div>
 					</div>
 				</div>

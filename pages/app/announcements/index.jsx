@@ -1,5 +1,6 @@
-import Layout from "../../../components/layouts/dashboard-layout";
-import { useSession, getSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
+
+import Layout from "../../../components/app/layout/layout";
 
 function AnnouncementsPage() {
 	return (

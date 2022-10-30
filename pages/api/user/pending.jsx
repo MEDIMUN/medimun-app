@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 		const official_surname = data.official_surname;
 		const display_name = data.display_name;
 		const display_surname = data.display_surname;
-		const dob = data.dob;
+		const date_of_birth = data.dob + "T00:00:00.000+00:00";
 
 		const usersWithSameEmail = await prisma.user
 			.count({
@@ -122,7 +122,7 @@ export default async function handler(req, res) {
 			return;
 		}
 
-		if (!dob) {
+		if (!date_of_birth) {
 			res.status(400).json({ message: "Date of birth must be provided" });
 			return;
 		}
@@ -138,7 +138,7 @@ export default async function handler(req, res) {
 					official_surname: CapitaliseEachWord(official_surname),
 					display_name: CapitaliseEachWord(display_name),
 					display_surname: CapitaliseEachWord(display_surname),
-					date_of_birth: dob,
+					date_of_birth: date_of_birth,
 					email_verification_token: email_verification_token,
 					email_verification_identifier: evi,
 				},

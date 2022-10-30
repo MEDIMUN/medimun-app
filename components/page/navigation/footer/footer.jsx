@@ -1,5 +1,6 @@
-import Logo from "../logos/main-logo";
-import style from "./page-footer.module.css";
+import style from "./footer.module.css";
+
+import Logo from "../../../common/branding/logo/main";
 
 function PageFooter() {
 	let currentYear = 2022;

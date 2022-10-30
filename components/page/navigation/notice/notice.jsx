@@ -1,4 +1,4 @@
-import style from "./navigation-notification.module.css";
+import style from "./notice.module.css";
 import Link from "next/link";
 
 function NavigationNotification(props) {

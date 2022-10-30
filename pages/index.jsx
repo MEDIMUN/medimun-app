@@ -1,5 +1,5 @@
 import styles from "../styles/Home.module.css";
-import Pagelayout from "../components/layouts/page-layout";
+import Pagelayout from "../components/page/layout/layout";
 import { getSession, useSession } from "next-auth/react";
 
 function HomePage() {

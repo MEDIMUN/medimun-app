@@ -18,7 +18,7 @@ model PendingUser {
   password                      String
   date_of_birth                 String
   time_created                  DateTime @default(now())
-  role                          Role     @default(User)
+  role                          Int      @default(0)
   email_verification_token      String
   email_verification_identifier String
 }
@@ -28,6 +28,7 @@ model User {
   //
   created_at       DateTime         @default(now())
   password         String           @map("pw")
+  role             Int
   //
   email            String           @unique
   phone_number     String?
@@ -242,20 +243,4 @@ enum ConferenceCommitteeRole {
 enum OrganisationCommitteeRole {
   Member
   Manager
-}
-
-enum Role {
-  User
-  Delegate
-  Member
-  Chair
-  Manager
-  SchoolDirector
-  DSG
-  PGA
-  SG
-  Director
-  SeniorDirector
-  Admin
-  GlobalAdmin
 }

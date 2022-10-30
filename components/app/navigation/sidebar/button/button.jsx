@@ -1,5 +1,6 @@
-import style from "./sidebar-button.module.css";
 import Link from "next/link";
+
+import style from "./button.module.css";
 
 export default function SidebarUsersButton(props) {
 	return (
