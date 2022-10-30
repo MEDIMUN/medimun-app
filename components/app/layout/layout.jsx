@@ -36,12 +36,32 @@ export default function Layout(props) {
 						<DashboardNavbar />
 					</div>
 					<div className={style.wrapper}>
-						{sidebarVisibility && <div className={style.sidebarPlaceHolder}></div>}
-						{sidebarVisibility && (
-							<div className={style.sidebar}>
-								<Sidebar props={session.user.official_name + session.user.official_surname} />
-							</div>
-						)}
+						<div
+							className={`${
+								sidebarVisibility === "Show"
+									? style.sidebarPlaceHolderShow
+									: sidebarVisibility === "Shown"
+									? style.sidebarPlaceHolderShown
+									: sidebarVisibility === "Hide"
+									? style.sidebarPlaceHolderHide
+									: sidebarVisibility === "Hidden"
+									? style.sidebarPlaceHolderHidden
+									: null
+							}`}></div>
+						<div
+							className={`${
+								sidebarVisibility === "Show"
+									? style.sidebarShow
+									: sidebarVisibility === "Shown"
+									? style.sidebarShown
+									: sidebarVisibility === "Hide"
+									? style.sidebarHide
+									: sidebarVisibility === "Hidden"
+									? style.sidebarHidden
+									: null
+							}`}>
+							<Sidebar props={session.user.official_name + session.user.official_surname} />
+						</div>
 						<div className={style.mainContent}>{props.children}</div>
 					</div>
 				</div>

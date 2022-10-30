@@ -8,11 +8,23 @@ const AppContext = createContext({
 });
 
 export function AppContextProvider(props) {
-	const [sidebarVisibility, setSidebarVisibility] = useState(false);
+	const [sidebarVisibility, setSidebarVisibility] = useState("Hidden");
 	const [sidebarOptionsVisibility, setSidebarOptionsVisibility] = useState(false);
 
-	function toggleSidebarHandler() {
-		setSidebarVisibility(!sidebarVisibility);
+	async function toggleSidebarHandler() {
+		const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+		if (sidebarVisibility === "Hidden" || sidebarVisibility === "Hide") {
+			setSidebarVisibility("Show");
+			await delay(500);
+			setSidebarVisibility("Shown");
+		}
+		if (sidebarVisibility === "Shown" || sidebarVisibility === "Show") {
+			setSidebarVisibility("Hide");
+			await delay(500);
+
+			setSidebarVisibility("Hidden");
+		}
+		console.log(sidebarVisibility);
 	}
 
 	function toggleSidebarOptionsHandler() {

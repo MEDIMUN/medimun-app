@@ -49,9 +49,6 @@ function Sidebar(props) {
 	function toggleSidebar() {
 		AppCtx.toggleSidebarOptionsVisibility();
 	}
-
-	console.log("HAHA" + AppCtx.sidebarOptionsVisibility);
-
 	const { data: session, status } = useSession();
 
 	//const loading = status === "loading";
