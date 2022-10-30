@@ -65,6 +65,7 @@ function LoginPage() {
 								<div className={style.ButtonGroup}>
 									<Button
 										onPress={submitHandler}
+										but
 										css={{ width: "100%", borderRadius: "10px 10px 0 0" }}>
 										Login
 									</Button>
