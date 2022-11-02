@@ -62,7 +62,7 @@ model ProfilePicture {
 model ConferenceSession {
   id                        String                 @id @default(auto()) @map("_id") @db.ObjectId
   //
-  is_current                Boolean                @default(true)
+  isCurrent                 Boolean                @default(true)
   conference_session_number Int
   year                      Int
   theme                     String
@@ -75,6 +75,8 @@ model ConferenceSession {
   SchoolDirector            SchoolDirector[]
   SessionWorkshopDay        SessionWorkshopDay[]
   ConferenceDay             SessionConferenceDay[]
+  Announcements             Announcements[]
+  AnnouncementFor           AnnouncementFor[]
 }
 
 model SessionConferenceDay {
@@ -102,17 +104,18 @@ model SessionWorkshopDay {
 }
 
 model School {
-  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
   //
-  name           String           @unique
-  slug           String?          @unique
-  join_year      Int?
+  name            String            @unique
+  slug            String?           @unique
+  join_year       Int?
   //
-  Location       Location         @relation(fields: [locationId], references: [id])
-  locationId     String           @db.ObjectId
+  Location        Location          @relation(fields: [locationId], references: [id])
+  locationId      String            @db.ObjectId
   //
-  SchoolMember   SchoolMember[]
-  SchoolDirector SchoolDirector[]
+  SchoolMember    SchoolMember[]
+  SchoolDirector  SchoolDirector[]
+  AnnouncementFor AnnouncementFor[]
 }
 
 model SchoolMember {
@@ -136,15 +139,16 @@ model SchoolDirector {
 }
 
 model Committee {
-  id         String            @id @default(auto()) @map("_id") @db.ObjectId
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
   //
-  name       String            @unique
-  slug       String            @unique
+  name            String            @unique
+  slug            String            @unique
   //
-  session    ConferenceSession @relation(fields: [session_id], references: [id])
-  session_id String
-  delegate   Delegate[]
-  chair      Chair[]
+  session         ConferenceSession @relation(fields: [session_id], references: [id])
+  session_id      String
+  delegate        Delegate[]
+  chair           Chair[]
+  AnnouncementFor AnnouncementFor[]
 }
 
 model Delegate {
@@ -170,13 +174,14 @@ model Chair {
 }
 
 model Team {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
   //
-  name        String    @unique
-  slug        String    @unique
-  join_year   Int
-  team_member Member[]
-  TeamManager Manager[]
+  name            String            @unique
+  slug            String            @unique
+  join_year       Int
+  team_member     Member[]
+  TeamManager     Manager[]
+  AnnouncementFor AnnouncementFor[]
 }
 
 model Member {
@@ -224,23 +229,58 @@ model Location {
 }
 
 model Terms {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  number Int    @unique @default(1) @map("num")
-  text   String
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  text String
+}
+
+model Announcements {
+  id                  String             @id @default(auto()) @map("_id") @db.ObjectId
+  date                DateTime           @default(now())
+  //
+  title               String
+  description         String?
+  content             String
+  ConferenceSession   ConferenceSession? @relation(fields: [conferenceSessionId], references: [id])
+  conferenceSessionId String?            @db.ObjectId
+  AnnouncementFor     AnnouncementFor[]
+}
+
+model AnnouncementFor {
+  id                   String             @id @default(auto()) @map("_id") @db.ObjectId
+  //
+  announcement         Announcements      @relation(fields: [announcementId], references: [id])
+  announcementId       String             @db.ObjectId
+  session              ConferenceSession? @relation(fields: [sessionId], references: [id])
+  sessionId            String?            @db.ObjectId
+  //
+  isPinned             Boolean            @default(false)
+  isEdited             Boolean            @default(false)
+  //
+  school               School?            @relation(fields: [schoolId], references: [id])
+  schoolId             String?            @db.ObjectId
+  committee            Committee?         @relation(fields: [committeeId], references: [id])
+  committeeId          String?            @db.ObjectId
+  team                 Team?              @relation(fields: [teamId], references: [id])
+  teamId               String?            @db.ObjectId
+  //
+  isForDeleagtes       Boolean            @default(false)
+  isForChairs          Boolean            @default(false)
+  isForMembers         Boolean            @default(false)
+  isForManagers        Boolean            @default(false)
+  isForSchoolDirectors Boolean            @default(false)
+  isForSchoolMembers   Boolean            @default(false)
+  isForAlumni          Boolean            @default(false)
+  isForUsers           Boolean            @default(false)
+  isForGuests          Boolean            @default(false)
+  isForAdmins          Boolean            @default(false)
+  isForGlobalAdmins    Boolean            @default(false)
+  isForEveryone        Boolean            @default(false)
+  isForEnrolled        Boolean            @default(false)
 }
 
 enum AlumniRole {
   Delegate
   Chair
   TeamManager
-}
-
-enum ConferenceCommitteeRole {
-  Chair
-  Delegate
-}
-
-enum OrganisationCommitteeRole {
-  Member
-  Manager
 }

@@ -16,12 +16,12 @@ function Pagelayout(props) {
 	useEffect(() => {
 		getSession().then((session) => {
 			if (session) {
-				router.replace("/dashboard");
+				router.replace("/app");
 			} else {
 				setIsLoading(false);
 			}
 		});
-	}, []);
+	}, [router]);
 
 	if (isLoading) {
 		return (

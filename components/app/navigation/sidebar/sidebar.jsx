@@ -44,7 +44,7 @@ function Sidebar(props) {
 				</Button>
 			</div>
 		);
-	}, [AppCtx.sidebarOptionsVisibility]);
+	}, []);
 
 	function toggleSidebar() {
 		AppCtx.toggleSidebarOptionsVisibility();

@@ -18,7 +18,7 @@ export function AppContextProvider(props) {
 			await delay(500);
 			setSidebarVisibility("Shown");
 		}
-		if (sidebarVisibility === "Shown" || sidebarVisibility === "Show") {
+		if (sidebarVisibility === "Shown" || sidebarVisibility === "Hide") {
 			setSidebarVisibility("Hide");
 			await delay(500);
 

@@ -67,13 +67,14 @@
   margin: 0;
 }
 
-
+.sidebar,
 .sidebarShow,
 .sidebarShown,
 .sidebarHide {
+  width: 218px;
   min-width: 218px;
   max-width: 218px;
-  border-radius: 10px;
+  border-radius: 15px;
   height: calc(100% - 83px);
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
   border: 1px solid #008cff;
@@ -99,6 +100,26 @@
 .sidebarHidden,
 .sidebarPlaceHolderHidden {
   display: none;
+}
+
+
+.borderFrame,
+.wrapper {
+  border-radius: 0;
+}
+
+.borderFrame,
+.mainContent {
+  padding: 0;
+  margin: 0;
+}
+
+.mainContent {
+  width: 100%;
+}
+
+.borderFrame {
+  background: aliceblue;
 }
 
 @media screen and (max-width: 600px) {

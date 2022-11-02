@@ -22,7 +22,7 @@ export default function Layout(props) {
 				setIsLoading(false);
 			}
 		});
-	}, []);
+	}, [router]);
 
 	const SidebarCtx = useContext(AppContext);
 
