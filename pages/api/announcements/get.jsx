@@ -16,32 +16,6 @@ export async function handler(req, res) {
 	prisma.$connect();
 
 	if (role === 0) {
-		const announcements = prisma.announcements.findMany({
-			where: {
-				AnnouncementFor: {
-					where: {
-						isForUsers: true,
-					},
-				},
-			},
-		});
-	}
-
-	if (role === 1) {
-		const delegateCommittee = await prisma.delegateCommittee.findFirst({});
-
-		const announcements = prisma.announcementFor.findMany({
-			where: {
-				isForUsers: true,
-			},
-			include: {
-				announcement: true,
-			},
-			orderBy: {
-				announcementFor: {
-					Date: "desc",
-				},
-			},
-		});
+		const announcements = prisma.announcementFor.findMany({});
 	}
 }

@@ -2,47 +2,13 @@ import styles from "../styles/Home.module.css";
 import Pagelayout from "../components/page/layout/layout";
 import { getSession, useSession } from "next-auth/react";
 
-function HomePage() {
+export default function HomePage() {
 	return (
 		<Pagelayout>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
-			<h1 className={styles.black}>HOLLLLAAAAAAA</h1>
+			<h1 className={styles.black}>Homepage</h1>
 		</Pagelayout>
 	);
 }
-
-export default HomePage;
 
 export async function getServerSideProps(context) {
 	const session = await getSession({ req: context.req });
@@ -55,7 +21,5 @@ export async function getServerSideProps(context) {
 			},
 		};
 	}
-	return {
-		props: { session },
-	};
+	return { props: {} };
 }

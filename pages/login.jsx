@@ -8,7 +8,8 @@ import { Button, Input, Spacer } from "@nextui-org/react";
 import Logo from "../components/common/branding/logo/main";
 import Pagelayout from "../components/page/layout/layout";
 
-function LoginPage() {
+/** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
+function LoginPage(props) {
 	const emailInputRef = useRef();
 	const passwordInputRef = useRef();
 
@@ -43,6 +44,7 @@ function LoginPage() {
 								<Logo color={"blue"} />
 								<Spacer y={2} />
 								<Input
+									size="lg"
 									color={"blue"}
 									width={"200px"}
 									clearable
@@ -53,6 +55,7 @@ function LoginPage() {
 								/>
 								<Spacer y={2} />
 								<Input.Password
+									size="lg"
 									color={"#FFFFFF"}
 									width={"200px"}
 									clearable

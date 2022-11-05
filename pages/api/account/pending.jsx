@@ -7,9 +7,6 @@ import sendEmail from "../../../lib/email/verification";
 
 export default async function handler(req, res) {
 	if (req.method === "POST") {
-		await prisma.$connect();
-		const evi = randomString(10, "A#A#A#A#");
-
 		const data = JSON.parse(req.body);
 		const email = data.email;
 		const password = data.password;
@@ -19,6 +16,8 @@ export default async function handler(req, res) {
 		const display_name = data.display_name;
 		const display_surname = data.display_surname;
 		const date_of_birth = data.dob + "T00:00:00.000+00:00";
+
+		console.log(data);
 
 		const usersWithSameEmail = await prisma.user
 			.count({
@@ -37,7 +36,7 @@ export default async function handler(req, res) {
 			return;
 		}
 
-		console.log(usersWithSameEmail);
+		console.log("SAME" + usersWithSameEmail);
 
 		const usersWithSamePendingEmail = await prisma.pendingUser.count({
 			where: {
@@ -127,7 +126,7 @@ export default async function handler(req, res) {
 			return;
 		}
 
-		const email_verification_token = randomString(6, "AA####");
+		const random_verification_string = randomString(50, "Aa#Aa#Aa#Aa#Aa#Aa#Aa#Aa#Aa#Aa#Aa#Aa#Aa#Aa#Aa#Aa#Aa");
 
 		const result = await prisma.pendingUser
 			.create({
@@ -139,24 +138,19 @@ export default async function handler(req, res) {
 					display_name: CapitaliseEachWord(display_name),
 					display_surname: CapitaliseEachWord(display_surname),
 					date_of_birth: date_of_birth,
-					email_verification_token: email_verification_token,
-					email_verification_identifier: evi,
+					email_verification_code: random_verification_string,
 				},
 			})
-			.then(async () => {})
 			.catch(async (e) => {
 				console.error(e);
 				res.status(500).json({ message: "An error occurred." });
 				return;
 			});
 
-		console.log(result);
-
 		const email_name = CapitaliseEachWord(official_name);
 		const email_email = email;
-		const email_code = email_verification_token.toUpperCase();
 
-		sendEmail(email_email, email_name, email_code, evi);
-		res.status(201).json({ message: "created_pending_user", code: evi, email: email.toLowerCase().trim() });
+		const emailresponse = await sendEmail(email_email, email_name, random_verification_string);
+		res.status(201).json({ message: "created_pending_user", email: email.toLowerCase().trim() });
 	}
 }

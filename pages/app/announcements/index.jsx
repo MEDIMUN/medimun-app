@@ -7,7 +7,7 @@ function AnnouncementsPage() {
 		<Layout>
 			<div>
 				<ul>
-					<h1>Mert</h1>
+					<h1>Hello</h1>
 					<li>Hello</li>
 					<li>Hello</li>
 					<li>Hello</li>
