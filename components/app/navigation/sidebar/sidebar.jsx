@@ -51,6 +51,12 @@ function Sidebar(props) {
 	}
 	const { data: session, status } = useSession();
 
+	const username = (session.user.display_name || session.user.official_name) + " " + (session.user.display_surname || session.user.official_surname);
+	//const username = "Youksel Koch";
+	function shorten(str, n) {
+		return str.length > n ? str.slice(0, n - 1) + "..." : str;
+	}
+
 	//const loading = status === "loading";
 
 	function logOutHandler() {
@@ -64,7 +70,7 @@ function Sidebar(props) {
 				{session.user.role >= 0 ? (
 					<SidebarUsersButton
 						text={"Home"}
-						href={"/app"}
+						href={"/"}
 						icon={<HomeIcon className={style.icon} />}
 					/>
 				) : null}
@@ -81,7 +87,7 @@ function Sidebar(props) {
 
 				<SidebarUsersButton
 					text={"Announcements"}
-					href={"/app/announcements"}
+					href={"/announcements"}
 					icon={<AnnouncementsIcon className={style.icon} />}
 				/>
 
@@ -100,12 +106,6 @@ function Sidebar(props) {
 				/>
 
 				<Spacer y={1} />
-
-				<SidebarUsersButton
-					text={"Messages"}
-					href={"/app/messages"}
-					icon={<MessagesIcon className={style.icon} />}
-				/>
 				<SidebarUsersButton
 					text={"Email"}
 					href={"/app/email"}
@@ -116,7 +116,7 @@ function Sidebar(props) {
 
 				<SidebarUsersButton
 					text={"Users"}
-					href={"/app/users"}
+					href={"/users"}
 					icon={<UserIcon className={style.icon} />}
 				/>
 				<SidebarUsersButton
@@ -147,7 +147,7 @@ function Sidebar(props) {
 					squared
 					bordered
 					src="https://avatars.githubusercontent.com/u/90158764?v=4"
-					name={(session.user.display_name || session.user.official_name) + " " + (session.user.display_surname || session.user.official_surname)}
+					name={shorten(username, 18)}
 					description={session.user.role || "User"}
 				/>
 			</div>

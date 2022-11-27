@@ -2,10 +2,12 @@ import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import { signOut, useSession, getSession } from "next-auth/react";
 import { NavbarToggleIcon } from "./icons";
+import { BiMenuAltLeft } from "react-icons/bi";
+import { TbMessage, TbSettings, TbBellRinging } from "react-icons/tb";
 
 import style from "./navbar.module.css";
 
-import { Button, Navbar, Text } from "@nextui-org/react";
+import { Button, Navbar, Text, Spacer } from "@nextui-org/react";
 import Logo from "../../../common/branding/logo/main";
 import AppContext from "../../context/Navigation";
 
@@ -16,7 +18,7 @@ export default function DashboardNavbar() {
 
 	const [logOut, setLogOut] = useState(false);
 	if (logOut) {
-		signOut({ callbackUrl: "/login" });
+		signOut({ callbackUrl: "/" });
 	}
 	const [isLoading, setIsLoading] = useState(true);
 	const router = useRouter();
@@ -49,16 +51,54 @@ export default function DashboardNavbar() {
 			<Navbar.Content>
 				<Button
 					size="auto"
-					css={{ borderRadius: "7.5px", backgroundColor: "white" }}
+					css={{ borderRadius: "17px", width: "40px", height: "40px" }}
+					color="#FFFFFF"
 					onPress={toggleSidebar}>
-					<NavbarToggleIcon />
+					<BiMenuAltLeft
+						size={30}
+						color="rgba(33,116,255)"
+					/>
+				</Button>
+
+				<Button
+					size="auto"
+					css={{ borderRadius: "17px", width: "40px", height: "40px" }}
+					color="#FFFFFF">
+					<TbSettings
+						size={30}
+						color="rgba(33,116,255)"
+					/>
 				</Button>
 			</Navbar.Content>
+			<Spacer y={1} />
+
 			<Navbar.Content>
-				<Logo color="blue" />
+				<Logo
+					color="blue"
+					width={200}
+					height={50}
+				/>
 			</Navbar.Content>
+			<Spacer y={1} />
 			<Navbar.Content>
-				<Text>Settings</Text>
+				<Button
+					size="auto"
+					css={{ borderRadius: "17px", width: "40px", height: "40px" }}
+					color="#FFFFFF">
+					<TbBellRinging
+						size={30}
+						color="rgba(33,116,255)"
+					/>
+				</Button>
+				<Button
+					size="auto"
+					css={{ borderRadius: "17px", width: "40px", height: "40px" }}
+					color="#FFFFFF">
+					<TbMessage
+						size={30}
+						color="rgba(33,116,255)"
+					/>
+				</Button>
 			</Navbar.Content>
 		</Navbar>
 	);

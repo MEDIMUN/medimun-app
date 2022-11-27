@@ -2,7 +2,7 @@ import { Fragment } from "react";
 
 import style from "./navbar.module.css";
 
-import { Dropdown, Navbar, Button, Link, Text, css } from "@nextui-org/react";
+import { Dropdown, Navbar, Button, Link, Text, css, Spacer } from "@nextui-org/react";
 
 import Logo from "../../../common/branding/logo/main";
 import NavigationNotification from "../notice/notice";
@@ -34,14 +34,17 @@ function Navigation(props) {
 					css={{ paddingTop: "24px" }}>
 					<Logo
 						color={"blue"}
+						width={200}
+						height={50}
 						className={style.center}
 					/>
 				</Navbar.Brand>
 				<Navbar.Content
+					enableCursorHighlight
+					variant="underline"
 					hideIn="sm"
-					css={{ paddingTop: "16px" }}>
+					css={{ marginTop: "16px" }}>
 					<Navbar.Link
-						enableCursorHighlight
 						variant="underline"
 						css={{ color: "#307AB7" }}
 						href="/">
@@ -49,28 +52,24 @@ function Navigation(props) {
 					</Navbar.Link>
 
 					<Navbar.Link
-						enableCursorHighlight
 						variant="underline"
 						css={{ color: "#307AB7" }}
 						href="/">
 						Conference
 					</Navbar.Link>
 					<Navbar.Link
-						enableCursorHighlight
 						variant="underline"
 						css={{ color: "#307AB7" }}
 						href="/">
 						Enrolling
 					</Navbar.Link>
 					<Navbar.Link
-						enableCursorHighlight
 						variant="underline"
 						css={{ color: "#307AB7" }}
 						href="/">
 						App
 					</Navbar.Link>
 					<Navbar.Link
-						enableCursorHighlight
 						variant="underline"
 						css={{ color: "#307AB7" }}
 						href="/">
@@ -79,7 +78,6 @@ function Navigation(props) {
 				</Navbar.Content>
 				<Navbar.Content css={{ paddingTop: "16px" }}>
 					<Navbar.Link
-						enableCursorHighlight
 						variant="underline"
 						css={{ color: "#307AB7" }}
 						href="/login"
@@ -102,7 +100,7 @@ function Navigation(props) {
 						</Button>
 					</Navbar.Item>
 				</Navbar.Content>
-				<Navbar.Collapse>
+				<Navbar.Collapse css={{ marginTop: "-16px" }}>
 					<Navbar.CollapseItem disabled>
 						<Link
 							color="inherit"
@@ -110,7 +108,7 @@ function Navigation(props) {
 								minWidth: "100%",
 							}}
 							href="#">
-							Hello
+							Experience
 						</Link>
 					</Navbar.CollapseItem>
 					<Navbar.CollapseItem>
@@ -120,8 +118,62 @@ function Navigation(props) {
 								minWidth: "100%",
 							}}
 							href="#">
-							Hello
+							Conference
 						</Link>
+					</Navbar.CollapseItem>
+					<Navbar.CollapseItem>
+						<Link
+							color="inherit"
+							css={{
+								minWidth: "100%",
+							}}
+							href="#">
+							Enrolling
+						</Link>
+					</Navbar.CollapseItem>
+					<Navbar.CollapseItem>
+						<Link
+							color="inherit"
+							css={{
+								minWidth: "100%",
+							}}
+							href="#">
+							App
+						</Link>
+					</Navbar.CollapseItem>
+					<Navbar.CollapseItem>
+						<Link
+							color="inherit"
+							css={{
+								minWidth: "100%",
+							}}
+							href="#">
+							Contact
+						</Link>
+					</Navbar.CollapseItem>
+					<Navbar.CollapseItem>
+						<Link
+							color="inherit"
+							css={{
+								minWidth: "100%",
+							}}
+							href="/shop">
+							Shop
+						</Link>
+					</Navbar.CollapseItem>
+
+					<Navbar.CollapseItem>
+						<Button
+							auto
+							css={{
+								backgroundColor: "#307AB7",
+								color: "white",
+							}}
+							flat
+							as={Link}
+							href="/login">
+							Login
+						</Button>
 					</Navbar.CollapseItem>
 				</Navbar.Collapse>
 			</Navbar>

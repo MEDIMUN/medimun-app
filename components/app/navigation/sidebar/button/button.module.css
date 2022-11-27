@@ -18,6 +18,23 @@
   -webkit-text-fill-color: #FFFFFF;
 }
 
+.sidebarSelectedItem {
+  padding: 10px 10px 10 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 40px;
+  width: 210px;
+  border-radius: 15px 0 0 15px;
+  margin-bottom: 5px;
+  box-sizing: border-box !important;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  color: #FFFFFF !important;
+  background-color: #008cff;
+  -webkit-text-fill-color: #FFFFFF;
+}
+
 .iconWrapper {
   display: flex;
   flex-direction: row;

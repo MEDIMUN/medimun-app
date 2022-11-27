@@ -41,16 +41,13 @@ export default function SignUpPage(props) {
 	const [check5, setCheck5] = useState(false);
 	const [check6, setCheck6] = useState(false);
 	const [check7, setCheck7] = useState(false);
-	const [check8, setCheck8] = useState(false);
-	const [check9, setCheck9] = useState(false);
-	const [check10, setCheck10] = useState(false);
 
 	const [buttonText, setButtonText] = useState("Agree & Proceed");
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [isButtonVisible, setIsButtonVisible] = useState(true);
 
 	async function handleProceed() {
-		const request = await fetch("/api/account/pending", {
+		const request = await fetch("/api/account/create", {
 			method: "POST",
 			body: JSON.stringify({
 				official_name: official_name_state,
@@ -540,7 +537,9 @@ O */}
 O */}
 						{currentPage === 8 ? (
 							<div className={style.centered}>
-								<h2 className={style.evititle}>We've sent an email to {res_email || "you"}.</h2>
+								<h2 className={style.evititle}>
+									We<span>&apos</span>ve sent an email to {res_email || "you"}.
+								</h2>
 								<Spacer y={2} />
 								<div>
 									<div className={style.PAVmessage}>

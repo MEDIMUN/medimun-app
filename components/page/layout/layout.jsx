@@ -16,7 +16,7 @@ function Pagelayout(props) {
 	useEffect(() => {
 		getSession().then((session) => {
 			if (session) {
-				router.replace("/app");
+				router.replace("/");
 			} else {
 				setIsLoading(false);
 			}

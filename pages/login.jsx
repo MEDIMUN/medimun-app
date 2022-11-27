@@ -41,7 +41,11 @@ function LoginPage(props) {
 					<div className={style.loginModal}>
 						<div className={style.gradient}>
 							<div className="loginItems">
-								<Logo color={"blue"} />
+								<Logo
+									color={"blue"}
+									width={200}
+									height={50}
+								/>
 								<Spacer y={2} />
 								<Input
 									size="lg"

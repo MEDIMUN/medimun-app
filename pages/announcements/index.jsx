@@ -1,8 +1,9 @@
 import { getSession } from "next-auth/react";
 
-import Layout from "../../../components/app/layout/layout";
+import Layout from "../../components/app/layout/layout";
 
-function AnnouncementsPage() {
+/** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
+function AnnouncementsPage(props) {
 	return (
 		<Layout>
 			<div>

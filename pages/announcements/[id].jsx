@@ -1,4 +1,4 @@
-import Layout from "../../../components/app/layout/layout";
+import Layout from "../../components/app/layout/layout";
 
 export default function AnnouncementsPage() {
 	return (

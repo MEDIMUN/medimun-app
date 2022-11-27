@@ -8,7 +8,11 @@ function PageFooter() {
 		<footer>
 			<div className={style.footer}>
 				<div>
-					<Logo color={"white"} />
+					<Logo
+						color={"white"}
+						width={200}
+						height={50}
+					/>
 				</div>
 
 				<div />
