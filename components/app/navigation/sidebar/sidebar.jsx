@@ -148,7 +148,7 @@ function Sidebar(props) {
 					bordered
 					src="https://avatars.githubusercontent.com/u/90158764?v=4"
 					name={shorten(username, 18)}
-					description={session.user.role || "User"}
+					description={session.user ? session.user.role : "User"}
 				/>
 			</div>
 		</div>

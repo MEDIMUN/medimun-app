@@ -60,7 +60,7 @@ export default function Layout(props) {
 									? style.sidebarHidden
 									: null
 							}`}>
-							<Sidebar props={session.user.official_name + session.user.official_surname} />
+							<Sidebar /> {/* props={session.user.official_name + session.user.official_surname} */}
 						</div>
 						<div className={style.mainContent}>{props.children}</div>
 					</div>
