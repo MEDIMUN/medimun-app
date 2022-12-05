@@ -538,7 +538,7 @@ O */}
 						{currentPage === 8 ? (
 							<div className={style.centered}>
 								<h2 className={style.evititle}>
-									We<span>&apos</span>ve sent an email to {res_email || "you"}.
+									We<span>&apos;</span>ve sent an email to {res_email || "you"}.
 								</h2>
 								<Spacer y={2} />
 								<div>

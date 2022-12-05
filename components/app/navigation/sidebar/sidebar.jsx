@@ -51,7 +51,13 @@ function Sidebar(props) {
 	}
 	const { data: session, status } = useSession();
 
-	const username = (session.user.display_name || session.user.official_name) + " " + (session.user.display_surname || session.user.official_surname);
+	let username;
+	if (!session) {
+		username = " ";
+	} else {
+		username = (session.user.display_name || session.user.official_name) + " " + (session.user.display_surname || session.user.official_surname);
+	}
+
 	//const username = "Youksel Koch";
 	function shorten(str, n) {
 		return str.length > n ? str.slice(0, n - 1) + "..." : str;
@@ -60,14 +66,14 @@ function Sidebar(props) {
 	//const loading = status === "loading";
 
 	function logOutHandler() {
-		signOut({ callbackUrl: "/login" });
+		signOut({ callbackUrl: "./login" });
 	}
 
 	const name = props.name;
 	return (
 		<div className={style.sidebar}>
 			<div className={style.one}>
-				{session.user.role >= 0 ? (
+				{session && session.user.role >= 0 ? (
 					<SidebarUsersButton
 						text={"Home"}
 						href={"/"}
@@ -75,7 +81,7 @@ function Sidebar(props) {
 					/>
 				) : null}
 
-				{session.user.role !== 0 ? (
+				{session && session.user.role !== 0 ? (
 					<SidebarUsersButton
 						text={"My Committee"}
 						href={"/app/my-committee"}
@@ -91,7 +97,7 @@ function Sidebar(props) {
 					icon={<AnnouncementsIcon className={style.icon} />}
 				/>
 
-				{session.user.role !== "User" ? (
+				{session && session.user.role !== "User" ? (
 					<SidebarUsersButton
 						text={"Tasks"}
 						href={"/app/tasks"}
@@ -148,7 +154,7 @@ function Sidebar(props) {
 					bordered
 					src="https://avatars.githubusercontent.com/u/90158764?v=4"
 					name={shorten(username, 18)}
-					description={session.user ? session.user.role : "User"}
+					description={session ? session.user.role : "User"}
 				/>
 			</div>
 		</div>

@@ -53,7 +53,7 @@ export default NextAuth({
 				token.dob = user.date_of_birth;
 			}
 			// Send properties to the client, like an access_token and user id from a provider.
-			console.log(token);
+			//			console.log(token);
 			return token;
 		},
 		async session({ session, token, user, official_name, official_surname, display_name, display_surname, email, dob }) {
@@ -66,7 +66,7 @@ export default NextAuth({
 			session.user.email = token.email;
 			session.user.dob = token.dob;
 
-			console.log(session);
+			//			console.log(session);
 			return session;
 		},
 	},
