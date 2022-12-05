@@ -17,14 +17,9 @@ function NotFound() {
 				/>
 			</div>
 
-			<video
-				autoPlay
-				loop
-				muted
-				src="/pages/404/notfound.mp4"
-				className={style.background}
-				playsinline
-			/>
+			<img
+				src="/pages/404/notfound.gif"
+				className={style.background}></img>
 			<div className={style.center}>
 				<div>
 					<h1 className={style.nfText}>404</h1>
@@ -38,6 +33,7 @@ function NotFound() {
 			<Spacer y={2} />
 			<div className={style.center}>
 				<Button
+					className={style.button}
 					onPress={() => router.back()}
 					color={"white"}
 					size={"lg"}>
