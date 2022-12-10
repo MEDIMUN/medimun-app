@@ -70,7 +70,7 @@ export default NextAuth({
 			return session;
 		},
 	},
-	pages: { signIn: "./login" },
+	pages: { signIn: "/login" },
 	secret: "12345678",
 });
 
