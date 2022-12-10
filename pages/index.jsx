@@ -2,6 +2,12 @@ import styles from "../styles/Home.module.css";
 import Pagelayout from "../components/page/layout/layout";
 import { getSession, useSession } from "next-auth/react";
 import Layout from "../components/app/layout/layout";
+import Image from "next/image";
+import HeroPic from "../public/pages/index/hero.png";
+import style from "../styles/index.module.css";
+import { Spacer, Text } from "@nextui-org/react";
+import { Fragment } from "react";
+import Head from "next/head";
 
 export default function HomePage(props) {
 	const { data: session, status } = useSession();
@@ -15,11 +21,37 @@ export default function HomePage(props) {
 	}
 	if (!session) {
 		return (
-			<Pagelayout>
-				<h1 className={styles.black}>Homepage</h1>
-			</Pagelayout>
+			<Fragment>
+				<Head>
+					<meta
+						name="theme-color"
+						content="#000"></meta>
+				</Head>
+				<Pagelayout>
+					<div className={style.herotext}>
+						<Text
+							className={style.herotext1}
+							h1
+							size={120}
+							weight="bold">
+							Building Resilience
+						</Text>
+						<Spacer y={1} />
+						<Text
+							className={style.herotext2}
+							h1
+							size={120}
+							weight="light">
+							A Transformative Agenda
+						</Text>
+					</div>
+					<div className={style.black}></div>
+					<div className={style.imagehero}></div>
+				</Pagelayout>
+			</Fragment>
 		);
 	}
+
 	if (session) {
 		return (
 			<Layout page={"Register"}>
