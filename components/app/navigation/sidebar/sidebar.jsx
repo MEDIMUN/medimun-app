@@ -66,7 +66,7 @@ function Sidebar(props) {
 	//const loading = status === "loading";
 
 	function logOutHandler() {
-		signOut({ callbackUrl: "./login" });
+		signOut({ callbackUrl: "/" });
 	}
 
 	const name = props.name;

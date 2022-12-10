@@ -26,7 +26,7 @@ function LoginPage(props) {
 		});
 
 		if (!result.error) {
-			router.replace("/app");
+			router.replace("/");
 		}
 
 		console.log(result);
