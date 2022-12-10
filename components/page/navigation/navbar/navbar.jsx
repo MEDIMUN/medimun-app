@@ -1,96 +1,85 @@
 import { Fragment } from "react";
-
 import style from "./navbar.module.css";
 
 import { Dropdown, Navbar, Button, Link, Text, css, Spacer } from "@nextui-org/react";
 
 import Logo from "../../../common/branding/logo/main";
-import NavigationNotification from "../notice/notice";
 
 function Navigation(props) {
-	const collapseItems = ["Conference", "Customers", "Pricing", "Company", "Legal", "Team", "Help & Feedback", "Login", "Sign Up"];
 	return (
 		<Fragment>
-			<NavigationNotification
-				text={props.text || ""}
-				link={props.link || ""}
-			/>
 			<Navbar
 				className={style.navbar}
 				css={{
-					backgroundColor: "white",
-					height: "60px",
-					paddingBottom: "16px",
-					opacity: "100%",
+					color: "white",
+					backgroundColor: "black",
+					$$navbarBackgroundColor: "transparent",
+					$$navbarBlurBackgroundColor: "transparent",
 				}}
-				maxWidth="md"
+				isCompact
+				maxWidth="fluid"
 				variant="sticky">
-				<Navbar.Toggle
-					showIn="sm"
-					css={{ paddingTop: "16px" }}
-				/>
-				<Navbar.Brand
-					className={style.center}
-					css={{ paddingTop: "24px" }}>
+				<Navbar.Brand>
 					<Logo
-						color={"blue"}
-						width={200}
-						height={50}
-						className={style.center}
+						color={"white"}
+						width={170}
+						height={42.5}
 					/>
 				</Navbar.Brand>
+				<Navbar.Toggle
+					showIn="sm"
+					css={{ $$navbarTextColor: "white" }}></Navbar.Toggle>
 				<Navbar.Content
 					enableCursorHighlight
 					variant="underline"
-					hideIn="sm"
-					css={{ marginTop: "16px" }}>
+					hideIn="sm">
 					<Navbar.Link
+						css={{ color: "#FFFFFF" }}
 						variant="underline"
-						css={{ color: "#307AB7" }}
 						href="/">
 						Experience
 					</Navbar.Link>
 
 					<Navbar.Link
+						css={{ color: "#FFFFFF" }}
 						variant="underline"
-						css={{ color: "#307AB7" }}
 						href="/">
 						Conference
 					</Navbar.Link>
 					<Navbar.Link
+						css={{ color: "#FFFFFF" }}
 						variant="underline"
-						css={{ color: "#307AB7" }}
 						href="/">
 						Enrolling
 					</Navbar.Link>
 					<Navbar.Link
+						css={{ color: "#FFFFFF" }}
 						variant="underline"
-						css={{ color: "#307AB7" }}
 						href="/">
 						App
 					</Navbar.Link>
 					<Navbar.Link
+						css={{ color: "#FFFFFF" }}
 						variant="underline"
-						css={{ color: "#307AB7" }}
 						href="/">
 						Contact
 					</Navbar.Link>
 				</Navbar.Content>
-				<Navbar.Content css={{ paddingTop: "16px" }}>
+				<Navbar.Content hideIn={"sm"}>
 					<Navbar.Link
+						css={{ color: "#FFFFFF" }}
 						variant="underline"
-						css={{ color: "#307AB7" }}
 						href="/login"
 						hideIn="sm">
 						Login
 					</Navbar.Link>
 
-					<Navbar.Item>
+					<Navbar.Item hideIn="sm">
 						<Button
 							auto
 							css={{
-								backgroundColor: "#307AB7",
-								color: "white",
+								backgroundColor: "#FFFFFF",
+								color: "black",
 								boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
 							}}
 							flat
@@ -100,7 +89,8 @@ function Navigation(props) {
 						</Button>
 					</Navbar.Item>
 				</Navbar.Content>
-				<Navbar.Collapse css={{ marginTop: "-16px" }}>
+
+				<Navbar.Collapse>
 					<Navbar.CollapseItem disabled>
 						<Link
 							color="inherit"
@@ -161,7 +151,6 @@ function Navigation(props) {
 							Shop
 						</Link>
 					</Navbar.CollapseItem>
-
 					<Navbar.CollapseItem>
 						<Button
 							auto
