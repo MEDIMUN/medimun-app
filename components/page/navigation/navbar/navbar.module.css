@@ -3,3 +3,8 @@
     margin-top: 0;
   }
 }
+
+.navbar {
+  position: absolute !important;
+
+}
