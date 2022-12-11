@@ -7,8 +7,10 @@ import { SlArrowDown } from "react-icons/sl";
 import { Button, Spacer, Text } from "@nextui-org/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export default function HomePage(props) {
+	const router = useRouter();
 	const [height, setHeight] = useState();
 	const [year, setYear] = useState();
 	const [herotext1, setherotext1] = useState("Building Resilience");
@@ -50,7 +52,6 @@ export default function HomePage(props) {
 
 		if (section > 0.75) {
 			r.style.setProperty("--index-hero-translate-y", `${(section * 300 - 225) * 1}px`);
-			console.log((section * 300 - 150) * 1);
 		} else {
 			r.style.setProperty("--index-hero-translate-y", "0px");
 		}
@@ -217,11 +218,11 @@ export default function HomePage(props) {
 							</Text>
 							<Spacer y={2} />
 							<Button
-								href="/sign-up"
+								onPress={() => router.push("/sign-up")}
 								css={{ width: "100px", borderRadius: "50px" }}
 								size="lg"
 								color="mediblue">
-								Sign Up
+								Create Your Account
 							</Button>
 						</div>
 					</div>
