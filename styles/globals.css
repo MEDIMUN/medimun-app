@@ -2,6 +2,19 @@
   --mediblue: #307AB7;
   --color-secondary: #00ff00;
   --color-tertiary: #0000ff;
+  --indexherocolor: 0.5;
+  --indexherofilter: 1;
+  --navbar-text-color: #ffffff;
+  --navbar-background-color: #000000;
+  --index-hero-translate-y: 0px;
+  --index-section3-image: repeating-linear-gradient(45deg,
+      #000000,
+      #000000 10px,
+      #181818 10px,
+      #181818 20px);
+  --section3-photo-background: 0;
+  --mediblueopacity: 1;
+  --section3-images-translate-y: 0px;
 }
 
 html,

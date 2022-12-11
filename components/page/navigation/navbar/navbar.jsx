@@ -11,8 +11,8 @@ function Navigation(props) {
 			<Navbar
 				className={style.navbar}
 				css={{
-					color: "white",
-					backgroundColor: "black",
+					color: "var(navbar-text-color)",
+					backgroundColor: "var(--navbar-background-color)",
 					$$navbarBackgroundColor: "transparent",
 					$$navbarBlurBackgroundColor: "transparent",
 				}}
@@ -21,45 +21,45 @@ function Navigation(props) {
 				variant="sticky">
 				<Navbar.Brand>
 					<Logo
-						color={"white"}
+						color={"var(--navbar-text-color)"}
 						width={170}
 						height={42.5}
 					/>
 				</Navbar.Brand>
 				<Navbar.Toggle
 					showIn="sm"
-					css={{ $$navbarTextColor: "white" }}></Navbar.Toggle>
+					css={{ $$navbarTextColor: "var(--navbar-text-color)" }}></Navbar.Toggle>
 				<Navbar.Content
 					enableCursorHighlight
 					variant="underline"
 					hideIn="sm">
 					<Navbar.Link
-						css={{ color: "#FFFFFF" }}
+						css={{ color: "var(--navbar-text-color)" }}
 						variant="underline"
 						href="/">
 						Experience
 					</Navbar.Link>
 
 					<Navbar.Link
-						css={{ color: "#FFFFFF" }}
+						css={{ color: "var(--navbar-text-color)" }}
 						variant="underline"
 						href="/">
 						Conference
 					</Navbar.Link>
 					<Navbar.Link
-						css={{ color: "#FFFFFF" }}
+						css={{ color: "var(--navbar-text-color)" }}
 						variant="underline"
 						href="/">
 						Enrolling
 					</Navbar.Link>
 					<Navbar.Link
-						css={{ color: "#FFFFFF" }}
+						css={{ color: "var(--navbar-text-color)" }}
 						variant="underline"
 						href="/">
 						App
 					</Navbar.Link>
 					<Navbar.Link
-						css={{ color: "#FFFFFF" }}
+						css={{ color: "var(--navbar-text-color)" }}
 						variant="underline"
 						href="/">
 						Contact
@@ -67,7 +67,7 @@ function Navigation(props) {
 				</Navbar.Content>
 				<Navbar.Content hideIn={"sm"}>
 					<Navbar.Link
-						css={{ color: "#FFFFFF" }}
+						css={{ color: "var(--navbar-text-color)" }}
 						variant="underline"
 						href="/login"
 						hideIn="sm">
@@ -78,8 +78,8 @@ function Navigation(props) {
 						<Button
 							auto
 							css={{
-								backgroundColor: "#FFFFFF",
-								color: "black",
+								backgroundColor: "var(--navbar-text-color)",
+								color: "var(--navbar-background-color)",
 								boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
 							}}
 							flat
@@ -89,7 +89,6 @@ function Navigation(props) {
 						</Button>
 					</Navbar.Item>
 				</Navbar.Content>
-
 				<Navbar.Collapse>
 					<Navbar.CollapseItem disabled>
 						<Link

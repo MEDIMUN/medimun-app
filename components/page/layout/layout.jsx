@@ -8,11 +8,11 @@ import PageNavbar from "../navigation/navbar/navbar";
 import PageFooter from "../navigation/footer/footer";
 
 function Pagelayout(props) {
-	const { data: session, status } = useSession();
-	const loading = status === "loading";
-
-	const [isLoading, setIsLoading] = useState(true);
 	const router = useRouter();
+	const { data: session, status } = useSession();
+
+	const loading = status === "loading";
+	const [isLoading, setIsLoading] = useState(true);
 	useEffect(() => {
 		getSession().then((session) => {
 			if (session) {
@@ -30,17 +30,12 @@ function Pagelayout(props) {
 			</PageNavbar>
 		);
 	}
+
 	return (
 		<Fragment>
-			<PageNavbar text={props.notificationText || ""} />
-			<div
-				style={{ padding: props.margin || "10" }}
-				className={style.container}>
-				{props.children}
-			</div>
-			<div className={style.footer}>
-				<PageFooter />
-			</div>
+			<PageNavbar className={style.navbar} />
+			{props.children}
+			<PageFooter className={style.footer} />
 		</Fragment>
 	);
 }
