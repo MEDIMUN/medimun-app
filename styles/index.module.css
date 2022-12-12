@@ -166,7 +166,6 @@
   background-size: 500% 500%; 
   animation: gradient 15s ease infinite; */
   height: 100vh;
-  text-shadow: 0px 0px 10px #222;
 }
 
 .section4 {
@@ -247,7 +246,6 @@
   .section2ref {
     position: fixed;
     transform: translateY(1000px);
-
   }
 
   .image {
@@ -260,8 +258,6 @@
     padding: 10px;
     margin: 10px;
   }
-
-  .section3 {}
 
   .section0text {
     text-align: left;
@@ -282,6 +278,11 @@
   .herotext2 {
     font-size: 50px;
     line-height: 50px;
+  }
+
+  .herotext1,
+  .herotext2 {
+    transform: translateY(-100px);
   }
 
   .herotext3 {
