@@ -48,7 +48,7 @@ function LoginPage(props) {
 					size={45}
 					css={{
 						fontFamily: "'Roboto', sans-serif",
-						lineHeight: "60px",
+						lineHeight: "55px",
 					}}>
 					Sign in to your account
 				</Text>
