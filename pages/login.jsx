@@ -36,75 +36,80 @@ function LoginPage(props) {
 	return (
 		<div className={style.background}>
 			<div className={style.loginModal}>
-				<Logo
-					className={style.logo}
-					color={"blue"}
-					width={200}
-					height={50}
-				/>
-				<Spacer y={1} />
-				<Text
-					className={style.title}
-					size={45}
-					css={{
-						fontFamily: "'Roboto', sans-serif",
-						lineHeight: "55px",
-					}}>
-					Sign in to your account
-				</Text>
-				<Spacer y={5} />
-
-				<Input
-					size="lg"
-					color={"blue"}
-					width={"auto"}
-					underlined
-					labelPlaceholder="Email or Username"
-					ref={emailInputRef}
-					active
-				/>
-				<Spacer y={2} />
-				<Input.Password
-					size="lg"
-					color={"#FFFFFF"}
-					width={"auto"}
-					underlined
-					labelPlaceholder="Password"
-					ref={passwordInputRef}
-					active
-				/>
-				<Spacer y={5} />
-
-				<div className={style.ButtonGroup}>
+				<div>
+					<Logo
+						className={style.logo}
+						color={"white"}
+						width={200}
+						height={50}
+					/>
+				</div>
+				<div>
+					<Text
+						className={style.title}
+						size={45}
+						css={{
+							fontFamily: "'Roboto', sans-serif",
+							lineHeight: "55px",
+						}}>
+						Sign in to your account
+					</Text>
+				</div>
+				<div>
+					<Input
+						css={{ color: "white" }}
+						size="lg"
+						width={"auto"}
+						labelPlaceholder="Email or Username"
+						ref={emailInputRef}
+						active
+					/>
+					<Spacer y={2} />
+					<Input.Password
+						size="lg"
+						color={"#FFFFFF"}
+						width={"auto"}
+						labelPlaceholder="Password"
+						ref={passwordInputRef}
+						active
+					/>
+				</div>
+				<div>
+					<Button
+						size="md"
+						rounded
+						color="blue"
+						onPress={submitHandler}>
+						Sign in
+					</Button>
+				</div>
+				<div className={style.buttons}>
 					<div>
-						<Button
-							size="md"
-							rounded
-							color="blue"
-							onPress={submitHandler}>
-							Sign in
-						</Button>
-					</div>
-					<div className={style.buttons}>
-						<Text size={"12px"}>
+						<Text
+							color="white"
+							size={"12px"}>
 							Don<span>&apos;</span>t have an account yet?
 						</Text>
 						<Link href={"/sign-up"}>
 							<Text
 								size={"12px"}
-								color="var(--mediblue)">
+								style={{ cursor: "pointer" }}
+								color="white">
 								Create one
 							</Text>
 						</Link>
 					</div>
-					<Spacer y={4} />
-					<div className={style.forgot}>
-						<Text size={"10px"}>
-							Forgot password feature will be added soon. For now please contact us in such cases. Sorry for any inconvinience caused. You may be asked to
-							verify your email.
+
+					<Link href={"/sign-up"}>
+						<Text
+							size={"12px"}
+							style={{ cursor: "pointer" }}
+							color="white">
+							Reset Password
 						</Text>
-					</div>
+					</Link>
 				</div>
+				<br />
 			</div>
 			<div className={style.panel}></div>
 		</div>

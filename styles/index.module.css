@@ -68,7 +68,7 @@
 }
 
 .imageherocolor {
-  background-image: url(/pages/index/hero-color.png);
+  background-image: url(/pages/index/hero-color2.png);
   background-size: cover;
   background-position: center;
   height: 100vh;
@@ -132,6 +132,8 @@
       var(--mediblue) 10px,
       var(--mediblue) 20px); */
   background-image: url("/pages/index/blue.jpg");
+  /*   background-color: #8B553F;
+ */
   background-size: cover;
   background-position: right;
   filter: blur(0px);
@@ -166,14 +168,12 @@
   background-size: 500% 500%; 
   animation: gradient 15s ease infinite; */
   height: 100vh;
-}
-
-.section4 {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
+
 
 .section4>div {
   display: flex;
@@ -217,7 +217,7 @@
   z-index: -1;
 }
 
-.image {
+.imageholder>* {
   width: calc((100% - 20px)/2 - 10px);
   height: auto;
   background-position: center;
@@ -226,9 +226,42 @@
   padding: 2.5px;
   border-radius: 10px;
   margin: 5px;
-  z-index: -1;
-  filter: grayscale(01);
+  z-index: 10;
+  filter: grayscale(1);
 }
+
+.imageholder:nth-child(1):hover {
+  filter: grayscale(0);
+}
+
+.imageholder:nth-child(2):hover {
+  filter: grayscale(0);
+}
+
+.imageholder:nth-child(3):hover {
+  filter: grayscale(0);
+}
+
+.imageholder:nth-child(4):hover {
+  filter: grayscale(0);
+}
+
+.imageholder:nth-child(5):hover {
+  filter: grayscale(0);
+}
+
+.imageholder:nth-child(6):hover {
+  filter: grayscale(0);
+}
+
+.imageholder>*:hover {
+  filter: grayscale(0);
+}
+
+.createbutton {
+  color: #000;
+}
+
 
 .imageholder {
   margin-top: 10px;
@@ -237,18 +270,34 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  z-index: -1;
+  z-index: 10;
   height: 100%;
 }
 
-@media only screen and (max-width: 768px) {
+.landscape {
+  display: none;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  z-index: 1000;
+}
+
+@media screen and (max-device-width: 767px) and (orientation: landscape) {
+  .landscape {
+    display: visible;
+  }
+}
+
+@media only screen and (max-width: 920px) {
 
   .section2ref {
     position: fixed;
     transform: translateY(1000px);
   }
 
-  .image {
+  .imageholder>* {
     width: calc(100% - 20px);
     height: auto;
     background-attachment: fixed;
@@ -273,11 +322,15 @@
   .herotext1 {
     font-size: 80px;
     line-height: 80px;
+    width: 100%;
+    padding-left: 10px;
   }
 
   .herotext2 {
     font-size: 50px;
     line-height: 50px;
+    width: 100%;
+    padding-left: 10px;
   }
 
   .herotext1,
@@ -288,5 +341,39 @@
   .herotext3 {
     font-size: 70px;
     line-height: 80px;
+  }
+}
+
+@media screen and (max-device-width: 767px) and (orientation: landscape) {
+  .landscape {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    height: 100vh;
+  }
+
+  .landscapeText {
+    font-size: 50px;
+    line-height: 50px;
+    width: 100%;
+    padding-left: 10px;
+    color: #fff;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
   }
 }

@@ -8,6 +8,7 @@ import { Button, Spacer, Text } from "@nextui-org/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import Logo from "../components/common/branding/logo/main";
 
 export default function HomePage(props) {
 	const router = useRouter();
@@ -52,6 +53,7 @@ export default function HomePage(props) {
 
 		if (section > 0.75) {
 			r.style.setProperty("--index-hero-translate-y", `${(section * 300 - 225) * 1}px`);
+			console.log((section * 300 - 225) * 1);
 		} else {
 			r.style.setProperty("--index-hero-translate-y", "0px");
 		}
@@ -105,6 +107,36 @@ export default function HomePage(props) {
 				</Head>
 				<Pagelayout>
 					<div className={style.body}></div>
+					<div className={style.landscape}>
+						<Logo
+							className={style.logo}
+							color={"white"}
+							width={200}
+							height={50}
+						/>
+						<Spacer y={2} />
+						<Text
+							className={style.landscapeText}
+							h1
+							size={120}
+							weight="medium">
+							Please rotate your device.{" "}
+						</Text>
+						<Text
+							className={style.landscapeText}
+							h1
+							size={120}
+							weight="light">
+							This site does not support landscape mode on small mobile devices.
+						</Text>
+						<Text
+							h6
+							size={15}
+							css={{ paddingLeft: "10px", color: "#ffffff", position: "absolute", bottom: "10px" }}
+							weight="light">
+							If you think that we have incorrectly detected your device orientation, please contact our IT department.
+						</Text>
+					</div>
 					<div className={style.section0}>
 						<div>
 							<Button
@@ -163,37 +195,31 @@ export default function HomePage(props) {
 					<div className={style.section3}>
 						<div className={style.imageholder}>
 							<Image
-								className={style.image}
 								src="/pages/index/section3images/1.jpeg"
 								width={2976 / 2}
 								height={1984 / 2}
 								alt="people in a general assembly"></Image>
 							<Image
-								className={style.image}
 								src="/pages/index/section3images/2.jpeg"
 								width={2976 / 2}
 								height={1984 / 2}
 								alt="people in a general assembly"></Image>
 							<Image
-								className={style.image}
 								src="/pages/index/section3images/3.jpeg"
 								width={2976 / 2}
 								height={1984 / 2}
 								alt="people in a general assembly"></Image>{" "}
 							<Image
-								className={style.image}
 								src="/pages/index/section3images/4.jpeg"
 								width={2976 / 2}
 								height={1984 / 2}
 								alt="people in a general assembly"></Image>
 							<Image
-								className={style.image}
 								src="/pages/index/section3images/5.jpeg"
 								width={2976 / 2}
 								height={1984 / 2}
 								alt="people in a general assembly"></Image>{" "}
 							<Image
-								className={style.image}
 								src="/pages/index/section3images/6.jpeg"
 								width={2976 / 2}
 								height={1984 / 2}
@@ -207,7 +233,7 @@ export default function HomePage(props) {
 								h1
 								size={120}
 								weight="bold">
-								Wanna Join?
+								Want to join?
 							</Text>
 							<Text
 								className={style.herotext5}
@@ -218,10 +244,11 @@ export default function HomePage(props) {
 							</Text>
 							<Spacer y={2} />
 							<Button
-								onPress={() => router.push("/sign-up")}
+								onPress={() => router.replace("/sign-up")}
 								css={{ width: "100px", borderRadius: "50px" }}
 								size="lg"
-								color="mediblue">
+								color="#FFFFFF"
+								className={style.createbutton}>
 								Create Your Account
 							</Button>
 						</div>
