@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { signIn, getSession } from "next-auth/react";
 import Link from "next/link";
+import { IoClose } from "react-icons/io5";
 
 import style from "../styles/login.module.css";
 
@@ -35,6 +36,14 @@ function LoginPage(props) {
 
 	return (
 		<div className={style.background}>
+			<div>
+				<Button
+					css={{ backgroundColor: "transparent", width: "40px", height: "40px" }}
+					onClick={() => router.back()}
+					size="auto">
+					<IoClose />
+				</Button>
+			</div>
 			<div className={style.loginModal}>
 				<div>
 					<Logo
