@@ -7,6 +7,8 @@ import style from "./layout.module.css";
 import DashboardNavbar from "../navigation/navbar/navbar";
 import Sidebar from "../navigation/sidebar/sidebar";
 import AppContext from "../context/Navigation";
+import Landscape from "../../../common-components/popups/landscape/index";
+import Logo from "../../common/branding/logo/main";
 
 export default function Layout(props) {
 	const { data: session, status } = useSession();
@@ -29,59 +31,12 @@ export default function Layout(props) {
 	const sidebarVisibility = SidebarCtx.sidebarVisibility;
 
 	return (
-		<Fragment>
-			<div className={style.borderFrame}>
-				<div className={style.content}>
-					<div className={style.navbar}>
-						<DashboardNavbar />
-					</div>
-					<div className={style.wrapper}>
-						<div
-							className={`${
-								sidebarVisibility === "Show"
-									? style.sidebarPlaceHolderShow
-									: sidebarVisibility === "Shown"
-									? style.sidebarPlaceHolderShown
-									: sidebarVisibility === "Hide"
-									? style.sidebarPlaceHolderHide
-									: sidebarVisibility === "Hidden"
-									? style.sidebarPlaceHolderHidden
-									: null
-							}`}></div>
-						<div
-							className={`${
-								sidebarVisibility === "Show"
-									? style.sidebarShow
-									: sidebarVisibility === "Shown"
-									? style.sidebarShown
-									: sidebarVisibility === "Hide"
-									? style.sidebarHide
-									: sidebarVisibility === "Hidden"
-									? style.sidebarHidden
-									: null
-							}`}>
-							<Sidebar /> {/* props={session.user.official_name + session.user.official_surname} */}
-						</div>
-						<div className={style.mainContent}>{props.children}</div>
-					</div>
-				</div>
+		<div className={style.layout}>
+			<Landscape />
+			<div className={style.sidebar}>
+				<Sidebar />
 			</div>
-		</Fragment>
+			<div className={style.content}>{props.children}</div>
+		</div>
 	);
-}
-
-export async function getServerSideProps(context) {
-	const session = await getSession({ req: context.req });
-
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permament: false,
-			},
-		};
-	}
-	return {
-		props: { session },
-	};
 }

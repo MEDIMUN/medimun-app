@@ -87,7 +87,7 @@ function LoginPage(props) {
 					<Button
 						size="md"
 						rounded
-						color="blue"
+						css={{ color: "white" }}
 						onPress={submitHandler}>
 						Sign in
 					</Button>

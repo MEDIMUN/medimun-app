@@ -8,7 +8,6 @@ import { Button, Spacer, Text } from "@nextui-org/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import Logo from "../components/common/branding/logo/main";
 
 export default function HomePage(props) {
 	const router = useRouter();
@@ -107,36 +106,6 @@ export default function HomePage(props) {
 				</Head>
 				<Pagelayout>
 					<div className={style.body}></div>
-					<div className={style.landscape}>
-						<Logo
-							className={style.logo}
-							color={"white"}
-							width={200}
-							height={50}
-						/>
-						<Spacer y={2} />
-						<Text
-							className={style.landscapeText}
-							h1
-							size={120}
-							weight="medium">
-							Please rotate your device.{" "}
-						</Text>
-						<Text
-							className={style.landscapeText}
-							h1
-							size={120}
-							weight="light">
-							This site does not support landscape mode on small mobile devices.
-						</Text>
-						<Text
-							h6
-							size={15}
-							css={{ paddingLeft: "10px", color: "#ffffff", position: "absolute", bottom: "10px" }}
-							weight="light">
-							If you think that we have incorrectly detected your device orientation, please contact our IT department.
-						</Text>
-					</div>
 					<div className={style.section0}>
 						<div>
 							<Button

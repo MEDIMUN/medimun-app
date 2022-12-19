@@ -1,0 +1,50 @@
+.pfp {
+  width: 200px;
+  height: 200px;
+  border-radius: 25%;
+  object-fit: cover;
+  box-shadow: 0 0 25px rgba(0, 0, 0, .5);
+  background-image: url("/pages/users/user/blue.jpg");
+  background-size: cover;
+  background-position: right;
+  margin-right: auto;
+  border: 5px solid #278CFF;
+  z-index: 1;
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.pfpholder {
+  width: fit-content;
+}
+
+
+
+.nameandusername {
+  display: flex;
+  flex-direction: row;
+}
+
+.page {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: auto;
+  padding: 10px;
+}
+
+.page>div:nth-child(1) {
+  height: 256px;
+  width: calc(100% + 20px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 0rem;
+  padding: 20px;
+  margin: -10px;
+  text-align: left;
+  align-items: left;
+  background-size: cover;
+  background-position: center;
+  background-image: url("https://medimun.net/wp-content/uploads/2022/09/28061302_2057930257557045_5314440321590932207_o-1.jpg");
+  padding-top: 128px;
+}

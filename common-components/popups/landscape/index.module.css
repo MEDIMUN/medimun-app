@@ -1,0 +1,24 @@
+.landscape {
+  display: none;
+  position: fixed;
+  min-width: 100vw;
+  min-height: 100vh;
+  background-color: #000;
+  z-index: 1000;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.landscape>* {
+  font-size: 50px;
+  line-height: 50px;
+  width: 100%;
+  padding-left: 10px;
+  color: #fff;
+}
+
+@media screen and (max-device-width: 767px) and (orientation: landscape) {
+  .landscape {
+    display: flex;
+  }
+}

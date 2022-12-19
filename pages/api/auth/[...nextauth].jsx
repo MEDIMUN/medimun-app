@@ -1,42 +1,46 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { verifyPassword } from "../../../lib/auth";
-
 import prisma from "../../../client";
+
 export default NextAuth({
 	session: {
 		strategy: "jwt",
 		//		updateAge: 60 * 60 * 2,
 	},
+	adapter: PrismaAdapter(prisma),
 	providers: [
 		CredentialsProvider({
 			type: "credentials",
 			credentials: {},
 			async authorize(credentials, req) {
-				prisma.$connect();
-				let user = await prisma.user.findFirst({
-					where: {
-						email: credentials.email,
-					},
-				});
+				let user;
+				const username = credentials.email.trim().toLowerCase();
+
+				if (username.includes("@")) {
+					user = await prisma.user.findFirst({
+						where: {
+							email: username,
+						},
+					});
+				} else {
+					user = await prisma.user.findFirst({
+						where: {
+							username: username,
+						},
+					});
+				}
+
 				if (!user) {
 					console.log("user not found");
 					throw new Error("no user found");
 				}
-				const isValid = await verifyPassword(credentials.password, user.password);
+				const isValid = await verifyPassword(credentials.password, user.password.trim());
 				if (!isValid) {
-					/* REMOVE CONSOLE LOG
-					 */
-					console.log("incorrect password");
-					prisma.$disconnect();
 					throw new Error("could not log you in");
 				}
-				prisma.$disconnect();
-				/* REMOVE CONSOLE LOG
-				 */
-				console.log("logged in with password");
-
-				console.log(user);
+				console.log(Error);
 				return user;
 			},
 		}),

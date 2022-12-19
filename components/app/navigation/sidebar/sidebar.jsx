@@ -19,6 +19,7 @@ import {
 	TasksIcon,
 	HomeIcon,
 } from "./icons";
+import Logo from "../../../common/branding/logo/main";
 
 function Sidebar(props) {
 	const AppCtx = useContext(AppContext);
@@ -73,6 +74,15 @@ function Sidebar(props) {
 	return (
 		<div className={style.sidebar}>
 			<div className={style.one}>
+				<div className={style.logo}>
+					<Logo
+						color="blue"
+						width={136}
+						height={34}
+					/>
+				</div>
+				<Spacer y={0.5} />
+
 				{session && session.user.role >= 0 ? (
 					<SidebarUsersButton
 						text={"Home"}
@@ -144,14 +154,10 @@ function Sidebar(props) {
 					icon={<ConferenceIcon className={style.icon} />}
 				/>
 			</div>
-			<div className={style.spacer}></div>
 			<div className={style.two}>
 				{AppCtx.sidebarOptionsVisibility && memoUserOptions}
-				<Spacer y={1} />
 				<User
 					onClick={toggleSidebar}
-					squared
-					bordered
 					src="https://avatars.githubusercontent.com/u/90158764?v=4"
 					name={shorten(username, 18)}
 					description={session ? session.user.role : "User"}

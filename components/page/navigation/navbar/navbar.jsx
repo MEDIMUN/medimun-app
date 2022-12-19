@@ -6,13 +6,27 @@ import { Dropdown, Navbar, Button, Link, Text, css, Spacer } from "@nextui-org/r
 import Logo from "../../../common/branding/logo/main";
 
 function Navigation(props) {
+	console.log(props.backgroundColor);
+	let navbackground;
+	let navtext;
+	let navlogo;
+	if (props.backgroundColor === "white") {
+		navbackground = "white";
+		navtext = "var(--mediblue)";
+		navlogo = "blue";
+	} else {
+		navbackground = "var(--navbar-background-color)";
+		navtext = "var(--navbar-text-color)";
+		navlogo = "white";
+	}
+	console.log("wersdf" + navtext);
 	return (
 		<Fragment>
 			<Navbar
 				className={style.navbar}
 				css={{
-					color: "var(navbar-text-color)",
-					backgroundColor: "var(--navbar-background-color)",
+					color: `${navtext}`,
+					backgroundColor: `${navbackground}`,
 					$$navbarBackgroundColor: "transparent",
 					$$navbarBlurBackgroundColor: "transparent",
 				}}
@@ -21,45 +35,45 @@ function Navigation(props) {
 				variant="sticky">
 				<Navbar.Brand>
 					<Logo
-						color={"var(--navbar-text-color)"}
+						color={`${navlogo}`}
 						width={170}
 						height={42.5}
 					/>
 				</Navbar.Brand>
 				<Navbar.Toggle
 					showIn="sm"
-					css={{ $$navbarTextColor: "var(--navbar-text-color)" }}></Navbar.Toggle>
+					css={{ color: navtext }}></Navbar.Toggle>
 				<Navbar.Content
 					enableCursorHighlight
 					variant="underline"
 					hideIn="sm">
 					<Navbar.Link
-						css={{ color: "var(--navbar-text-color)" }}
+						css={{ color: navtext }}
 						variant="underline"
 						href="/">
 						Experience
 					</Navbar.Link>
 
 					<Navbar.Link
-						css={{ color: "var(--navbar-text-color)" }}
+						css={{ color: navtext }}
 						variant="underline"
 						href="/">
 						Conference
 					</Navbar.Link>
 					<Navbar.Link
-						css={{ color: "var(--navbar-text-color)" }}
+						css={{ color: navtext }}
 						variant="underline"
 						href="/">
 						Enrolling
 					</Navbar.Link>
 					<Navbar.Link
-						css={{ color: "var(--navbar-text-color)" }}
+						css={{ color: navtext }}
 						variant="underline"
 						href="/">
 						App
 					</Navbar.Link>
 					<Navbar.Link
-						css={{ color: "var(--navbar-text-color)" }}
+						css={{ color: navtext }}
 						variant="underline"
 						href="/">
 						Contact
@@ -67,7 +81,7 @@ function Navigation(props) {
 				</Navbar.Content>
 				<Navbar.Content hideIn={"sm"}>
 					<Navbar.Link
-						css={{ color: "var(--navbar-text-color)" }}
+						css={{ color: navtext }}
 						variant="underline"
 						href="/login"
 						hideIn="sm">
@@ -78,8 +92,8 @@ function Navigation(props) {
 						<Button
 							auto
 							css={{
-								backgroundColor: "var(--navbar-text-color)",
-								color: "var(--navbar-background-color)",
+								backgroundColor: navtext,
+								color: navbackground,
 								boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
 							}}
 							flat

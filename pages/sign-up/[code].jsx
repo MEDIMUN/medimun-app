@@ -2,6 +2,7 @@ import prisma from "../../client";
 
 import { Button, Loading, Spacer, Input } from "@nextui-org/react";
 import Pagelayout from "../../components/page/layout/layout";
+import randomString from "../../lib/random-string";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function SignupPage(props) {
@@ -23,6 +24,18 @@ export async function getServerSideProps(context) {
 			};
 		}
 
+		let userId;
+
+		do {
+			userId = randomString(10, "##########");
+		} while (
+			(await prisma.user.findFirst({
+				where: {
+					userNumber: userId,
+				},
+			})) != null
+		);
+
 		if (pendingUser.email_verification_code == code) {
 			console.log("TRUE");
 			const user = await prisma.user.create({
@@ -35,6 +48,8 @@ export async function getServerSideProps(context) {
 					display_surname: pendingUser.display_surname,
 					date_of_birth: pendingUser.date_of_birth,
 					role: pendingUser.role,
+					userNumber: userId,
+					username: null,
 				},
 			});
 
