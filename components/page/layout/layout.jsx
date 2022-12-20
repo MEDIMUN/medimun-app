@@ -6,6 +6,8 @@ import style from "./layout.module.css";
 
 import PageNavbar from "../navigation/navbar/navbar";
 import PageFooter from "../navigation/footer/footer";
+import Landscape from "../../../common-components/popups/landscape";
+import { IoPeopleSharp } from "react-icons/io5";
 
 function Pagelayout(props) {
 	const router = useRouter();
@@ -16,7 +18,6 @@ function Pagelayout(props) {
 	useEffect(() => {
 		getSession().then((session) => {
 			if (session) {
-				router.replace("/");
 			} else {
 				setIsLoading(false);
 			}
@@ -33,7 +34,11 @@ function Pagelayout(props) {
 
 	return (
 		<Fragment>
-			<PageNavbar className={style.navbar} />
+			<Landscape />
+			<PageNavbar
+				backgroundColor={props.backgroundColor}
+				className={style.navbar}
+			/>
 			{props.children}
 			<PageFooter className={style.footer} />
 		</Fragment>

@@ -15,6 +15,7 @@
   -webkit-box-sizing: border-box;
   color: #FFFFFF !important;
   background-color: #008cff;
+  width: 300px;
   -webkit-text-fill-color: #FFFFFF;
 }
 
@@ -24,7 +25,7 @@
   flex-direction: row;
   align-items: center;
   height: 40px;
-  width: 210px;
+  width: 300px;
   border-radius: 15px 0 0 15px;
   margin-bottom: 5px;
   box-sizing: border-box !important;
@@ -33,6 +34,9 @@
   color: #FFFFFF !important;
   background-color: #008cff;
   -webkit-text-fill-color: #FFFFFF;
+  font-size: 20px;
+  font-weight: 400;
+  box-shadow: 0px 0px 3px rgb(104, 104, 104);
 }
 
 .iconWrapper {
@@ -46,7 +50,6 @@
   fill: white;
   background-color: #FFFFFF;
   border-radius: 15px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
   border: #008cff solid 2pt;
 }
 
