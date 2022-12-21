@@ -4,6 +4,7 @@ import Head from "next/head";
 import { createTheme, NextUIProvider } from "@nextui-org/react";
 import { SessionProvider } from "next-auth/react";
 import { AppContextProvider } from "../components/app/context/Navigation";
+import { ChakraProvider } from "@chakra-ui/react";
 
 const theme = createTheme({
 	type: "light", // it could be "light" or "dark"
@@ -49,6 +50,8 @@ function MyApp({ Component, pageProps }) {
 		<AppContextProvider>
 			<SessionProvider session={pageProps.session}>
 				<NextUIProvider theme={theme}>
+					{/* //					<ChakraProvider>
+					 */}{" "}
 					<Head>
 						<meta
 							name="viewport"
@@ -56,6 +59,8 @@ function MyApp({ Component, pageProps }) {
 						/>
 					</Head>
 					<Component {...pageProps} />
+					{/* //					</ChakraProvider>
+					 */}{" "}
 				</NextUIProvider>
 			</SessionProvider>
 		</AppContextProvider>
