@@ -3,12 +3,11 @@
   height: 200px;
   border-radius: 25%;
   object-fit: cover;
-  box-shadow: 0 0 25px rgba(0, 0, 0, .5);
   background-image: url("/pages/users/user/blue.jpg");
   background-size: cover;
   background-position: right;
   margin-right: auto;
-  border: 5px solid #278CFF;
+  border: 5px solid #fff;
   z-index: 1;
   margin-right: auto;
   margin-left: 0;
@@ -27,20 +26,19 @@
 
 .page {
   display: flex;
-  flex-direction: row;
-  height: 100vh;
+  flex-direction: column;
+  height: 100%;
   width: auto;
   padding: 10px;
 }
 
 .page>div:nth-child(1) {
   height: 256px;
-  width: calc(100% + 20px);
+  width: calc(100% + 0px);
   display: flex;
   flex-direction: column;
-  border-radius: 0rem;
+  border-radius: 1rem;
   padding: 20px;
-  margin: -10px;
   text-align: left;
   align-items: left;
   background-size: cover;
