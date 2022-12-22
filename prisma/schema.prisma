@@ -27,42 +27,48 @@ model PendingUser {
 }
 
 model User {
-  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  id                           String           @id @default(auto()) @map("_id") @db.ObjectId
   //
-  created_at       DateTime         @default(now())
-  password         String           @map("pw")
-  userNumber       String           @unique
-  username         String?          @unique
+  show_phone_number            Boolean          @default(false)
+  allow_messages_from_everyone Boolean          @default(false) @map("amfe")
+  created_at                   DateTime         @default(now())
+  password                     String           @map("pw")
+  userNumber                   String           @unique
+  username                     String?          @unique
   //
-  email            String           @unique
-  phone_number     String?
+  profileVisibility            Int              @default(5)
+  OrganiserProfileVisibility   Int              @default(2)
+  email                        String           @unique
+  phone_number                 String?
+  bio                          String?
   //
-  official_name    String
-  official_surname String
+  official_name                String
+  official_surname             String
   //
-  display_name     String?
-  display_surname  String?
+  display_name                 String?
+  display_surname              String?
   //
-  nationality      String?
-  date_of_birth    DateTime         @map("dob")
-  pronouns         String?
+  nationality                  String?
+  date_of_birth                DateTime         @map("dob")
+  pronoun1                     String?          @default("")
+  pronoun2                     String?          @default("")
   //
-  TeamMember       Member[]
-  Delegate         Delegate[]
-  SchoolMember     SchoolStudent[]
-  SchoolDirector   SchoolDirector[]
-  CommitteeChair   Chair[]
-  TeamManager      Manager[]
-  AssignedBy       Task[]           @relation("assigned_by")
-  AssignedTo       Task[]           @relation("assigned_to")
-  RollCall         RollCall[]
-  GlobalAdmin      GlobalAdmin[]
-  Admin            Admin[]
-  SeniorDirector   SeniorDirector[]
-  Director         Director[]
-  SG               SG[]
-  PGA              PGA[]
-  DSG              DSG[]
+  TeamMember                   Member[]
+  Delegate                     Delegate[]
+  SchoolMember                 SchoolStudent[]
+  SchoolDirector               SchoolDirector[]
+  CommitteeChair               Chair[]
+  TeamManager                  Manager[]
+  AssignedBy                   Task[]           @relation("assigned_by")
+  AssignedTo                   Task[]           @relation("assigned_to")
+  RollCall                     RollCall[]
+  GlobalAdmin                  GlobalAdmin[]
+  Admin                        Admin[]
+  SeniorDirector               SeniorDirector[]
+  Director                     Director[]
+  SG                           SG[]
+  PGA                          PGA[]
+  DSG                          DSG[]
 }
 
 model ConferenceSession {
@@ -93,7 +99,7 @@ model GlobalAdmin {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   //
   user   User   @relation(fields: [userId], references: [id])
-  userId String
+  userId String @db.ObjectId
 }
 
 model Admin {

@@ -1,4 +1,4 @@
-import Layout from "../../components/app/layout/layout";
+import Layout from "../../app-components/layout";
 import Pagelayout from "../../components/page/layout/layout";
 import { Grid, Spacer } from "@nextui-org/react";
 import UserPage from "../../app-components/pages/users/[user]/user";
@@ -296,7 +296,7 @@ export async function getServerSideProps(context) {
 				name: user.display_name || user.official_name,
 				surname: user.display_surname || user.official_surname,
 				username: user.username,
-				pronouns: user.pronouns,
+				pronouns: { pronoun1: user.pronoun1, pronoun2: user.pronoun1 },
 				nationality: user.nationality,
 				school: user.SchoolMember[0].school.name,
 			},

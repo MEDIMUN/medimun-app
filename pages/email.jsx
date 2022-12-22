@@ -1,5 +1,5 @@
 import style from "../styles/email/webmail.module.css";
-import Layout from "../components/app/layout/layout";
+import Layout from "../app-components/layout";
 
 export default function Webmail() {
 	return (

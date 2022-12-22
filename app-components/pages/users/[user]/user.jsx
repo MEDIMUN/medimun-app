@@ -36,7 +36,7 @@ export default function UserPage(props) {
 					<TabList css={{ paddingLeft: "20px" }}>
 						<Tab>Current Roles</Tab>
 						<Tab>Past Roles</Tab>
-						<Tab>Biography</Tab>
+						<Tab>About Me</Tab>
 					</TabList>
 					<TabPanels>
 						<TabPanel>

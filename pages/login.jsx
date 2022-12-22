@@ -1,25 +1,29 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { signIn, getSession } from "next-auth/react";
 import Link from "next/link";
 import { IoClose } from "react-icons/io5";
+import { useToast } from "@chakra-ui/react";
 
 import style from "../styles/login.module.css";
 
-import { Button, Input, Spacer, Text } from "@nextui-org/react";
+import { Button, Input, Spacer, Text, Loading } from "@nextui-org/react";
 import Logo from "../components/common/branding/logo/main";
-import Pagelayout from "../components/page/layout/layout";
+import Pagelayout from "../app-components/layout";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 function LoginPage(props) {
 	const emailInputRef = useRef();
 	const passwordInputRef = useRef();
+	const toast = useToast();
+	const [loading, setLoading] = useState(false);
 
 	const router = useRouter();
 
 	async function submitHandler() {
 		const enteredEmail = emailInputRef.current.value;
 		const enteredPassword = passwordInputRef.current.value;
+		setLoading(true);
 
 		const result = await signIn("credentials", {
 			redirect: false,
@@ -27,11 +31,44 @@ function LoginPage(props) {
 			password: enteredPassword,
 		});
 
-		if (!result.error) {
-			router.replace("/");
+		if (result.error == "no user found") {
+			setLoading(false);
+			if (!toast.isActive("username")) {
+				toast({
+					id: "username",
+					title: "Incorrect Username",
+					status: "error",
+					duration: 2000,
+					isClosable: true,
+					position: "bottom-right",
+				});
+			}
 		}
 
-		console.log(result);
+		if (result.error == "incorrect password") {
+			setLoading(false);
+			if (!toast.isActive("password")) {
+				toast({
+					id: "password",
+					title: "Incorrect Password",
+					status: "error",
+					duration: 2000,
+					isClosable: true,
+					position: "bottom-right",
+				});
+			}
+		}
+
+		if (!result.error) {
+			toast({
+				title: "Signed in successfully",
+				status: "success",
+				duration: 4000,
+				isClosable: true,
+				position: "bottom-right",
+			});
+			router.replace("/");
+		}
 	}
 
 	return (
@@ -84,13 +121,23 @@ function LoginPage(props) {
 					/>
 				</div>
 				<div>
-					<Button
-						size="md"
-						rounded
-						css={{ color: "white" }}
-						onPress={submitHandler}>
-						Sign in
-					</Button>
+					{!loading ? (
+						<Button
+							size="md"
+							rounded
+							css={{ color: "white" }}
+							onPress={submitHandler}>
+							Sign in
+						</Button>
+					) : (
+						<Button
+							disabled
+							size="md"
+							rounded
+							css={{ color: "white", width: "100%" }}>
+							<Loading type="points" />
+						</Button>
+					)}
 				</div>
 				<div className={style.buttons}>
 					<div>

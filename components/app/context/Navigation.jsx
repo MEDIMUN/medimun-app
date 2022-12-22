@@ -24,7 +24,6 @@ export function AppContextProvider(props) {
 
 			setSidebarVisibility("Hidden");
 		}
-		console.log(sidebarVisibility);
 	}
 
 	function toggleSidebarOptionsHandler() {

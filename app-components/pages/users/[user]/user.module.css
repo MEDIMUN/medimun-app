@@ -84,7 +84,7 @@
   flex-direction: column;
   height: 100%;
   width: auto;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .page>div:nth-child(1) {
@@ -116,11 +116,11 @@
 }
 
 .rolestab {
-  overflow: auto;
-  height: calc(100vh - 256px - 128px - 108px);
   bottom: 0;
+  min-height: fit-content;
+
 }
 
 .bioSection {
-  height: calc(100vh - 256px - 128px - 108px);
+  min-height: fit-content;
 }

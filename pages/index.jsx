@@ -1,6 +1,6 @@
 import Pagelayout from "../components/page/layout/layout";
 import { getSession, useSession } from "next-auth/react";
-import Layout from "../components/app/layout/layout";
+import Layout from "../app-components/layout";
 import Image from "next/image";
 import style from "../styles/index.module.css";
 import { SlArrowDown } from "react-icons/sl";
