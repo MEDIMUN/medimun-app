@@ -37,7 +37,7 @@ export async function getServerSideProps(context) {
 	const userquery = context.query.user;
 	let user;
 	if (userquery[0] == "@") {
-		user = await prisma.user.findFirstOrThrow({
+		user = await prisma.user.findFirst({
 			where: {
 				username: userquery.slice(1),
 			},
@@ -100,7 +100,7 @@ export async function getServerSideProps(context) {
 	} else if (userquery.match(/^[0-9]+$/) && userquery.length == 10) {
 		console.log("User is a number");
 
-		user = await prisma.user.findFirstOrThrow({
+		user = await prisma.user.findFirst({
 			where: {
 				userNumber: userquery,
 			},
@@ -178,8 +178,7 @@ export async function getServerSideProps(context) {
 	if (user.Delegate.role !== null)
 		delegateRole = user.Delegate.map((delegate) => {
 			return {
-				role: "Delegate of " + delegate.country,
-				primary: delegate.committee.name,
+				role: "Delegate of " + delegate.country + " in " + delegate.committee.name,
 				session: "MEDIMUN " + delegate.session.conference_session_number,
 				isCurrent: delegate.session.isCurrent,
 			};
@@ -189,7 +188,6 @@ export async function getServerSideProps(context) {
 		delegateRole = user.Delegate.map((delegate) => {
 			return {
 				role: "Delegate",
-				primary: delegate.committee.name,
 				session: "MEDIMUN " + delegate.session.conference_session_number,
 				isCurrent: delegate.session.isCurrent,
 			};
@@ -197,24 +195,21 @@ export async function getServerSideProps(context) {
 
 	let chairRole = user.CommitteeChair.map((chair) => {
 		return {
-			role: "Chair",
-			primary: chair.committee.name,
+			role: "Chair of " + chair.committee.name,
 			session: "MEDIMUN " + chair.session.conference_session_number,
 			isCurrent: chair.session.isCurrent,
 		};
 	});
 	let teamMemberRole = user.TeamMember.map((teamMember) => {
 		return {
-			role: "Member",
-			primary: teamMember.team.name,
+			role: "Member of " + teamMember.team.name,
 			session: "MEDIMUN " + teamMember.session.conference_session_number,
 			isCurrent: teamMember.session.isCurrent,
 		};
 	});
 	let teamManagerRole = user.TeamManager.map((teamManager) => {
 		return {
-			role: "Manager",
-			primary: teamManager.team.name,
+			role: "Manager of " + teamManager.team.name,
 			session: "MEDIMUN " + teamManager.session.conference_session_number,
 			isCurrent: teamManager.session.isCurrent,
 		};
@@ -222,7 +217,6 @@ export async function getServerSideProps(context) {
 	let sgRole = user.SG.map((sg) => {
 		return {
 			role: "Secretary-General",
-			primary: "",
 			session: "MEDIMUN " + sg.session.conference_session_number,
 			isCurrent: sg.session.isCurrent,
 		};
@@ -238,23 +232,20 @@ export async function getServerSideProps(context) {
 	let pgaRole = user.PGA.map((pga) => {
 		return {
 			role: "President of The General Assembly",
-			primary: "",
 			session: "MEDIMUN " + pga.session.conference_session_number,
 			isCurrent: pga.session.isCurrent,
 		};
 	});
 	let schoolDirectorRole = user.SchoolDirector.map((schoolDirector) => {
 		return {
-			role: "School Director",
-			primary: schoolDirector.school.name,
+			role: "School Director of " + schoolDirector.school.name,
 			session: "MEDIMUN " + schoolDirector.session.conference_session_number,
 			isCurrent: schoolDirector.session.isCurrent,
 		};
 	});
 	let directorRole = user.Director.map((director) => {
 		return {
-			role: "Director",
-			primary: director.team.name,
+			role: "Director of " + director.team.name,
 			session: "MEDIMUN " + director.session.conference_session_number,
 			isCurrent: director.session.isCurrent,
 		};
@@ -283,7 +274,6 @@ export async function getServerSideProps(context) {
 		.map((role) => {
 			return {
 				role: role.role,
-				primary: role.primary,
 				session: role.session,
 			};
 		});
@@ -292,7 +282,6 @@ export async function getServerSideProps(context) {
 		.map((role) => {
 			return {
 				role: role.role,
-				primary: role.primary,
 				session: role.session,
 			};
 		});
