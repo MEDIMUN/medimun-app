@@ -286,9 +286,14 @@ export async function getServerSideProps(context) {
 			};
 		});
 
-	//	console.log(util.inspect(roles, { showHidden: false, depth: null, colors: true }));
+	var Minio = require("minio");
 
-	//console.log(currentroles);
+	var minioClient = new Minio.Client({
+		endPoint: "storage-s3.manage.beoz.org",
+		useSSL: false,
+		accessKey: "admin",
+		secretKey: "BPbpMinio2006!",
+	});
 
 	return {
 		props: {
@@ -302,6 +307,8 @@ export async function getServerSideProps(context) {
 			},
 			currentroles,
 			pastroles,
+			profilePictureLink: await minioClient.presignedGetObject("profile-pictures", `${user.userNumber}`, 6 * 60 * 60),
+			coverImageLink: await minioClient.presignedGetObject("cover-images", `${user.userNumber}`, 6 * 60 * 60),
 		},
 	};
 }

@@ -4,6 +4,7 @@ import AppContext from "../../context/Navigation";
 import { IoSettings } from "react-icons/io5";
 import { Menu, MenuButton, MenuList, MenuItem, MenuItemOption, MenuGroup, MenuOptionGroup, MenuDivider } from "@chakra-ui/react";
 import style from "./sidebar.module.css";
+import { useRouter } from "next/router";
 
 import { Spacer, User } from "@nextui-org/react";
 import SidebarUsersButton from "./button/button";
@@ -24,6 +25,7 @@ import {
 import Logo from "../../../common/branding/logo/main";
 
 function Sidebar(props) {
+	const router = useRouter();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
 	function toggleSidebar() {
@@ -62,13 +64,11 @@ function Sidebar(props) {
 				</div>
 				<Spacer y={0.5} />
 
-				{session && session.user.role >= 0 ? (
-					<SidebarUsersButton
-						text={"Home"}
-						href={"/"}
-						icon={<HomeIcon className={style.icon} />}
-					/>
-				) : null}
+				<SidebarUsersButton
+					text={"Home"}
+					href={"/"}
+					icon={<HomeIcon className={style.icon} />}
+				/>
 
 				{session && session.user.role !== 0 ? (
 					<SidebarUsersButton
@@ -136,18 +136,19 @@ function Sidebar(props) {
 			<div className={style.two}>
 				{sidebarOpen && (
 					<div className={style.userOptions}>
-						<Button>Account Setting</Button>
+						<Button onClick={() => router.push("/account")}>Account Setting</Button>
 						<Button>Give Feedback</Button>
 						<Button onClick={logOutHandler}>Sign Out</Button>
 					</div>
 				)}
 
 				<Button
-					_hover="none"
+					_hover={{}}
 					onClick={toggleSidebar}
 					backgroundColor="transparent">
 					<div className={style.optionsmenu}>
 						<User
+							css={{ paddingLeft: "0px" }}
 							src="https://avatars.githubusercontent.com/u/90158764?v=4"
 							name={shorten(username, 18)}
 							description={session ? session.user.roles[0].role : "User"}

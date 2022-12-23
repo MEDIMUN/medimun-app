@@ -1,6 +1,6 @@
 import { Grid, Image, Spacer, User, Text as TextN } from "@nextui-org/react";
 import style from "./user.module.css";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Avatar } from "@chakra-ui/react";
 
 export default function UserPage(props) {
 	const currentroles = props.props.currentroles;
@@ -8,11 +8,16 @@ export default function UserPage(props) {
 
 	return (
 		<div className={style.page}>
-			<div className={style.nameholder}>
+			<div
+				style={{
+					backgroundColor: "#EDF2F7",
+					backgroundImage: `url(${props.props.coverImageLink || "/placeholders/cover-image.jpg"})`,
+				}}
+				className={style.nameholder}>
 				<div className={style.picture}>
-					<Image
+					<Avatar
 						className={style.pfp}
-						src="https://avatars.githubusercontent.com/u/90158764?v=4"
+						src={props.props.profilePictureLink}
 					/>
 					<div className={style.names}>
 						<TextN

@@ -13,8 +13,8 @@
 
 .icon {
   fill: white;
-  height: 30px;
-  width: 40px;
+  max-height: 30px !important;
+  max-width: 30px !important;
 }
 
 .buttonWrap {

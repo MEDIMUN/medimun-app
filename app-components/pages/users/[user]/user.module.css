@@ -1,16 +1,21 @@
 .pfp {
-  width: 200px;
-  height: 200px;
-  border-radius: 25%;
+  width: 200px !important;
+  height: 200px !important;
+  border-radius: 25% !important;
   object-fit: cover;
   background-size: cover;
   background-position: right;
   margin-right: auto;
-  border: 5px solid #fff;
   z-index: 1;
   margin-right: auto;
   margin-left: 0;
-  box-shadow: 0px 0px 10px rgb(0, 0, 0)
+  box-shadow: 0px 0px 10px rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+  padding: 5px;
+}
+
+.pfp>* {
+  border-radius: 25% !important;
 }
 
 .roles,
