@@ -1,8 +1,8 @@
-import Layout from "../../app-components/layout";
-import Pagelayout from "../../components/page/layout/layout";
+import Layout from "../../../app-components/layout";
+import Pagelayout from "../../../components/page/layout/layout";
 import { Grid, Spacer } from "@nextui-org/react";
-import UserPage from "../../app-components/pages/users/[user]/user";
-import prisma from "../../client";
+import UserPage from "../../../app-components/pages/users/[user]/user";
+import prisma from "../../../client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 const util = require("util");

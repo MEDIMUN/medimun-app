@@ -22,9 +22,6 @@ function NotFound() {
 				className={style.background}></img>
 			<div className={style.center}>
 				<div>
-					<h1 className={style.nfText}>404</h1>
-				</div>
-				<div>
 					<h1 className={style.nfSmallText}>
 						Looks Like You<span>&apos;</span>ve reached an empty GA
 					</h1>

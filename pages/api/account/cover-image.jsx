@@ -114,13 +114,4 @@ export default async function (req, res) {
 			});
 		});
 	});
-
-	// Instantiate the minio client with the endpoint
-	// and access keys as shown below.
-
-	// File that needs to be uploaded.
-
-	// Make a bucket called europetrip.
-
-	// Using fPutObject API upload your file to the bucket europetrip.
 }
