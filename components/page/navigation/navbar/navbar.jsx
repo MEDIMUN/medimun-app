@@ -6,7 +6,6 @@ import { Dropdown, Navbar, Button, Link, Text, css, Spacer } from "@nextui-org/r
 import Logo from "../../../common/branding/logo/main";
 
 function Navigation(props) {
-	console.log(props.backgroundColor);
 	let navbackground;
 	let navtext;
 	let navlogo;
@@ -19,7 +18,6 @@ function Navigation(props) {
 		navtext = "var(--navbar-text-color)";
 		navlogo = "white";
 	}
-	console.log("wersdf" + navtext);
 	return (
 		<Fragment>
 			<Navbar

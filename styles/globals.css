@@ -15,6 +15,7 @@
   --section3-photo-background: 0;
   --mediblueopacity: 1;
   --section3-images-translate-y: 0px;
+  --backgroundPictureUrl:
 }
 
 html,
@@ -134,4 +135,11 @@ a {
   input[type="url"] {
     font-size: 16px;
   }
+}
+
+.fdr {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
 }

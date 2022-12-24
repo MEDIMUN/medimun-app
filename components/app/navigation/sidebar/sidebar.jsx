@@ -1,11 +1,14 @@
 import { useState, useContext, useMemo } from "react";
 import { useSession, signOut } from "next-auth/react";
 import AppContext from "../../context/Navigation";
-
+import { IoSettings } from "react-icons/io5";
+import { Menu, MenuButton, MenuList, MenuItem, MenuItemOption, MenuGroup, MenuOptionGroup, MenuDivider } from "@chakra-ui/react";
 import style from "./sidebar.module.css";
+import { useRouter } from "next/router";
 
-import { Button, Spacer, User } from "@nextui-org/react";
+import { Spacer, User } from "@nextui-org/react";
 import SidebarUsersButton from "./button/button";
+import { Button } from "@chakra-ui/react";
 
 import {
 	UserIcon,
@@ -22,33 +25,11 @@ import {
 import Logo from "../../../common/branding/logo/main";
 
 function Sidebar(props) {
-	const AppCtx = useContext(AppContext);
-
-	const memoUserOptions = useMemo(() => {
-		return (
-			<div
-				key={"useroptions"}
-				className={style.userActions}>
-				<Button
-					onPress={logOutHandler}
-					flat
-					size="sm"
-					color="error">
-					Sign Out
-				</Button>
-				<Spacer y={0.5} />
-				<Button
-					css={{ width: "50px" }}
-					size="sm"
-					flat>
-					Account
-				</Button>
-			</div>
-		);
-	}, []);
+	const router = useRouter();
+	const [sidebarOpen, setSidebarOpen] = useState(false);
 
 	function toggleSidebar() {
-		AppCtx.toggleSidebarOptionsVisibility();
+		setSidebarOpen(!sidebarOpen);
 	}
 	const { data: session, status } = useSession();
 
@@ -83,13 +64,11 @@ function Sidebar(props) {
 				</div>
 				<Spacer y={0.5} />
 
-				{session && session.user.role >= 0 ? (
-					<SidebarUsersButton
-						text={"Home"}
-						href={"/"}
-						icon={<HomeIcon className={style.icon} />}
-					/>
-				) : null}
+				<SidebarUsersButton
+					text={"Home"}
+					href={"/"}
+					icon={<HomeIcon className={style.icon} />}
+				/>
 
 				{session && session.user.role !== 0 ? (
 					<SidebarUsersButton
@@ -155,13 +134,34 @@ function Sidebar(props) {
 				/>
 			</div>
 			<div className={style.two}>
-				{AppCtx.sidebarOptionsVisibility && memoUserOptions}
-				<User
+				{sidebarOpen && (
+					<div className={style.userOptions}>
+						<Button onClick={() => router.push("/account")}>Account Setting</Button>
+						<Button>Give Feedback</Button>
+						<Button onClick={logOutHandler}>Sign Out</Button>
+					</div>
+				)}
+
+				<Button
+					_hover={{}}
 					onClick={toggleSidebar}
-					src="https://avatars.githubusercontent.com/u/90158764?v=4"
-					name={shorten(username, 18)}
-					description={session ? session.user.role : "User"}
-				/>
+					backgroundColor="transparent">
+					<div className={style.optionsmenu}>
+						<User
+							css={{ paddingLeft: "0px" }}
+							src="https://avatars.githubusercontent.com/u/90158764?v=4"
+							name={shorten(username, 18)}
+							description={session ? session.user.roles[0].role : "User"}
+						/>
+						<div className={style.settingsIconHolder}>
+							<IoSettings
+								width="40px"
+								height="40px"
+								className={style.settingsIcon}
+							/>
+						</div>
+					</div>
+				</Button>
 			</div>
 		</div>
 	);

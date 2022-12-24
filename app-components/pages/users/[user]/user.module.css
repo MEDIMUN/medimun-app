@@ -1,23 +1,83 @@
 .pfp {
-  width: 200px;
-  height: 200px;
-  border-radius: 25%;
+  width: 200px !important;
+  height: 200px !important;
+  border-radius: 25% !important;
   object-fit: cover;
-  background-image: url("/pages/users/user/blue.jpg");
   background-size: cover;
   background-position: right;
   margin-right: auto;
-  border: 5px solid #fff;
   z-index: 1;
   margin-right: auto;
   margin-left: 0;
+  box-shadow: 0px 0px 10px rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+  padding: 5px;
+}
+
+.pfp>* {
+  border-radius: 25% !important;
+}
+
+.roles,
+.pastRoles {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  padding: 10px;
+  justify-content: center;
+  border-radius: .7rem;
+  margin-top: 5px;
+  background-color: #d2ebf9;
+}
+
+.pastRoles {
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+}
+
+.rolename {
+  color: #2C5282;
+  width: fit-content;
+  padding-left: 5px;
+  border-radius: 25px;
+  font-weight: 350;
+  font-size: 1.1rem;
+}
+
+.roleSession {
+  padding-left: 15px;
+  margin-left: auto;
+  padding-right: 15px;
+  background-color: #2C5282;
+  color: aliceblue;
+  border-radius: 25px;
+  font-weight: 350;
+  text-align: center;
+  height: 100%;
+}
+
+.pastRoleSession {
+  padding-left: 15px;
+  margin-left: auto;
+  padding-right: 15px;
+  background-color: #2C5282;
+  color: aliceblue;
+  border-radius: 25px;
+  font-weight: 350;
+  text-align: center;
+  height: 100%;
+  width: 128px;
+}
+
+.picture {
+  min-width: fit-content;
+  max-width: fit-content;
 }
 
 .pfpholder {
   width: fit-content;
 }
-
-
 
 .nameandusername {
   display: flex;
@@ -29,7 +89,7 @@
   flex-direction: column;
   height: 100%;
   width: auto;
-  padding: 10px;
+  overflow: auto;
 }
 
 .page>div:nth-child(1) {
@@ -37,12 +97,35 @@
   width: calc(100% + 0px);
   display: flex;
   flex-direction: column;
-  border-radius: 1rem;
-  padding: 20px;
+  border-radius: 0 0 1rem 1rem;
+  margin-top: -10px;
+  padding: 15px;
+  padding-left: 20px;
   text-align: left;
   align-items: left;
   background-size: cover;
   background-position: center;
   background-image: url("https://medimun.net/wp-content/uploads/2022/09/28061302_2057930257557045_5314440321590932207_o-1.jpg");
   padding-top: 128px;
+}
+
+.nameholder>div {
+  display: flex;
+  flex-direction: column;
+  align-items: bottom;
+  align-items: bottom;
+}
+
+.names {
+  margin-top: 5px;
+}
+
+.rolestab {
+  bottom: 0;
+  min-height: fit-content;
+
+}
+
+.bioSection {
+  min-height: fit-content;
 }

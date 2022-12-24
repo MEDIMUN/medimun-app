@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 
 import { Table, User } from "@nextui-org/react";
 
-import Layout from "../../components/app/layout/layout";
+import Layout from "../../app-components/layout";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 function UsersPage(props) {

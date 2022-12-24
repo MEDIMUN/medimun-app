@@ -1,4 +1,4 @@
-import Layout from "../../components/app/layout/layout";
+import Layout from "../../app-components/layout";
 import { getSession, useSession } from "next-auth/react";
 import useSWR from "swr";
 

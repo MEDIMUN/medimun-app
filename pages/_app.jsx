@@ -50,17 +50,15 @@ function MyApp({ Component, pageProps }) {
 		<AppContextProvider>
 			<SessionProvider session={pageProps.session}>
 				<NextUIProvider theme={theme}>
-					{/* //					<ChakraProvider>
-					 */}{" "}
-					<Head>
-						<meta
-							name="viewport"
-							content="width=device-width, initial-scale=1.0"
-						/>
-					</Head>
-					<Component {...pageProps} />
-					{/* //					</ChakraProvider>
-					 */}{" "}
+					<ChakraProvider>
+						<Head>
+							<meta
+								name="viewport"
+								content="width=device-width, initial-scale=1.0"
+							/>
+						</Head>
+						<Component {...pageProps} />
+					</ChakraProvider>
 				</NextUIProvider>
 			</SessionProvider>
 		</AppContextProvider>

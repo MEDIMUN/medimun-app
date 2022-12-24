@@ -4,11 +4,10 @@ import { getSession, useSession } from "next-auth/react";
 
 import style from "./layout.module.css";
 
-import DashboardNavbar from "../navigation/navbar/navbar";
-import Sidebar from "../navigation/sidebar/sidebar";
-import AppContext from "../context/Navigation";
-import Landscape from "../../../common-components/popups/landscape/index";
-import Logo from "../../common/branding/logo/main";
+import DashboardNavbar from "../components/app/navigation/navbar/navbar";
+import Sidebar from "../components/app/navigation/sidebar/sidebar";
+import AppContext from "../components/app/context/Navigation";
+import Landscape from "../common-components/popups/landscape/index";
 
 export default function Layout(props) {
 	const { data: session, status } = useSession();

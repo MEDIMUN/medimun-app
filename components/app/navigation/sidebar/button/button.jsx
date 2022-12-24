@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Text } from "@chakra-ui/react";
 
 import style from "./button.module.css";
 
@@ -25,7 +26,7 @@ export default function SidebarUsersButton(props) {
 				<Link href={props.href}>
 					<div className={style.sidebarSelectedItem}>
 						<div className={style.iconWrapper}>{props.icon}</div>
-						<text className={style.text}>{props.text}</text>
+						<Text className={style.text}>{props.text}</Text>
 					</div>
 				</Link>
 			</div>
@@ -37,7 +38,7 @@ export default function SidebarUsersButton(props) {
 			<Link href={props.href}>
 				<div className={style.sidebarItem}>
 					<div className={style.iconWrapper}>{props.icon}</div>
-					<text className={style.text}>{props.text}</text>
+					<Text className={style.text}>{props.text}</Text>
 				</div>
 			</Link>
 		</div>
