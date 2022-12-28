@@ -17,8 +17,8 @@ function NotFound() {
 			<div className={style.center}>
 				<div>
 					<h1 className={style.nfSmallText}>
-						Looks like you<span>&apos;</span>ve reached an empty GA.
-						<sup>404</sup>
+						Your reso was so powerful that it broke the server.
+						<sup>500</sup>
 					</h1>
 				</div>
 			</div>

@@ -8,103 +8,94 @@ generator client {
 }
 
 model PendingUser {
-  id                      String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
   //
-  email                   String   @unique
+  email                 String   @unique
   //
-  official_name           String
-  official_surname        String
+  officialName          String
+  officialSurname       String
   //
-  display_name            String?
-  display_surname         String?
+  displayName           String?
+  displaySurname        String?
   //
-  password                String
+  password              String
   //
-  date_of_birth           String
+  dateOfBirth           String
   //
-  time_created            DateTime @default(now())
-  email_verification_code String
+  timeCreated           DateTime @default(now())
+  emailVerificationCode String
 }
 
 model User {
-  id                           String           @id @default(auto()) @map("_id") @db.ObjectId
+  id                            String                                     @id @default(auto()) @map("_id") @db.ObjectId
   //
-  show_phone_number            Boolean          @default(false)
-  allow_messages_from_everyone Boolean          @default(false) @map("amfe")
-  created_at                   DateTime         @default(now())
-  password                     String           @map("pw")
-  userNumber                   String           @unique
-  username                     String?          @unique
+  showPhoneNumber               Boolean                                    @default(false)
+  allowMessagesFromEveryone     Boolean                                    @default(false) @map("amfe")
+  createdAt                     DateTime                                   @default(now())
+  password                      String                                     @map("pw")
+  userNumber                    String                                     @unique
+  username                      String?                                    @unique
   //
-  profileVisibility            Int              @default(5)
-  OrganiserProfileVisibility   Int              @default(2)
+  profileVisibility             Int                                        @default(5)
+  organiserProfileVisibility    Int                                        @default(2)
   //
-  email                        String           @unique
-  phoneNumber                  String?
+  email                         String                                     @unique
+  phoneNumber                   String                                     @default("")
   //
-  bio                          String?
+  bio                           String                                     @default("")
   //
-  official_name                String
-  official_surname             String
+  officialName                  String
+  officialSurname               String
   //
-  display_name                 String?
-  display_surname              String?
+  displayName                   String?
+  displaySurname                String?
   //
-  nationality                  String?
-  date_of_birth                DateTime         @map("dob")
-  pronoun1                     String?          @default("")
-  pronoun2                     String?          @default("")
+  nationality                   String?
+  dateOfBirth                   DateTime                                   @map("dob")
+  pronoun1                      String?                                    @default("")
+  pronoun2                      String?                                    @default("")
   //
-  TeamMember                   Member[]
-  Delegate                     Delegate[]
-  SchoolMember                 SchoolStudent[]
-  SchoolDirector               SchoolDirector[]
-  CommitteeChair               Chair[]
-  TeamManager                  Manager[]
-  AssignedBy                   Task[]           @relation("assigned_by")
-  AssignedTo                   Task[]           @relation("assigned_to")
-  RollCall                     RollCall[]
-  GlobalAdmin                  GlobalAdmin[]
-  Admin                        Admin[]
-  SeniorDirector               SeniorDirector[]
-  Director                     Director[]
-  SG                           SG[]
-  PGA                          PGA[]
-  DSG                          DSG[]
+  member                        Member[]
+  delegate                      Delegate[]
+  schoolStudent                 SchoolStudent[]
+  schoolDirector                SchoolDirector[]
+  chair                         Chair[]
+  manager                       Manager[]
+  AssignedBy                    Task[]                                     @relation("assigned_by")
+  AssignedTo                    Task[]                                     @relation("assigned_to")
+  rollCall                      RollCall[]
+  globalAdmin                   GlobalAdmin[]
+  seniorDirecor                 SeniorDirector[]
+  secretaryGeneral              SecretariatSecretaryGeneral[]
+  presidentOfTheGeneralAssembly SecretariatPresidentOfTheGeneralAssembly[]
+  deputySecretaryGeneral        SecretariatDeputySecretaryGeneral[]
 }
 
-model ConferenceSession {
-  id                        String             @id @default(auto()) @map("_id") @db.ObjectId
+model Session {
+  id                            String                                     @id @default(auto()) @map("_id") @db.ObjectId
   //
-  isCurrent                 Boolean            @default(false)
-  conference_session_number Int                @unique
-  theme                     String?
-  explanation               String?
+  isCurrent                     Boolean                                    @default(false)
+  number                        Int                                        @unique
   //
-  Committee                 Committee[]
-  Delegate                  Delegate[]
-  Chair                     Chair[]
-  TeamMember                Member[]
-  TeamManager               Manager[]
-  SchoolDirector            SchoolDirector[]
-  SessionWorkshopDay        WorkshopDay[]
-  ConferenceDay             ConferenceDay[]
-  AnnouncementFor           AnnouncementInfo[]
-  Task                      Task[]
-  SG                        SG[]
-  PGA                       PGA[]
-  DSG                       DSG[]
-  Director                  Director[]
+  theme                         String                                     @default("")
+  explanation                   String                                     @default("")
+  //
+  committee                     Committee[]
+  delegate                      Delegate[]
+  chair                         Chair[]
+  member                        Member[]
+  manager                       Manager[]
+  schoolDirector                SchoolDirector[]
+  workshopDay                   WorkshopDay[]
+  conferenceDay                 ConferenceDay[]
+  task                          Task[]
+  secretaryGeneral              SecretariatSecretaryGeneral[]
+  presidentOfTheGeneralAssembly SecretariatPresidentOfTheGeneralAssembly[]
+  deputySecretaryGeneral        SecretariatDeputySecretaryGeneral[]
+  team                          Team[]
 }
 
 model GlobalAdmin {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  //
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
-}
-
-model Admin {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   //
   user   User   @relation(fields: [userId], references: [id])
@@ -118,70 +109,51 @@ model SeniorDirector {
   userId String @db.ObjectId
 }
 
-model Director {
-  id        String            @id @default(auto()) @map("_id") @db.ObjectId
-  //
-  user      User              @relation(fields: [userId], references: [id])
-  userId    String            @db.ObjectId
-  //
-  team      Team?             @relation(fields: [teamId], references: [id])
-  teamId    String?           @db.ObjectId
-  //
-  session   ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId String            @db.ObjectId
+model SecretariatSecretaryGeneral {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @db.ObjectId
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId String  @db.ObjectId
 }
 
-model SG {
-  id        String            @id @default(auto()) @map("_id") @db.ObjectId
-  //
-  user      User              @relation(fields: [userId], references: [id])
-  userId    String            @db.ObjectId
-  //
-  session   ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId String            @db.ObjectId
+model SecretariatPresidentOfTheGeneralAssembly {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @db.ObjectId
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId String  @db.ObjectId
 }
 
-model PGA {
-  id        String            @id @default(auto()) @map("_id") @db.ObjectId
-  //
-  user      User              @relation(fields: [userId], references: [id])
-  userId    String            @db.ObjectId
-  //
-  session   ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId String            @db.ObjectId
-}
-
-model DSG {
-  id        String            @id @default(auto()) @map("_id") @db.ObjectId
-  //
-  user      User              @relation(fields: [userId], references: [id])
-  userId    String            @db.ObjectId
-  //
-  session   ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId String            @db.ObjectId
+model SecretariatDeputySecretaryGeneral {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @db.ObjectId
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId String  @db.ObjectId
 }
 
 model ConferenceDay {
-  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
   //
   name        String?
   //
   startDate   DateTime
   endDate     DateTime
   //
-  description String
+  description String     @default("")
   //
-  location    Location?         @relation(fields: [locationId], references: [id])
-  locationId  String?           @db.ObjectId
+  location    Location?  @relation(fields: [locationId], references: [id])
+  locationId  String?    @db.ObjectId
   //
-  session     ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId   String            @db.ObjectId
+  session     Session    @relation(fields: [sessionId], references: [id])
+  sessionId   String     @db.ObjectId
   //
-  RollCall    RollCall[]
+  rollCall    RollCall[]
 }
 
 model WorkshopDay {
-  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
   //
   name        String?
   //
@@ -190,13 +162,13 @@ model WorkshopDay {
   //
   description String
   //
-  location    Location?         @relation(fields: [locationId], references: [id])
-  locationId  String?           @db.ObjectId
+  location    Location?  @relation(fields: [locationId], references: [id])
+  locationId  String?    @db.ObjectId
   //
-  session     ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId   String            @db.ObjectId
+  session     Session    @relation(fields: [sessionId], references: [id])
+  sessionId   String     @db.ObjectId
   //
-  RollCall    RollCall[]
+  rollCall    RollCall[]
 }
 
 model RollCall {
@@ -215,122 +187,121 @@ model RollCall {
 }
 
 model School {
-  id              String             @id @default(auto()) @map("_id") @db.ObjectId
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
   //
-  name            String             @unique
-  slug            String?            @unique
-  join_year       Int?
+  name           String           @unique
+  slug           String?          @unique
+  joinYear       Int?
   //
-  Location        Location           @relation(fields: [locationId], references: [id])
-  locationId      String             @db.ObjectId
+  Location       Location?        @relation(fields: [locationId], references: [id])
+  locationId     String?          @db.ObjectId
   //
-  SchoolMember    SchoolStudent[]
-  SchoolDirector  SchoolDirector[]
-  AnnouncementFor AnnouncementInfo[]
+  SchoolMember   SchoolStudent[]
+  SchoolDirector SchoolDirector[]
 }
 
 model SchoolStudent {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
   //
-  user      User   @relation(fields: [user_id], references: [id])
-  user_id   String @db.ObjectId
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String @db.ObjectId
   //
-  school    School @relation(fields: [school_id], references: [id])
-  school_id String @db.ObjectId
+  school   School @relation(fields: [schoolId], references: [id])
+  schoolId String @db.ObjectId
 }
 
 model SchoolDirector {
-  id         String            @id @default(auto()) @map("_id") @db.ObjectId
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
   //
-  user       User              @relation(fields: [user_id], references: [id])
-  user_id    String            @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @db.ObjectId
   //
-  school     School            @relation(fields: [school_id], references: [id])
-  school_id  String            @db.ObjectId
+  school    School  @relation(fields: [schoolId], references: [id])
+  schoolId  String  @db.ObjectId
   //
-  session    ConferenceSession @relation(fields: [session_id], references: [id])
-  session_id String            @db.ObjectId
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId String  @db.ObjectId
 }
 
 model Committee {
-  id              String             @id @default(auto()) @map("_id") @db.ObjectId
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
   //
-  name            String             @unique
-  description     String?
+  name        String
+  description String     @default("")
   //
-  session         ConferenceSession  @relation(fields: [session_id], references: [id])
-  session_id      String             @db.ObjectId
+  session     Session    @relation(fields: [sessionId], references: [id])
+  sessionId   String     @db.ObjectId
   //
-  delegate        Delegate[]
-  chair           Chair[]
-  AnnouncementFor AnnouncementInfo[]
+  delegate    Delegate[]
+  chair       Chair[]
 }
 
 model Delegate {
-  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   country     String?
   //
-  user        User              @relation(fields: [userId], references: [id])
-  userId      String            @db.ObjectId
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @db.ObjectId
   //
-  committee   Committee         @relation(fields: [committeeId], references: [id])
-  committeeId String            @db.ObjectId
+  committee   Committee @relation(fields: [committeeId], references: [id])
+  committeeId String    @db.ObjectId
   //
-  session     ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId   String            @db.ObjectId
+  session     Session   @relation(fields: [sessionId], references: [id])
+  sessionId   String    @db.ObjectId
 }
 
 model Chair {
-  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   //
-  user        User              @relation(fields: [userId], references: [id])
-  userId      String            @db.ObjectId
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @db.ObjectId
   //
-  committee   Committee         @relation(fields: [committeeId], references: [id])
-  committeeId String            @db.ObjectId
+  committee   Committee @relation(fields: [committeeId], references: [id])
+  committeeId String    @db.ObjectId
   //
-  session     ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId   String            @db.ObjectId
+  session     Session   @relation(fields: [sessionId], references: [id])
+  sessionId   String    @db.ObjectId
 }
 
 model Team {
-  id              String             @id @default(auto()) @map("_id") @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   //
-  name            String             @unique
-  description     String?
+  name        String
+  description String    @default("")
   //
-  team_member     Member[]
-  TeamManager     Manager[]
-  AnnouncementFor AnnouncementInfo[]
-  Director        Director[]
+  session     Session   @relation(fields: [sessionId], references: [id])
+  sessionId   String    @db.ObjectId
+  //
+  member      Member[]
+  manager     Manager[]
 }
 
 model Member {
-  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
   //
-  job       String            @default("")
+  job       String  @default("")
   //
-  user      User              @relation(fields: [userId], references: [id])
-  userId    String            @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @db.ObjectId
   //
-  team      Team              @relation(fields: [teamId], references: [id])
-  teamId    String            @db.ObjectId
+  team      Team    @relation(fields: [teamId], references: [id])
+  teamId    String  @db.ObjectId
   //
-  session   ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId String            @db.ObjectId
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId String  @db.ObjectId
 }
 
 model Manager {
-  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
   //
-  user      User              @relation(fields: [userId], references: [id])
-  userId    String            @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @db.ObjectId
   //
-  team      Team              @relation(fields: [teamId], references: [id])
-  teamId    String            @db.ObjectId
+  team      Team    @relation(fields: [teamId], references: [id])
+  teamId    String  @db.ObjectId
   //
-  session   ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId String            @db.ObjectId
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId String  @db.ObjectId
 }
 
 model Location {
@@ -343,14 +314,14 @@ model Location {
   street               String?
   city                 String?
   state                String?
-  zip_code             String?
+  zipCode              String?
   country              String?
   //
   phone                String?
   email                String?
   website              String?
   //
-  map_url              String?
+  mapUrl               String?
   //
   School               School[]
   SessionConferenceDay ConferenceDay[]
@@ -358,70 +329,28 @@ model Location {
 }
 
 model Task {
-  id             String            @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   //
-  name           String
-  description    String?
-  is_completed   Boolean           @default(false)
+  name          String
+  description   String    @default("")
+  isCompleted   Boolean   @default(false)
   //
-  assignedDate   DateTime          @default(now())
-  dueDate        DateTime?
-  completedDate  DateTime?
+  assignedDate  DateTime  @default(now())
+  dueDate       DateTime?
+  completedDate DateTime?
   //
-  assigned_by    User              @relation("assigned_by", fields: [assigned_by_Id], references: [id])
-  assigned_by_Id String            @db.ObjectId
+  assignedBy    User      @relation("assigned_by", fields: [assignedById], references: [id])
+  assignedById  String    @db.ObjectId
   //
-  assigned_to    User?             @relation("assigned_to", fields: [assigned_to_Id], references: [id])
-  assigned_to_Id String?           @db.ObjectId
+  assignedTo    User?     @relation("assigned_to", fields: [assignedToId], references: [id])
+  assignedToId  String?   @db.ObjectId
   //
-  session        ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId      String            @db.ObjectId
-}
-
-model Announcement {
-  id              String             @id @default(auto()) @map("_id") @db.ObjectId
-  date            DateTime           @default(now())
-  //
-  title           String
-  description     String?
-  content         String
-  AnnouncementFor AnnouncementInfo[]
-}
-
-model AnnouncementInfo {
-  id                   String            @id @default(auto()) @map("_id") @db.ObjectId
-  //
-  announcement         Announcement      @relation(fields: [announcementId], references: [id])
-  announcementId       String            @db.ObjectId
-  session              ConferenceSession @relation(fields: [sessionId], references: [id])
-  sessionId            String            @db.ObjectId
-  //
-  isPinned             Boolean           @default(false)
-  isEdited             Boolean           @default(false)
-  //
-  school               School?           @relation(fields: [schoolId], references: [id])
-  schoolId             String?           @db.ObjectId
-  committee            Committee?        @relation(fields: [committeeId], references: [id])
-  committeeId          String?           @db.ObjectId
-  team                 Team?             @relation(fields: [teamId], references: [id])
-  teamId               String?           @db.ObjectId
-  //
-  isForDelegates       Boolean           @default(false)
-  isForChairs          Boolean           @default(false)
-  isForMembers         Boolean           @default(false)
-  isForManagers        Boolean           @default(false)
-  isForSchoolDirectors Boolean           @default(false)
-  isForSchoolMembers   Boolean           @default(false)
-  isForAlumni          Boolean           @default(false)
-  isForUsers           Boolean           @default(false)
-  isForGuests          Boolean           @default(false)
-  isForAdmins          Boolean           @default(false)
-  isForEveryone        Boolean           @default(false)
-  isForEnrolled        Boolean           @default(false)
+  session       Session   @relation(fields: [sessionId], references: [id])
+  sessionId     String    @db.ObjectId
 }
 
 model TermsAndConditions {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  text String
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  title   String
+  content String
 }

@@ -17,3 +17,7 @@
   position: -webkit-fixed;
   z-index: 5;
 }
+
+.page {
+  min-height: 100vh;
+}

@@ -1,12 +1,13 @@
 import { useState, useRef } from "react";
-import Router from "next/router";
-import prisma from "../../client";
+import { useRouter } from "next/router";
+import prisma from "../../prisma/client";
 
 import style from "../../styles/sign-up.module.css";
 
 import { Button, Loading, Spacer, Input } from "@nextui-org/react";
 import Pagelayout from "../../components/page/layout/layout";
 import SignUpModal from "../../components/page/pages/sign-up/sign-up-modal";
+import { useToast } from "@chakra-ui/react";
 
 /** @param {import('next').InferGetStaticPropsType<typeof getStaticProps> } props */
 export default function SignUpPage(props) {
@@ -45,9 +46,11 @@ export default function SignUpPage(props) {
 	const [buttonText, setButtonText] = useState("Agree & Proceed");
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [isButtonVisible, setIsButtonVisible] = useState(true);
+	const router = useRouter();
+	const toast = useToast();
 
 	async function handleProceed() {
-		const request = await fetch("/api/account/create", {
+		const response = await fetch("/api/account/create", {
 			method: "POST",
 			body: JSON.stringify({
 				official_name: official_name_state,
@@ -59,22 +62,39 @@ export default function SignUpPage(props) {
 				password: password_ref.current.value,
 				confirm_password: confirm_password_ref.current.value,
 			}),
-		})
-			.then((res) => {
-				if (res.status !== 201) {
-					throw new Error("Something went wrong!");
-				}
-				return res.json();
-			})
-			.then((data) => {
-				console.log(data);
-				if (!data) {
-					return;
-				}
-				setCurrentPage(8);
-				setButtonText("Invisible");
-				set_res_email(data.email);
+		});
+
+		const res = await response.json();
+		if (response.status === 201) {
+			setCurrentPage(8);
+			setButtonText("Invisible");
+			set_res_email(res.email);
+			return;
+		}
+
+		if (!response || response.status !== 201) {
+			console.log("Error");
+			router.reload();
+			toast({
+				title: "Error",
+				description: "An error has occured. Please try again.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
 			});
+			return;
+		}
+		await new Promise((r) => setTimeout(r, 15000));
+		router.push("/");
+		toast({
+			title: "Request Timed Out",
+			description: "Please check your connection and try again.",
+			status: "error",
+			duration: 2000,
+			isClosable: true,
+		});
+		await new Promise((r) => setTimeout(r, 2000));
+		router.reload();
 	}
 
 	let pageName = [
@@ -270,7 +290,7 @@ export default function SignUpPage(props) {
 	}
 
 	return (
-		<Pagelayout>
+		<Pagelayout backgroundColor="white">
 			<div className={style.backgroundImage}>
 				<div className={style.container}>
 					<SignUpModal title={pageName[currentPage - 1]}>
@@ -279,13 +299,11 @@ export default function SignUpPage(props) {
 								<ul className={style.scrollBox}>
 									{props.terms.map((term) => {
 										return (
-											<li
-												className={style.tcitem}
-												key={term.id}>
+											<li className={style.tcitem} key={term.id}>
 												<p>
-													<strong>{term.name} </strong>
+													<strong>{term.title} </strong>
 													<hr className={style.tcdivider} />
-													{term.text} <Spacer y={2} />
+													{term.content} <Spacer y={2} />
 												</p>
 											</li>
 										);
@@ -344,8 +362,12 @@ O */}
 								<div className={style.title}>
 									{!check1 ? <h5 className={style.validation}>Email is required</h5> : null}
 									{!check2 && email_ref.current ? <h5 className={style.validation}>Invalid email</h5> : null}
-									{!check3 && email_ref.current ? <h5 className={style.validation}>Confirm email field is required</h5> : null}
-									{!check4 && confirm_email_ref.current ? <h5 className={style.validation}>Emails do not match</h5> : null}
+									{!check3 && email_ref.current ? (
+										<h5 className={style.validation}>Confirm email field is required</h5>
+									) : null}
+									{!check4 && confirm_email_ref.current ? (
+										<h5 className={style.validation}>Emails do not match</h5>
+									) : null}
 								</div>
 							</div>
 						) : null}
@@ -365,8 +387,8 @@ O */}
 									<h3>Official Name</h3>
 									<h6>The official name must match the name on your passport</h6>
 									<h6>
-										The official name will only be used on official documents. You can optionally declare a display name on the next stage to be used on your
-										nametag
+										The official name will only be used on official documents. You can optionally declare a display name
+										on the next stage to be used on your nametag
 									</h6>
 									<h6>You can change your official name later in the app</h6>
 								</div>
@@ -521,7 +543,9 @@ O */}
 									{!check3 ? <h5 className={style.validation}>Password must have capital letters</h5> : null}
 									{!check4 ? <h5 className={style.validation}>Password must have numbers</h5> : null}
 									{!check5 ? <h5 className={style.validation}>Password must be at least 8 characters long</h5> : null}
-									{!check6 ? <h5 className={style.validation}>Passwords must not be longer than 64 characters</h5> : null}
+									{!check6 ? (
+										<h5 className={style.validation}>Passwords must not be longer than 64 characters</h5>
+									) : null}
 									{!check7 ? <h5 className={style.validation}>Two passwords must match</h5> : null}
 								</div>
 							</div>
@@ -544,8 +568,8 @@ O */}
 								<div>
 									<div className={style.PAVmessage}>
 										<h6>
-											If you don<span>&apos;</span>t have access to your email please ask a member of staff to verify your account. You may be asked to proove
-											your identity.
+											If you don<span>&apos;</span>t have access to your email please ask a member of staff to verify
+											your account. You may be asked to proove your identity.
 										</h6>
 									</div>
 								</div>
@@ -573,12 +597,7 @@ O */}
 					</SignUpModal>
 					{buttonText !== "Invisible" ? (
 						<div className={style.buttons}>
-							<Button
-								color="primary"
-								disabled={isButtonDisabled}
-								onPress={nextPage}
-								bordered
-								auto>
+							<Button color="primary" disabled={isButtonDisabled} onPress={nextPage} bordered auto>
 								{buttonText === "Loading" ? <Loading /> : buttonText}
 							</Button>
 						</div>

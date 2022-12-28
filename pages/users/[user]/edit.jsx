@@ -1,17 +1,47 @@
 import Layout from "../../../app-components/layout";
-import { Avatar, Input, Text, Switch, Stack, Radio, RadioGroup } from "@chakra-ui/react";
+import { Avatar, Input, Text, Switch, Stack, Radio, RadioGroup, Select } from "@chakra-ui/react";
 import style from "../../../styles/account.module.css";
-import prisma from "../../../client";
+import prisma from "../../../prisma/client";
 import { getSession } from "next-auth/react";
-import { Image, Spacer } from "@nextui-org/react";
-import { BeatLoader, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Lorem, ModalFooter } from "@chakra-ui/react";
-import { useState, useRef } from "react";
+import { Divider, Image, Spacer } from "@nextui-org/react";
+import {
+	BeatLoader,
+	Button,
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalHeader,
+	ModalCloseButton,
+	ModalBody,
+	ModalFooter,
+} from "@chakra-ui/react";
+import { useState, useRef, Fragment } from "react";
 import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import axios, { AxiosRequestConfig } from "axios";
+import { currentUserRoles, pastUserRoles, findUserDetails } from "../../../lib/user-operations/user-roles";
+
+function Title(props) {
+	return (
+		<Fragment>
+			<Spacer y={props.space} />
+			<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
+				<strong>{props.title}</strong>
+			</Text>
+			<Text marginLeft="14px">{props.description}</Text>
+		</Fragment>
+	);
+}
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function AccountPage(props) {
+	/* 	console.log(props.canEditInfo);
+	console.log(props.availableRoleAssignments);
+	console.log(props.availableCommitteeAssignments);
+	console.log(props.availableTeamAssignments);
+	console.log(props.availableSessionAssignments); */
+	console.log(props.availableSessionAssignments);
+
 	const official_name_ref = useRef(props.official_name);
 	const official_surname_ref = useRef(props.official_surname);
 	const [display_names_toggle, set_display_names_toggle] = useState(props.useDisplayNames);
@@ -21,18 +51,17 @@ export default function AccountPage(props) {
 	const pronoun_1_ref = useRef();
 	const pronoun_2_ref = useRef();
 	const date_of_birth_ref = useRef();
-	const profile_picture_ref = useRef();
-	const cover_image_ref = useRef();
-	const [profile_visibility, set_profile_visibility] = useState();
-	const [organiser_profile_visibility, set_organiser_profile_visibility] = useState();
-	const [show_phone_number, set_show_phone_number] = useState(false);
-	const [allow_public_messaging, set_allow_public_messaging] = useState(false);
 	const [profile_picture, set_profile_picture] = useState(false);
 	const [cover_image, set_cover_image] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const toast = useToast();
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
+	const selected_session_ref = useRef();
+	const selected_committee_ref = useRef();
+	const selected_role_ref = useRef();
+	const [newAvailableTeamAssignments, setNewAvailableTeamAssignments] = useState([]);
+	const [schoolTeamCommittee, setSchoolTeamCommittee] = useState();
 
 	let official_name;
 	let official_surname;
@@ -42,10 +71,51 @@ export default function AccountPage(props) {
 	let pronoun_1;
 	let pronoun_2;
 	let date_of_birth;
-	let profile_visibility_value;
-	let organiser_profile_visibility_value;
-	let show_phone_number_value;
-	let allow_public_messaging_value;
+
+	async function removeRole(roleName, roleId) {
+		setLoading(true);
+		const response = await fetch("/api/roles/remove", {
+			method: "DELETE",
+			body: JSON.stringify({
+				roleName: roleName,
+				roleId: roleId,
+				userId: props.userId,
+			}),
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		const res = await response.json();
+		if (res.status === 200) {
+			toast({
+				id: "success",
+				title: res.title,
+				description: res.description,
+				status: res.status,
+				duration: res.duration,
+				isClosable: res.isClosable,
+				position: "top",
+			});
+			router.push(router.asPath);
+			setLoading(false);
+			return;
+		}
+		if (res.status !== 200) {
+			toast({
+				id: "error",
+				title: res.title,
+				description: res.description,
+				status: res.status,
+				duration: res.duration,
+				isClosable: res.isClosable,
+				position: "top",
+			});
+			router.push(router.asPath);
+			setLoading(false);
+			return;
+		}
+		router.push(router.asPath);
+	}
 
 	async function removeProfilePicture() {
 		let res;
@@ -116,120 +186,12 @@ export default function AccountPage(props) {
 		set_cover_image(false);
 	}
 
-	async function uploadProfilePicture() {
-		set_profile_picture(true);
-		if (!profile_picture_ref.current.files[0]) {
-			set_profile_picture(false);
-			return;
-		}
-		let formData = new FormData();
-		formData.append("file", profile_picture_ref.current.files[0]);
-		try {
-			const response = await axios.post("/api/account/profile-picture", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			if (!toast.isActive("error")) {
-				toast({
-					id: "error",
-					title: response.data.title,
-					description: response.data.description,
-					status: response.data.status,
-					duration: response.data.duration,
-					isClosable: response.data.isClosable,
-					position: "top",
-				});
-			}
-			console.log(response);
-		} catch (error) {
-			if (error.response) {
-				if (!toast.isActive("error")) {
-					toast({
-						id: "error",
-						title: error.response.data.title,
-						description: error.response.data.description,
-						status: error.response.data.status,
-						duration: error.response.data.duration,
-						isClosable: error.response.data.isClosable,
-						position: "top",
-					});
-				}
-				// get response with a status code not in range 2xx
-				console.log(error.response.data);
-				console.log(error.response.status);
-				console.log(error.response.headers);
-			} else if (error.request) {
-				// no response
-				console.log(error.request);
-			} else {
-				// Something wrong in setting up the request
-				console.log("Error", error.message);
-			}
-			console.log(error.config);
-		}
-
-		set_profile_picture(false);
-		router.replace(router.asPath);
-	}
-
-	async function uploadCoverImage() {
-		set_cover_image(true);
-
-		if (!cover_image_ref.current.files[0]) {
-			set_cover_image(false);
-			return;
-		}
-
-		let formData = new FormData();
-		formData.append("file", cover_image_ref.current.files[0]);
-		try {
-			const response = await axios.post("/api/account/cover-image", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			if (!toast.isActive("error")) {
-				toast({
-					id: "error",
-					title: response.data.title,
-					description: response.data.description,
-					status: response.data.status,
-					duration: response.data.duration,
-					isClosable: response.data.isClosable,
-					position: "top",
-				});
-			}
-			console.log(response);
-		} catch (error) {
-			if (error.response) {
-				if (!toast.isActive("error")) {
-					toast({
-						id: "error",
-						title: error.response.data.title,
-						description: error.response.data.description,
-						status: error.response.data.status,
-						duration: error.response.data.duration,
-						isClosable: error.response.data.isClosable,
-						position: "top",
-					});
-				}
-			} else if (error.request) {
-			} else {
-				console.log("Error", error.message);
-			}
-			console.log(error.config);
-		}
-		set_cover_image(false);
-		router.replace(router.asPath);
-	}
-
 	async function submitHandler() {
-		console.log(display_names_toggle);
 		setLoading(true);
 		official_name = official_name_ref.current.value;
 		official_surname = official_surname_ref.current.value;
 		display_names_toggle_value = display_names_toggle || "false";
+
 		if (display_names_toggle_value == true) {
 			display_name = display_name_ref.current.value;
 			display_surname = display_surname_ref.current.value;
@@ -246,10 +208,6 @@ export default function AccountPage(props) {
 			pronoun_2 = "";
 		}
 		date_of_birth = date_of_birth_ref.current.value;
-		profile_visibility_value = profile_visibility;
-		organiser_profile_visibility_value = organiser_profile_visibility;
-		show_phone_number_value = show_phone_number || "false";
-		allow_public_messaging_value = allow_public_messaging || "false";
 
 		const res = await fetch("/api/account/update", {
 			method: "PATCH",
@@ -263,10 +221,7 @@ export default function AccountPage(props) {
 				pronoun_1,
 				pronoun_2,
 				date_of_birth,
-				profile_visibility,
-				organiser_profile_visibility,
 				show_phone_number,
-				allow_public_messaging,
 			}),
 			headers: {
 				"Content-Type": "application/json",
@@ -300,70 +255,131 @@ export default function AccountPage(props) {
 		}
 	}
 
+	let TeamOrCommittee;
+	const [NewRoleButtons, setNewRoleButtons] = useState(false);
+	function newRoleSelected() {
+		setNewRoleButtons(false);
+		const role = selected_role_ref.current.value;
+		setSchoolTeamCommittee("Team");
+
+		if (role === "Manager") {
+			setNewAvailableTeamAssignments(
+				props.availableTeamAssignments.filter(
+					(committee) => committee.session_id === selected_session_ref.current.value
+				)
+			);
+			return;
+		}
+
+		if (role === "Member") {
+			setNewRoleButtons(false);
+
+			setSchoolTeamCommittee("Team");
+			setNewAvailableTeamAssignments(
+				props.availableTeamAssignments.filter(
+					(committee) => committee.session_id === selected_session_ref.current.value
+				)
+			);
+			return;
+		}
+
+		if (role === "Delegate") {
+			setNewRoleButtons(false);
+
+			setSchoolTeamCommittee("Committee");
+			setNewAvailableTeamAssignments(
+				props.availableCommitteeAssignments.filter(
+					(committee) => committee.session_id === selected_session_ref.current.value
+				)
+			);
+			return;
+		}
+
+		if (role === "Chair") {
+			setNewRoleButtons(false);
+
+			setSchoolTeamCommittee("Committee");
+			setNewAvailableTeamAssignments(
+				props.availableCommitteeAssignments.filter(
+					(committee) => committee.session_id === selected_session_ref.current.value
+				)
+			);
+			return;
+		}
+
+		if (role === "School Director") {
+			setNewRoleButtons(false);
+
+			setSchoolTeamCommittee("School");
+			setNewAvailableTeamAssignments(props.allSchools);
+			return;
+		}
+
+		setNewAvailableTeamAssignments([]);
+		if (selected_role_ref.current.value) {
+			setNewRoleButtons(true);
+		} else {
+			setNewRoleButtons(false);
+		}
+	}
+
+	function newFinalChoice1Selected() {
+		if (selected_role_ref.current.value && selected_session_ref.current.value && selected_committee_ref.current.value) {
+			setNewRoleButtons(true);
+		} else {
+			setNewRoleButtons(false);
+		}
+	}
+
+	async function AddUserRole() {
+		setLoading(true);
+		const role = selected_role_ref.current.value;
+		const session = selected_session_ref.current.value;
+		let committee;
+		if (selected_committee_ref.current) {
+			committee = selected_committee_ref.current.value;
+		} else {
+			committee = "";
+		}
+
+		const res = await fetch(`/api/roles/add/`, {
+			method: "PUT",
+			body: JSON.stringify({
+				role: role,
+				sessionId: selected_session_ref.current.value,
+				committee,
+				userNumber: props.userNumber,
+			}),
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		let response = await res.json();
+
+		if (!toast.isActive("alert")) {
+			toast({
+				id: "alert",
+				title: response.title,
+				description: response.description,
+				status: response.status,
+				duration: response.duration,
+				isClosable: response.isClosable,
+				position: "top",
+			});
+		}
+
+		if (res.status === 200 && response.status === "success") {
+			setLoading(false);
+			router.replace(router.asPath);
+		}
+
+		if (res) {
+			setLoading(false);
+		}
+	}
+
 	return (
 		<Layout>
-			<Modal
-				isCentered
-				closeOnOverlayClick={true}
-				isOpen={isOpen}
-				onClose={onClose}>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Are you sure you want to change the following?</ModalHeader>
-					<ModalCloseButton />
-					<ModalBody pb={6}>
-						<Text>
-							<strong>
-								The fields you<span>&apos;</span>ve left empty won<span>&apos;</span>t be changed.
-							</strong>
-						</Text>
-						<Text>
-							The official name will be printed on your certificate, and the display name will be used on your nametag. We take no responsibility for any
-							spelling mistakes, please double check your spelling. You can update your info at any time and retrieve your new certificate any time after
-							approval.
-						</Text>
-						<Spacer y={1} />
-						{official_name_ref.current.value ? (
-							<Text>
-								Official Name from {props.official_name} to <strong>{official_name_ref.current.value}</strong>
-							</Text>
-						) : null}
-						{official_surname_ref.current.value != "" && (
-							<Text>
-								Official Surname from {props.official_surname} to <strong>{official_surname_ref.current.value}</strong>
-							</Text>
-						)}
-						{display_names_toggle && display_name_ref.current != null ? (
-							<Text>
-								Display Name from {props.display_name} to <strong>{display_name_ref.current.value || ""}</strong>
-							</Text>
-						) : null}
-						{display_names_toggle && display_surname_ref.current != null ? (
-							<Text>
-								Display Surname from {props.display_surname} to <strong>{display_surname_ref.current.value}</strong>
-							</Text>
-						) : null}
-					</ModalBody>
-					<Text></Text>
-					<ModalFooter>
-						{loading ? (
-							<Button
-								mr={3}
-								isLoading>
-								Save
-							</Button>
-						) : (
-							<Button
-								onClick={submitHandler}
-								mr={3}>
-								Save
-							</Button>
-						)}
-
-						<Button onClick={onClose}>Cancel</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
 			<div className={style.page}>
 				<div
 					style={{
@@ -372,87 +388,209 @@ export default function AccountPage(props) {
 					}}
 					className={style.nameholder}>
 					<div className={style.picture}>
-						<Avatar
-							className={style.pfp}
-							borderRadius="25%"
-							src={`${props.profilePictureLink}`}
-						/>
+						<Avatar className={style.pfp} borderRadius="50%" src={`${props.profilePictureLink}`} />
 					</div>
 				</div>
-				<Spacer y={4} />
+				<Spacer y={5} />
+				<Text marginLeft="28px" fontFamily="sans-serif" fontWeight="500">
+					<strong> USER INFORMATION </strong>
+				</Text>
+
+				<ul className={style.infoList}>
+					<li>
+						<div>
+							<Text>USERID</Text>
+							<Text>{props.userNumber}</Text>
+						</div>
+					</li>
+					<li>
+						<div>
+							<Text>USERNAME</Text>
+							<Text>
+								<span className={style.unselectable}>@</span>
+								<strong>{props.userName}</strong>
+							</Text>
+						</div>
+					</li>
+					<Spacer y={0.5} />
+					<li>
+						<div>
+							<Text>SCHOOL</Text>
+							<Text>{props.school}</Text>
+						</div>
+					</li>
+					<Spacer y={0.5} />
+					<li>
+						<div>
+							<Text>OFFICIAL NAME</Text>
+							<Text>{props.official_name}</Text>
+						</div>
+					</li>
+					<li>
+						<div>
+							<Text>OFFICIAL SURNAME</Text>
+							<Text>{props.official_surname}</Text>
+						</div>
+					</li>
+					<Spacer y={0.5} />
+					{props.display_name && (
+						<Fragment>
+							<li>
+								<div>
+									<Text>DISPLAY NAME</Text>
+									<Text>{props.display_name}</Text>
+								</div>
+							</li>
+							<Spacer y={0.5} />
+						</Fragment>
+					)}
+					{props.display_surname && (
+						<Fragment>
+							<li>
+								<div>
+									<Text>DISPLAY SURNAME</Text>
+									<Text>{props.display_surname}</Text>
+								</div>
+							</li>
+							<Spacer y={0.5} />
+						</Fragment>
+					)}
+					<li>
+						<div>
+							<Text>BIRTH DATE</Text>
+							<Text>{props.birthDate}</Text>
+						</div>
+					</li>
+					<li>
+						<div>
+							<Text>NATIONALITY</Text>
+							<Text>{props.nationality}</Text>
+						</div>
+					</li>
+					<Spacer y={0.5} />
+					<li>
+						<div>
+							<Text>EMAIL</Text>
+							<Text>{props.email}</Text>
+						</div>
+					</li>
+					{!props.phone_number && <Spacer y={0.5} />}
+					{props.phone_number && (
+						<Fragment>
+							<li>
+								<div>
+									<Text>PHONE NUMBER</Text>
+									<Text>{props.phone_number}</Text>
+								</div>
+							</li>
+							<Spacer y={0.5} />
+						</Fragment>
+					)}
+				</ul>
+				<Divider />
 				<div className={style.section}>
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
-						<strong> PROFILE PICTURE</strong>
-					</Text>
-					<Text marginLeft="14px">Clicking Upload automatically saves the profile picture.</Text>
+					<Title title="ROLE ASSIGNMENT" description="Assign a role to the user." space="0" />
+					<div className={style.fdr}>
+						<Select ref={selected_session_ref} onChange={newRoleSelected} mr={3} variant="filled" placeholder="Session">
+							{props.availableSessionAssignments.map((session) => (
+								<option key={session.id} value={session.id}>
+									{session.number}
+								</option>
+							))}
+						</Select>
 
-					<div className={style.uploadButtons}>
-						<Input
-							ref={profile_picture_ref}
-							placeholder="Upload"
-							className={style.uploadButton}
-							backgroundColor="#EDF2F7"
-							type="file"
-						/>
-						<Button
-							isLoading={profile_picture}
-							onClick={uploadProfilePicture}>
-							Upload
+						<Select ref={selected_role_ref} onChange={newRoleSelected} variant="filled" placeholder="Role">
+							{props.availableRoleAssignments.map((role) => (
+								<option key={role} value={role}>
+									{role}
+								</option>
+							))}
+						</Select>
+					</div>
+					{newAvailableTeamAssignments.length > 0 ? (
+						<Fragment>
+							<Spacer y={1} />
+							<Select
+								onChange={newFinalChoice1Selected}
+								ref={selected_committee_ref}
+								variant="filled"
+								placeholder={schoolTeamCommittee}>
+								{newAvailableTeamAssignments.map((committee) => (
+									<option key={committee.id} value={committee.id}>
+										{committee.name}
+									</option>
+								))}
+							</Select>
+						</Fragment>
+					) : null}
+					{NewRoleButtons && (
+						<Fragment>
+							<Spacer y={1} />
+							<div className={style.fdr}>
+								<Button isLoading={loading} onClick={AddUserRole} mr={3}>
+									Add Role
+								</Button>
+							</div>
+						</Fragment>
+					)}
+					<Title title="CURRENT ROLES" description="Remove roles from the user." space="1" />
+					{props.allRoles.map((role) => (
+						<div className={style.removeRoles} key={role.id}>
+							<Text marginLeft="14px">{role.name}</Text>
+							<div className={style.removeDivider}>
+								{role.session !== "All" ? (
+									<Button
+										onClick={() => {
+											goToSessionPage(role.session);
+										}}
+										marginLeft="auto"
+										color="white"
+										padding="2px 10px"
+										backgroundColor="var(--mediblue)"
+										borderRadius="20px"
+										mr={2}
+										size="small">
+										MEDIMUN {role.session}
+									</Button>
+								) : null}
+								{role.roleId !== null ? (
+									<Button
+										onClick={() => {
+											removeRole(role.name, role.roleId);
+										}}
+										isLoading={loading}
+										color="white"
+										padding="2px 10px"
+										backgroundColor="red"
+										borderRadius="20px"
+										size="small">
+										REMOVE
+									</Button>
+								) : null}
+							</div>
+						</div>
+					))}
+					<Spacer y={1.4} />
+					<Divider></Divider>
+					<Title
+						title="PROFILE PICTURE AND COVER IMAGE"
+						description="You can remove a profile picture or a cover image if it's offensive."
+						space="1.2"
+					/>
+					<div className={style.removeButtons}>
+						<Button mr={3} isLoading={profile_picture} onClick={removeProfilePicture}>
+							Remove profile picture
 						</Button>
-						<Button
-							isLoading={profile_picture}
-							onClick={removeProfilePicture}>
-							Remove
+						<Button isLoading={cover_image} onClick={removeCoverImage}>
+							Remove cover image
 						</Button>
 					</div>
-
-					<Spacer x={1} />
-
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
-						<strong> COVER IMAGE </strong>
-					</Text>
-					<Text marginLeft="14px">Clicking Upload automatically saves the cover image.</Text>
-
-					<div className={style.uploadButtons}>
-						<Input
-							ref={cover_image_ref}
-							className={style.uploadButton}
-							backgroundColor="#EDF2F7"
-							type="file"
-						/>
-						<Button
-							isLoading={cover_image}
-							onClick={uploadCoverImage}>
-							Upload
-						</Button>
-						<Button
-							isLoading={cover_image}
-							onClick={removeCoverImage}>
-							Remove
-						</Button>
-					</div>
-
-					<Spacer y={1} />
-
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
-						<strong> OFFICIAL NAME </strong>
-					</Text>
-
-					<Text
-						borderBottom="2.5px solid #FFF"
-						paddingLeft="14px">
-						Your official name will be used on your certificate and must match the name on your passport.
-					</Text>
-
+					<Spacer y={1.4} />
+					<Divider></Divider>
+					<Title
+						title="OFFICIAL NAME"
+						description="The official name will be used on the certificate and must match passport name."
+					/>
 					<Input
 						maxLength="20"
 						ref={official_name_ref}
@@ -460,24 +598,11 @@ export default function AccountPage(props) {
 						width="calc(100%)"
 						placeholder={props.official_name}
 					/>
-
-					<Spacer x={1} />
-
-					<Text
-						maxLength="20"
-						marginLeft="15px"
-						marginRight="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
-						<strong> OFFICIAL SURNAME </strong>
-					</Text>
-
-					<Text
-						borderBottom="2.5px solid #FFF"
-						paddingLeft="14px">
-						Your official surname will be used on your certificate and must match the name on your passport.
-					</Text>
-
+					<Title
+						title="OFFICIAL SURNAME"
+						description="The official surname will be used on the certificate and must match passport surname."
+						space="1"
+					/>
 					<Input
 						maxLength="20"
 						ref={official_surname_ref}
@@ -485,13 +610,9 @@ export default function AccountPage(props) {
 						width="calc(100%)"
 						placeholder={props.official_surname}
 					/>
-
 					<Spacer y={1} />
 					<div>
-						<Text
-							marginLeft="15px"
-							fontFamily="sans-serif"
-							fontWeight="500">
+						<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 							<strong>USE DISPLAY NAME SET</strong>
 						</Text>
 						<div className="fdr">
@@ -503,23 +624,10 @@ export default function AccountPage(props) {
 							/>
 							<Text marginLeft="14px">If turned off, yor official name and surname will be used instead.</Text>
 						</div>
-						<Spacer y={1} />
 					</div>
 					{display_names_toggle && (
 						<div>
-							<Text
-								marginLeft="15px"
-								fontFamily="sans-serif"
-								fontWeight="500">
-								<strong> DISPLAY NAME </strong>
-							</Text>
-
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="14px">
-								If added your display name will be used on your profile and nametag.
-							</Text>
-
+							<Title title="DISPLAY NAME" description="The display name is used on the profile and on the nametag" />
 							<Input
 								maxLength="20"
 								ref={display_name_ref}
@@ -527,20 +635,11 @@ export default function AccountPage(props) {
 								width="calc(100%)"
 								placeholder={props.display_name}
 							/>
-
-							<Spacer y={1} />
-							<Text
-								marginLeft="15px"
-								fontFamily="sans-serif"
-								fontWeight="500">
-								<strong> DISPLAY SURNAME </strong>
-							</Text>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="14px">
-								If added your display surname will be used on your profile and nametag.
-							</Text>
-
+							<Title
+								title="DISPLAY SURNAME"
+								description="The display surname is used on the profile and on the nametag"
+								space="1"
+							/>
 							<Input
 								maxLength="20"
 								ref={display_surname_ref}
@@ -548,17 +647,10 @@ export default function AccountPage(props) {
 								width="calc(100%)"
 								placeholder={props.display_surname}
 							/>
-							<Spacer y={1} />
 						</div>
 					)}
-
 					<div>
-						<Text
-							marginLeft="15px"
-							fontFamily="sans-serif"
-							fontWeight="500">
-							<strong>USE PRONOUNS</strong>
-						</Text>
+						<Title title="PRONOUNS" />
 						<div className="fdr">
 							<Spacer x={1} />
 							<Switch
@@ -566,25 +658,14 @@ export default function AccountPage(props) {
 								onChange={() => set_pronouns_toggle(!pronouns_toggle)}
 								size="lg"
 							/>
-							<Text marginLeft="14px">If turned off, your profile and nametag will not contain pronouns.</Text>
+							<Text marginLeft="14px">If turned off, the pronouns will not be displayed.</Text>
 						</div>
-						<Spacer y={1} />
 					</div>
-
 					{pronouns_toggle && (
-						<div>
-							<Text
-								marginLeft="15px"
-								fontFamily="sans-serif"
-								fontWeight="500">
+						<Fragment>
+							<Spacer y={1} />
+							<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 								<strong> PRONOUNS </strong>
-							</Text>
-
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="14px">
-								Your pronouns will be used on your profile and nametag in the future as this feature is experimental and will be used in the 19<sup>th</sup>{" "}
-								Session of MEDIMUN.
 							</Text>
 
 							<div>
@@ -595,7 +676,7 @@ export default function AccountPage(props) {
 									variant="filled"
 									width="calc(50%)"
 									borderRight="2px solid #e2e8f0"
-									placeholder={props.pronoun1}
+									placeholder={props.pronoun1 || "First Pronoun"}
 								/>
 								<Input
 									maxLength="5"
@@ -603,24 +684,12 @@ export default function AccountPage(props) {
 									borderRadius="0 5px 5px 0"
 									variant="filled"
 									width="calc(50%)"
-									placeholder={props.pronoun2}
+									placeholder={props.pronoun2 || "Second Pronoun"}
 								/>
 							</div>
-							<Spacer x={1} />
-						</div>
+						</Fragment>
 					)}
-
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
-						<strong> DATE OF BIRTH </strong>
-					</Text>
-					<Text
-						borderBottom="2.5px solid #FFF"
-						paddingLeft="14px">
-						Your date of birth is only visible to members of MEDIMUN management and will not be shown anywhere else.{" "}
-					</Text>
+					<Title title="DATE OF BIRTH" />
 					<Input
 						ref={date_of_birth_ref}
 						variant="filled"
@@ -629,463 +698,286 @@ export default function AccountPage(props) {
 						size="md"
 						type="date"
 					/>
-					<Spacer y={1} />
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
-						<strong> PROFILE VISIBILITY</strong>
-					</Text>
-					<Text
-						marginLeft="14px"
-						borderBottom="2.5px solid #FFF">
-						Your choice may eb disregarded if you are enrolled in the current session of MEDIMUN.{" "}
-					</Text>
-
-					<RadioGroup
-						onChange={set_profile_visibility}
-						backgroundColor="#EDF2F7"
-						borderRadius="5px"
-						padding="10px"
-						marginLeft="4px"
-						defaultValue={`${props.profile_visibility}`}>
-						<Stack>
-							<Radio value="1">Public Profile</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
-								If turned on, everyone including people without a MEDIMUN account will be able to see your profile.
-							</Text>
-							<Radio value="2">Internal Only Profile</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
-								If turned on, only people with a MEDIMUN account will be able to see your profile.
-							</Text>
-							<Radio value="3">Session Only Profile</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
-								If turned on, only people enrolled in the current session of MEDIMUN will be able to see your profile even after the session ends, if you don
-								<span>&apos;</span>t wan<span>&apos;</span>t your profile to be visible after the session ends, please set it to private after the sessions
-								ends.
-							</Text>
-							<Radio value="4">Committee Only Profile</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
-								If turned on, only people in your committee will be able to see your profile.
-							</Text>
-							<Radio value="5">Verified User Only Profile</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
-								If turned on, only people currently enrolled or people who had been enrolled in the past will be able to see your profile. People who have a
-								MEDIMUN account and have not been enrolled in any session will not be able to see your profile.
-							</Text>
-							<Radio value="6">Private Profile</Radio>
-							<Text paddingLeft="24px">
-								If turned on, no one will be able to see your profile. This option is not recommended for currently enrolled participants.
-							</Text>
-						</Stack>
-					</RadioGroup>
-					<Spacer y={1} />
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
-						<strong> PROFILE VISIBILITY OPTIONS FOR ORGANISERS </strong>
-					</Text>
-					<Text
-						borderBottom="2.5px solid #FFF"
-						paddingLeft="14px">
-						This option determines if an organiser can see your profile. Organisers who are required to see your profile will be able to view your profile no
-						matter the profile visibility options you have set.
-					</Text>
-					<RadioGroup
-						onChange={set_organiser_profile_visibility}
-						backgroundColor="#EDF2F7"
-						borderRadius="5px"
-						padding="10px"
-						marginLeft="4px"
-						defaultValue={`${props.organiser_profile_visibility}`}>
-						<Stack>
-							<Radio value="1">All Organisers</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
-								If turned on, all organisers in all sessions will be able to see your profile.
-							</Text>
-							<Radio value="2">Organisers in Current Session</Radio>
-							<Text paddingLeft="24px">If turned on, only organisers enrolled in the current session will be able to see your profile.</Text>
-						</Stack>
-					</RadioGroup>
 					<Spacer x={1} />
-					<div>
-						<Text
-							marginLeft="15px"
-							fontFamily="sans-serif"
-							fontWeight="500">
-							<strong> Show Phone Number to Chair </strong>
-						</Text>
-						<div className="fdr">
-							<Spacer x={1} />
-							<Switch
-								onChange={() => set_show_phone_number(!show_phone_number)}
-								size="lg"
-							/>
-							<Text marginLeft="14px">If turned off, only higher management will be able to see your phone number.</Text>
-						</div>
-						<Spacer y={1} />
-					</div>
-					<div>
-						<Text
-							marginLeft="15px"
-							fontFamily="sans-serif"
-							fontWeight="500">
-							<strong> Allow people who are not ennrolled in your session to message you on the MEDIMUN platform. </strong>
-						</Text>
-						<div className="fdr">
-							<Spacer x={1} />
-							<Switch
-								onChange={() => set_allow_public_messaging(!allow_public_messaging)}
-								value={allow_public_messaging}
-								size="lg"
-							/>
-							<Text marginLeft="14px">If turned on, only people enrolled in the current session of MEDIMUN will be able to message you.</Text>
-						</div>
-						<Spacer y={1} />
-					</div>
 				</div>
-				<Button
-					ml={3}
-					mr={3}
-					onClick={onOpen}>
+				<Button isLoading={loading} ml={3} mr={3} onClick={onOpen}>
 					Save
 				</Button>
-				<Button onClick={() => router.push("/")}>Cancel</Button>
+				<Button isLoading={loading} onClick={() => router.push("/users")}>
+					Cancel
+				</Button>
 			</div>
 		</Layout>
 	);
 }
 
 export async function getServerSideProps(context) {
-	const userId = context.query.user;
-	console.log(userId);
+	let linkUserNumber,
+		linkUser,
+		queryUserNumber,
+		canSeePhoneNumber = false,
+		useDisplayNames = false,
+		usePronouns = false,
+		linkUserId = context.query.user;
 
 	const session = await getSession({ req: context.req });
 
-	const user = await prisma.user.findFirst({
-		where: {
-			userNumber: await session.user.userNumber,
-		},
-		include: {
-			Delegate: {
-				include: {
-					committee: true,
-					session: { select: { isCurrent: true, conference_session_number: true } },
-				},
+	if (!session) {
+		return {
+			redirect: {
+				destination: "/login",
 			},
-			CommitteeChair: {
-				include: {
-					committee: true,
-					session: { select: { isCurrent: true, conference_session_number: true } },
-				},
-			},
-			TeamMember: {
-				include: {
-					team: true,
-					session: { select: { isCurrent: true, conference_session_number: true } },
-				},
-			},
-			TeamManager: {
-				include: {
-					team: true,
-					session: { select: { isCurrent: true, conference_session_number: true } },
-				},
-			},
-			SchoolDirector: {
-				include: {
-					school: true,
-					session: { select: { isCurrent: true, conference_session_number: true } },
-				},
-			},
-			Director: {
-				include: {
-					team: { select: { name: true } },
-					session: { select: { isCurrent: true, conference_session_number: true } },
-				},
-			},
-			SeniorDirector: true,
-			SchoolMember: { select: { school: { select: { name: true } } } },
-			SG: {
-				include: {
-					session: { select: { isCurrent: true, conference_session_number: true } },
-				},
-			},
-			PGA: {
-				include: {
-					session: { select: { isCurrent: true, conference_session_number: true } },
-				},
-			},
-			DSG: {
-				include: {
-					session: { select: { isCurrent: true, conference_session_number: true } },
-				},
-			},
-		},
-	});
+		};
+	}
 
-	let queryUser;
-
-	if (userId.charAt(0) === "@") {
-		queryUser = await prisma.user.findFirst({
+	if (linkUserId.charAt(0) === "@") {
+		linkUser = await prisma.user.findFirst({
 			where: {
-				username: userId.slice(1),
+				username: linkUserId.slice(1),
 			},
 			include: {
-				Delegate: {
-					include: {
-						committee: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				CommitteeChair: {
-					include: {
-						committee: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				TeamMember: {
-					include: {
-						team: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				TeamManager: {
-					include: {
-						team: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				SchoolDirector: {
-					include: {
-						school: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				Director: {
-					include: {
-						team: { select: { name: true } },
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				SeniorDirector: true,
-				SchoolMember: { select: { school: { select: { name: true } } } },
-				SG: {
-					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				PGA: {
-					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				DSG: {
-					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
+				schoolDirector: { include: { school: true } },
+				schoolStudent: { include: { school: true } },
+				delegate: true,
+				member: true,
 			},
 		});
 	} else {
-		queryUser = await prisma.user.findFirst({
+		linkUser = await prisma.user.findFirst({
 			where: {
-				userNumber: userId,
+				userNumber: linkUserId,
 			},
 			include: {
-				Delegate: {
-					include: {
-						committee: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				CommitteeChair: {
-					include: {
-						committee: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				TeamMember: {
-					include: {
-						team: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				TeamManager: {
-					include: {
-						team: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				SchoolDirector: {
-					include: {
-						school: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				Director: {
-					include: {
-						team: { select: { name: true } },
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				SeniorDirector: true,
-				SchoolMember: { select: { school: { select: { name: true } } } },
-				SG: {
-					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				PGA: {
-					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				DSG: {
-					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
+				schoolDirector: { include: { school: true } },
+				schoolStudent: { include: { school: true } },
+				delegate: true,
+				member: true,
 			},
 		});
 	}
 
-	let delegateRole;
-	if (user.Delegate.role !== null)
-		delegateRole = user.Delegate.map((delegate) => {
-			return {
-				role: "Delegate of " + delegate.country + " in " + delegate.committee.name,
-				session: "MEDIMUN " + delegate.session.conference_session_number,
-				isCurrent: delegate.session.isCurrent,
-			};
-		});
-
-	if (user.Delegate.role == null)
-		delegateRole = user.Delegate.map((delegate) => {
-			return {
-				role: "Delegate",
-				session: "MEDIMUN " + delegate.session.conference_session_number,
-				isCurrent: delegate.session.isCurrent,
-			};
-		});
-
-	let chairRole = user.CommitteeChair.map((chair) => {
-		return {
-			role: "Chair of " + chair.committee.name,
-			session: "MEDIMUN " + chair.session.conference_session_number,
-			isCurrent: chair.session.isCurrent,
-		};
-	});
-	let teamMemberRole = user.TeamMember.map((teamMember) => {
-		return {
-			role: "Member of " + teamMember.team.name,
-			session: "MEDIMUN " + teamMember.session.conference_session_number,
-			isCurrent: teamMember.session.isCurrent,
-		};
-	});
-	let teamManagerRole = user.TeamManager.map((teamManager) => {
-		return {
-			role: "Manager of " + teamManager.team.name,
-			session: "MEDIMUN " + teamManager.session.conference_session_number,
-			isCurrent: teamManager.session.isCurrent,
-		};
-	});
-	let sgRole = user.SG.map((sg) => {
-		return {
-			role: "Secretary-General",
-			session: "MEDIMUN " + sg.session.conference_session_number,
-			isCurrent: sg.session.isCurrent,
-		};
-	});
-	let dsgRole = user.DSG.map((dsg) => {
-		return {
-			role: "Deputy Secretary-General",
-			primary: "",
-			session: "MEDIMUN " + dsg.session.conference_session_number,
-			isCurrent: dsg.session.isCurrent,
-		};
-	});
-	let pgaRole = user.PGA.map((pga) => {
-		return {
-			role: "President of The General Assembly",
-			session: "MEDIMUN " + pga.session.conference_session_number,
-			isCurrent: pga.session.isCurrent,
-		};
-	});
-	let schoolDirectorRole = user.SchoolDirector.map((schoolDirector) => {
-		return {
-			role: "School Director of " + schoolDirector.school.name,
-			session: "MEDIMUN " + schoolDirector.session.conference_session_number,
-			isCurrent: schoolDirector.session.isCurrent,
-		};
-	});
-	let directorRole = user.Director.map((director) => {
-		return {
-			role: "Director of " + director.team.name,
-			session: "MEDIMUN " + director.session.conference_session_number,
-			isCurrent: director.session.isCurrent,
-		};
-	});
-	let seniorDirectorRole = user.SeniorDirector.map((seniorDirector) => {
-		return {
-			role: "Senior Director",
-		};
+	const currentCommittees = await prisma.committee.findMany({
+		where: { session: { isCurrent: true } },
 	});
 
-	const roles = [
-		...seniorDirectorRole,
-		...sgRole,
-		...dsgRole,
-		...pgaRole,
-		...directorRole,
-		...schoolDirectorRole,
-		...teamManagerRole,
-		...chairRole,
-		...teamMemberRole,
-		...delegateRole,
-	];
+	const currentTeams = await prisma.team.findMany({
+		where: { session: { isCurrent: true } },
+	});
 
-	const currentroles = roles
-		.filter((role) => role.isCurrent)
-		.map((role) => {
-			return {
-				role: role.role,
-				session: role.session,
-			};
-		});
+	const currentSession = await prisma.session.findFirst({
+		where: { isCurrent: true },
+	});
 
-	console.log(currentroles);
+	const allSessions = await prisma.session.findMany({});
+	const allCommittees = await prisma.committee.findMany({});
+	const allTeams = await prisma.team.findMany({});
 
-	/////-----------------------------------/////
+	const queryUser = await prisma.user.findFirst({
+		where: {
+			userNumber: session.user.userNumber,
+		},
+		include: {
+			schoolDirector: { include: { school: true } },
+			member: { include: { session: true } },
+			chair: true,
+			manager: true,
+		},
+	});
 
-	if (!user || !queryUser) {
+	if (!linkUser) {
 		return {
 			notFound: true,
 		};
 	}
 
-	let useDisplayNames = false;
+	linkUserNumber = linkUser.userNumber;
+	queryUserNumber = queryUser.userNumber;
 
-	if (user.display_name || user.display_surname) {
-		useDisplayNames = true;
+	/* 	if ((linkUserNumber = queryUserNumber)) {
+		return {
+			redirect: {
+				destination: "/account",
+				permanent: false,
+			},
+		};
+	} */
+
+	const roleNumbers = {
+		"Global Admin": 0,
+		"Senior Director": 1,
+		"Secretary-General": 3,
+		"President of the General Assembly": 3,
+		"Deputy Secretary-General": 4,
+		Manager: 6,
+		Chair: 6,
+		Member: 7,
+		"School Director": 8,
+		Delegate: 9,
+	};
+
+	const currentLinkUserRoles = await currentUserRoles(linkUserNumber);
+	const currentQueryUserRoles = await currentUserRoles(queryUserNumber);
+	const pastLinkUserRoles = await pastUserRoles(linkUserNumber);
+
+	const queryUserHighestRole = currentQueryUserRoles[0];
+	const linkUserHighestRole = currentLinkUserRoles[0];
+
+	const currentLinkUserRoleNumber = roleNumbers[linkUserHighestRole];
+	const currentQueryUSerRoleNumber = roleNumbers[queryUserHighestRole];
+
+	/* 	if (currentLinkUserRoleNumber < currentQueryUSerRoleNumber) {
+		return {
+			notFound: true,
+		};
+	} */
+
+	if (currentQueryUserRoles.length == 0) {
+		return {
+			notFound: true,
+		};
+	}
+	////////////////////////////////////////////////////////////////////////
+
+	let availableRoleAssignments = [];
+	let availableSessionAssignments = [];
+	let availableCommitteeAssignments = [];
+	let availableTeamAssignments = [];
+	let canAssignSchool;
+	let canEditInfo;
+
+	// GLOBAL ADMIN ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if (queryUserHighestRole == "Global Admin") {
+		availableRoleAssignments = [
+			"Global Admin",
+			"Senior Director",
+			"Secretary-General",
+			"President of the General Assembly",
+			"Deputy Secretary-General",
+			"Manager",
+			"Chair",
+			"Member",
+			"School Director",
+			"Delegate",
+		];
+		//
+		canSeePhoneNumber = true;
+		availableCommitteeAssignments = allCommittees;
+		availableTeamAssignments = allTeams;
+		//
+		canAssignSchool = true;
+		canEditInfo = true;
+		availableSessionAssignments = allSessions;
 	}
 
-	let usePronouns = false;
+	// SENIOR DIRECTOR ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	if (user.pronoun1 || user.pronoun2) {
-		usePronouns = true;
+	if (queryUserHighestRole == "Senior Director") {
+		availableRoleAssignments = [
+			"Senior Director",
+			"Secretary-General",
+			"President of the General Assembly",
+			"Deputy Secretary-General",
+			"Manager",
+			"Chair",
+			"Member",
+			"School Director",
+			"Delegate",
+		];
+		canSeePhoneNumber = true;
+		availableCommitteeAssignments = allCommittees;
+		availableTeamAssignments = allTeams;
+		availableSessionAssignments = allSessions;
+		canAssignSchool = true;
+		canEditInfo = true;
+	}
+
+	// SCHOOL DIRECTOR ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if (queryUserHighestRole == "School Director") {
+		availableRoleAssignments = [];
+		availableSessionAssignments = [];
+		availableCommitteeAssignments = [];
+		availableTeamAssignments = [];
+		canAssignSchool = false;
+		if (queryUser.schoolDirector[0].school.id == linkUser.SchoolMember[0].school.id) {
+			canEditInfo = true;
+		} else {
+			return {
+				notFound: true,
+			};
+		}
+	}
+
+	// SECRETARY-GENERAL ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if (queryUserHighestRole == "Secretary-General") {
+		availableRoleAssignments = ["Manager", "Chair", "Member", "School Director", "Delegate"];
+		canSeePhoneNumber = true;
+		availableSessionAssignments = allSessions;
+		availableCommitteeAssignments = allCommittees;
+		availableTeamAssignments = allTeams;
+		canAssignSchool = true;
+		canEditInfo = true;
+	}
+
+	// PRESIDENT OF THE GA ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if (queryUserHighestRole == "President of the General Assembly") {
+		availableRoleAssignments = ["Manager", "Chair", "Member", "School Director", "Delegate"];
+		canSeePhoneNumber = true;
+		availableSessionAssignments = allSessions;
+		availableCommitteeAssignments = allCommittees;
+		availableTeamAssignments = allTeams;
+		canAssignSchool = true;
+		canEditInfo = true;
+	}
+
+	// DEPUTY SECRETARY GENERAL ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if (queryUserHighestRole == "Deputy Secretary-General") {
+		availableRoleAssignments = ["Manager", "Chair", "Member", "School Director", "Delegate"];
+		canSeePhoneNumber = true;
+		availableSessionAssignments = currentSession;
+		availableCommitteeAssignments = currentCommittees;
+		availableTeamAssignments = currentTeams;
+		canAssignSchool = true;
+		canEditInfo = true;
+	}
+
+	// MANAGER ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if (queryUserHighestRole == "Manager") {
+		availableRoleAssignments = ["Member"];
+		availableSessionAssignments = currentSession;
+		availableCommitteeAssignments = [];
+		availableTeamAssignments = [];
+		canAssignSchool = false;
+	}
+
+	// CHAIR ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if (queryUserHighestRole == "Chair") {
+		availableRoleAssignments = [];
+		availableSessionAssignments = [];
+		availableTeamAssignments = [];
+		canAssignSchool = true;
+	}
+
+	// DELEGATE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if (queryUserHighestRole == "Delegate") {
+		return {
+			notFound: true,
+		};
+	}
+
+	// MEMBER ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if (queryUserHighestRole == "Member") {
+		return {
+			notFound: true,
+		};
 	}
 
 	var Minio = require("minio");
@@ -1097,24 +989,95 @@ export async function getServerSideProps(context) {
 		secretKey: "BPbpMinio2006!",
 	});
 
+	if (linkUser.display_name || linkUser.display_surname) {
+		useDisplayNames = true;
+	}
+
+	if (linkUser.pronoun1 || linkUser.pronoun2) {
+		usePronouns = true;
+	}
+
+	let allSchools = [];
+	let phoneNumber = "";
+
+	if (canAssignSchool == true) {
+		allSchools = await prisma.school.findMany();
+	}
+
+	if (canSeePhoneNumber == true) {
+		phoneNumber = linkUser.phoneNumber;
+	}
+
+	let school;
+	if (linkUser.schoolStudent.length > 0) {
+		school = linkUser.SchoolMember[0].school.name;
+	} else {
+		school = "No School Assigned";
+	}
+
+	const allRoles = await findUserDetails(linkUserId);
+
+	let profilePictureLink;
+	let coverImageLink;
+	try {
+		profilePictureLink = await minioClient.presignedGetObject(
+			"profile-pictures",
+			`${linkUser.userNumber}`,
+			6 * 60 * 60
+		);
+	} catch (error) {
+		profilePictureLink = "/public/profile-picture-placeholder";
+	}
+
+	try {
+		coverImageLink = await minioClient.presignedGetObject("cover-images", `${linkUser.userNumber}`, 6 * 60 * 60);
+	} catch (error) {
+		coverImageLink = "/public/cover-image-placeholder";
+	}
+
+	console.log(availableSessionAssignments);
+
+	console.log(await profilePictureLink);
+	console.log(await coverImageLink);
+
+	console.log(availableSessionAssignments);
+
 	return {
 		props: {
-			official_name: user.official_name,
-			official_surname: user.official_surname,
-			display_name: user.display_name,
-			display_surname: user.display_surname,
-			pronoun1: user.pronoun1,
-			pronoun2: user.pronoun2,
-			phone_number: user.phoneNumber,
-			email: user.email,
-			profile_visibility: user.profileVisibility,
-			organiser_profile_visibility: user.OrganiserProfileVisibility,
-			show_phone_number: user.show_phone_number,
-			allow_public_messaging: user.allow_messages_from_everyone,
+			userName: linkUser.username,
+			official_name: linkUser.officialName,
+			official_surname: linkUser.officialSurname,
+			display_name: linkUser.displayName,
+			display_surname: linkUser.displaySurname,
+			pronoun1: linkUser.pronoun1,
+			pronoun2: linkUser.pronoun2,
+			phone_number: linkUser.phoneNumber,
+			email: linkUser.email,
 			useDisplayNames: useDisplayNames,
+			school: school,
 			usePronouns: usePronouns,
-			profilePictureLink: await minioClient.presignedGetObject("profile-pictures", `${user.userNumber}`, 6 * 60 * 60),
-			coverImageLink: await minioClient.presignedGetObject("cover-images", `${user.userNumber}`, 6 * 60 * 60),
+			phoneNumber: phoneNumber,
+			birthDate: linkUser.dateOfBirth.toLocaleDateString(),
+			profilePictureLink: await profilePictureLink,
+			coverImageLink: await coverImageLink,
+			sessions: allSessions,
+			currentTeams: currentTeams,
+			currentCommittees: currentCommittees,
+			currentRoles: currentLinkUserRoles,
+			pastRoles: pastLinkUserRoles,
+			userId: linkUserId,
+			//
+			canSeePhoneNumber: canSeePhoneNumber,
+			nationality: "CY",
+			canEditInfo: canEditInfo,
+			canAssignSchool: canAssignSchool,
+			availableRoleAssignments: availableRoleAssignments,
+			availableSessionAssignments: availableSessionAssignments,
+			availableCommitteeAssignments: availableCommitteeAssignments,
+			availableTeamAssignments: availableTeamAssignments,
+			allSchools: allSchools,
+			userNumber: linkUser.userNumber,
+			allRoles: allRoles.allRoles,
 		},
 	};
 }

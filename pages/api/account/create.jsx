@@ -2,7 +2,7 @@ import { hashPassword } from "../../../lib/auth";
 import randomString from "../../../lib/random-string";
 import CapitaliseEachWord from "../../../lib/capitalise-each-word";
 
-import prisma from "../../../client";
+import prisma from "../../../prisma/client";
 import sendEmail from "../../../lib/email/verification";
 
 export default async function handler(req, res) {
@@ -133,12 +133,12 @@ export default async function handler(req, res) {
 				data: {
 					email: email.toLowerCase().trim(),
 					password: await hashPassword(password),
-					official_name: CapitaliseEachWord(official_name),
-					official_surname: CapitaliseEachWord(official_surname),
-					display_name: CapitaliseEachWord(display_name),
-					display_surname: CapitaliseEachWord(display_surname),
-					date_of_birth: date_of_birth,
-					email_verification_code: random_verification_string,
+					officialName: CapitaliseEachWord(official_name),
+					officialSurname: CapitaliseEachWord(official_surname),
+					displayName: CapitaliseEachWord(display_name),
+					displaySurname: CapitaliseEachWord(display_surname),
+					dateOfBirth: date_of_birth,
+					emailVerificationCode: random_verification_string,
 				},
 			})
 			.catch(async (e) => {

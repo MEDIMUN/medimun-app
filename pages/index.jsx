@@ -4,10 +4,11 @@ import Layout from "../app-components/layout";
 import Image from "next/image";
 import style from "../styles/index.module.css";
 import { SlArrowDown } from "react-icons/sl";
-import { Button, Spacer, Text } from "@nextui-org/react";
+import { Spacer, Text } from "@nextui-org/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { Button, Text as TextC } from "@chakra-ui/react";
 
 export default function HomePage(props) {
 	const router = useRouter();
@@ -25,7 +26,10 @@ export default function HomePage(props) {
 	}, [currentYear]);
 
 	let greeting;
-	if (time.getHours() >= 12) {
+	if (time.getHours() < 12) {
+		greeting = "Good morning";
+	}
+	if (time.getHours() >= 12 && time.getHours() < 18) {
 		greeting = "Good afternoon";
 	}
 	if (time.getHours() >= 18) {
@@ -58,7 +62,10 @@ export default function HomePage(props) {
 		}
 
 		if (section < 1) {
-			r.style.setProperty("--index-section3-image", "repeating-linear-gradient(45deg, #000000, #000000 10px, #181818 10px, #181818 20px)");
+			r.style.setProperty(
+				"--index-section3-image",
+				"repeating-linear-gradient(45deg, #000000, #000000 10px, #181818 10px, #181818 20px)"
+			);
 			setherotext1("Building Resilience");
 			setherotext2("A Transformative Agenda");
 		} else {
@@ -100,9 +107,7 @@ export default function HomePage(props) {
 		return (
 			<Fragment>
 				<Head>
-					<meta
-						name="theme-color"
-						content="#000000"></meta>
+					<meta name="theme-color" content="#000000"></meta>
 				</Head>
 				<Pagelayout>
 					<div className={style.body}></div>
@@ -118,47 +123,35 @@ export default function HomePage(props) {
 							</Button>
 						</div>
 						<div className={style.section0image}>
-							<div className={style.imageherocolor}></div>
+							<div onLoad={() => console.log("loaded")} className={style.imageherocolor}></div>
 						</div>
 						<div className={style.section0text}>
 							<div>
-								<Text
-									className={style.herotext1}
-									h1
-									size={120}
-									weight="bold">
+								<Text className={style.herotext1} h1 size={120} weight="bold">
 									{herotext1}
 								</Text>
 								<Spacer y={1} />
-								<Text
-									className={style.herotext2}
-									h1
-									size={120}
-									weight="light">
+								<Text className={style.herotext2} h1 size={120} weight="light">
 									{herotext2}
 								</Text>
 							</div>
 						</div>
 					</div>
 					<div className={style.section2}>
-						<div
-							className={style.section2ref}
-							ref={section2}></div>
-						<Text
-							className={style.herotext3}
-							h1
-							size={120}
-							weight="bold">
+						<div className={style.section2ref} ref={section2}></div>
+						<Text className={style.herotext3} h1 size={120} weight="bold">
 							Welcome to
 							<br />
 							<strong>MEDIMUN {year}</strong>
 						</Text>
 						<Spacer y={1} />
 						<Text className={style.herotext4}>
-							We have a terrific team of students working to make our 18th Annual Conference a reality. Our conference theme this year will be Building
-							Resilience; stressing the need to facilitate global strength and security against the conflicts and vulnerabilities faced by today
-							<span>&apos;</span>s modern society. We hope that you will join us on the 3rd and 4th February 2023, at our new venue of The University of
-							Nicosia, and feel the passion of debate on a range of crucial international issues.
+							We have a terrific team of students working to make our 18th Annual Conference a reality. Our conference
+							theme this year will be Building Resilience; stressing the need to facilitate global strength and security
+							against the conflicts and vulnerabilities faced by today
+							<span>&apos;</span>s modern society. We hope that you will join us on the 3rd and 4th February 2023, at
+							our new venue of The University of Nicosia, and feel the passion of debate on a range of crucial
+							international issues.
 						</Text>
 					</div>
 					<div className={style.section3}>
@@ -197,27 +190,14 @@ export default function HomePage(props) {
 					</div>
 					<div className={style.section4}>
 						<div>
-							<Text
-								className={style.herotext5}
-								h1
-								size={120}
-								weight="bold">
+							<TextC fontWeight="700" className={style.herotext5} h1 size={120} weight="bold">
 								Want to join?
-							</Text>
-							<Text
-								className={style.herotext5}
-								h1
-								size={120}
-								weight="bold">
+							</TextC>
+							<Text className={style.herotext5} h1 size={120} weight="bold">
 								Sign Up Today to apply!
 							</Text>
 							<Spacer y={2} />
-							<Button
-								onPress={() => router.replace("/sign-up")}
-								css={{ width: "100px", borderRadius: "50px" }}
-								size="lg"
-								color="#FFFFFF"
-								className={style.createbutton}>
+							<Button onClick={() => router.push("/sign-up")} color="#000" width="200px" ml={1} back>
 								Create Your Account
 							</Button>
 						</div>
@@ -230,7 +210,7 @@ export default function HomePage(props) {
 	if (session) {
 		return (
 			<Layout page={"Register"}>
-				<h2>{greeting + ", " + session.user.display_name || session.user.official_name}</h2>
+				<h2>{greeting + ", " + (session.user.displayName || session.user.officialName)}</h2>
 			</Layout>
 		);
 	}

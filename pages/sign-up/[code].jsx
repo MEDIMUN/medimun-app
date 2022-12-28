@@ -1,4 +1,4 @@
-import prisma from "../../client";
+import prisma from "../../prisma/client";
 
 import { Button, Loading, Spacer, Input } from "@nextui-org/react";
 import Pagelayout from "../../components/page/layout/layout";
@@ -14,7 +14,7 @@ export async function getServerSideProps(context) {
 	try {
 		const pendingUser = await prisma.pendingUser.findFirst({
 			where: {
-				email_verification_code: code,
+				emailVerificationCode: code,
 			},
 		});
 		console.log(pendingUser);
@@ -36,20 +36,20 @@ export async function getServerSideProps(context) {
 			})) != null
 		);
 
-		if (pendingUser.email_verification_code == code) {
+		if (pendingUser.emailVerificationCode == code) {
 			console.log("TRUE");
 			const user = await prisma.user.create({
 				data: {
 					email: pendingUser.email,
 					password: pendingUser.password,
-					official_name: pendingUser.official_name,
-					official_surname: pendingUser.official_surname,
-					display_name: pendingUser.display_name,
-					display_surname: pendingUser.display_surname,
-					date_of_birth: pendingUser.date_of_birth,
+					officialName: pendingUser.officialName,
+					officialSurname: pendingUser.officialSurname,
+					displayName: pendingUser.displayName,
+					displaySurname: pendingUser.displaySurname,
+					dateOfBirth: pendingUser.dateOfBirth,
 					role: pendingUser.role,
 					userNumber: userId,
-					username: null,
+					username: "",
 				},
 			});
 

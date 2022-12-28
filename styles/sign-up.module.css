@@ -24,7 +24,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh);
   height: auto;
   width: 100%;
   display: flex;

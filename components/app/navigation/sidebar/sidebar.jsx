@@ -2,7 +2,16 @@ import { useState, useContext, useMemo } from "react";
 import { useSession, signOut } from "next-auth/react";
 import AppContext from "../../context/Navigation";
 import { IoSettings } from "react-icons/io5";
-import { Menu, MenuButton, MenuList, MenuItem, MenuItemOption, MenuGroup, MenuOptionGroup, MenuDivider } from "@chakra-ui/react";
+import {
+	Menu,
+	MenuButton,
+	MenuList,
+	MenuItem,
+	MenuItemOption,
+	MenuGroup,
+	MenuOptionGroup,
+	MenuDivider,
+} from "@chakra-ui/react";
 import style from "./sidebar.module.css";
 import { useRouter } from "next/router";
 
@@ -37,15 +46,15 @@ function Sidebar(props) {
 	if (!session) {
 		username = " ";
 	} else {
-		username = (session.user.display_name || session.user.official_name) + " " + (session.user.display_surname || session.user.official_surname);
+		username =
+			(session.user.displayName || session.user.officialName) +
+			" " +
+			(session.user.displaySurname || session.user.officialSurname);
 	}
 
-	//const username = "Youksel Koch";
 	function shorten(str, n) {
 		return str.length > n ? str.slice(0, n - 1) + "..." : str;
 	}
-
-	//const loading = status === "loading";
 
 	function logOutHandler() {
 		signOut({ callbackUrl: "/" });
@@ -56,19 +65,11 @@ function Sidebar(props) {
 		<div className={style.sidebar}>
 			<div className={style.one}>
 				<div className={style.logo}>
-					<Logo
-						color="blue"
-						width={136}
-						height={34}
-					/>
+					<Logo color="blue" width={136} height={34} />
 				</div>
 				<Spacer y={0.5} />
 
-				<SidebarUsersButton
-					text={"Home"}
-					href={"/"}
-					icon={<HomeIcon className={style.icon} />}
-				/>
+				<SidebarUsersButton text={"Home"} href={"/"} icon={<HomeIcon className={style.icon} />} />
 
 				{session && session.user.role !== 0 ? (
 					<SidebarUsersButton
@@ -87,33 +88,17 @@ function Sidebar(props) {
 				/>
 
 				{session && session.user.role !== "User" ? (
-					<SidebarUsersButton
-						text={"Tasks"}
-						href={"/app/tasks"}
-						icon={<TasksIcon className={style.icon} />}
-					/>
+					<SidebarUsersButton text={"Tasks"} href={"/app/tasks"} icon={<TasksIcon className={style.icon} />} />
 				) : null}
 
-				<SidebarUsersButton
-					text={"Schedule"}
-					href={"/app/schedule"}
-					icon={<ProgrammeIcon className={style.icon} />}
-				/>
+				<SidebarUsersButton text={"Schedule"} href={"/app/schedule"} icon={<ProgrammeIcon className={style.icon} />} />
 
 				<Spacer y={1} />
-				<SidebarUsersButton
-					text={"Email"}
-					href={"/app/email"}
-					icon={<EmailerIcon className={style.icon} />}
-				/>
+				<SidebarUsersButton text={"Email"} href={"/app/email"} icon={<EmailerIcon className={style.icon} />} />
 
 				<Spacer y={1} />
 
-				<SidebarUsersButton
-					text={"Users"}
-					href={"/users"}
-					icon={<UserIcon className={style.icon} />}
-				/>
+				<SidebarUsersButton text={"Users"} href={"/users"} icon={<UserIcon className={style.icon} />} />
 				<SidebarUsersButton
 					text={"Committees"}
 					href={"/app/committees"}
@@ -142,23 +127,16 @@ function Sidebar(props) {
 					</div>
 				)}
 
-				<Button
-					_hover={{}}
-					onClick={toggleSidebar}
-					backgroundColor="transparent">
+				<Button _hover={{}} onClick={toggleSidebar} backgroundColor="transparent">
 					<div className={style.optionsmenu}>
 						<User
 							css={{ paddingLeft: "0px" }}
 							src="https://avatars.githubusercontent.com/u/90158764?v=4"
 							name={shorten(username, 18)}
-							description={session ? session.user.roles[0].role : "User"}
+							description={session ? session.user.roles[0].role : "Applicant"}
 						/>
 						<div className={style.settingsIconHolder}>
-							<IoSettings
-								width="40px"
-								height="40px"
-								className={style.settingsIcon}
-							/>
+							<IoSettings width="40px" height="40px" className={style.settingsIcon} />
 						</div>
 					</div>
 				</Button>

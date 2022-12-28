@@ -1,5 +1,5 @@
 import { getSession } from "next-auth/react";
-import prisma from "../../../client";
+import prisma from "../../../prisma/client";
 var Minio = require("minio");
 
 export default async function handler(req, res) {
@@ -27,11 +27,21 @@ export default async function handler(req, res) {
 
 	minioClient.removeObject("profile-pictures", `${user.userNumber}`, function (err, etag) {
 		if (err) {
-			res
-				.status(500)
-				.json({ title: "Error", description: "An error occured while removing the profile picture", status: "error", duration: 5000, isClosable: true });
+			res.status(500).json({
+				title: "Error",
+				description: "An error occured while removing the profile picture",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 			return console.log(err, etag);
 		}
 	});
-	res.status(200).json({ title: "Success", description: "Profile picture has been removed", status: "success", duration: 5000, isClosable: true });
+	res.status(200).json({
+		title: "Success",
+		description: "Profile picture has been removed",
+		status: "success",
+		duration: 5000,
+		isClosable: true,
+	});
 }

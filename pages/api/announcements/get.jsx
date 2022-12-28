@@ -1,5 +1,5 @@
 import { getSession } from "next-auth/react";
-import prisma from "../../../client";
+import prisma from "../../../prisma/client";
 
 export async function handler(req, res) {
 	if (req.method !== "GET") {
@@ -12,8 +12,6 @@ export async function handler(req, res) {
 		res.status(401).json({ message: "access denied" });
 		return;
 	}
-
-	prisma.$connect();
 
 	if (role === 0) {
 		const announcements = prisma.announcementFor.findMany({});

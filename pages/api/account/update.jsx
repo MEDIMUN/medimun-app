@@ -1,5 +1,6 @@
 import { getSession } from "next-auth/react";
 import CapitaliseEachWord from "../../../lib/capitalise-each-word";
+import prisma from "../../../prisma/client";
 
 export default async function UpdateAccount(req, res) {
 	if (req.method === "PATCH") {
@@ -34,41 +35,79 @@ export default async function UpdateAccount(req, res) {
 		let reqDisplayNameToggle = userinfo.display_names_toggle;
 
 		if (reqOfficialName.length > 20) {
-			res.status(400).json({ title: "Official Name Problem", description: "Official name is too long", status: "error", duration: 1250, isClosable: true });
+			res.status(400).json({
+				title: "Official Name Problem",
+				description: "Official name is too long",
+				status: "error",
+				duration: 1250,
+				isClosable: true,
+			});
 			return;
 		}
 
 		if (reqOfficialSurname.length > 20) {
-			res
-				.status(400)
-				.json({ title: "Official Surname Problem", description: "Official surname is too long", status: "error", duration: 1250, isClosable: true });
+			res.status(400).json({
+				title: "Official Surname Problem",
+				description: "Official surname is too long",
+				status: "error",
+				duration: 1250,
+				isClosable: true,
+			});
 			return;
 		}
 
 		if (reqDisplayName.length > 20) {
-			res.status(400).json({ title: "Display Name Problem", description: "Display name is too long", status: "error", duration: 1250, isClosable: true });
+			res.status(400).json({
+				title: "Display Name Problem",
+				description: "Display name is too long",
+				status: "error",
+				duration: 1250,
+				isClosable: true,
+			});
 			return;
 		}
 
 		if (reqDisplaySurname.length > 20) {
-			res.status(400).json({ title: "Display Surname Problem", description: "Display surname is too long", status: "error", duration: 1250, isClosable: true });
+			res.status(400).json({
+				title: "Display Surname Problem",
+				description: "Display surname is too long",
+				status: "error",
+				duration: 1250,
+				isClosable: true,
+			});
 			return;
 		}
 
 		if (reqPronoun1.length > 5) {
-			res.status(400).json({ title: "Pronoun 1 Problem", description: "Pronoun is too long", status: "error", duration: 1250, isClosable: true });
+			res.status(400).json({
+				title: "Pronoun 1 Problem",
+				description: "Pronoun is too long",
+				status: "error",
+				duration: 1250,
+				isClosable: true,
+			});
 			return;
 		}
 
 		if (reqPronoun2.length > 5) {
-			res.status(400).json({ title: "Pronoun 2 Problem", description: "Pronoun is too long", status: "error", duration: 1250, isClosable: true });
+			res.status(400).json({
+				title: "Pronoun 2 Problem",
+				description: "Pronoun is too long",
+				status: "error",
+				duration: 1250,
+				isClosable: true,
+			});
 			return;
 		}
 
 		if (reqProfileVisibility < 1 || reqProfileVisibility > 6) {
-			res
-				.status(400)
-				.json({ title: "Profile Visibility Problem", description: "Profile visibility is invalid", status: "error", duration: 1250, isClosable: true });
+			res.status(400).json({
+				title: "Profile Visibility Problem",
+				description: "Profile visibility is invalid",
+				status: "error",
+				duration: 1250,
+				isClosable: true,
+			});
 			return;
 		}
 
@@ -84,9 +123,13 @@ export default async function UpdateAccount(req, res) {
 		}
 
 		if (typeof reqShowPhoneNumber != "boolean") {
-			res
-				.status(400)
-				.json({ title: "Show Phone Number Problem", description: "Show phone number option is invalid", status: "error", duration: 1250, isClosable: true });
+			res.status(400).json({
+				title: "Show Phone Number Problem",
+				description: "Show phone number option is invalid",
+				status: "error",
+				duration: 1250,
+				isClosable: true,
+			});
 			return;
 		}
 
@@ -150,22 +193,28 @@ export default async function UpdateAccount(req, res) {
 				userNumber: user.userNumber,
 			},
 			data: {
-				official_name: reqOfficialName || user.official_name,
-				official_surname: reqOfficialSurname || user.official_surname,
-				display_name: displayNameHolder,
-				display_surname: displaySurnameHolder,
-				date_of_birth: reqDateOfBirth || user.date_of_birth,
+				officialName: reqOfficialName || user.official_name,
+				officialSurname: reqOfficialSurname || user.official_surname,
+				displayName: displayNameHolder,
+				displaySurname: displaySurnameHolder,
+				dateOfBirth: reqDateOfBirth || user.date_of_birth,
 				pronoun1: pronoun1Holder,
 				pronoun2: pronoun2Holder,
 				profileVisibility: parseInt(reqProfileVisibility) || user.profile_visibility,
-				OrganiserProfileVisibility: parseInt(reqProfileOrganiserVisibility) || user.organiser_profile_visibility,
-				show_phone_number: reqShowPhoneNumber || user.show_phone_number,
-				allow_messages_from_everyone: reqAllowPublicMessaging || user.allow_public_messaging,
+				organiserProfileVisibility: parseInt(reqProfileOrganiserVisibility) || user.organiser_profile_visibility,
+				showPhoneNumber: reqShowPhoneNumber || user.show_phone_number,
+				allowMessagesFromEveryone: reqAllowPublicMessaging || user.allow_public_messaging,
 			},
 		});
 
 		if (update) {
-			res.status(200).json({ title: "Success", description: "Profile updated successfully", status: "success", duration: 1250, isClosable: true });
+			res.status(200).json({
+				title: "Success",
+				description: "Profile updated successfully",
+				status: "success",
+				duration: 1250,
+				isClosable: true,
+			});
 			return;
 		}
 

@@ -35,11 +35,8 @@ function Pagelayout(props) {
 	return (
 		<Fragment>
 			<Landscape />
-			<PageNavbar
-				backgroundColor={props.backgroundColor}
-				className={style.navbar}
-			/>
-			{props.children}
+			<PageNavbar backgroundColor={props.backgroundColor} className={style.navbar} />
+			<main className={style.page}> {props.children}</main>
 			<PageFooter className={style.footer} />
 		</Fragment>
 	);
