@@ -141,5 +141,8 @@ a {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
 
+.d {
+  justify-content: space-between;
 }

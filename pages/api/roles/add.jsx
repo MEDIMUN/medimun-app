@@ -298,7 +298,6 @@ export default async function handler(req, res) {
 			if (same) {
 				return alredyAdded();
 			}
-			console.log(peasantUser.user.id);
 			const response = await prisma.seniorDirector.create({
 				data: { userId: peasantUser.user.id },
 			});
@@ -319,7 +318,6 @@ export default async function handler(req, res) {
 			if (same) {
 				return alredyAdded();
 			}
-			console.log(peasantUser);
 			const response = await prisma.globalAdmin.create({
 				data: { user: { connect: { id: peasantUser.user.id } } },
 			});

@@ -152,7 +152,6 @@ export default function AccountPage(props) {
 					position: "top",
 				});
 			}
-			console.log(response);
 		} catch (error) {
 			if (error.response) {
 				if (!toast.isActive("error")) {
@@ -167,17 +166,11 @@ export default function AccountPage(props) {
 					});
 				}
 				// get response with a status code not in range 2xx
-				console.log(error.response.data);
-				console.log(error.response.status);
-				console.log(error.response.headers);
 			} else if (error.request) {
 				// no response
-				console.log(error.request);
 			} else {
 				// Something wrong in setting up the request
-				console.log("Error", error.message);
 			}
-			console.log(error.config);
 		}
 
 		set_profile_picture(false);
@@ -211,7 +204,6 @@ export default function AccountPage(props) {
 					position: "top",
 				});
 			}
-			console.log(response);
 		} catch (error) {
 			if (error.response) {
 				if (!toast.isActive("error")) {
@@ -236,7 +228,6 @@ export default function AccountPage(props) {
 	}
 
 	async function submitHandler() {
-		console.log(display_names_toggle);
 		setLoading(true);
 		official_name = official_name_ref.current.value;
 		official_surname = official_surname_ref.current.value;
@@ -375,7 +366,7 @@ export default function AccountPage(props) {
 					}}
 					className={style.nameholder}>
 					<div className={style.picture}>
-						<Avatar className={style.pfp} borderRadius="25%" src={`${props.profilePictureLink}`} />
+						<Avatar className={style.pfp} borderRadius="50%" src={`${props.profilePictureLink}`} />
 					</div>
 				</div>
 				<Spacer y={4} />
@@ -727,18 +718,18 @@ export async function getServerSideProps(context) {
 
 	return {
 		props: {
-			official_name: user.official_name,
-			official_surname: user.official_surname,
-			display_name: user.display_name,
-			display_surname: user.display_surname,
+			official_name: user.officialName,
+			official_surname: user.officialSurname,
+			display_name: user.displayName,
+			display_surname: user.displaySurname,
 			pronoun1: user.pronoun1,
 			pronoun2: user.pronoun2,
 			phone_number: user.phoneNumber,
 			email: user.email,
 			profile_visibility: user.profileVisibility,
-			organiser_profile_visibility: user.OrganiserProfileVisibility,
-			show_phone_number: user.show_phone_number,
-			allow_public_messaging: user.allow_messages_from_everyone,
+			organiser_profile_visibility: user.organiserProfileVisibility,
+			show_phone_number: user.showPhoneNumber,
+			allow_public_messaging: user.allowMessagesFromEveryone,
 			useDisplayNames: useDisplayNames,
 			usePronouns: usePronouns,
 			profilePictureLink: await minioClient.presignedGetObject("profile-pictures", `${user.userNumber}`, 6 * 60 * 60),

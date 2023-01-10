@@ -16,9 +16,6 @@ export default async function handler(req, res) {
 		const display_name = data.display_name;
 		const display_surname = data.display_surname;
 		const date_of_birth = data.dob + "T00:00:00.000+00:00";
-
-		console.log(data);
-
 		const usersWithSameEmail = await prisma.user
 			.count({
 				where: {
@@ -35,8 +32,6 @@ export default async function handler(req, res) {
 		if (usersWithSameEmail > 0) {
 			return;
 		}
-
-		console.log("SAME" + usersWithSameEmail);
 
 		const usersWithSamePendingEmail = await prisma.pendingUser.count({
 			where: {

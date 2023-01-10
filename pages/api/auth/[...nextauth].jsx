@@ -316,9 +316,6 @@ export default NextAuth({
 						delete role.isCurrent;
 						return role;
 					});
-
-				console.log(current);
-
 				const pastroles = [
 					...seniorDirectorRole,
 					...sgRole,

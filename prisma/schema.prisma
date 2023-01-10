@@ -72,12 +72,17 @@ model User {
 }
 
 model Session {
-  id                            String                                     @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   //
-  isCurrent                     Boolean                                    @default(false)
-  number                        Int                                        @unique
+  isCurrent   Boolean @default(false)
+  number      Int     @unique
   //
-  theme                         String                                     @default("")
+  phrase1     String  @default("")
+  phrase2     String  @default("")
+  //
+  description String  @default("")
+  welcomeText String  @default("")
+
   explanation                   String                                     @default("")
   //
   committee                     Committee[]

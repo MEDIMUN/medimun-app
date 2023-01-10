@@ -9,16 +9,12 @@ export default async function UpdateAccount(req, res) {
 			res.status(401).json({ message: "Not authenticated" });
 			return;
 		}
-
-		console.log(session);
-
 		const user = await prisma.user.findFirst({
 			where: {
 				userNumber: await session.user.userNumber,
 			},
 		});
 
-		console.log(req.body);
 		const userinfo = req.body;
 		let reqOfficialName = CapitaliseEachWord(userinfo.official_name.trim());
 		let reqOfficialSurname = CapitaliseEachWord(userinfo.official_surname.trim());
@@ -168,7 +164,6 @@ export default async function UpdateAccount(req, res) {
 
 		let displayNameHolder;
 		let displaySurnameHolder;
-		console.log(reqDisplayNameToggle);
 		if (reqDisplayNameToggle == false) {
 			displayNameHolder = "";
 			displaySurnameHolder = "";

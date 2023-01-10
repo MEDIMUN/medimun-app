@@ -285,7 +285,6 @@ export async function findUserDetails(user) {
 				username: user.slice(1).toString(),
 			},
 		});
-		console.log(Query);
 		userNumber = Query.userNumber;
 	} else {
 		Query = await prisma.user.findFirst({
@@ -525,8 +524,6 @@ export async function findUserDetails(user) {
 		Applicant: 11,
 		Alumni: 11,
 	};
-
-	console.log([...allFullCurrentRoles, ...allFullPastRoles]);
 
 	return {
 		user: Query,

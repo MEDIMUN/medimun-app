@@ -14,7 +14,6 @@ export default function UsersPage(props) {
 	const [isLoading, setIsLoading] = useState(true);
 
 	if (session) {
-		console.log("session");
 		return (
 			<Layout>
 				<UserPage props={props} />
@@ -23,7 +22,6 @@ export default function UsersPage(props) {
 	}
 
 	if (!session) {
-		console.log("NO session");
 		return (
 			<Pagelayout backgroundColor="white">
 				<Spacer y={2.5} />
@@ -108,8 +106,6 @@ export async function getServerSideProps(context) {
 			},
 		});
 	} else if (userquery.match(/^[0-9]+$/) && userquery.length == 10) {
-		console.log("User is a number");
-
 		user = await prisma.user.findFirst({
 			where: {
 				userNumber: userquery,
@@ -317,8 +313,6 @@ export async function getServerSideProps(context) {
 		school = user.SchoolMember[0].school.name;
 	}
 
-	console.log(pastroles);
-
 	return {
 		props: {
 			userinfo: {
@@ -331,8 +325,10 @@ export async function getServerSideProps(context) {
 			},
 			currentroles,
 			pastroles,
-			profilePictureLink: await minioClient.presignedGetObject("profile-pictures", `${user.userNumber}`, 6 * 60 * 60),
-			coverImageLink: await minioClient.presignedGetObject("cover-images", `${user.userNumber}`, 6 * 60 * 60),
+			/* 			profilePictureLink: await minioClient.presignedGetObject("profile-pictures", `${user.userNumber}`, 6 * 60 * 60),
+			coverImageLink: await minioClient.presignedGetObject("cover-images", `${user.userNumber}`, 6 * 60 * 60), */
+			profilePictureLink: "/public",
+			coverImageLink: "/public",
 		},
 	};
 }

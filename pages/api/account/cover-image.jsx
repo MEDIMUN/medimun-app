@@ -64,7 +64,6 @@ export default async function (req, res) {
 			file.mimetype !== "image/jpg" &&
 			file.mimetype !== "image/gif"
 		) {
-			console.log("ANANAIN AMI");
 			fs.unlink(`${dir}/${user.userNumber}`, function (err) {
 				if (err) {
 					console.log("ERROR: " + err);
@@ -95,9 +94,6 @@ export default async function (req, res) {
 			});
 			return;
 		}
-
-		console.log(file.mimetype); // => string
-		console.log(file.size); // => object
 	});
 	form.parse(req, (err, fields, files) => {
 		fs.rename(`${dir}/${files.file.newFilename}`, `${dir}/${filename}`, function (err) {

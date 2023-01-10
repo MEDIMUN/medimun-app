@@ -9,13 +9,15 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Button, Text as TextC } from "@chakra-ui/react";
+import prisma from "../prisma/client";
 
+/** @param {import('next').InferGetStaticPropsType<typeof getStaticProps> } props */
 export default function HomePage(props) {
 	const router = useRouter();
 	const [height, setHeight] = useState();
 	const [year, setYear] = useState();
-	const [herotext1, setherotext1] = useState("Building Resilience");
-	const [herotext2, setherotext2] = useState("A Transformative Agenda");
+	const [herotext1, setherotext1] = useState(props.currentSession.phrase1 || "");
+	const [herotext2, setherotext2] = useState(props.currentSession.phrase2 || "");
 	const section2 = useRef(null);
 	const { data: session, status } = useSession();
 	var time = new Date();
@@ -56,7 +58,6 @@ export default function HomePage(props) {
 
 		if (section > 0.75) {
 			r.style.setProperty("--index-hero-translate-y", `${(section * 300 - 225) * 1}px`);
-			console.log((section * 300 - 225) * 1);
 		} else {
 			r.style.setProperty("--index-hero-translate-y", "0px");
 		}
@@ -66,8 +67,8 @@ export default function HomePage(props) {
 				"--index-section3-image",
 				"repeating-linear-gradient(45deg, #000000, #000000 10px, #181818 10px, #181818 20px)"
 			);
-			setherotext1("Building Resilience");
-			setherotext2("A Transformative Agenda");
+			setherotext1(props.currentSession.phrase1 || "");
+			setherotext2(props.currentSession.phrase2 || "");
 		} else {
 			r.style.setProperty(
 				"--index-section3-image",
@@ -123,7 +124,7 @@ export default function HomePage(props) {
 							</Button>
 						</div>
 						<div className={style.section0image}>
-							<div onLoad={() => console.log("loaded")} className={style.imageherocolor}></div>
+							<div className={style.imageherocolor}></div>
 						</div>
 						<div className={style.section0text}>
 							<div>
@@ -214,4 +215,35 @@ export default function HomePage(props) {
 			</Layout>
 		);
 	}
+}
+
+export async function getStaticProps() {
+	const currentSession = await prisma.session.findFirst({
+		where: {
+			isCurrent: true,
+		},
+		select: {
+			phrase1: true,
+			phrase2: true,
+			number: true,
+		},
+	});
+	if (!currentSession) {
+		return {
+			props: {
+				currentSession: {
+					phrase1: "Welcome to",
+					phrase2: "MEDIMUN 2023",
+					welcomeText: "TBA",
+				},
+			},
+			revalidate: 450,
+		};
+	}
+	return {
+		props: {
+			currentSession: currentSession,
+		},
+		revalidate: 450,
+	};
 }

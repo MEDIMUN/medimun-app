@@ -17,7 +17,6 @@ export async function getServerSideProps(context) {
 				emailVerificationCode: code,
 			},
 		});
-		console.log(pendingUser);
 		if (!pendingUser) {
 			return {
 				notFound: true,
@@ -37,7 +36,6 @@ export async function getServerSideProps(context) {
 		);
 
 		if (pendingUser.emailVerificationCode == code) {
-			console.log("TRUE");
 			const user = await prisma.user.create({
 				data: {
 					email: pendingUser.email,
@@ -49,7 +47,6 @@ export async function getServerSideProps(context) {
 					dateOfBirth: pendingUser.dateOfBirth,
 					role: pendingUser.role,
 					userNumber: userId,
-					username: "",
 				},
 			});
 

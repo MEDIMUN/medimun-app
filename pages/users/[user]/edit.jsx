@@ -35,13 +35,6 @@ function Title(props) {
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function AccountPage(props) {
-	/* 	console.log(props.canEditInfo);
-	console.log(props.availableRoleAssignments);
-	console.log(props.availableCommitteeAssignments);
-	console.log(props.availableTeamAssignments);
-	console.log(props.availableSessionAssignments); */
-	console.log(props.availableSessionAssignments);
-
 	const official_name_ref = useRef(props.official_name);
 	const official_surname_ref = useRef(props.official_surname);
 	const [display_names_toggle, set_display_names_toggle] = useState(props.useDisplayNames);
@@ -989,7 +982,7 @@ export async function getServerSideProps(context) {
 		secretKey: "BPbpMinio2006!",
 	});
 
-	if (linkUser.display_name || linkUser.display_surname) {
+	if (linkUser.displayName || linkUser.displaySurname) {
 		useDisplayNames = true;
 	}
 
@@ -1034,13 +1027,6 @@ export async function getServerSideProps(context) {
 	} catch (error) {
 		coverImageLink = "/public/cover-image-placeholder";
 	}
-
-	console.log(availableSessionAssignments);
-
-	console.log(await profilePictureLink);
-	console.log(await coverImageLink);
-
-	console.log(availableSessionAssignments);
 
 	return {
 		props: {
