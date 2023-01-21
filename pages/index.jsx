@@ -1,4 +1,4 @@
-import Pagelayout from "../components/page/layout/layout";
+import Pagelayout from "../page-components/layout";
 import { getSession, useSession } from "next-auth/react";
 import Layout from "../app-components/layout";
 import Image from "next/image";

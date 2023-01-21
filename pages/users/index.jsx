@@ -6,10 +6,13 @@ import { DeleteIcon } from "../../components/app/pages/users/icons/DeleteIcon";
 import { useRouter } from "next/router";
 import { useSession, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
+import style from "../../styles/users.module.css";
 
-import { Table, User } from "@nextui-org/react";
+import { Spacer, Table, User, useAsyncList } from "@nextui-org/react";
 
 import Layout from "../../app-components/layout";
+import { Text, Button, Input } from "@chakra-ui/react";
+import prisma from "../../prisma/client";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 function UsersPage(props) {
@@ -38,31 +41,70 @@ function UsersPage(props) {
 
 	return (
 		<Layout>
+			<div className={style.buttonGroup}>
+				<Button backgroundColor="var(--mediblue)" color="white" mr={2}>
+					Add User
+				</Button>
+				<Button backgroundColor="var(--mediblue)" color="white" mr={2}>
+					Verify New User
+				</Button>
+				<Button mr={2}>Lock Account</Button>
+				<Button mr={2}>Unlock Account</Button>
+				<Button mr={2}>Unlock Account</Button>
+			</div>
+
+			<div className="fdr">
+				<Input color="black" backgroundColor="#EDF2F7" mr={2} mt={2} placeholder="Search User" size="md" />
+				<Button mt={2}>Search</Button>
+			</div>
+
+			<Spacer y={0.5} />
 			<Table
+				bordered="false"
+				compact
+				shadow={false}
+				css={{
+					height: "auto",
+					minWidth: "100%",
+				}}
 				selectionMode="multiple"
-				bordered>
+				headerLined>
 				<Table.Header>
 					<Table.Column>USER</Table.Column>
-					<Table.Column>COMMITTEE</Table.Column>
-					<Table.Column>STATUS</Table.Column>
+					<Table.Column>EMAIL</Table.Column>
 					<Table.Column>ACTIONS</Table.Column>
-					<Table.Column>ALUMNI</Table.Column>
+					<Table.Column>PHONE</Table.Column>
 				</Table.Header>
 				<Table.Body>
-					<Table.Row key="1">
-						<Table.Cell>
-							<User
-								squared
-								name="John Doe"
-								css={{ p: 0 }}>
-								hello
-							</User>
-						</Table.Cell>
-						<Table.Cell>CEO</Table.Cell>
-						<Table.Cell>Active</Table.Cell>
-						<Table.Cell>ACTION</Table.Cell>
-						<Table.Cell>ALUMNI</Table.Cell>
-					</Table.Row>
+					{props.users.map((user) => (
+						<Table.Row key={user.userNumber}>
+							<Table.Cell>{user.officialName + " " + user.officialSurname}</Table.Cell>
+							<Table.Cell>{user.email}</Table.Cell>
+							<Table.Cell>
+								{user.userNumber !== session.user.userNumber ? (
+									<Button
+										isLoading={isLoading}
+										onClick={() => {
+											router.push(`/users/${user.userNumber}/edit`);
+											setIsLoading(true);
+										}}>
+										Edit
+									</Button>
+								) : (
+									<Button
+										color="red"
+										isLoading={isLoading}
+										onClick={() => {
+											router.push("/account");
+											setIsLoading(true);
+										}}>
+										Account
+									</Button>
+								)}
+							</Table.Cell>
+							<Table.Cell></Table.Cell>
+						</Table.Row>
+					))}
 				</Table.Body>
 			</Table>
 		</Layout>
@@ -82,7 +124,18 @@ export async function getServerSideProps(context) {
 			},
 		};
 	}
+	const users = await prisma.user.findMany({
+		select: {
+			officialName: true,
+			officialSurname: true,
+			email: true,
+			phoneNumber: true,
+			userNumber: true,
+			delegate: true,
+		},
+	});
+	console.log(users);
 	return {
-		props: { session },
+		props: { session, users },
 	};
 }

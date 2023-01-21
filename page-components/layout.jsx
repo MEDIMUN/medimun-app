@@ -4,12 +4,13 @@ import { getSession, useSession } from "next-auth/react";
 
 import style from "./layout.module.css";
 
-import PageNavbar from "../navigation/navbar/navbar";
-import PageFooter from "../navigation/footer/footer";
-import Landscape from "../../../common-components/popups/landscape";
+import PageNavbar from "./navigation/navbar";
+import PageFooter from "./navigation/footer";
+import Landscape from "../common-components/popups/landscape";
 import { IoPeopleSharp } from "react-icons/io5";
+import { Spacer } from "@nextui-org/react";
 
-function Pagelayout(props) {
+export default function Pagelayout(props) {
 	const router = useRouter();
 	const { data: session, status } = useSession();
 
@@ -25,21 +26,19 @@ function Pagelayout(props) {
 	}, [router]);
 
 	if (isLoading) {
-		return (
-			<PageNavbar>
-				<p>Loading</p>
-			</PageNavbar>
-		);
+		return <p>Loading</p>;
 	}
 
 	return (
 		<Fragment>
-			<Landscape />
-			<PageNavbar backgroundColor={props.backgroundColor} className={style.navbar} />
-			<main className={style.page}> {props.children}</main>
-			<PageFooter className={style.footer} />
+			<Landscape className={style.navbar} />
+			<navbar>
+				<PageNavbar backgroundColor={props.backgroundColor} />
+			</navbar>
+			<main className={style.page}>{props.children}</main>
+			<footer>
+				<PageFooter className={style.footer} />
+			</footer>
 		</Fragment>
 	);
 }
-
-export default Pagelayout;

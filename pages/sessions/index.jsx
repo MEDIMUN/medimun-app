@@ -20,7 +20,7 @@ import {
 	ModalFooter,
 } from "@chakra-ui/react";
 import Layout from "../../app-components/layout";
-import Pagelayout from "../../components/page/layout/layout";
+import Pagelayout from "../../page-components/layout";
 import useSWR from "swr";
 import style from "../../styles/session.module.css";
 import prisma from "../../prisma/client";
@@ -128,12 +128,7 @@ export function SessionPageContent({ sessions, currentRoles }) {
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
-			<div className="fdr d">
-				<Text ml={2} fontWeight="650" fontSize="2xl">
-					Sessions
-				</Text>
-				{edit && <Button onClick={onOpen}>Create</Button>}
-			</div>
+			<div className="fdr d">{edit && <Button onClick={onOpen}>Create</Button>}</div>
 
 			<Text ml={2} fontWeight="600" fontSize="2xl">
 				Current Session

@@ -15,9 +15,10 @@ import {
 import style from "./sidebar.module.css";
 import { useRouter } from "next/router";
 
-import { Spacer, User } from "@nextui-org/react";
+import { Navbar, Spacer, User } from "@nextui-org/react";
 import SidebarUsersButton from "./button/button";
 import { Button } from "@chakra-ui/react";
+import { GrFormClose as IoCloseCircleOutline } from "react-icons/gr";
 
 import {
 	UserIcon,
@@ -59,12 +60,16 @@ function Sidebar(props) {
 	function logOutHandler() {
 		signOut({ callbackUrl: "/" });
 	}
+	const setSidebar = props.setSidebar;
 
 	const name = props.name;
 	return (
 		<div className={style.sidebar}>
 			<div className={style.one}>
 				<div className={style.logo}>
+					<div className={style.closeButtonWrapper}>
+						<IoCloseCircleOutline onClick={() => setSidebar(false)} className={style.closeButton} />
+					</div>
 					<Logo color="blue" width={136} height={34} />
 				</div>
 				<Spacer y={0.5} />
@@ -74,7 +79,7 @@ function Sidebar(props) {
 				{session && session.user.role !== 0 ? (
 					<SidebarUsersButton
 						text={"My Committee"}
-						href={"/app/my-committee"}
+						href={"/my-committee"}
 						icon={<CommitteesIcon className={style.icon} />}
 					/>
 				) : null}
@@ -112,17 +117,13 @@ function Sidebar(props) {
 
 				<Spacer y={1} />
 
-				<SidebarUsersButton
-					text={"Confence"}
-					href={"/app/conference"}
-					icon={<ConferenceIcon className={style.icon} />}
-				/>
+				<SidebarUsersButton text={"Sessions"} href={"/sessions"} icon={<ConferenceIcon className={style.icon} />} />
 			</div>
 			<div className={style.two}>
 				{sidebarOpen && (
 					<div className={style.userOptions}>
 						<Button onClick={() => router.push("/account")}>Account Setting</Button>
-						<Button>Give Feedback</Button>
+						<Button onClick={() => window.open("https://forms.gle/GKSHK21Ej7QE2ASs9", "_blank")}>Give Feedback</Button>
 						<Button onClick={logOutHandler}>Sign Out</Button>
 					</div>
 				)}

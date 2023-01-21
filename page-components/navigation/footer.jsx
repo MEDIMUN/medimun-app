@@ -1,7 +1,7 @@
 import style from "./footer.module.css";
 import { BsInstagram, BsFacebook, BsYoutube } from "react-icons/bs";
 
-import Logo from "../../../common/branding/logo/main";
+import Logo from "../../components/common/branding/logo/main";
 import { Spacer, Text } from "@nextui-org/react";
 
 function PageFooter() {
@@ -10,12 +10,7 @@ function PageFooter() {
 		<footer>
 			<div className={style.footer}>
 				<div>
-					<Logo
-						className={style.logo}
-						color={"white"}
-						width={200}
-						height={50}
-					/>
+					<Logo className={style.logo} color={"white"} width={200} height={50} />
 				</div>
 
 				<div />

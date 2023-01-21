@@ -8,6 +8,36 @@
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
+  transition: all 0.5s ease;
+  z-index: 1000;
+}
+
+.closeButtonWrapper {
+  min-width: 50px !important;
+  min-height: 53.19px !important;
+  border-radius: 0 0 0 20px;
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white;
+}
+
+/* display query for phone
+ */
+@media only screen and (max-width: 600px) {
+  .closeButtonWrapper {
+    display: flex;
+  }
+}
+
+.closeButton {
+  width: 30px;
+  height: 30px;
+  color: #278CFF;
 }
 
 
@@ -28,8 +58,16 @@
   align-items: center;
   justify-content: left;
   width: 100%;
-
 }
+
+/* write a phone media query
+ */
+@media only screen and (max-width: 600px) {
+  .sidebar {
+    z-index: 1000;
+  }
+}
+
 
 .one {
   height: auto;

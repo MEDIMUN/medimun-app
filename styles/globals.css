@@ -146,3 +146,17 @@ a {
 .d {
   justify-content: space-between;
 }
+
+.pageTitle {
+  font-weight: 650;
+  font-size: 1.5rem;
+  background-color: #307AB7;
+  max-width: fit-content;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-transform: capitalize;
+  border-radius: 50px;
+  color: white;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  margin-top: 5px;
+}

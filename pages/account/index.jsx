@@ -674,7 +674,7 @@ export default function AccountPage(props) {
 				<Button ml={3} mr={3} onClick={onOpen}>
 					Save
 				</Button>
-				<Button onClick={() => router.push("/")}>Cancel</Button>
+				<Button onClick={() => router.back()}>Cancel</Button>
 			</div>
 		</Layout>
 	);
