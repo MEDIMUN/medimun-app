@@ -302,7 +302,7 @@ export default function SignUpPage(props) {
 
 
 O */}
-						{currentPage === 2 ? <div>The MEDIMUN App is the place where you can idk</div> : null}
+						{currentPage === 2 ? <div>This is a test build. If you complete the sign up form your application will be received but will not be processed until the app goes public. There are issues and incomplete parts of the site. Thanks for your understanding.</div> : null}
 						{/* N
 
 
