@@ -54,10 +54,11 @@ export default function HomePage(props) {
 			r.style.setProperty("--indexherofilter", 1);
 		} else {
 			r.style.setProperty("--indexherofilter", 1 - section);
+			console.log({ position, height, section });
 		}
 
 		if (section > 0.75) {
-			r.style.setProperty("--index-hero-translate-y", `${(section * 300 - 225) * 1}px`);
+			r.style.setProperty("--index-hero-translate-y", `${(section * 300 - 225) * 2.25}px`);
 		} else {
 			r.style.setProperty("--index-hero-translate-y", "0px");
 		}
@@ -79,7 +80,7 @@ export default function HomePage(props) {
 			setherotext2("");
 		}
 
-		if (section > 1.5) {
+		if (section > 1) {
 			const mediblueopacity = 1 - (section - 1.5) / 1;
 			if (mediblueopacity < 255) {
 				r.style.setProperty("--section3-photo-background", `rgba(41,127,201,${mediblueopacity})`);
@@ -89,8 +90,9 @@ export default function HomePage(props) {
 			}
 		}
 
-		if (section > 3.11) {
-			r.style.setProperty("--section3-images-translate-y", `${((section - 3.11) * height) / 3 - 10}px`);
+		if (section > 2) {
+			//			r.style.setProperty("--section3-images-translate-y", `${(section - 2.2) * height}px`);
+			r.style.setProperty("--section3-images-translate-y", "0px");
 		} else {
 			r.style.setProperty("--section3-images-translate-y", "0px");
 		}

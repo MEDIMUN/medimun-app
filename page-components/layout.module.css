@@ -10,13 +10,15 @@
   width: 100%;
 }
 
-.navbar {
+.pageNavbar {
   padding-top: auto;
   top: 0;
   z-index: 5;
-  position: fixed;
+  position: sticky !important;
+  width: 50%;
 }
 
 .page {
   min-height: 100vh;
+  position: relative;
 }

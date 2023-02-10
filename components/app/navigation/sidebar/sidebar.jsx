@@ -95,28 +95,23 @@ function Sidebar(props) {
 				{session && session.user.role !== "User" ? (
 					<SidebarUsersButton text={"Tasks"} href={"/app/tasks"} icon={<TasksIcon className={style.icon} />} />
 				) : null}
-
-				<SidebarUsersButton text={"Schedule"} href={"/app/schedule"} icon={<ProgrammeIcon className={style.icon} />} />
-
+				<SidebarUsersButton text={"Schedule"} href={"/programme"} icon={<ProgrammeIcon className={style.icon} />} />
 				<Spacer y={1} />
-				<SidebarUsersButton text={"Email"} href={"/app/email"} icon={<EmailerIcon className={style.icon} />} />
-
+				<SidebarUsersButton text={"Email"} href={"/email"} icon={<EmailerIcon className={style.icon} />} />
 				<Spacer y={1} />
-
 				<SidebarUsersButton text={"Users"} href={"/users"} icon={<UserIcon className={style.icon} />} />
-				<SidebarUsersButton
-					text={"Committees"}
-					href={"/app/committees"}
-					icon={<CommitteesIcon className={style.icon} />}
-				/>
-				<SidebarUsersButton
-					text={"Applications"}
-					href={"/app/applications"}
-					icon={<ApplicationsIcon className={style.icon} />}
-				/>
-
 				<Spacer y={1} />
-
+				<SidebarUsersButton text={"Committees"} href={"/committees"} icon={<CommitteesIcon className={style.icon} />} />
+				<SidebarUsersButton text={"Teams"} href={"/committees"} icon={<CommitteesIcon className={style.icon} />} />
+				{/* 
+						<SidebarUsersButton
+					  disabled
+					  text={"Applications"}
+					  href={"/app/applications"}
+					  icon={<ApplicationsIcon className={style.icon} />}
+				    />
+					*/}
+				<Spacer y={1} />
 				<SidebarUsersButton text={"Sessions"} href={"/sessions"} icon={<ConferenceIcon className={style.icon} />} />
 			</div>
 			<div className={style.two}>

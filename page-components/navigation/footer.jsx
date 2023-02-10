@@ -1,45 +1,64 @@
-import style from "./footer.module.css";
 import { BsInstagram, BsFacebook, BsYoutube } from "react-icons/bs";
+import style from "./footer.module.css";
 
 import Logo from "../../components/common/branding/logo/main";
-import { Spacer, Text } from "@nextui-org/react";
+import { Text } from "@chakra-ui/react";
+import { Fragment } from "react";
+import { useRouter } from "next/router";
 
 function PageFooter() {
 	const currentYear = new Date().getFullYear();
+	const router = useRouter();
 	return (
-		<footer>
-			<div className={style.footer}>
+		<footer className={style.wrapper}>
+			<div className={style.sitemap}>
 				<div>
-					<Logo className={style.logo} color={"white"} width={200} height={50} />
+					<Text>Website & App</Text>
+					<Text>The App</Text>
+					<Text>Create an Account</Text>
+					<Text>Development</Text>
+					<Text>Our Technologies</Text>
 				</div>
-
-				<div />
-
-				<div className={style.socials}>
-					<div className={style.social}>
-						<BsInstagram className={style.socialicon} />
-					</div>
-					<div className={style.social}>
-						<BsFacebook className={style.socialicon} />
-					</div>
-					<div className={style.social}>
-						<BsYoutube className={style.socialicon} />
-					</div>
+				<div>
+					<Text>Website & App</Text>
+					<Text>The App</Text>
+					<Text>Create an Account</Text>
+					<Text>Development</Text>
+					<Text>Our Technologies</Text>
+				</div>
+				<div>
+					<Text fontSize="18.51px" color="white">
+						Get In Touch
+					</Text>
+					<Text>Contact Us</Text>
+					<Text>School Registeration</Text>
+					<Text>Create an Account</Text>
+					<Text>Development</Text>
 				</div>
 			</div>
-			<div className={style.bottom}>
-				<div className={style.textholder1}>
-					<Text className={style.text}>Copyright © {currentYear} MEDIMUN. All rights reserved.</Text>
+			<div className={style.logo}>
+				<Logo color={"white"} width={200} height={50} />
+			</div>
+			<div className={style.bottomText}>
+				<div>
+					<Text onClick={() => window.open("https://facebook.com/medimun", "_blank")}>FaceBook</Text>
+					<Text onClick={() => window.open("https://instagram.com/medimun.cy", "_blank")}>Instagram</Text>
+					<Text onClick={() => window.open("https://www.youtube.com/@medimun8808", "_blank")}>YouTube</Text>
+					<Text onClick={() => window.open("#", "_blank")}>Twitter</Text>
 				</div>
-				<div className={style.textholder2}>
-					<Text className={style.text}>Terms and Conditions</Text>
-				</div>
-				<div className={style.textholder3}>
-					<Text className={style.text}>Privacy Policy</Text>
-				</div>
+				<div>© {currentYear} Mediterranean Model United Nations</div>
 			</div>
 		</footer>
 	);
 }
+
+const logo = {};
+
+const sitemapSection = {
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	flexDirection: "column",
+};
 
 export default PageFooter;

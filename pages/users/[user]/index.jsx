@@ -1,5 +1,5 @@
 import Layout from "../../../app-components/layout";
-import Pagelayout from "../../../components/page/layout/layout";
+import Pagelayout from "../../../page-components/layout";
 import { Grid, Spacer } from "@nextui-org/react";
 import UserPage from "../../../app-components/pages/users/[user]/user";
 import prisma from "../../../prisma/client";

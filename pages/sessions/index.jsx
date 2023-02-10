@@ -34,9 +34,10 @@ export default function SessionPage(props) {
 	const loading = status === "loading";
 	const [isLoading, setIsLoading] = useState(true);
 
-	async function loadMore() {
+	/* 	async function loadMore() {
 		const { data, error } = useSWR("/api/sessions", fetcher);
-	}
+	} */
+
 	if (session) {
 		return (
 			<Layout>

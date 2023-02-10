@@ -18,6 +18,7 @@ export default function SidebarUsersButton(props) {
 		"/app": "Home",
 		"/app/committees": "Committees",
 		"/app/committee": "My Committee",
+		"/sessions": "Sessions",
 	};
 
 	if (pageMap[router.pathname] === props.text) {

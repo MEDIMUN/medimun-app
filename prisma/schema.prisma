@@ -1,5 +1,5 @@
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -8,7 +8,7 @@ generator client {
 }
 
 model PendingUser {
-  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                    Int      @id @default(autoincrement())
   //
   email                 String   @unique
   //
@@ -27,14 +27,14 @@ model PendingUser {
 }
 
 model User {
-  id                            String                                     @id @default(auto()) @map("_id") @db.ObjectId
+  id                            Int                                        @id @default(autoincrement())
   //
   showPhoneNumber               Boolean                                    @default(false)
   allowMessagesFromEveryone     Boolean                                    @default(false) @map("amfe")
   createdAt                     DateTime                                   @default(now())
   password                      String                                     @map("pw")
   userNumber                    String                                     @unique
-  username                      String?                                    @unique
+  username                      String?
   //
   profileVisibility             Int                                        @default(5)
   organiserProfileVisibility    Int                                        @default(2)
@@ -72,7 +72,7 @@ model User {
 }
 
 model Session {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int     @id @default(autoincrement())
   //
   isCurrent   Boolean @default(false)
   number      Int     @unique
@@ -101,45 +101,48 @@ model Session {
 }
 
 model GlobalAdmin {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  id     Int  @id @default(autoincrement())
   //
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 }
 
 model SeniorDirector {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  id     Int  @id @default(autoincrement())
   //
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 }
 
 model SecretariatSecretaryGeneral {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  user      User    @relation(fields: [userId], references: [id])
-  userId    String  @db.ObjectId
+  id Int @id @default(autoincrement())
+
+  userId    Int
   session   Session @relation(fields: [sessionId], references: [id])
-  sessionId String  @db.ObjectId
+  sessionId Int
+  User      User    @relation(fields: [userId], references: [id])
 }
 
 model SecretariatPresidentOfTheGeneralAssembly {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  id Int @id @default(autoincrement())
+
   user      User    @relation(fields: [userId], references: [id])
-  userId    String  @db.ObjectId
+  userId    Int
   session   Session @relation(fields: [sessionId], references: [id])
-  sessionId String  @db.ObjectId
+  sessionId Int
 }
 
 model SecretariatDeputySecretaryGeneral {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  id        Int     @id @default(autoincrement())
+  //
   user      User    @relation(fields: [userId], references: [id])
-  userId    String  @db.ObjectId
+  userId    Int
   session   Session @relation(fields: [sessionId], references: [id])
-  sessionId String  @db.ObjectId
+  sessionId Int
 }
 
 model ConferenceDay {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int        @id @default(autoincrement())
   //
   name        String?
   //
@@ -149,16 +152,16 @@ model ConferenceDay {
   description String     @default("")
   //
   location    Location?  @relation(fields: [locationId], references: [id])
-  locationId  String?    @db.ObjectId
+  locationId  Int?
   //
   session     Session    @relation(fields: [sessionId], references: [id])
-  sessionId   String     @db.ObjectId
+  sessionId   Int
   //
   rollCall    RollCall[]
 }
 
 model WorkshopDay {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int        @id @default(autoincrement())
   //
   name        String?
   //
@@ -168,149 +171,149 @@ model WorkshopDay {
   description String
   //
   location    Location?  @relation(fields: [locationId], references: [id])
-  locationId  String?    @db.ObjectId
+  locationId  Int?
   //
   session     Session    @relation(fields: [sessionId], references: [id])
-  sessionId   String     @db.ObjectId
+  sessionId   Int
   //
   rollCall    RollCall[]
 }
 
 model RollCall {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  id              Int            @id @default(autoincrement())
   //
   user            User           @relation(fields: [userId], references: [id])
-  userId          String         @db.ObjectId
+  userId          Int
   //
   status          Int            @default(0)
   //
   workshopDay     WorkshopDay?   @relation(fields: [workshopDayId], references: [id])
-  workshopDayId   String?        @db.ObjectId
+  workshopDayId   Int?
   //
   conferenceDay   ConferenceDay? @relation(fields: [conferenceDayId], references: [id])
-  conferenceDayId String?        @db.ObjectId
+  conferenceDayId Int?
 }
 
 model School {
-  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  id             Int              @id @default(autoincrement())
   //
   name           String           @unique
   slug           String?          @unique
   joinYear       Int?
   //
   Location       Location?        @relation(fields: [locationId], references: [id])
-  locationId     String?          @db.ObjectId
+  locationId     Int?
   //
   SchoolMember   SchoolStudent[]
   SchoolDirector SchoolDirector[]
 }
 
 model SchoolStudent {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  id       Int    @id @default(autoincrement())
   //
   user     User   @relation(fields: [userId], references: [id])
-  userId   String @db.ObjectId
+  userId   Int
   //
   school   School @relation(fields: [schoolId], references: [id])
-  schoolId String @db.ObjectId
+  schoolId Int
 }
 
 model SchoolDirector {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  id        Int     @id @default(autoincrement())
   //
   user      User    @relation(fields: [userId], references: [id])
-  userId    String  @db.ObjectId
+  userId    Int
   //
   school    School  @relation(fields: [schoolId], references: [id])
-  schoolId  String  @db.ObjectId
+  schoolId  Int
   //
   session   Session @relation(fields: [sessionId], references: [id])
-  sessionId String  @db.ObjectId
+  sessionId Int
 }
 
 model Committee {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int        @id @default(autoincrement())
   //
   name        String
   description String     @default("")
   //
   session     Session    @relation(fields: [sessionId], references: [id])
-  sessionId   String     @db.ObjectId
+  sessionId   Int
   //
   delegate    Delegate[]
   chair       Chair[]
 }
 
 model Delegate {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int       @id @default(autoincrement())
   country     String?
   //
   user        User      @relation(fields: [userId], references: [id])
-  userId      String    @db.ObjectId
+  userId      Int
   //
   committee   Committee @relation(fields: [committeeId], references: [id])
-  committeeId String    @db.ObjectId
+  committeeId Int
   //
   session     Session   @relation(fields: [sessionId], references: [id])
-  sessionId   String    @db.ObjectId
+  sessionId   Int
 }
 
 model Chair {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int       @id @default(autoincrement())
   //
   user        User      @relation(fields: [userId], references: [id])
-  userId      String    @db.ObjectId
+  userId      Int
   //
   committee   Committee @relation(fields: [committeeId], references: [id])
-  committeeId String    @db.ObjectId
+  committeeId Int
   //
   session     Session   @relation(fields: [sessionId], references: [id])
-  sessionId   String    @db.ObjectId
+  sessionId   Int
 }
 
 model Team {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int       @id @default(autoincrement())
   //
   name        String
   description String    @default("")
   //
   session     Session   @relation(fields: [sessionId], references: [id])
-  sessionId   String    @db.ObjectId
+  sessionId   Int
   //
   member      Member[]
   manager     Manager[]
 }
 
 model Member {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  id        Int     @id @default(autoincrement())
   //
   job       String  @default("")
   //
   user      User    @relation(fields: [userId], references: [id])
-  userId    String  @db.ObjectId
+  userId    Int
   //
   team      Team    @relation(fields: [teamId], references: [id])
-  teamId    String  @db.ObjectId
+  teamId    Int
   //
   session   Session @relation(fields: [sessionId], references: [id])
-  sessionId String  @db.ObjectId
+  sessionId Int
 }
 
 model Manager {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  id        Int     @id @default(autoincrement())
   //
   user      User    @relation(fields: [userId], references: [id])
-  userId    String  @db.ObjectId
+  userId    Int
   //
   team      Team    @relation(fields: [teamId], references: [id])
-  teamId    String  @db.ObjectId
+  teamId    Int
   //
   session   Session @relation(fields: [sessionId], references: [id])
-  sessionId String  @db.ObjectId
+  sessionId Int
 }
 
 model Location {
-  id                   String          @id @default(auto()) @map("_id") @db.ObjectId
+  id                   Int             @id @default(autoincrement())
   //
   name                 String
   slug                 String?
@@ -334,7 +337,7 @@ model Location {
 }
 
 model Task {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  id            Int       @id @default(autoincrement())
   //
   name          String
   description   String    @default("")
@@ -345,17 +348,17 @@ model Task {
   completedDate DateTime?
   //
   assignedBy    User      @relation("assigned_by", fields: [assignedById], references: [id])
-  assignedById  String    @db.ObjectId
+  assignedById  Int
   //
   assignedTo    User?     @relation("assigned_to", fields: [assignedToId], references: [id])
-  assignedToId  String?   @db.ObjectId
+  assignedToId  Int?
   //
   session       Session   @relation(fields: [sessionId], references: [id])
-  sessionId     String    @db.ObjectId
+  sessionId     Int
 }
 
 model TermsAndConditions {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  id      Int    @id @default(autoincrement())
   title   String
   content String
 }

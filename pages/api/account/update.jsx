@@ -168,16 +168,16 @@ export default async function UpdateAccount(req, res) {
 			displayNameHolder = "";
 			displaySurnameHolder = "";
 		} else {
-			displayNameHolder = reqDisplayName || user.display_name;
-			displaySurnameHolder = reqDisplaySurname || user.display_surname;
+			displayNameHolder = reqDisplayName || user.displayName;
+			displaySurnameHolder = reqDisplaySurname || user.displaySurname;
 		}
 
 		let pronoun1Holder;
 		let pronoun2Holder;
 
 		if (reqPronounsToggle == true) {
-			pronoun1Holder = reqPronoun1 || user.pronoun_1;
-			pronoun2Holder = reqPronoun2 || user.pronoun_2;
+			pronoun1Holder = reqPronoun1 || user.pronoun1;
+			pronoun2Holder = reqPronoun2 || user.pronoun2;
 		} else {
 			pronoun1Holder = "";
 			pronoun2Holder = "";
@@ -188,17 +188,17 @@ export default async function UpdateAccount(req, res) {
 				userNumber: user.userNumber,
 			},
 			data: {
-				officialName: reqOfficialName || user.official_name,
-				officialSurname: reqOfficialSurname || user.official_surname,
+				officialName: reqOfficialName || user.officialName,
+				officialSurname: reqOfficialSurname || user.officialSurname,
 				displayName: displayNameHolder,
 				displaySurname: displaySurnameHolder,
-				dateOfBirth: reqDateOfBirth || user.date_of_birth,
+				dateOfBirth: reqDateOfBirth || user.dateOfBirth,
 				pronoun1: pronoun1Holder,
 				pronoun2: pronoun2Holder,
-				profileVisibility: parseInt(reqProfileVisibility) || user.profile_visibility,
-				organiserProfileVisibility: parseInt(reqProfileOrganiserVisibility) || user.organiser_profile_visibility,
-				showPhoneNumber: reqShowPhoneNumber || user.show_phone_number,
-				allowMessagesFromEveryone: reqAllowPublicMessaging || user.allow_public_messaging,
+				profileVisibility: parseInt(reqProfileVisibility) || user.profileVisibility,
+				organiserProfileVisibility: parseInt(reqProfileOrganiserVisibility) || user.organiserProfileVisibility,
+				showPhoneNumber: reqShowPhoneNumber || user.showPhoneNumber,
+				allowMessagesFromEveryone: reqAllowPublicMessaging || user.allowPublicMessaging,
 			},
 		});
 

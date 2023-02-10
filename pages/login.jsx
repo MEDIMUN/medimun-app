@@ -83,12 +83,7 @@ function LoginPage(props) {
 			</div>
 			<div className={style.loginModal}>
 				<div>
-					<Logo
-						className={style.logo}
-						color={"white"}
-						width={200}
-						height={50}
-					/>
+					<Logo className={style.logo} color={"white"} width={200} height={50} />
 				</div>
 				<div>
 					<Text
@@ -108,7 +103,6 @@ function LoginPage(props) {
 						width={"auto"}
 						labelPlaceholder="Email or Username"
 						ref={emailInputRef}
-						active
 					/>
 					<Spacer y={2} />
 					<Input.Password
@@ -117,50 +111,33 @@ function LoginPage(props) {
 						width={"auto"}
 						labelPlaceholder="Password"
 						ref={passwordInputRef}
-						active
 					/>
 				</div>
 				<div>
 					{!loading ? (
-						<Button
-							size="md"
-							rounded
-							css={{ color: "white" }}
-							onPress={submitHandler}>
+						<Button size="md" rounded css={{ color: "white" }} onPress={submitHandler}>
 							Sign in
 						</Button>
 					) : (
-						<Button
-							disabled
-							size="md"
-							rounded
-							css={{ color: "white", width: "100%" }}>
+						<Button disabled size="md" rounded css={{ color: "white", width: "100%" }}>
 							<Loading type="points" />
 						</Button>
 					)}
 				</div>
 				<div className={style.buttons}>
 					<div>
-						<Text
-							color="white"
-							size={"12px"}>
+						<Text color="white" size={"12px"}>
 							Don<span>&apos;</span>t have an account yet?
 						</Text>
 						<Link href={"/sign-up"}>
-							<Text
-								size={"12px"}
-								style={{ cursor: "pointer" }}
-								color="white">
+							<Text size={"12px"} style={{ cursor: "pointer" }} color="white">
 								Create one
 							</Text>
 						</Link>
 					</div>
 
 					<Link href={"/sign-up"}>
-						<Text
-							size={"12px"}
-							style={{ cursor: "pointer" }}
-							color="white">
+						<Text size={"12px"} style={{ cursor: "pointer" }} color="white">
 							Reset Password
 						</Text>
 					</Link>

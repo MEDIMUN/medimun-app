@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 			})
 			.then((count) => {
 				if (count > 0) {
-					res.status(400).json({ message: "Email already exists" });
+					res.status(409).json({ message: "Email already exists" });
 					return count;
 				}
 			});
@@ -136,9 +136,9 @@ export default async function handler(req, res) {
 					emailVerificationCode: random_verification_string,
 				},
 			})
-			.catch(async (e) => {
-				console.error(e);
-				res.status(500).json({ message: "An error occurred." });
+			.catch((error) => {
+				console.log(error);
+				res.status(500).json({ message: error });
 				return;
 			});
 

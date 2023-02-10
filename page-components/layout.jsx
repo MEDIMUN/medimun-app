@@ -31,10 +31,8 @@ export default function Pagelayout(props) {
 
 	return (
 		<Fragment>
-			<Landscape className={style.navbar} />
-			<navbar>
-				<PageNavbar backgroundColor={props.backgroundColor} />
-			</navbar>
+			<Landscape />
+			<PageNavbar className={style.pageNavbar} backgroundColor={props.backgroundColor} />
 			<main className={style.page}>{props.children}</main>
 			<footer>
 				<PageFooter className={style.footer} />

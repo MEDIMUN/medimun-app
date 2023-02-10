@@ -5,7 +5,7 @@ import prisma from "../../prisma/client";
 import style from "../../styles/sign-up.module.css";
 
 import { Button, Loading, Spacer, Input } from "@nextui-org/react";
-import Pagelayout from "../../components/page/layout/layout";
+import Pagelayout from "../../page-components/layout";
 import SignUpModal from "../../components/page/pages/sign-up/sign-up-modal";
 import { useToast } from "@chakra-ui/react";
 
@@ -74,15 +74,29 @@ export default function SignUpPage(props) {
 
 		if (!response || response.status !== 201) {
 			console.log("Error");
-			router.reload();
-			toast({
-				title: "Error",
-				description: "An error has occured. Please try again.",
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
-			return;
+			if (res.ststus == "409") {
+				toast({
+					title: "Error",
+					description: "An error has occured. Please try again.",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+				await new Promise((r) => setTimeout(r, 5000));
+				router.reload();
+				return;
+			} else {
+				toast({
+					title: "User Alredy Exists",
+					description: "You will be transferred to login in just a second.",
+					status: "warning",
+					duration: 5000,
+					isClosable: true,
+				});
+				await new Promise((r) => setTimeout(r, 2000));
+				router.push("/login");
+				return;
+			}
 		}
 		await new Promise((r) => setTimeout(r, 15000));
 		router.push("/");
@@ -93,7 +107,6 @@ export default function SignUpPage(props) {
 			duration: 2000,
 			isClosable: true,
 		});
-		await new Promise((r) => setTimeout(r, 2000));
 		router.reload();
 	}
 
@@ -320,7 +333,9 @@ export default function SignUpPage(props) {
 
 
 O */}
-						{currentPage === 2 ? <div>The MEDIMUN App is the place where you can idk</div> : null}
+						{currentPage === 2 ? (
+							<div>The MEDIMUN App is the place where you can manage everything about MEDIMUN.</div>
+						) : null}
 						{/* N
 
 

@@ -1,7 +1,7 @@
 import prisma from "../../prisma/client";
 
 import { Button, Loading, Spacer, Input } from "@nextui-org/react";
-import Pagelayout from "../../components/page/layout/layout";
+import Pagelayout from "../../page-components/layout";
 import randomString from "../../lib/random-string";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
