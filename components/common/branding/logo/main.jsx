@@ -15,10 +15,9 @@ function Logo(props) {
 	}
 
 	return (
-		<div>
+		<div className={style.logo}>
 			<Link href="/">
 				<Image
-					className={style.logo}
 					src={`/logos/logo-${color}.svg`} //use theme provider API
 					alt="MEDIMUN Logo"
 					width={props.width || 3235}

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { signIn, getSession } from "next-auth/react";
 import Link from "next/link";
@@ -10,6 +10,7 @@ import style from "../styles/login.module.css";
 import { Button, Input, Spacer, Text, Loading } from "@nextui-org/react";
 import Logo from "../components/common/branding/logo/main";
 import Pagelayout from "../app-components/layout";
+import PageFooter from "../page-components/navigation/footer";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 function LoginPage(props) {
@@ -72,103 +73,76 @@ function LoginPage(props) {
 	}
 
 	return (
-		<div className={style.background}>
-			<div>
-				<Button
-					css={{ backgroundColor: "transparent", width: "40px", height: "40px" }}
-					onClick={() => router.back()}
-					size="auto">
-					<IoClose />
-				</Button>
-			</div>
-			<div className={style.loginModal}>
-				<div>
-					<Logo
-						className={style.logo}
-						color={"white"}
-						width={200}
-						height={50}
-					/>
-				</div>
-				<div>
-					<Text
-						className={style.title}
-						size={45}
-						css={{
-							fontFamily: "'Roboto', sans-serif",
-							lineHeight: "55px",
-						}}>
-						Sign in to your account
-					</Text>
-				</div>
-				<div>
-					<Input
-						css={{ color: "white" }}
-						size="lg"
-						width={"auto"}
-						labelPlaceholder="Email or Username"
-						ref={emailInputRef}
-						active
-					/>
-					<Spacer y={2} />
-					<Input.Password
-						size="lg"
-						color={"#FFFFFF"}
-						width={"auto"}
-						labelPlaceholder="Password"
-						ref={passwordInputRef}
-						active
-					/>
-				</div>
-				<div>
-					{!loading ? (
-						<Button
-							size="md"
-							rounded
-							css={{ color: "white" }}
-							onPress={submitHandler}>
-							Sign in
-						</Button>
-					) : (
-						<Button
-							disabled
-							size="md"
-							rounded
-							css={{ color: "white", width: "100%" }}>
-							<Loading type="points" />
-						</Button>
-					)}
-				</div>
-				<div className={style.buttons}>
+		<Fragment>
+			<div className={style.background}>
+				<div></div>
+				<div className={style.loginModal}>
+					<div>
+						<Logo className={style.logo} color={"white"} width={200} height={50} />
+					</div>
 					<div>
 						<Text
-							color="white"
-							size={"12px"}>
-							Don<span>&apos;</span>t have an account yet?
+							className={style.title}
+							size={45}
+							css={{
+								fontFamily: "'Roboto', sans-serif",
+								lineHeight: "55px",
+							}}>
+							Sign in to your account
 						</Text>
+					</div>
+					<div>
+						<Input
+							css={{ color: "white" }}
+							size="lg"
+							width={"auto"}
+							labelPlaceholder="Email or Username"
+							ref={emailInputRef}
+						/>
+						<Spacer y={2} />
+						<Input.Password
+							size="lg"
+							color={"#FFFFFF"}
+							width={"auto"}
+							labelPlaceholder="Password"
+							ref={passwordInputRef}
+						/>
+					</div>
+					<div>
+						{!loading ? (
+							<Button size="md" rounded css={{ color: "white" }} onPress={submitHandler}>
+								Sign in
+							</Button>
+						) : (
+							<Button disabled size="md" rounded css={{ color: "white", width: "100%" }}>
+								<Loading type="points" />
+							</Button>
+						)}
+					</div>
+					<div className={style.buttons}>
+						<div>
+							<Text color="white" size={"12px"}>
+								Don<span>&apos;</span>t have an account yet?
+							</Text>
+							<Link href={"/sign-up"}>
+								<Text size={"12px"} style={{ cursor: "pointer" }} color="white">
+									Create one
+								</Text>
+							</Link>
+						</div>
+
 						<Link href={"/sign-up"}>
-							<Text
-								size={"12px"}
-								style={{ cursor: "pointer" }}
-								color="white">
-								Create one
+							<Text size={"12px"} style={{ cursor: "pointer" }} color="white">
+								Reset Password
 							</Text>
 						</Link>
 					</div>
-
-					<Link href={"/sign-up"}>
-						<Text
-							size={"12px"}
-							style={{ cursor: "pointer" }}
-							color="white">
-							Reset Password
-						</Text>
-					</Link>
+					<br />
 				</div>
-				<br />
+				<div className={style.panel}></div>
 			</div>
-			<div className={style.panel}></div>
-		</div>
+			<PageFooter />
+		</Fragment>
 	);
 }
 

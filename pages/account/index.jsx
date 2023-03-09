@@ -1,10 +1,21 @@
 import Layout from "../../app-components/layout";
 import { Avatar, Input, Text, Switch, Stack, Radio, RadioGroup } from "@chakra-ui/react";
 import style from "../../styles/account.module.css";
-import prisma from "../../client";
+import prisma from "../../prisma/client";
 import { getSession } from "next-auth/react";
 import { Image, Spacer } from "@nextui-org/react";
-import { BeatLoader, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Lorem, ModalFooter } from "@chakra-ui/react";
+import {
+	BeatLoader,
+	Button,
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalHeader,
+	ModalCloseButton,
+	ModalBody,
+	Lorem,
+	ModalFooter,
+} from "@chakra-ui/react";
 import { useState, useRef } from "react";
 import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
@@ -141,7 +152,6 @@ export default function AccountPage(props) {
 					position: "top",
 				});
 			}
-			console.log(response);
 		} catch (error) {
 			if (error.response) {
 				if (!toast.isActive("error")) {
@@ -156,17 +166,11 @@ export default function AccountPage(props) {
 					});
 				}
 				// get response with a status code not in range 2xx
-				console.log(error.response.data);
-				console.log(error.response.status);
-				console.log(error.response.headers);
 			} else if (error.request) {
 				// no response
-				console.log(error.request);
 			} else {
 				// Something wrong in setting up the request
-				console.log("Error", error.message);
 			}
-			console.log(error.config);
 		}
 
 		set_profile_picture(false);
@@ -200,7 +204,6 @@ export default function AccountPage(props) {
 					position: "top",
 				});
 			}
-			console.log(response);
 		} catch (error) {
 			if (error.response) {
 				if (!toast.isActive("error")) {
@@ -225,7 +228,6 @@ export default function AccountPage(props) {
 	}
 
 	async function submitHandler() {
-		console.log(display_names_toggle);
 		setLoading(true);
 		official_name = official_name_ref.current.value;
 		official_surname = official_surname_ref.current.value;
@@ -302,11 +304,7 @@ export default function AccountPage(props) {
 
 	return (
 		<Layout>
-			<Modal
-				isCentered
-				closeOnOverlayClick={true}
-				isOpen={isOpen}
-				onClose={onClose}>
+			<Modal isCentered closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<ModalContent>
 					<ModalHeader>Are you sure you want to change the following?</ModalHeader>
@@ -318,9 +316,9 @@ export default function AccountPage(props) {
 							</strong>
 						</Text>
 						<Text>
-							The official name will be printed on your certificate, and the display name will be used on your nametag. We take no responsibility for any
-							spelling mistakes, please double check your spelling. You can update your info at any time and retrieve your new certificate any time after
-							approval.
+							The official name will be printed on your certificate, and the display name will be used on your nametag.
+							We take no responsibility for any spelling mistakes, please double check your spelling. You can update
+							your info at any time and retrieve your new certificate any time after approval.
 						</Text>
 						<Spacer y={1} />
 						{official_name_ref.current.value ? (
@@ -347,15 +345,11 @@ export default function AccountPage(props) {
 					<Text></Text>
 					<ModalFooter>
 						{loading ? (
-							<Button
-								mr={3}
-								isLoading>
+							<Button mr={3} isLoading>
 								Save
 							</Button>
 						) : (
-							<Button
-								onClick={submitHandler}
-								mr={3}>
+							<Button onClick={submitHandler} mr={3}>
 								Save
 							</Button>
 						)}
@@ -372,19 +366,12 @@ export default function AccountPage(props) {
 					}}
 					className={style.nameholder}>
 					<div className={style.picture}>
-						<Avatar
-							className={style.pfp}
-							borderRadius="25%"
-							src={`${props.profilePictureLink}`}
-						/>
+						<Avatar className={style.pfp} borderRadius="50%" src={`${props.profilePictureLink}`} />
 					</div>
 				</div>
 				<Spacer y={4} />
 				<div className={style.section}>
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
+					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 						<strong> PROFILE PICTURE</strong>
 					</Text>
 					<Text marginLeft="14px">Clicking Upload automatically saves the profile picture.</Text>
@@ -397,59 +384,38 @@ export default function AccountPage(props) {
 							backgroundColor="#EDF2F7"
 							type="file"
 						/>
-						<Button
-							isLoading={profile_picture}
-							onClick={uploadProfilePicture}>
+						<Button isLoading={profile_picture} onClick={uploadProfilePicture}>
 							Upload
 						</Button>
-						<Button
-							isLoading={profile_picture}
-							onClick={removeProfilePicture}>
+						<Button isLoading={profile_picture} onClick={removeProfilePicture}>
 							Remove
 						</Button>
 					</div>
 
 					<Spacer x={1} />
 
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
+					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 						<strong> COVER IMAGE </strong>
 					</Text>
 					<Text marginLeft="14px">Clicking Upload automatically saves the cover image.</Text>
 
 					<div className={style.uploadButtons}>
-						<Input
-							ref={cover_image_ref}
-							className={style.uploadButton}
-							backgroundColor="#EDF2F7"
-							type="file"
-						/>
-						<Button
-							isLoading={cover_image}
-							onClick={uploadCoverImage}>
+						<Input ref={cover_image_ref} className={style.uploadButton} backgroundColor="#EDF2F7" type="file" />
+						<Button isLoading={cover_image} onClick={uploadCoverImage}>
 							Upload
 						</Button>
-						<Button
-							isLoading={cover_image}
-							onClick={removeCoverImage}>
+						<Button isLoading={cover_image} onClick={removeCoverImage}>
 							Remove
 						</Button>
 					</div>
 
 					<Spacer y={1} />
 
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
+					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 						<strong> OFFICIAL NAME </strong>
 					</Text>
 
-					<Text
-						borderBottom="2.5px solid #FFF"
-						paddingLeft="14px">
+					<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
 						Your official name will be used on your certificate and must match the name on your passport.
 					</Text>
 
@@ -463,18 +429,11 @@ export default function AccountPage(props) {
 
 					<Spacer x={1} />
 
-					<Text
-						maxLength="20"
-						marginLeft="15px"
-						marginRight="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
+					<Text maxLength="20" marginLeft="15px" marginRight="15px" fontFamily="sans-serif" fontWeight="500">
 						<strong> OFFICIAL SURNAME </strong>
 					</Text>
 
-					<Text
-						borderBottom="2.5px solid #FFF"
-						paddingLeft="14px">
+					<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
 						Your official surname will be used on your certificate and must match the name on your passport.
 					</Text>
 
@@ -488,10 +447,7 @@ export default function AccountPage(props) {
 
 					<Spacer y={1} />
 					<div>
-						<Text
-							marginLeft="15px"
-							fontFamily="sans-serif"
-							fontWeight="500">
+						<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 							<strong>USE DISPLAY NAME SET</strong>
 						</Text>
 						<div className="fdr">
@@ -507,16 +463,11 @@ export default function AccountPage(props) {
 					</div>
 					{display_names_toggle && (
 						<div>
-							<Text
-								marginLeft="15px"
-								fontFamily="sans-serif"
-								fontWeight="500">
+							<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 								<strong> DISPLAY NAME </strong>
 							</Text>
 
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="14px">
+							<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
 								If added your display name will be used on your profile and nametag.
 							</Text>
 
@@ -529,15 +480,10 @@ export default function AccountPage(props) {
 							/>
 
 							<Spacer y={1} />
-							<Text
-								marginLeft="15px"
-								fontFamily="sans-serif"
-								fontWeight="500">
+							<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 								<strong> DISPLAY SURNAME </strong>
 							</Text>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="14px">
+							<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
 								If added your display surname will be used on your profile and nametag.
 							</Text>
 
@@ -553,10 +499,7 @@ export default function AccountPage(props) {
 					)}
 
 					<div>
-						<Text
-							marginLeft="15px"
-							fontFamily="sans-serif"
-							fontWeight="500">
+						<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 							<strong>USE PRONOUNS</strong>
 						</Text>
 						<div className="fdr">
@@ -573,18 +516,13 @@ export default function AccountPage(props) {
 
 					{pronouns_toggle && (
 						<div>
-							<Text
-								marginLeft="15px"
-								fontFamily="sans-serif"
-								fontWeight="500">
+							<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 								<strong> PRONOUNS </strong>
 							</Text>
 
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="14px">
-								Your pronouns will be used on your profile and nametag in the future as this feature is experimental and will be used in the 19<sup>th</sup>{" "}
-								Session of MEDIMUN.
+							<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
+								Your pronouns will be used on your profile and nametag in the future as this feature is experimental and
+								will be used in the 19<sup>th</sup> Session of MEDIMUN.
 							</Text>
 
 							<div>
@@ -610,15 +548,10 @@ export default function AccountPage(props) {
 						</div>
 					)}
 
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
+					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 						<strong> DATE OF BIRTH </strong>
 					</Text>
-					<Text
-						borderBottom="2.5px solid #FFF"
-						paddingLeft="14px">
+					<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
 						Your date of birth is only visible to members of MEDIMUN management and will not be shown anywhere else.{" "}
 					</Text>
 					<Input
@@ -630,15 +563,10 @@ export default function AccountPage(props) {
 						type="date"
 					/>
 					<Spacer y={1} />
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
+					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 						<strong> PROFILE VISIBILITY</strong>
 					</Text>
-					<Text
-						marginLeft="14px"
-						borderBottom="2.5px solid #FFF">
+					<Text marginLeft="14px" borderBottom="2.5px solid #FFF">
 						Your choice may eb disregarded if you are enrolled in the current session of MEDIMUN.{" "}
 					</Text>
 
@@ -651,56 +579,44 @@ export default function AccountPage(props) {
 						defaultValue={`${props.profile_visibility}`}>
 						<Stack>
 							<Radio value="1">Public Profile</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
+							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
 								If turned on, everyone including people without a MEDIMUN account will be able to see your profile.
 							</Text>
 							<Radio value="2">Internal Only Profile</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
+							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
 								If turned on, only people with a MEDIMUN account will be able to see your profile.
 							</Text>
 							<Radio value="3">Session Only Profile</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
-								If turned on, only people enrolled in the current session of MEDIMUN will be able to see your profile even after the session ends, if you don
-								<span>&apos;</span>t wan<span>&apos;</span>t your profile to be visible after the session ends, please set it to private after the sessions
-								ends.
+							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
+								If turned on, only people enrolled in the current session of MEDIMUN will be able to see your profile
+								even after the session ends, if you don
+								<span>&apos;</span>t wan<span>&apos;</span>t your profile to be visible after the session ends, please
+								set it to private after the sessions ends.
 							</Text>
 							<Radio value="4">Committee Only Profile</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
+							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
 								If turned on, only people in your committee will be able to see your profile.
 							</Text>
 							<Radio value="5">Verified User Only Profile</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
-								If turned on, only people currently enrolled or people who had been enrolled in the past will be able to see your profile. People who have a
-								MEDIMUN account and have not been enrolled in any session will not be able to see your profile.
+							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
+								If turned on, only people currently enrolled or people who had been enrolled in the past will be able to
+								see your profile. People who have a MEDIMUN account and have not been enrolled in any session will not
+								be able to see your profile.
 							</Text>
 							<Radio value="6">Private Profile</Radio>
 							<Text paddingLeft="24px">
-								If turned on, no one will be able to see your profile. This option is not recommended for currently enrolled participants.
+								If turned on, no one will be able to see your profile. This option is not recommended for currently
+								enrolled participants.
 							</Text>
 						</Stack>
 					</RadioGroup>
 					<Spacer y={1} />
-					<Text
-						marginLeft="15px"
-						fontFamily="sans-serif"
-						fontWeight="500">
+					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 						<strong> PROFILE VISIBILITY OPTIONS FOR ORGANISERS </strong>
 					</Text>
-					<Text
-						borderBottom="2.5px solid #FFF"
-						paddingLeft="14px">
-						This option determines if an organiser can see your profile. Organisers who are required to see your profile will be able to view your profile no
-						matter the profile visibility options you have set.
+					<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
+						This option determines if an organiser can see your profile. Organisers who are required to see your profile
+						will be able to view your profile no matter the profile visibility options you have set.
 					</Text>
 					<RadioGroup
 						onChange={set_organiser_profile_visibility}
@@ -711,39 +627,35 @@ export default function AccountPage(props) {
 						defaultValue={`${props.organiser_profile_visibility}`}>
 						<Stack>
 							<Radio value="1">All Organisers</Radio>
-							<Text
-								borderBottom="2.5px solid #FFF"
-								paddingLeft="24px">
+							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
 								If turned on, all organisers in all sessions will be able to see your profile.
 							</Text>
 							<Radio value="2">Organisers in Current Session</Radio>
-							<Text paddingLeft="24px">If turned on, only organisers enrolled in the current session will be able to see your profile.</Text>
+							<Text paddingLeft="24px">
+								If turned on, only organisers enrolled in the current session will be able to see your profile.
+							</Text>
 						</Stack>
 					</RadioGroup>
 					<Spacer x={1} />
 					<div>
-						<Text
-							marginLeft="15px"
-							fontFamily="sans-serif"
-							fontWeight="500">
+						<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 							<strong> Show Phone Number to Chair </strong>
 						</Text>
 						<div className="fdr">
 							<Spacer x={1} />
-							<Switch
-								onChange={() => set_show_phone_number(!show_phone_number)}
-								size="lg"
-							/>
-							<Text marginLeft="14px">If turned off, only higher management will be able to see your phone number.</Text>
+							<Switch onChange={() => set_show_phone_number(!show_phone_number)} size="lg" />
+							<Text marginLeft="14px">
+								If turned off, only higher management will be able to see your phone number.
+							</Text>
 						</div>
 						<Spacer y={1} />
 					</div>
 					<div>
-						<Text
-							marginLeft="15px"
-							fontFamily="sans-serif"
-							fontWeight="500">
-							<strong> Allow people who are not ennrolled in your session to message you on the MEDIMUN platform. </strong>
+						<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
+							<strong>
+								{" "}
+								Allow people who are not ennrolled in your session to message you on the MEDIMUN platform.{" "}
+							</strong>
 						</Text>
 						<div className="fdr">
 							<Spacer x={1} />
@@ -752,18 +664,17 @@ export default function AccountPage(props) {
 								value={allow_public_messaging}
 								size="lg"
 							/>
-							<Text marginLeft="14px">If turned on, only people enrolled in the current session of MEDIMUN will be able to message you.</Text>
+							<Text marginLeft="14px">
+								If turned on, only people enrolled in the current session of MEDIMUN will be able to message you.
+							</Text>
 						</div>
 						<Spacer y={1} />
 					</div>
 				</div>
-				<Button
-					ml={3}
-					mr={3}
-					onClick={onOpen}>
+				<Button ml={3} mr={3} onClick={onOpen}>
 					Save
 				</Button>
-				<Button onClick={() => router.push("/")}>Cancel</Button>
+				<Button onClick={() => router.back()}>Cancel</Button>
 			</div>
 		</Layout>
 	);
@@ -807,18 +718,18 @@ export async function getServerSideProps(context) {
 
 	return {
 		props: {
-			official_name: user.official_name,
-			official_surname: user.official_surname,
-			display_name: user.display_name,
-			display_surname: user.display_surname,
+			official_name: user.officialName,
+			official_surname: user.officialSurname,
+			display_name: user.displayName,
+			display_surname: user.displaySurname,
 			pronoun1: user.pronoun1,
 			pronoun2: user.pronoun2,
 			phone_number: user.phoneNumber,
 			email: user.email,
 			profile_visibility: user.profileVisibility,
-			organiser_profile_visibility: user.OrganiserProfileVisibility,
-			show_phone_number: user.show_phone_number,
-			allow_public_messaging: user.allow_messages_from_everyone,
+			organiser_profile_visibility: user.organiserProfileVisibility,
+			show_phone_number: user.showPhoneNumber,
+			allow_public_messaging: user.allowMessagesFromEveryone,
 			useDisplayNames: useDisplayNames,
 			usePronouns: usePronouns,
 			profilePictureLink: await minioClient.presignedGetObject("profile-pictures", `${user.userNumber}`, 6 * 60 * 60),

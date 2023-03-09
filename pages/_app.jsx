@@ -5,6 +5,7 @@ import { createTheme, NextUIProvider } from "@nextui-org/react";
 import { SessionProvider } from "next-auth/react";
 import { AppContextProvider } from "../components/app/context/Navigation";
 import { ChakraProvider } from "@chakra-ui/react";
+import { SSRProvider } from "@react-aria/ssr";
 
 const theme = createTheme({
 	type: "light", // it could be "light" or "dark"
@@ -47,21 +48,20 @@ const theme = createTheme({
 
 function MyApp({ Component, pageProps }) {
 	return (
-		<AppContextProvider>
-			<SessionProvider session={pageProps.session}>
-				<NextUIProvider theme={theme}>
-					<ChakraProvider>
-						<Head>
-							<meta
-								name="viewport"
-								content="width=device-width, initial-scale=1.0"
-							/>
-						</Head>
-						<Component {...pageProps} />
-					</ChakraProvider>
-				</NextUIProvider>
-			</SessionProvider>
-		</AppContextProvider>
+		<SSRProvider>
+			<AppContextProvider>
+				<SessionProvider session={pageProps.session}>
+					<NextUIProvider theme={theme}>
+						<ChakraProvider>
+							<Head>
+								<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+							</Head>
+							<Component {...pageProps} />
+						</ChakraProvider>
+					</NextUIProvider>
+				</SessionProvider>
+			</AppContextProvider>
+		</SSRProvider>
 	);
 }
 

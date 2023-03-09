@@ -10,20 +10,15 @@ function NotFound() {
 	return (
 		<div className={style.frame}>
 			<div className={style.logo}>
-				<Logo
-					color={"white"}
-					width={170}
-					height={42.5}
-				/>
+				<Logo color={"white"} width={170} height={42.5} />
 			</div>
 
-			<img
-				src="/pages/404/notfound.gif"
-				className={style.background}></img>
+			<img src="/pages/404/notfound.gif" className={style.background}></img>
 			<div className={style.center}>
 				<div>
 					<h1 className={style.nfSmallText}>
-						Looks Like You<span>&apos;</span>ve reached an empty GA
+						Looks like you<span>&apos;</span>ve reached an empty GA.
+						<sup>404</sup>
 					</h1>
 				</div>
 			</div>

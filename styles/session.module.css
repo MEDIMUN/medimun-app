@@ -1,0 +1,22 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #eaeaea;
+}
+
+.sessionCard {
+  width: 100%;
+}
+
+.bgw {
+  background-color: white;
+}
+
+@media screen and (max-width: 768px) {
+  .bgw {
+    background-color: white !important;
+    box-shadow: none !important;
+  }
+}

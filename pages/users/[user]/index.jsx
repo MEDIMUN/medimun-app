@@ -1,8 +1,8 @@
 import Layout from "../../../app-components/layout";
-import Pagelayout from "../../../components/page/layout/layout";
+import Pagelayout from "../../../page-components/layout";
 import { Grid, Spacer } from "@nextui-org/react";
 import UserPage from "../../../app-components/pages/users/[user]/user";
-import prisma from "../../../client";
+import prisma from "../../../prisma/client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 const util = require("util");
@@ -14,7 +14,6 @@ export default function UsersPage(props) {
 	const [isLoading, setIsLoading] = useState(true);
 
 	if (session) {
-		console.log("session");
 		return (
 			<Layout>
 				<UserPage props={props} />
@@ -23,7 +22,6 @@ export default function UsersPage(props) {
 	}
 
 	if (!session) {
-		console.log("NO session");
 		return (
 			<Pagelayout backgroundColor="white">
 				<Spacer y={2.5} />
@@ -42,120 +40,138 @@ export async function getServerSideProps(context) {
 				username: userquery.slice(1),
 			},
 			include: {
-				Delegate: {
+				delegate: {
 					include: {
 						committee: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				CommitteeChair: {
+				chair: {
 					include: {
 						committee: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				TeamMember: {
+				member: {
 					include: {
 						team: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				TeamManager: {
+				manager: {
 					include: {
 						team: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				SchoolDirector: {
+				schoolDirector: {
 					include: {
 						school: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				Director: {
+				seniorDirecor: true,
+				schoolStudent: { select: { school: { select: { name: true } } } },
+				secretaryGeneral: {
 					include: {
-						team: { select: { name: true } },
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				SeniorDirector: true,
-				SchoolMember: { select: { school: { select: { name: true } } } },
-				SG: {
+				presidentOfTheGeneralAssembly: {
 					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				PGA: {
+				deputySecretaryGeneral: {
 					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				DSG: {
-					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
 			},
 		});
 	} else if (userquery.match(/^[0-9]+$/) && userquery.length == 10) {
-		console.log("User is a number");
-
 		user = await prisma.user.findFirst({
 			where: {
 				userNumber: userquery,
 			},
 			include: {
-				Delegate: {
+				delegate: {
 					include: {
 						committee: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				CommitteeChair: {
+				chair: {
 					include: {
 						committee: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				TeamMember: {
+				member: {
 					include: {
 						team: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				TeamManager: {
+				manager: {
 					include: {
 						team: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				SchoolDirector: {
+				schoolDirector: {
 					include: {
 						school: true,
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				Director: {
+				seniorDirecor: true,
+				schoolStudent: { select: { school: { select: { name: true } } } },
+				secretaryGeneral: {
 					include: {
-						team: { select: { name: true } },
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				SeniorDirector: true,
-				SchoolMember: { select: { school: { select: { name: true } } } },
-				SG: {
+				presidentOfTheGeneralAssembly: {
 					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
-				PGA: {
+				deputySecretaryGeneral: {
 					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
-					},
-				},
-				DSG: {
-					include: {
-						session: { select: { isCurrent: true, conference_session_number: true } },
+						session: {
+							select: { isCurrent: true, number: true },
+						},
 					},
 				},
 			},
@@ -175,84 +191,79 @@ export async function getServerSideProps(context) {
 	}
 
 	let delegateRole;
-	if (user.Delegate.role !== null)
-		delegateRole = user.Delegate.map((delegate) => {
+	if (user.delegate.role !== null)
+		delegateRole = user.delegate.map((delegate) => {
 			return {
 				role: "Delegate of " + delegate.country + " in " + delegate.committee.name,
-				session: "MEDIMUN " + delegate.session.conference_session_number,
+				session: "MEDIMUN " + delegate.session.number,
 				isCurrent: delegate.session.isCurrent,
 			};
 		});
 
-	if (user.Delegate.role == null)
-		delegateRole = user.Delegate.map((delegate) => {
+	if (user.delegate.role == null)
+		delegateRole = user.delegate.map((delegate) => {
 			return {
 				role: "Delegate",
-				session: "MEDIMUN " + delegate.session.conference_session_number,
+				session: "MEDIMUN " + delegate.session.number,
 				isCurrent: delegate.session.isCurrent,
 			};
 		});
 
-	let chairRole = user.CommitteeChair.map((chair) => {
+	let chairRole = user.chair.map((chair) => {
 		return {
 			role: "Chair of " + chair.committee.name,
-			session: "MEDIMUN " + chair.session.conference_session_number,
+			session: "MEDIMUN " + chair.session.number,
 			isCurrent: chair.session.isCurrent,
 		};
 	});
-	let teamMemberRole = user.TeamMember.map((teamMember) => {
+	let teamMemberRole = user.member.map((teamMember) => {
 		return {
 			role: "Member of " + teamMember.team.name,
-			session: "MEDIMUN " + teamMember.session.conference_session_number,
+			session: "MEDIMUN " + teamMember.session.number,
 			isCurrent: teamMember.session.isCurrent,
 		};
 	});
-	let teamManagerRole = user.TeamManager.map((teamManager) => {
+	let teamManagerRole = user.manager.map((teamManager) => {
 		return {
 			role: "Manager of " + teamManager.team.name,
-			session: "MEDIMUN " + teamManager.session.conference_session_number,
+			session: "MEDIMUN " + teamManager.session.number,
 			isCurrent: teamManager.session.isCurrent,
 		};
 	});
-	let sgRole = user.SG.map((sg) => {
+	let sgRole = user.secretaryGeneral.map((sg) => {
 		return {
 			role: "Secretary-General",
-			session: "MEDIMUN " + sg.session.conference_session_number,
+			session: "MEDIMUN " + sg.session.number,
 			isCurrent: sg.session.isCurrent,
 		};
 	});
-	let dsgRole = user.DSG.map((dsg) => {
+	let dsgRole = user.deputySecretaryGeneral.map((dsg) => {
 		return {
 			role: "Deputy Secretary-General",
 			primary: "",
-			session: "MEDIMUN " + dsg.session.conference_session_number,
+			session: "MEDIMUN " + dsg.session.number,
 			isCurrent: dsg.session.isCurrent,
 		};
 	});
-	let pgaRole = user.PGA.map((pga) => {
+	let pgaRole = user.presidentOfTheGeneralAssembly.map((pga) => {
 		return {
 			role: "President of The General Assembly",
-			session: "MEDIMUN " + pga.session.conference_session_number,
+			session: "MEDIMUN " + pga.session.number,
 			isCurrent: pga.session.isCurrent,
 		};
 	});
-	let schoolDirectorRole = user.SchoolDirector.map((schoolDirector) => {
+	let schoolDirectorRole = user.schoolDirector.map((schoolDirector) => {
 		return {
 			role: "School Director of " + schoolDirector.school.name,
-			session: "MEDIMUN " + schoolDirector.session.conference_session_number,
+			session: "MEDIMUN " + schoolDirector.session.number,
 			isCurrent: schoolDirector.session.isCurrent,
 		};
 	});
-	let directorRole = user.Director.map((director) => {
-		return {
-			role: "Director of " + director.team.name,
-			session: "MEDIMUN " + director.session.conference_session_number,
-			isCurrent: director.session.isCurrent,
-		};
-	});
-	let seniorDirectorRole = user.SeniorDirector.map((seniorDirector) => {
+	let seniorDirectorRole = user.seniorDirecor.map((seniorDirector) => {
 		return {
 			role: "Senior Director",
+			isCurrent: true,
+			session: "",
 		};
 	});
 
@@ -261,7 +272,6 @@ export async function getServerSideProps(context) {
 		...sgRole,
 		...dsgRole,
 		...pgaRole,
-		...directorRole,
 		...schoolDirectorRole,
 		...teamManagerRole,
 		...chairRole,
@@ -295,20 +305,30 @@ export async function getServerSideProps(context) {
 		secretKey: "BPbpMinio2006!",
 	});
 
+	let school;
+
+	if (!user.schoolStudent[0]) {
+		school = "No School Assigned";
+	} else {
+		school = user.SchoolMember[0].school.name;
+	}
+
 	return {
 		props: {
 			userinfo: {
-				name: user.display_name || user.official_name,
-				surname: user.display_surname || user.official_surname,
+				name: user.displayName || user.officialName,
+				surname: user.displaySurname || user.officialSurname,
 				username: user.username,
 				pronouns: { pronoun1: user.pronoun1, pronoun2: user.pronoun1 },
 				nationality: user.nationality,
-				school: user.SchoolMember[0].school.name,
+				school: school,
 			},
 			currentroles,
 			pastroles,
-			profilePictureLink: await minioClient.presignedGetObject("profile-pictures", `${user.userNumber}`, 6 * 60 * 60),
-			coverImageLink: await minioClient.presignedGetObject("cover-images", `${user.userNumber}`, 6 * 60 * 60),
+			/* 			profilePictureLink: await minioClient.presignedGetObject("profile-pictures", `${user.userNumber}`, 6 * 60 * 60),
+			coverImageLink: await minioClient.presignedGetObject("cover-images", `${user.userNumber}`, 6 * 60 * 60), */
+			profilePictureLink: "/public",
+			coverImageLink: "/public",
 		},
 	};
 }
