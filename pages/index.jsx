@@ -81,7 +81,7 @@ export default function HomePage(props) {
 		}
 
 		if (section > 1) {
-			const mediblueopacity = 1 - (section - 1.5) / 1;
+			const mediblueopacity = 1 - (section - 0.95) / 1;
 			if (mediblueopacity < 255) {
 				r.style.setProperty("--section3-photo-background", `rgba(41,127,201,${mediblueopacity})`);
 				r.style.setProperty("--mediblueopacity", mediblueopacity);

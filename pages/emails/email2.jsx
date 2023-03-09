@@ -15,7 +15,6 @@ function But() {
 	const html = render(<EmailExport />, {
 		pretty: true,
 	});
-	console.log(html);
 }
 
 let name;
@@ -293,4 +292,3 @@ const hr = {
 const html = render(<EmailExport />, {
 	pretty: true,
 });
-console.log(html);

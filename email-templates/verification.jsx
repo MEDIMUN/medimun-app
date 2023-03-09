@@ -15,7 +15,6 @@ function But() {
 	const html = render(<EmailExport />, {
 		pretty: true,
 	});
-	console.log(html);
 }
 
 export default function EmailExport() {

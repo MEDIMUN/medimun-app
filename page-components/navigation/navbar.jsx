@@ -5,7 +5,6 @@ import Logo from "../../components/common/branding/logo/main";
 
 function Navigation(props) {
 	const pages = [
-		{ name: "Home", path: "/" },
 		{ name: "About", path: "/about" },
 		{ name: "Resources", path: "/resources" },
 		{ name: "Experience", path: "/experience" },

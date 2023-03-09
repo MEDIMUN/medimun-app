@@ -46,7 +46,7 @@ function PageFooter() {
 					<Text onClick={() => window.open("https://www.youtube.com/@medimun8808", "_blank")}>YouTube</Text>
 					<Text onClick={() => window.open("#", "_blank")}>Twitter</Text>
 				</div>
-				<div>© {currentYear} Mediterranean Model United Nations</div>
+				<div>© 2005 - {currentYear} Mediterranean Model United Nations</div>
 			</div>
 		</footer>
 	);

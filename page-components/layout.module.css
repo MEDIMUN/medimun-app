@@ -1,7 +1,9 @@
 .container {
   width: 100%;
-  height: auto;
+  height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
+  min-height: 100dvh;
   max-height: fit-content;
 }
 
