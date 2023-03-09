@@ -302,7 +302,7 @@ export default function SignUpPage(props) {
 
 
 O */}
-						{currentPage === 2 ? <div>This is a test build. If you complete the sign up form your application will be received but will not be processed until the app goes public. There are issues and incomplete parts of the site. Thanks for your understanding.</div> : null}
+						{currentPage === 2 ? <div>This is a test build. If you complete the sign up form your application will not be received or processed until the app is opened to public. There are issues and incomplete parts of the site where you can have a peek into the app. If you have any questions please contact us at medimun.cyprus{'@'}gmail{'.'}com</div> : null}
 						{/* N
 
 
