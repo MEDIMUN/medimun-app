@@ -20,6 +20,7 @@ import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import axios, { AxiosRequestConfig } from "axios";
 import { currentUserRoles, pastUserRoles, findUserDetails } from "../../../lib/user-operations/user-roles";
+import ProfileBanner from "../../../app-components/ProfileBanner";
 
 function Title(props) {
 	return (
@@ -371,114 +372,42 @@ export default function AccountPage(props) {
 		}
 	}
 
+	function infoItem(title, value, spacer) {
+		if (!value) return;
+		return (
+			<Fragment>
+				<li>
+					<div>
+						<Text>{title}</Text>
+						<Text>{value}</Text>
+					</div>
+				</li>
+				<Spacer y={spacer ?? 0} />
+			</Fragment>
+		);
+	}
+
 	return (
 		<Layout>
 			<div className={style.page}>
-				<div
-					style={{
-						backgroundColor: "#EDF2F7",
-						backgroundImage: `url(${props.coverImageLink || "/placeholders/cover-image.jpg"})`,
-					}}
-					className={style.nameholder}>
-					<div className={style.picture}>
-						<Avatar className={style.pfp} borderRadius="50%" src={`${props.profilePictureLink}`} />
-					</div>
-				</div>
-				<Spacer y={5} />
+				<ProfileBanner />
+				<Spacer y={1} />
 				<Text marginLeft="28px" fontFamily="sans-serif" fontWeight="500">
 					<strong> USER INFORMATION </strong>
 				</Text>
 
 				<ul className={style.infoList}>
-					<li>
-						<div>
-							<Text>USERID</Text>
-							<Text>{props.userNumber}</Text>
-						</div>
-					</li>
-					<li>
-						<div>
-							<Text>USERNAME</Text>
-							<Text>
-								<span className={style.unselectable}>@</span>
-								<strong>{props.userName}</strong>
-							</Text>
-						</div>
-					</li>
-					<Spacer y={0.5} />
-					<li>
-						<div>
-							<Text>SCHOOL</Text>
-							<Text>{props.school}</Text>
-						</div>
-					</li>
-					<Spacer y={0.5} />
-					<li>
-						<div>
-							<Text>OFFICIAL NAME</Text>
-							<Text>{props.official_name}</Text>
-						</div>
-					</li>
-					<li>
-						<div>
-							<Text>OFFICIAL SURNAME</Text>
-							<Text>{props.official_surname}</Text>
-						</div>
-					</li>
-					<Spacer y={0.5} />
-					{props.display_name && (
-						<Fragment>
-							<li>
-								<div>
-									<Text>DISPLAY NAME</Text>
-									<Text>{props.display_name}</Text>
-								</div>
-							</li>
-							<Spacer y={0.5} />
-						</Fragment>
-					)}
-					{props.display_surname && (
-						<Fragment>
-							<li>
-								<div>
-									<Text>DISPLAY SURNAME</Text>
-									<Text>{props.display_surname}</Text>
-								</div>
-							</li>
-							<Spacer y={0.5} />
-						</Fragment>
-					)}
-					<li>
-						<div>
-							<Text>BIRTH DATE</Text>
-							<Text>{props.birthDate}</Text>
-						</div>
-					</li>
-					<li>
-						<div>
-							<Text>NATIONALITY</Text>
-							<Text>{props.nationality}</Text>
-						</div>
-					</li>
-					<Spacer y={0.5} />
-					<li>
-						<div>
-							<Text>EMAIL</Text>
-							<Text>{props.email}</Text>
-						</div>
-					</li>
-					{!props.phone_number && <Spacer y={0.5} />}
-					{props.phone_number && (
-						<Fragment>
-							<li>
-								<div>
-									<Text>PHONE NUMBER</Text>
-									<Text>{props.phone_number}</Text>
-								</div>
-							</li>
-							<Spacer y={0.5} />
-						</Fragment>
-					)}
+					{infoItem("USERID", props.userNumber)}
+					{infoItem("USERNAME", props.userName, 0.5)}
+					{infoItem("SCHOOL", props.school, 0.5)}
+					{infoItem("OFFICIAL NAME", props.official_name)}
+					{infoItem("OFFICIAL SURNAME", props.official_surname, 0.5)}
+					{infoItem("DISPLAY NAME", props.display_name)}
+					{infoItem("DISPLAY SURNAME", props.display_surname, 0.5)}
+					{infoItem("BIRTH DATE", props.birthDate)}
+					{infoItem("NATIONALITY", props.nationality, 0.5)}
+					{infoItem("EMAIL", props.email)}
+					{infoItem("PHONE NUMBER", props.phone_number, 0.5)}
 				</ul>
 				<Divider />
 				<div className={style.section}>
@@ -1010,24 +939,6 @@ export async function getServerSideProps(context) {
 
 	const allRoles = await findUserDetails(linkUserId);
 
-	let profilePictureLink;
-	let coverImageLink;
-	try {
-		profilePictureLink = await minioClient.presignedGetObject(
-			"profile-pictures",
-			`${linkUser.userNumber}`,
-			6 * 60 * 60
-		);
-	} catch (error) {
-		profilePictureLink = "/public/profile-picture-placeholder";
-	}
-
-	try {
-		coverImageLink = await minioClient.presignedGetObject("cover-images", `${linkUser.userNumber}`, 6 * 60 * 60);
-	} catch (error) {
-		coverImageLink = "/public/cover-image-placeholder";
-	}
-
 	return {
 		props: {
 			userName: linkUser.username,
@@ -1044,8 +955,6 @@ export async function getServerSideProps(context) {
 			usePronouns: usePronouns,
 			phoneNumber: phoneNumber,
 			birthDate: linkUser.dateOfBirth.toLocaleDateString(),
-			profilePictureLink: await profilePictureLink,
-			coverImageLink: await coverImageLink,
 			sessions: allSessions,
 			currentTeams: currentTeams,
 			currentCommittees: currentCommittees,

@@ -20,6 +20,7 @@ import { useState, useRef } from "react";
 import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import axios, { AxiosRequestConfig } from "axios";
+import ProfileBanner from "../../app-components/ProfileBanner";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function AccountPage(props) {
@@ -57,6 +58,8 @@ export default function AccountPage(props) {
 	let organiser_profile_visibility_value;
 	let show_phone_number_value;
 	let allow_public_messaging_value;
+
+	console.log(props);
 
 	async function removeProfilePicture() {
 		let res;
@@ -359,16 +362,7 @@ export default function AccountPage(props) {
 				</ModalContent>
 			</Modal>
 			<div className={style.page}>
-				<div
-					style={{
-						backgroundColor: "#EDF2F7",
-						backgroundImage: `url(${props.coverImageLink || "/placeholders/cover-image.jpg"})`,
-					}}
-					className={style.nameholder}>
-					<div className={style.picture}>
-						<Avatar className={style.pfp} borderRadius="50%" src={`${props.profilePictureLink}`} />
-					</div>
-				</div>
+				<ProfileBanner />
 				<Spacer y={4} />
 				<div className={style.section}>
 					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
@@ -697,7 +691,7 @@ export async function getServerSideProps(context) {
 
 	let useDisplayNames = false;
 
-	if (user.display_name || user.display_surname) {
+	if (user.displayName || user.displaySurname) {
 		useDisplayNames = true;
 	}
 
@@ -706,15 +700,6 @@ export async function getServerSideProps(context) {
 	if (user.pronoun1 || user.pronoun2) {
 		usePronouns = true;
 	}
-
-	var Minio = require("minio");
-
-	var minioClient = new Minio.Client({
-		endPoint: "storage-s3.manage.beoz.org",
-		useSSL: false,
-		accessKey: "admin",
-		secretKey: "BPbpMinio2006!",
-	});
 
 	return {
 		props: {
@@ -732,8 +717,6 @@ export async function getServerSideProps(context) {
 			allow_public_messaging: user.allowMessagesFromEveryone,
 			useDisplayNames: useDisplayNames,
 			usePronouns: usePronouns,
-			profilePictureLink: await minioClient.presignedGetObject("profile-pictures", `${user.userNumber}`, 6 * 60 * 60),
-			coverImageLink: await minioClient.presignedGetObject("cover-images", `${user.userNumber}`, 6 * 60 * 60),
 		},
 	};
 }

@@ -17,10 +17,10 @@ export default async function (req, res) {
 	}
 
 	var minioClient = new Minio.Client({
-		endPoint: "storage-s3.manage.beoz.org",
+		endPoint: "storage.medimun.org",
 		useSSL: false,
-		accessKey: "admin",
-		secretKey: "BPbpMinio2006!",
+		accessKey: "mediuser",
+		secretKey: "Qr!0IlTE@bP3",
 	});
 
 	const user = await prisma.user.findFirst({
@@ -50,15 +50,13 @@ export default async function (req, res) {
 			minioClient.removeObject("profile-pictures", `${user.userNumber}`, function (err, etag) {
 				if (err) return console.log(err, etag);
 			});
-			res
-				.status(200)
-				.json({
-					title: "Success",
-					description: "Profile picture has been removed",
-					status: "success",
-					duration: 5000,
-					isClosable: true,
-				});
+			res.status(200).json({
+				title: "Success",
+				description: "Profile picture has been removed",
+				status: "success",
+				duration: 5000,
+				isClosable: true,
+			});
 			return;
 		}
 
@@ -74,15 +72,13 @@ export default async function (req, res) {
 					console.log("ERROR: " + err);
 				}
 			});
-			res
-				.status(500)
-				.json({
-					title: "Error",
-					description: "Filetype is not supported",
-					status: "error",
-					duration: 5000,
-					isClosable: true,
-				});
+			res.status(500).json({
+				title: "Error",
+				description: "Filetype is not supported",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 			return;
 		}
 
@@ -92,15 +88,13 @@ export default async function (req, res) {
 					console.log("ERROR: " + err);
 				}
 			});
-			res
-				.status(500)
-				.json({
-					title: "Error",
-					description: "File is not an image",
-					status: "error",
-					duration: 5000,
-					isClosable: true,
-				});
+			res.status(500).json({
+				title: "Error",
+				description: "File is not an image",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 			return;
 		}
 
@@ -123,57 +117,49 @@ export default async function (req, res) {
 						return;
 					}
 				});
-				res
-					.status(500)
-					.json({
-						title: "Error",
-						description: "File is too large",
-						status: "error",
-						duration: 1250,
-						isClosable: true,
-					});
+				res.status(500).json({
+					title: "Error",
+					description: "File is too large",
+					status: "error",
+					duration: 1250,
+					isClosable: true,
+				});
 				// file is larger than 5 MB
 				return;
 			}
 			minioClient.fPutObject("profile-pictures", `${filename}`, file, metaData, function (err, etag) {
 				if (err) {
-					res
-						.status(500)
-						.json({
-							title: "Error",
-							description: "Please try again later",
-							status: "error",
-							duration: 1250,
-							isClosable: true,
-						});
+					res.status(500).json({
+						title: "Error",
+						description: "Please try again later",
+						status: "error",
+						duration: 1250,
+						isClosable: true,
+					});
 					console.log(err, etag);
 					return;
 				}
 
 				fs.unlink(`${dir}/${user.userNumber}`, function (err) {
 					if (err) {
-						res
-							.status(500)
-							.json({
-								title: "Error",
-								description: "Please try again later",
-								status: "error",
-								duration: 1250,
-								isClosable: true,
-							});
+						res.status(500).json({
+							title: "Error",
+							description: "Please try again later",
+							status: "error",
+							duration: 1250,
+							isClosable: true,
+						});
 						console.log("ERROR: " + err);
 						return;
 					}
 				});
-				res
-					.status(200)
-					.json({
-						title: "Success",
-						description: "Profile picture updated",
-						status: "success",
-						duration: 1250,
-						isClosable: true,
-					});
+				res.status(200).json({
+					title: "Success",
+					description: "Profile picture updated",
+					status: "success",
+					duration: 1250,
+					isClosable: true,
+				});
 			});
 		});
 	});

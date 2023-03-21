@@ -1,11 +1,13 @@
 import Layout from "../../../app-components/layout";
 import Pagelayout from "../../../page-components/layout";
-import { Grid, Spacer } from "@nextui-org/react";
-import UserPage from "../../../app-components/pages/users/[user]/user";
 import prisma from "../../../prisma/client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 const util = require("util");
+import s from "../../../styles/users.module.css";
+import { Grid, Image, Spacer, User, Text as TextN } from "@nextui-org/react";
+import { Text, Tabs, TabList, TabPanels, Tab, TabPanel, Avatar } from "@chakra-ui/react";
+import ProfileBanner from "../../../app-components/ProfileBanner";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function UsersPage(props) {
@@ -29,6 +31,73 @@ export default function UsersPage(props) {
 			</Pagelayout>
 		);
 	}
+}
+
+function UserPage(props) {
+	const currentroles = props.props.currentroles;
+	const pastroles = props.props.pastroles;
+
+	return (
+		<div className={s.page}>
+			<ProfileBanner />
+			<Spacer y={1} />
+			<div>
+				<Tabs variant="soft-rounded">
+					<TabList css={{ paddingLeft: "20px" }}>
+						<Tab>Current Roles</Tab>
+						<Tab>Past Roles</Tab>
+						<Tab>About Me</Tab>
+					</TabList>
+					<TabPanels>
+						<TabPanel>
+							<div className={s.rolestab}>
+								{currentroles.map((role) => {
+									return (
+										<div>
+											<div className={s.pastRoles}>
+												<TextN className={s.rolename} css={{ fontSize: "1.2rem", fontWeight: "$bold" }}>
+													{role.role}
+												</TextN>
+												<TextN className={s.roleSession}>CURRENT</TextN>
+											</div>
+											<Spacer y={0.1} />
+										</div>
+									);
+								})}
+								<Spacer y={1} />
+							</div>
+						</TabPanel>
+						<TabPanel>
+							<div className={s.rolestab}>
+								{pastroles.map((role) => {
+									return (
+										<div>
+											<div className={s.pastRoles}>
+												<TextN className={s.rolename} css={{ fontSize: "1.2rem", fontWeight: "$bold" }}>
+													{role.role}
+												</TextN>
+												<TextN className={s.pastRoleSession}>{role.session}</TextN>
+											</div>
+											<Spacer y={0.1} />
+										</div>
+									);
+								})}
+								<Spacer y={1} />
+							</div>
+						</TabPanel>
+						<TabPanel>
+							<div className={s.bioSection}>
+								<p>
+									No biography added yet, this feature is exxperimental, biographies may take time to appear or not
+									appear at all.
+								</p>
+							</div>
+						</TabPanel>
+					</TabPanels>
+				</Tabs>
+			</div>
+		</div>
+	);
 }
 
 export async function getServerSideProps(context) {

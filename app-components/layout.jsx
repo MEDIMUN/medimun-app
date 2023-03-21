@@ -57,7 +57,7 @@ export default function Layout(props) {
 						</div>
 						<Navbar.Content>
 							<Navbar.Item>
-								<Text className={style.title}>Users</Text>
+								<h1 className={style.title}>Users</h1>
 							</Navbar.Item>
 						</Navbar.Content>
 					</Navbar>

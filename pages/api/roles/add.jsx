@@ -5,9 +5,9 @@ import { findUserDetails } from "../../../lib/user-operations/user-roles";
 export default async function handler(req, res) {
 	const session = await getSession({ req: req });
 	const roleName = req.body.role;
-	const userNumber = req.body.userNumber;
-	const committeeId = req.body.committeeId;
-	const sessionId = req.body.sessionId;
+	const userNumber = parseInt(req.body.userNumber);
+	const committeeId = parseInt(req.body.committeeId);
+	const sessionId = parseInt(req.body.sessionId);
 	const peasantUser = await findUserDetails(userNumber);
 	const organiserUser = await findUserDetails(session.user.userNumber);
 
@@ -242,7 +242,7 @@ export default async function handler(req, res) {
 			}
 			const response = await prisma.secretariatSecretaryGeneral.create({
 				data: {
-					user: { connect: { id: peasantUser.user.id } },
+					User: { connect: { id: peasantUser.user.id } },
 					session: { connect: { id: sessionId } },
 				},
 			});

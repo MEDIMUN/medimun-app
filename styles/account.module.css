@@ -52,19 +52,7 @@
 }
 
 
-.page>div:nth-child(1) {
-  height: 256px;
-  width: calc(100% + 0px);
-  display: flex;
-  flex-direction: column;
-  border-radius: 0 0 1rem 1rem;
-  margin-top: -10px;
-  text-align: left;
-  align-items: left;
-  background-size: cover;
-  background-position: center;
-  padding-top: 148px;
-}
+
 
 .infoList>li {
   display: flex;
