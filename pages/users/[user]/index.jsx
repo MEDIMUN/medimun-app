@@ -53,7 +53,7 @@ function UserPage(props) {
 							<div className={s.rolestab}>
 								{currentroles.map((role) => {
 									return (
-										<div>
+										<div key={role.role}>
 											<div className={s.pastRoles}>
 												<TextN className={s.rolename} css={{ fontSize: "1.2rem", fontWeight: "$bold" }}>
 													{role.role}
@@ -71,7 +71,7 @@ function UserPage(props) {
 							<div className={s.rolestab}>
 								{pastroles.map((role) => {
 									return (
-										<div>
+										<div key={role.role + role.session}>
 											<div className={s.pastRoles}>
 												<TextN className={s.rolename} css={{ fontSize: "1.2rem", fontWeight: "$bold" }}>
 													{role.role}
@@ -87,10 +87,7 @@ function UserPage(props) {
 						</TabPanel>
 						<TabPanel>
 							<div className={s.bioSection}>
-								<p>
-									No biography added yet, this feature is exxperimental, biographies may take time to appear or not
-									appear at all.
-								</p>
+								<p>No biography added yet, this feature is exxperimental, biographies may take time to appear or not appear at all.</p>
 							</div>
 						</TabPanel>
 					</TabPanels>
@@ -336,17 +333,7 @@ export async function getServerSideProps(context) {
 		};
 	});
 
-	const roles = [
-		...seniorDirectorRole,
-		...sgRole,
-		...dsgRole,
-		...pgaRole,
-		...schoolDirectorRole,
-		...teamManagerRole,
-		...chairRole,
-		...teamMemberRole,
-		...delegateRole,
-	];
+	const roles = [...seniorDirectorRole, ...sgRole, ...dsgRole, ...pgaRole, ...schoolDirectorRole, ...teamManagerRole, ...chairRole, ...teamMemberRole, ...delegateRole];
 
 	const currentroles = roles
 		.filter((role) => role.isCurrent)
