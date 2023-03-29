@@ -55,6 +55,9 @@ model User {
   pronoun1                      String?                                    @default("")
   pronoun2                      String?                                    @default("")
   //
+  profilePicture                String?                                    @default("")
+  coverPhoto                    String?                                    @default("")
+  //
   member                        Member[]
   delegate                      Delegate[]
   schoolStudent                 SchoolStudent[]

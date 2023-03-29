@@ -1,674 +1,444 @@
 import Layout from "../../app-components/layout";
-import { Avatar, Input, Text, Switch, Stack, Radio, RadioGroup } from "@chakra-ui/react";
+import { Avatar, Input, Text, Switch, Stack, Radio, RadioGroup, Select } from "@chakra-ui/react";
 import style from "../../styles/account.module.css";
-import prisma from "../../prisma/client";
 import { getSession } from "next-auth/react";
 import { Image, Spacer } from "@nextui-org/react";
-import {
-	BeatLoader,
-	Button,
-	Modal,
-	ModalOverlay,
-	ModalContent,
-	ModalHeader,
-	ModalCloseButton,
-	ModalBody,
-	Lorem,
-	ModalFooter,
-} from "@chakra-ui/react";
-import { useState, useRef } from "react";
+import { BeatLoader, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Lorem, ModalFooter } from "@chakra-ui/react";
+import { useState, useRef, Fragment, use } from "react";
 import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import axios, { AxiosRequestConfig } from "axios";
 import ProfileBanner from "../../app-components/ProfileBanner";
+import { findUserDetails } from "../../lib/user-operations/user-roles";
+import { useEffect } from "react";
+import { useFirstRender } from "../../hooks/useFirstRender";
+import post from "../../hooks/post";
+import { countryCodesAndNames } from "../../data/countries";
+
+import { capitaliseEachWord } from "../../lib/capitalise-each-word";
+
+const disallowedCharacters = ["#", "/", "(", ")", "@", "--", "[", "]", "{", "}", ":", ";", ".", ",", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function AccountPage(props) {
-	const official_name_ref = useRef(props.official_name);
-	const official_surname_ref = useRef(props.official_surname);
-	const [display_names_toggle, set_display_names_toggle] = useState(props.useDisplayNames);
-	const [pronouns_toggle, set_pronouns_toggle] = useState(props.usePronouns);
-	const display_name_ref = useRef(props.display_name);
-	const display_surname_ref = useRef(props.display_surname);
-	const pronoun_1_ref = useRef();
-	const pronoun_2_ref = useRef();
-	const date_of_birth_ref = useRef();
-	const profile_picture_ref = useRef();
-	const cover_image_ref = useRef();
-	const [profile_visibility, set_profile_visibility] = useState();
-	const [organiser_profile_visibility, set_organiser_profile_visibility] = useState();
-	const [show_phone_number, set_show_phone_number] = useState(false);
-	const [allow_public_messaging, set_allow_public_messaging] = useState(false);
-	const [profile_picture, set_profile_picture] = useState(false);
-	const [cover_image, set_cover_image] = useState(false);
-	const { isOpen, onOpen, onClose } = useDisclosure();
-	const toast = useToast();
 	const router = useRouter();
-	const [loading, setLoading] = useState(false);
+	const firstRender = useFirstRender();
+	const toast = useToast();
+	const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+	const schools = [{ schoolName: "Other", schoolCode: "" }, ...props.schools];
+	const getFlagEmoji = (countryCode = "UN") => String.fromCodePoint(...[...countryCode.toUpperCase()].map((x) => 0x1f1a5 + x.charCodeAt()));
 
-	let official_name;
-	let official_surname;
-	let display_names_toggle_value;
-	let display_name;
-	let display_surname;
-	let pronoun_1;
-	let pronoun_2;
-	let date_of_birth;
-	let profile_visibility_value;
-	let organiser_profile_visibility_value;
-	let show_phone_number_value;
-	let allow_public_messaging_value;
+	/** PAGE COMPONENTS */
+	function profileVisibilityRadio(value, title, description) {
+		return (
+			<div className={profileVisibility == value ? style.selectedRadio : style.deselectedRadio}>
+				<Radio className={style.radio} value={value} defaultChecked>
+					<strong>{title}</strong>
+					<h3 borderBottom="2.5px solid #FFF" paddingLeft="24px">
+						{description}
+					</h3>
+				</Radio>
+			</div>
+		);
+	}
 
-	console.log(props);
+	const title = (title, description) => {
+		return (
+			<Fragment>
+				<Spacer y={1} />
+				<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
+					<strong>{title}</strong>
+					{description && <br />}
+					{description}
+				</Text>
+			</Fragment>
+		);
+	};
 
-	async function removeProfilePicture() {
-		let res;
-		set_profile_picture(true);
-		try {
-			const response = await fetch("/api/account/remove-profile-picture", {
-				method: "DELETE",
-			});
-			res = await response.json();
-		} catch (error) {
-			toast({
-				id: "error",
-				title: "Error",
-				description: "Something went wrong",
-				status: "error",
-				duration: 5000,
-				isClosable: true,
-				position: "top",
-			});
-			set_profile_picture(false);
-			return;
-		}
+	/** NOTIFS */
+	function timedOut() {
 		toast({
-			id: "success",
-			title: res.title,
-			description: res.description,
-			status: res.status,
-			duration: res.duration,
-			isClosable: res.isClosable,
+			title: "You are not connected to the internet",
+			status: "error",
+			duration: 10000,
+			isClosable: true,
 			position: "top",
 		});
-		router.replace(router.asPath);
-		set_profile_picture(false);
 	}
 
-	async function removeCoverImage() {
-		let res;
-		set_cover_image(true);
-		try {
-			const response = await fetch("/api/account/remove-cover-image", {
-				method: "DELETE",
-			});
-			res = await response.json();
-		} catch (error) {
-			toast({
-				id: "error",
-				title: "Error",
-				description: "Something went wrong",
-				status: "error",
-				duration: 5000,
-				isClosable: true,
-				position: "top",
-			});
-			set_cover_image(false);
-			return;
-		}
-
-		toast({
-			id: "success",
-			title: res.title,
-			description: res.description,
-			status: res.status,
-			duration: res.duration,
-			isClosable: res.isClosable,
-			position: "top",
-		});
-		router.replace(router.asPath);
-		set_cover_image(false);
+	function NameInput(title, description, inputValue, onChange, inputIsDisabled, buttonIsDisabled, buttonIsLoading, buttonOnClick, buttonText, type, placeholder) {
+		return (
+			<Fragment>
+				<Fragment>
+					<Spacer y={1} />
+					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
+						<strong>{title}</strong>
+						{description && <br />}
+						{description}
+					</Text>
+				</Fragment>{" "}
+				<div className="fdr">
+					<Input value={inputValue} onChange={onChange} isDisabled={inputIsDisabled} type={type} placeholder={placeholder} variant="filled" width="calc(100%)" />
+					<Button isDisabled={buttonIsDisabled} isLoading={buttonIsLoading} onClick={buttonOnClick} ml={2}>
+						{buttonText}
+					</Button>
+				</div>
+			</Fragment>
+		);
 	}
 
-	async function uploadProfilePicture() {
-		set_profile_picture(true);
-		if (!profile_picture_ref.current.files[0]) {
-			set_profile_picture(false);
-			return;
-		}
-		let formData = new FormData();
-		formData.append("file", profile_picture_ref.current.files[0]);
-		try {
-			const response = await axios.post("/api/account/profile-picture", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			if (!toast.isActive("error")) {
-				toast({
-					id: "error",
-					title: response.data.title,
-					description: response.data.description,
-					status: response.data.status,
-					duration: response.data.duration,
-					isClosable: response.data.isClosable,
-					position: "top",
-				});
-			}
-		} catch (error) {
-			if (error.response) {
-				if (!toast.isActive("error")) {
-					toast({
-						id: "error",
-						title: error.response.data.title,
-						description: error.response.data.description,
-						status: error.response.data.status,
-						duration: error.response.data.duration,
-						isClosable: error.response.data.isClosable,
-						position: "top",
-					});
-				}
-				// get response with a status code not in range 2xx
-			} else if (error.request) {
-				// no response
-			} else {
-				// Something wrong in setting up the request
-			}
-		}
+	/** PAGE STATE */
 
-		set_profile_picture(false);
-		router.replace(router.asPath);
-	}
+	/** OFFICIAL NAME STATE */
+	const [officialName, setOfficialName] = useState(props.user.officialName);
+	const [disableOfficialName, setDisableOfficialName] = useState(true);
+	const [previousOfficialName, setPreviousOfficialName] = useState(props.user.officialName);
+	const [officislNameLoading, setOfficialNameLoading] = useState(false);
+	const [officialNameButtonText, setOfficialNameButtonText] = useState("Edit");
+	const [officialNameButtonDisabled, setOfficialNameButtonDisabled] = useState(false);
 
-	async function uploadCoverImage() {
-		set_cover_image(true);
+	const handleOfficialNameChange = (event) => setOfficialName(capitaliseEachWord(event.target.value, 25, disallowedCharacters));
 
-		if (!cover_image_ref.current.files[0]) {
-			set_cover_image(false);
-			return;
-		}
-
-		let formData = new FormData();
-		formData.append("file", cover_image_ref.current.files[0]);
-		try {
-			const response = await axios.post("/api/account/cover-image", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			if (!toast.isActive("error")) {
-				toast({
-					id: "error",
-					title: response.data.title,
-					description: response.data.description,
-					status: response.data.status,
-					duration: response.data.duration,
-					isClosable: response.data.isClosable,
-					position: "top",
-				});
-			}
-		} catch (error) {
-			if (error.response) {
-				if (!toast.isActive("error")) {
-					toast({
-						id: "error",
-						title: error.response.data.title,
-						description: error.response.data.description,
-						status: error.response.data.status,
-						duration: error.response.data.duration,
-						isClosable: error.response.data.isClosable,
-						position: "top",
-					});
-				}
-			} else if (error.request) {
-			} else {
-				console.log("Error", error.message);
-			}
-			console.log(error.config);
-		}
-		set_cover_image(false);
-		router.replace(router.asPath);
-	}
-
-	async function submitHandler() {
-		setLoading(true);
-		official_name = official_name_ref.current.value;
-		official_surname = official_surname_ref.current.value;
-		display_names_toggle_value = display_names_toggle || "false";
-		if (display_names_toggle_value == true) {
-			display_name = display_name_ref.current.value;
-			display_surname = display_surname_ref.current.value;
+	async function updateOfficialName() {
+		if (disableOfficialName) {
+			setDisableOfficialName(false);
+			setOfficialNameButtonText("Save");
 		} else {
-			display_name = "";
-			display_surname = "";
-		}
-
-		if (pronouns_toggle == true) {
-			pronoun_1 = pronoun_1_ref.current.value;
-			pronoun_2 = pronoun_2_ref.current.value;
-		} else {
-			pronoun_1 = "";
-			pronoun_2 = "";
-		}
-		date_of_birth = date_of_birth_ref.current.value;
-		profile_visibility_value = profile_visibility;
-		organiser_profile_visibility_value = organiser_profile_visibility;
-		show_phone_number_value = show_phone_number || "false";
-		allow_public_messaging_value = allow_public_messaging || "false";
-
-		const res = await fetch("/api/account/update", {
-			method: "PATCH",
-			body: JSON.stringify({
-				official_name,
-				official_surname,
-				display_names_toggle,
-				display_name,
-				display_surname,
-				pronouns_toggle,
-				pronoun_1,
-				pronoun_2,
-				date_of_birth,
-				profile_visibility,
-				organiser_profile_visibility,
-				show_phone_number,
-				allow_public_messaging,
-			}),
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
-
-		let response = await res.json();
-
-		if (!toast.isActive("alert")) {
-			toast({
-				id: "alert",
-				title: response.title,
-				description: response.description,
-				status: response.status,
-				duration: response.duration,
-				isClosable: response.isClosable,
-				position: "top",
-			});
-		}
-
-		if (res.status === 400) {
-			setLoading(false);
-			onClose();
-		}
-
-		if (res.status === 200) {
-			setLoading(false);
-			onClose();
-
-			router.replace(router.asPath);
+			setDisableOfficialName(true);
+			setOfficialNameLoading(true);
+			try {
+				const res = await fetch("/api/user/update-official-name", {
+					method: "PATCH",
+					body: JSON.stringify({
+						userNumber: props.user.id,
+						officialName: capitaliseEachWord(officialName).trim(),
+					}),
+					signal: AbortSignal.timeout(5000),
+				});
+				if (res.status == 200) {
+					setDisableOfficialName(true);
+					setPreviousOfficialName(capitaliseEachWord(officialName).trim());
+					setOfficialNameLoading(false);
+					setOfficialNameButtonText("Edit");
+					return;
+				}
+			} catch (e) {
+				if (e.name === "AbortError") {
+					timedOut();
+				}
+				setDisableOfficialName(true);
+				setOfficialName(capitaliseEachWord(previousOfficialName).trim());
+				setOfficialNameLoading(false);
+				setOfficialNameButtonText("Edit");
+			}
 		}
 	}
+
+	useEffect(() => {
+		if (firstRender) return;
+		if (officialName.length < 2) {
+			setOfficialNameButtonText("Name Too Short");
+			setOfficialNameButtonDisabled(true);
+		} else {
+			setOfficialNameButtonDisabled(false);
+			if (disableOfficialName) return;
+			setOfficialNameButtonText("Save");
+		}
+	}, [officialName]);
+	/** END OF OFFICIAL NAME STATE */
+
+	/** OFFICIAL SURNAME STATE */
+	const [officialSurname, setOfficialSurname] = useState(props.user.officialSurname);
+	const [disableOfficialSurname, setDisableOfficialSurname] = useState(true);
+	const [previousOfficialSurname, setPreviousOfficialSurname] = useState(props.user.officialSurname);
+	const [officialSurnameLoading, setOfficialSurnameLoading] = useState(false);
+	const [officialSurnameButtonText, setOfficialSurnameButtonText] = useState("Edit");
+	const [officialSurnameButtonDisabled, setOfficialSurnameButtonDisabled] = useState(false);
+
+	const handleOfficialSurnameChange = (event) => setOfficialSurname(capitaliseEachWord(event.target.value, 25, disallowedCharacters));
+
+	async function updateOfficialSurname() {
+		if (disableOfficialSurname) {
+			setDisableOfficialSurname(false);
+			setOfficialSurnameButtonText("Save");
+		} else {
+			setDisableOfficialSurname(true);
+			setOfficialSurnameLoading(true);
+			try {
+				const res = await fetch("/api/user/update-official-surname", {
+					method: "PATCH",
+					body: JSON.stringify({
+						userNumber: props.user.id,
+						officialName: capitaliseEachWord(officialSurname).trim(),
+					}),
+					signal: AbortSignal.timeout(5000),
+				});
+				if (res.status == 200) {
+					setDisableOfficialSurname(true);
+					setPreviousOfficialSurname(capitaliseEachWord(officialSurname, 25).trim());
+					setOfficialSurnameLoading(false);
+					setOfficialSurnameButtonText("Edit");
+					return;
+				}
+			} catch (e) {
+				if (e.name === "AbortError") {
+					timedOut();
+				}
+				setDisableOfficialSurname(true);
+				setOfficialSurname(capitaliseEachWord(previousOfficialSurname, 25).trim());
+				setOfficialSurnameLoading(false);
+				setOfficialSurnameButtonText("Edit");
+			}
+		}
+	}
+
+	useEffect(() => {
+		if (firstRender) return;
+		if (officialSurname.length < 2) {
+			setOfficialSurnameButtonText("Name Too Short");
+			setOfficialSurnameButtonDisabled(true);
+		} else {
+			setOfficialSurnameButtonDisabled(false);
+			if (disableOfficialSurname) return;
+			setOfficialSurnameButtonText("Save");
+		}
+	}, [officialSurname]);
+
+	/** DISPLAY NAME STATE */
+	const [displayName, setDisplayName] = useState(props.user.displayName);
+	const [disableDisplayName, setDisableDisplayName] = useState(true);
+	const [previousDisplayName, setPreviousDisplayName] = useState(props.user.displayName);
+	const [displayNameLoading, setDisplayNameLoading] = useState(false);
+	const [displayNameButtonText, setDisplayNameButtonText] = useState("Edit");
+	const [displayNameButtonDisabled, setDisplayNameButtonDisabled] = useState(false);
+
+	const handleDisplaynameChange = (event) => setDisplayName(capitaliseEachWord(event.target.value));
+
+	async function updateDisplayName() {
+		if (disableDisplayName) {
+			setDisableDisplayName(false);
+			setDisplayNameButtonText("Save");
+		} else {
+			setDisableDisplayName(true);
+			setDisplayNameLoading(true);
+			try {
+				const res = await fetch("/api/user/update-display-name", {
+					method: "PATCH",
+					body: JSON.stringify({
+						userNumber: props.user.id,
+						displayName: capitaliseEachWord(displayName).trim(),
+					}),
+					signal: AbortSignal.timeout(5000),
+				});
+				if (res.status == 200) {
+					setDisableDisplayName(true);
+					setPreviousDisplayName(capitaliseEachWord(displayName, 25).trim());
+					setDisplayNameLoading(false);
+					setDisplayNameButtonText("Edit");
+					return;
+				}
+			} catch (e) {
+				if (e.name === "AbortError") {
+					timedOut();
+				}
+				console.log(e);
+				setDisableDisplayName(true);
+				setDisplayName(capitaliseEachWord(previousDisplayName, 25).trim());
+				setDisplayNameLoading(false);
+				setDisplayNameButtonText("Edit");
+			}
+		}
+	}
+
+	/** SCHOOL STATE */
+	const [school, setSchool] = useState(props.user.school);
+	const [disableSchool, setDisableSchool] = useState(true);
+	const [previousSchool, setPreviousSchool] = useState(props.user.school);
+	const [schoolLoading, setSchoolLoading] = useState(false);
+	const [schoolButtonText, setSchoolButtonText] = useState("Edit");
+
+	const handleSchoolChange = (event) => setSchool(event.target.value);
+
+	/** NATIONALITY STATE */
+	const [natioality, setNationality] = useState(props.user.nationality);
+	const [disableNationality, setDisableNationality] = useState(true);
+	const [previousNationality, setPreviousNationality] = useState(props.user.nationality);
+	const [nationalityLoading, setNationalityLoading] = useState(false);
+	const [nationalityButtonText, setNationalityButtonText] = useState("Edit");
+
+	const handleNationalityChange = (event) => setNationality(event.target.value);
+
+	/** GENDER STATE */
+	const [gender, setGender] = useState(props.user.gender);
+	const [disableGender, setDisableGender] = useState(true);
+	const [previousGender, setPreviousGender] = useState(props.user.gender);
+
+	const handleGenderChange = (event) => setGender(event.target.value);
+
+	/** PRONOUN 1 STATE */
+	const [pronoun1, setPronoun1] = useState(props.user.pronoun1);
+	const [disablePronoun1, setDisablePronoun1] = useState(true);
+	const [previousPronoun1, setPreviousPronoun1] = useState(props.user.pronoun1);
+
+	const handlePronoun1Change = (event) => setPronoun1(event.target.value);
+
+	/** PRONOUN 2 STATE */
+	const [pronoun2, setPronoun2] = useState(props.user.pronoun2);
+	const [disablePronoun2, setDisablePronoun2] = useState(true);
+	const [previousPronoun2, setPreviousPronoun2] = useState(props.user.pronoun2);
+
+	const handlePronoun2Change = (event) => setPronoun2(event.target.value);
+
+	/** DATE OF BIRTH STATE */
+	const [dateOfBirth, setDateOfBirth] = useState(props.user.dateOfBirth);
+	const [disableDateOfBirth, setDisableDateOfBirth] = useState(true);
+	const [previousDateOfBirth, setPreviousDateOfBirth] = useState(props.user.dateOfBirth);
+
+	const handleDateOfBirthChange = (event) => setDateOfBirth(event.target.value);
+
+	/** PROFILE VISIBILITY STATE */
+	const [profileVisibility, setProfileVisibility] = useState(props.user.profileVisibility);
+	const [disableProfileVisibility, setDisableProfileVisibility] = useState(false);
+	const [previousProfileVisibility, setPreviousProfileVisibility] = useState(props.user.profileVisibility);
+
+	useEffect(() => {
+		const updateProfileVisibility = async () => {
+			setDisableProfileVisibility(true);
+			try {
+				res = await post("/api/user/update-profile-visibility", { timeout: 2000, profileVisibility: profileVisibility }, (res) => {
+					if (res.status == 200) {
+						setDisableProfileVisibility(false);
+						setPreviousProfileVisibility(profileVisibility);
+					}
+				});
+			} catch (err) {
+				setDisableProfileVisibility(false);
+				setProfileVisibility(previousProfileVisibility);
+			}
+		};
+		if (!firstRender && previousProfileVisibility !== profileVisibility) {
+			updateProfileVisibility();
+		}
+	}, [profileVisibility]);
+
+	/** PROFILE PICTURE STATE */
+	const [profilePicture, setProfilePicture] = useState(props.user.profilePicture);
+	const [disableProfilePicture, setDisableProfilePicture] = useState(true);
+	const [previousProfilePicture, setPreviousProfilePicture] = useState(props.user.profilePicture);
+	const profile_picture_ref = useRef(null);
+
+	/** PROFILE BANNER STATE */
+	const [profileBanner, setProfileBanner] = useState(props.user.profileBanner);
+	const [disableProfileBanner, setDisableProfileBanner] = useState(true);
+	const [previousProfileBanner, setPreviousProfileBanner] = useState(props.user.profileBanner);
+	const profile_banner_ref = useRef(null);
 
 	return (
 		<Layout>
-			<Modal isCentered closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose}>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Are you sure you want to change the following?</ModalHeader>
-					<ModalCloseButton />
-					<ModalBody pb={6}>
-						<Text>
-							<strong>
-								The fields you<span>&apos;</span>ve left empty won<span>&apos;</span>t be changed.
-							</strong>
-						</Text>
-						<Text>
-							The official name will be printed on your certificate, and the display name will be used on your nametag.
-							We take no responsibility for any spelling mistakes, please double check your spelling. You can update
-							your info at any time and retrieve your new certificate any time after approval.
-						</Text>
-						<Spacer y={1} />
-						{official_name_ref.current.value ? (
-							<Text>
-								Official Name from {props.official_name} to <strong>{official_name_ref.current.value}</strong>
-							</Text>
-						) : null}
-						{official_surname_ref.current.value != "" && (
-							<Text>
-								Official Surname from {props.official_surname} to <strong>{official_surname_ref.current.value}</strong>
-							</Text>
-						)}
-						{display_names_toggle && display_name_ref.current != null ? (
-							<Text>
-								Display Name from {props.display_name} to <strong>{display_name_ref.current.value || ""}</strong>
-							</Text>
-						) : null}
-						{display_names_toggle && display_surname_ref.current != null ? (
-							<Text>
-								Display Surname from {props.display_surname} to <strong>{display_surname_ref.current.value}</strong>
-							</Text>
-						) : null}
-					</ModalBody>
-					<Text></Text>
-					<ModalFooter>
-						{loading ? (
-							<Button mr={3} isLoading>
-								Save
-							</Button>
-						) : (
-							<Button onClick={submitHandler} mr={3}>
-								Save
-							</Button>
-						)}
-
-						<Button onClick={onClose}>Cancel</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
 			<div className={style.page}>
-				<ProfileBanner />
-				<Spacer y={4} />
+				<ProfileBanner name={props.user.displayName || props.user.officialName + " " + props.user.officialSurname} school={props.user.school} country={props.user.nationality} role={props.user.highestCurrentRoleName} />
 				<div className={style.section}>
-					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-						<strong> PROFILE PICTURE</strong>
-					</Text>
-					<Text marginLeft="14px">Clicking Upload automatically saves the profile picture.</Text>
-
+					{title("PROFILE PICTURE", "An official looking portrait of yourself")}
 					<div className={style.uploadButtons}>
-						<Input
-							ref={profile_picture_ref}
-							placeholder="Upload"
-							className={style.uploadButton}
-							backgroundColor="#EDF2F7"
-							type="file"
-						/>
-						<Button isLoading={profile_picture} onClick={uploadProfilePicture}>
-							Upload
-						</Button>
-						<Button isLoading={profile_picture} onClick={removeProfilePicture}>
-							Remove
-						</Button>
+						<Input placeholder="Upload" className={style.uploadButton} backgroundColor="#EDF2F7" type="file" />
+						<Button>Upload & Save</Button>
+						<Button>Remove</Button>
 					</div>
 
-					<Spacer x={1} />
-
-					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-						<strong> COVER IMAGE </strong>
-					</Text>
-					<Text marginLeft="14px">Clicking Upload automatically saves the cover image.</Text>
-
+					{title("PROFILE BANNER")}
 					<div className={style.uploadButtons}>
-						<Input ref={cover_image_ref} className={style.uploadButton} backgroundColor="#EDF2F7" type="file" />
-						<Button isLoading={cover_image} onClick={uploadCoverImage}>
-							Upload
-						</Button>
-						<Button isLoading={cover_image} onClick={removeCoverImage}>
-							Remove
-						</Button>
+						<Input className={style.uploadButton} backgroundColor="#EDF2F7" type="file" />
+						<Button>Upload & Save</Button>
+						<Button>Remove</Button>
 					</div>
 
-					<Spacer y={1} />
+					{NameInput("OFFICIAL FIRSTNAME", "Will be used on your certificate, must match the name on your passport", officialName, handleOfficialNameChange, disableOfficialName, officialNameButtonDisabled, officislNameLoading, updateOfficialName, officialNameButtonText)}
 
-					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-						<strong> OFFICIAL NAME </strong>
-					</Text>
+					{NameInput("OFFICIAL SURNAME", "Will be used on your certificate, must match the name on your passport", officialSurname, handleOfficialSurnameChange, disableOfficialSurname, officialSurnameButtonDisabled, officialSurnameLoading, updateOfficialSurname, officialSurnameButtonText)}
 
-					<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
-						Your official name will be used on your certificate and must match the name on your passport.
-					</Text>
+					{NameInput("DISPLAY NAME", "Will be used on your nametag and profile, leave empty if not applicable", displayName, handleDisplaynameChange, disableDisplayName, displayNameButtonDisabled, displayNameLoading, updateDisplayName, displayNameButtonText)}
 
-					<Input
-						maxLength="20"
-						ref={official_name_ref}
-						variant="filled"
-						width="calc(100%)"
-						placeholder={props.official_name}
-					/>
-
-					<Spacer x={1} />
-
-					<Text maxLength="20" marginLeft="15px" marginRight="15px" fontFamily="sans-serif" fontWeight="500">
-						<strong> OFFICIAL SURNAME </strong>
-					</Text>
-
-					<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
-						Your official surname will be used on your certificate and must match the name on your passport.
-					</Text>
-
-					<Input
-						maxLength="20"
-						ref={official_surname_ref}
-						variant="filled"
-						width="calc(100%)"
-						placeholder={props.official_surname}
-					/>
-
-					<Spacer y={1} />
-					<div>
-						<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-							<strong>USE DISPLAY NAME SET</strong>
-						</Text>
-						<div className="fdr">
-							<Spacer x={1} />
-							<Switch
-								defaultChecked={props.useDisplayNames}
-								onChange={() => set_display_names_toggle(!display_names_toggle)}
-								size="lg"
-							/>
-							<Text marginLeft="14px">If turned off, yor official name and surname will be used instead.</Text>
-						</div>
-						<Spacer y={1} />
-					</div>
-					{display_names_toggle && (
-						<div>
-							<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-								<strong> DISPLAY NAME </strong>
-							</Text>
-
-							<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
-								If added your display name will be used on your profile and nametag.
-							</Text>
-
-							<Input
-								maxLength="20"
-								ref={display_name_ref}
-								variant="filled"
-								width="calc(100%)"
-								placeholder={props.display_name}
-							/>
-
-							<Spacer y={1} />
-							<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-								<strong> DISPLAY SURNAME </strong>
-							</Text>
-							<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
-								If added your display surname will be used on your profile and nametag.
-							</Text>
-
-							<Input
-								maxLength="20"
-								ref={display_surname_ref}
-								variant="filled"
-								width="calc(100%)"
-								placeholder={props.display_surname}
-							/>
-							<Spacer y={1} />
-						</div>
-					)}
-
-					<div>
-						<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-							<strong>USE PRONOUNS</strong>
-						</Text>
-						<div className="fdr">
-							<Spacer x={1} />
-							<Switch
-								defaultChecked={props.usePronouns}
-								onChange={() => set_pronouns_toggle(!pronouns_toggle)}
-								size="lg"
-							/>
-							<Text marginLeft="14px">If turned off, your profile and nametag will not contain pronouns.</Text>
-						</div>
-						<Spacer y={1} />
+					{title("PRONOUNS", "Will be used on your nametag and profile, leave empty if not applicable")}
+					<div className="fdr">
+						<Input value={pronoun1} onChange={handlePronoun1Change} placeholder="PRONOUN 1" isDisabled={disablePronoun1} maxLength="5" borderRadius="5px 0 0 5px" variant="filled" width="calc(50%)" borderRight="2px solid #e2e8f0" />
+						<Input value={pronoun2} onChange={handlePronoun2Change} placeholder="PRONOUN 2" isDisabled={disablePronoun2} maxLength="5" borderRadius="0 5px 5px 0" variant="filled" width="calc(50%)" />
+						<Button ml={2}>Edit</Button>
 					</div>
 
-					{pronouns_toggle && (
-						<div>
-							<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-								<strong> PRONOUNS </strong>
-							</Text>
+					{title("DATE OF BIRTH", "Will be used to determine your age group, must match the date of birth on your passport")}
 
-							<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
-								Your pronouns will be used on your profile and nametag in the future as this feature is experimental and
-								will be used in the 19<sup>th</sup> Session of MEDIMUN.
-							</Text>
+					<div className="fdr">
+						<Input value={dateOfBirth} onChange={handleDateOfBirthChange} disabled={disableDateOfBirth} variant="filled" width="calc(100%)" placeholder="Select Date and Time" size="md" type="date" />
+						<Button ml={2}>Edit</Button>
+					</div>
 
-							<div>
-								<Input
-									maxLength="5"
-									ref={pronoun_1_ref}
-									borderRadius="5px 0 0 5px"
-									variant="filled"
-									width="calc(50%)"
-									borderRight="2px solid #e2e8f0"
-									placeholder={props.pronoun1}
-								/>
-								<Input
-									maxLength="5"
-									ref={pronoun_2_ref}
-									borderRadius="0 5px 5px 0"
-									variant="filled"
-									width="calc(50%)"
-									placeholder={props.pronoun2}
-								/>
-							</div>
-							<Spacer x={1} />
-						</div>
-					)}
+					{title("GENDER")}
 
-					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-						<strong> DATE OF BIRTH </strong>
-					</Text>
-					<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
-						Your date of birth is only visible to members of MEDIMUN management and will not be shown anywhere else.{" "}
-					</Text>
-					<Input
-						ref={date_of_birth_ref}
-						variant="filled"
-						width="calc(100%)"
-						placeholder="Select Date and Time"
-						size="md"
-						type="date"
-					/>
-					<Spacer y={1} />
-					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-						<strong> PROFILE VISIBILITY</strong>
-					</Text>
-					<Text marginLeft="14px" borderBottom="2.5px solid #FFF">
-						Your choice may eb disregarded if you are enrolled in the current session of MEDIMUN.{" "}
-					</Text>
+					<div className="fdr">
+						<Select value={natioality} disabled={disableNationality} defaultValue="" variant="filled" width="calc(100%)" size="md" type="date">
+							<option value="Male">Male</option>
+							<option value="Female">Female</option>
+							<option value="Non-Binary">Non-Binary</option>
+							<option value="Other">Other</option>
+							<option value="">Prefer not to say</option>
+						</Select>
+						<Button ml={2}>Edit</Button>
+					</div>
 
-					<RadioGroup
-						onChange={set_profile_visibility}
-						backgroundColor="#EDF2F7"
-						borderRadius="5px"
-						padding="10px"
-						marginLeft="4px"
-						defaultValue={`${props.profile_visibility}`}>
-						<Stack>
-							<Radio value="1">Public Profile</Radio>
-							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
-								If turned on, everyone including people without a MEDIMUN account will be able to see your profile.
-							</Text>
-							<Radio value="2">Internal Only Profile</Radio>
-							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
-								If turned on, only people with a MEDIMUN account will be able to see your profile.
-							</Text>
-							<Radio value="3">Session Only Profile</Radio>
-							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
-								If turned on, only people enrolled in the current session of MEDIMUN will be able to see your profile
-								even after the session ends, if you don
-								<span>&apos;</span>t wan<span>&apos;</span>t your profile to be visible after the session ends, please
-								set it to private after the sessions ends.
-							</Text>
-							<Radio value="4">Committee Only Profile</Radio>
-							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
-								If turned on, only people in your committee will be able to see your profile.
-							</Text>
-							<Radio value="5">Verified User Only Profile</Radio>
-							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
-								If turned on, only people currently enrolled or people who had been enrolled in the past will be able to
-								see your profile. People who have a MEDIMUN account and have not been enrolled in any session will not
-								be able to see your profile.
-							</Text>
-							<Radio value="6">Private Profile</Radio>
-							<Text paddingLeft="24px">
-								If turned on, no one will be able to see your profile. This option is not recommended for currently
-								enrolled participants.
-							</Text>
-						</Stack>
+					{title("NATIONALITY")}
+
+					<div className="fdr">
+						<Select onChange={handleNationalityChange} value={natioality} /**disabled={disableNationality}*/ variant="filled" width="calc(100%)" size="md" type="date">
+							{props.countries.map((country) => {
+								return (
+									<option key={country.countryCode} value={country.countryCode}>
+										{getFlagEmoji(country.countryCode)} {country.countryName}
+									</option>
+								);
+							})}
+						</Select>
+						<Button ml={2}>Edit</Button>
+					</div>
+
+					{title("SCHOOL")}
+
+					<div className="fdr">
+						<Select onChange={handleNationalityChange} value={natioality} disabled={disableNationality} variant="filled" width="calc(100%)" size="md" type="date">
+							{schools.map((school) => {
+								return (
+									<option key={school.schoolCode} value={school.schoolCode}>
+										{school.schoolName}
+									</option>
+								);
+							})}
+						</Select>
+						<Button ml={2}>Edit</Button>
+					</div>
+
+					{title("SHOW PHONE NUMBER TO CHAIR")}
+					<div className={style.switch}>
+						<Spacer x={1} />
+						<Switch size="lg" />
+						<Text marginLeft="14px">If turned off, only higher management will be able to see your phone number.</Text>
+					</div>
+
+					{title("ALLOW DIRECT MESSAGING")}
+					<div className={style.switch}>
+						<Spacer x={1} />
+						<Switch onChange={() => set_allow_public_messaging(!allow_public_messaging)} size="lg" />
+						<Text marginLeft="14px">If turned on, only people enrolled in the current session of MEDIMUN will be able to message you.</Text>
+					</div>
+
+					{title("PROFILE VISIBILITY", "Your choice may be disregarded if you are enrolled in the current session")}
+					<RadioGroup isDisabled={disableProfileVisibility} onChange={setProfileVisibility} value={profileVisibility} backgroundColor="#EDF2F7" borderRadius="5px" padding="10px" marginLeft="4px">
+						{profileVisibilityRadio("1", "Public Profile", "Everyone with or without an account will be able to see your profile.")}
+						{profileVisibilityRadio("2", "Internal Only Profile", "Only people with an account will be able to see your profile.")}
+						{profileVisibilityRadio("3", "Session Only Profile", "Only people enrolled in the current session will be able to see your profile.")}
+						{profileVisibilityRadio("4", "Committee Only Profile", "Only people in your current committee will be able to see your profile.")}
+						{profileVisibilityRadio("5", "Verified User Only Profile", "Only people who have attended the conference will be able to see your profile.")}
+						{profileVisibilityRadio("6", "Private Profile", "Only you will be able to see your profile.")}
 					</RadioGroup>
-					<Spacer y={1} />
-					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-						<strong> PROFILE VISIBILITY OPTIONS FOR ORGANISERS </strong>
-					</Text>
-					<Text borderBottom="2.5px solid #FFF" paddingLeft="14px">
-						This option determines if an organiser can see your profile. Organisers who are required to see your profile
-						will be able to view your profile no matter the profile visibility options you have set.
-					</Text>
-					<RadioGroup
-						onChange={set_organiser_profile_visibility}
-						backgroundColor="#EDF2F7"
-						borderRadius="5px"
-						padding="10px"
-						marginLeft="4px"
-						defaultValue={`${props.organiser_profile_visibility}`}>
-						<Stack>
-							<Radio value="1">All Organisers</Radio>
-							<Text borderBottom="2.5px solid #FFF" paddingLeft="24px">
-								If turned on, all organisers in all sessions will be able to see your profile.
-							</Text>
-							<Radio value="2">Organisers in Current Session</Radio>
-							<Text paddingLeft="24px">
-								If turned on, only organisers enrolled in the current session will be able to see your profile.
-							</Text>
-						</Stack>
-					</RadioGroup>
-					<Spacer x={1} />
-					<div>
-						<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-							<strong> Show Phone Number to Chair </strong>
-						</Text>
-						<div className="fdr">
-							<Spacer x={1} />
-							<Switch onChange={() => set_show_phone_number(!show_phone_number)} size="lg" />
-							<Text marginLeft="14px">
-								If turned off, only higher management will be able to see your phone number.
-							</Text>
-						</div>
-						<Spacer y={1} />
-					</div>
-					<div>
-						<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
-							<strong>
-								{" "}
-								Allow people who are not ennrolled in your session to message you on the MEDIMUN platform.{" "}
-							</strong>
-						</Text>
-						<div className="fdr">
-							<Spacer x={1} />
-							<Switch
-								onChange={() => set_allow_public_messaging(!allow_public_messaging)}
-								value={allow_public_messaging}
-								size="lg"
-							/>
-							<Text marginLeft="14px">
-								If turned on, only people enrolled in the current session of MEDIMUN will be able to message you.
-							</Text>
-						</div>
-						<Spacer y={1} />
-					</div>
 				</div>
-				<Button ml={3} mr={3} onClick={onOpen}>
-					Save
-				</Button>
-				<Button onClick={() => router.back()}>Cancel</Button>
 			</div>
 		</Layout>
 	);
@@ -676,47 +446,33 @@ export default function AccountPage(props) {
 
 export async function getServerSideProps(context) {
 	const session = await getSession({ req: context.req });
+	const userDetails = await findUserDetails(await session.user.userNumber);
+	const user = userDetails.user;
 
-	const user = await prisma.user.findFirst({
-		where: {
-			userNumber: await session.user.userNumber,
-		},
-	});
-
-	if (!user) {
-		return {
-			notFound: true,
-		};
-	}
-
-	let useDisplayNames = false;
-
-	if (user.displayName || user.displaySurname) {
-		useDisplayNames = true;
-	}
-
-	let usePronouns = false;
-
-	if (user.pronoun1 || user.pronoun2) {
-		usePronouns = true;
+	function error() {
+		return { notFound: true };
 	}
 
 	return {
 		props: {
-			official_name: user.officialName,
-			official_surname: user.officialSurname,
-			display_name: user.displayName,
-			display_surname: user.displaySurname,
-			pronoun1: user.pronoun1,
-			pronoun2: user.pronoun2,
-			phone_number: user.phoneNumber,
-			email: user.email,
-			profile_visibility: user.profileVisibility,
-			organiser_profile_visibility: user.organiserProfileVisibility,
-			show_phone_number: user.showPhoneNumber,
-			allow_public_messaging: user.allowMessagesFromEveryone,
-			useDisplayNames: useDisplayNames,
-			usePronouns: usePronouns,
+			user: {
+				id: user.userNumber ?? error,
+				officialName: user.officialName ?? error,
+				officialSurname: user.officialSurname ?? error,
+				displayName: user.displayName ?? "",
+				pronoun1: user.pronoun1 ?? "",
+				dateOfBirth: new Date(user.dateOfBirth).toLocaleDateString(`fr-CA`).toString() ?? error,
+				pronoun2: user.pronoun2 ?? "",
+				email: user.email ?? error,
+				school: user.school ?? "",
+				phoneNumber: user.phoneNumber ?? "",
+				nationality: user.nationality ?? "",
+				allowPublicMessaging: user.allowMessagesFromEveryone,
+				profileVisibility: user.profileVisibility,
+				highestCurrentRoleName: userDetails.highestCurrentRoleName,
+			},
+			countries: countryCodesAndNames,
+			schools: [{ schoolName: "The English School", schoolCode: "english_school" }],
 		},
 	};
 }

@@ -89,18 +89,7 @@ function orderRoles(user) {
 		};
 	});
 
-	return [
-		...globalAdminRole,
-		...seniorDirectorRole,
-		...sgRole,
-		...dsgRole,
-		...pgaRole,
-		...schoolDirectorRole,
-		...teamManagerRole,
-		...chairRole,
-		...teamMemberRole,
-		...delegateRole,
-	];
+	return [...globalAdminRole, ...seniorDirectorRole, ...sgRole, ...dsgRole, ...pgaRole, ...schoolDirectorRole, ...teamManagerRole, ...chairRole, ...teamMemberRole, ...delegateRole];
 }
 
 export async function currentUserRoles(userNumber) {
@@ -456,18 +445,7 @@ export async function findUserDetails(user) {
 		};
 	});
 
-	let allRoles = [
-		...globalAdminRole,
-		...seniorDirectorRole,
-		...sgRole,
-		...dsgRole,
-		...pgaRole,
-		...schoolDirectorRole,
-		...teamManagerRole,
-		...chairRole,
-		...teamMemberRole,
-		...delegateRole,
-	];
+	let allRoles = [...globalAdminRole, ...seniorDirectorRole, ...sgRole, ...dsgRole, ...pgaRole, ...schoolDirectorRole, ...teamManagerRole, ...chairRole, ...teamMemberRole, ...delegateRole];
 
 	let allCurrentRoles = allRoles.filter((role) => role.isCurrent);
 	let allPastRoles = allRoles.filter((role) => !role.isCurrent);
@@ -509,7 +487,6 @@ export async function findUserDetails(user) {
 	const allFullPastRoles = allPastRoles.map((role) => {
 		return { name: role.role, session: role.session, roleId: role.id };
 	});
-
 	const roleNumbers = {
 		"Global Admin": 0,
 		"Senior Director": 1,
@@ -524,6 +501,10 @@ export async function findUserDetails(user) {
 		Applicant: 11,
 		Alumni: 11,
 	};
+
+	if (roles.schoolStudent.length > 0) {
+		Query.school = roles.schoolStudent[0].school.name ?? "";
+	}
 
 	return {
 		user: Query,

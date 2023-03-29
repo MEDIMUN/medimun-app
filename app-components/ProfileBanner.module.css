@@ -63,15 +63,23 @@
 }
 
 .info {
+  font-size: large;
+  font-weight: 600;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: left;
   justify-content: center;
+  align-items: center;
   padding: 10px;
   border-radius: .7rem;
   margin-top: 5px;
   background-color: #d2ebf9;
   color: #282828;
+}
+
+.emoji {
+  font-size: 20px;
+  margin-right: 5px;
 }
 
 .two {
@@ -97,7 +105,6 @@
   }
 
   .two {
-    position: absolute;
     padding-left: 0px;
     text-align: left;
     padding-left: 20px;
