@@ -1,13 +1,13 @@
-import Pagelayout from "../page-components/layout";
+import Pagelayout from "@page-layout";
 import { getSession, useSession } from "next-auth/react";
-import Layout from "../app-components/layout";
+import Layout from "@app-layout";
 import Image from "next/image";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Card, CardBody, CardHeader, Text } from "@chakra-ui/react";
 import { Spacer } from "@nextui-org/react";
-import style from "../styles/contact.module.css";
+import style from "@styles/contact.module.css";
 import { HiPhone } from "react-icons/hi";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */

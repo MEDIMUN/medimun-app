@@ -1,8 +1,3 @@
-import { StyledBadge } from "../../components/app/pages/users/icons/StyledBadge";
-import { IconButton } from "../../components/app/pages/users/icons/IconButton";
-import { EyeIcon } from "../../components/app/pages/users/icons/EyeIcon";
-import { EditIcon } from "../../components/app/pages/users/icons/EditIcon";
-import { DeleteIcon } from "../../components/app/pages/users/icons/DeleteIcon";
 import { useRouter } from "next/router";
 import { useSession, getSession } from "next-auth/react";
 import { useState, useEffect, useRef } from "react";
@@ -48,11 +43,7 @@ function UsersPage(props) {
 		console.log("filter_input_ref.current.value");
 		console.log(fetchedUsers);
 		const newFilteredUsers = fetchedUsers.filter((user) => {
-			if (
-				user.officialName.toLowerCase().includes(filter_input_ref.current.value.toLowerCase()) ||
-				user.email.toLowerCase().includes(filter_input_ref.current.value.toLowerCase()) ||
-				user.officialSurname.toLowerCase().includes(filter_input_ref.current.value.toLowerCase())
-			) {
+			if (user.officialName.toLowerCase().includes(filter_input_ref.current.value.toLowerCase()) || user.email.toLowerCase().includes(filter_input_ref.current.value.toLowerCase()) || user.officialSurname.toLowerCase().includes(filter_input_ref.current.value.toLowerCase())) {
 				return true;
 			} else {
 				return false;

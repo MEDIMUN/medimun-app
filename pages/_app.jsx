@@ -3,7 +3,7 @@ import Head from "next/head";
 
 import { createTheme, NextUIProvider } from "@nextui-org/react";
 import { SessionProvider } from "next-auth/react";
-import { AppContextProvider } from "../components/app/context/Navigation";
+import { AppContextProvider } from "@app-components/context/Navigation";
 import { ChakraProvider } from "@chakra-ui/react";
 import { SSRProvider } from "@react-aria/ssr";
 

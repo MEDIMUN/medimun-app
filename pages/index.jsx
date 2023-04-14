@@ -1,15 +1,15 @@
-import Pagelayout from "../page-components/layout";
+import Pagelayout from "@page-layout";
 import { getSession, useSession } from "next-auth/react";
-import Layout from "../app-components/layout";
+import Layout from "@app-layout";
 import Image from "next/image";
-import style from "../styles/index.module.css";
+import style from "@styles/index.module.css";
 import { SlArrowDown } from "react-icons/sl";
 import { Spacer, Text } from "@nextui-org/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Button, Text as TextC } from "@chakra-ui/react";
-import prisma from "../prisma/client";
+import prisma from "@client";
 
 /** @param {import('next').InferGetStaticPropsType<typeof getStaticProps> } props */
 export default function HomePage(props) {
@@ -64,17 +64,11 @@ export default function HomePage(props) {
 		}
 
 		if (section < 1) {
-			r.style.setProperty(
-				"--index-section3-image",
-				"repeating-linear-gradient(45deg, #000000, #000000 10px, #181818 10px, #181818 20px)"
-			);
+			r.style.setProperty("--index-section3-image", "repeating-linear-gradient(45deg, #000000, #000000 10px, #181818 10px, #181818 20px)");
 			setherotext1(props.currentSession.phrase1 || "");
 			setherotext2(props.currentSession.phrase2 || "");
 		} else {
-			r.style.setProperty(
-				"--index-section3-image",
-				`repeating-linear-gradient(-45deg, rgba(255,255,255,var(  --mediblueopacity)), rgba(255,255,255,var(  --mediblueopacity)) 10px, var(--section3-photo-background) 10px, var(--section3-photo-background) 20px)`
-			);
+			r.style.setProperty("--index-section3-image", `repeating-linear-gradient(-45deg, rgba(255,255,255,var(  --mediblueopacity)), rgba(255,255,255,var(  --mediblueopacity)) 10px, var(--section3-photo-background) 10px, var(--section3-photo-background) 20px)`);
 
 			setherotext1("");
 			setherotext2("");
@@ -149,46 +143,16 @@ export default function HomePage(props) {
 						</Text>
 						<Spacer y={1} />
 						<Text className={style.herotext4}>
-							We have a terrific team of students working to make our 18th Annual Conference a reality. Our conference
-							theme this year will be Building Resilience; stressing the need to facilitate global strength and security
-							against the conflicts and vulnerabilities faced by today
-							<span>&apos;</span>s modern society. We hope that you will join us on the 3rd and 4th February 2023, at
-							our new venue of The University of Nicosia, and feel the passion of debate on a range of crucial
-							international issues.
+							We have a terrific team of students working to make our 18th Annual Conference a reality. Our conference theme this year will be Building Resilience; stressing the need to facilitate global strength and security against the conflicts and vulnerabilities faced by today
+							<span>&apos;</span>s modern society. We hope that you will join us on the 3rd and 4th February 2023, at our new venue of The University of Nicosia, and feel the passion of debate on a range of crucial international issues.
 						</Text>
 					</div>
 					<div className={style.section3}>
 						<div className={style.imageholder}>
-							<Image
-								src="/pages/index/section3images/1.jpeg"
-								width={2976 / 2}
-								height={1984 / 2}
-								alt="people in a general assembly"></Image>
-							<Image
-								src="/pages/index/section3images/2.jpeg"
-								width={2976 / 2}
-								height={1984 / 2}
-								alt="people in a general assembly"></Image>
-							<Image
-								src="/pages/index/section3images/3.jpeg"
-								width={2976 / 2}
-								height={1984 / 2}
-								alt="people in a general assembly"></Image>{" "}
-							<Image
-								src="/pages/index/section3images/4.jpeg"
-								width={2976 / 2}
-								height={1984 / 2}
-								alt="people in a general assembly"></Image>
-							<Image
-								src="/pages/index/section3images/5.jpeg"
-								width={2976 / 2}
-								height={1984 / 2}
-								alt="people in a general assembly"></Image>{" "}
-							<Image
-								src="/pages/index/section3images/6.jpeg"
-								width={2976 / 2}
-								height={1984 / 2}
-								alt="people in a general assembly"></Image>
+							<Image src="/pages/index/section3images/1.jpeg" width={2976 / 2} height={1984 / 2} alt="people in a general assembly"></Image>
+							<Image src="/pages/index/section3images/2.jpeg" width={2976 / 2} height={1984 / 2} alt="people in a general assembly"></Image>
+							<Image src="/pages/index/section3images/3.jpeg" width={2976 / 2} height={1984 / 2} alt="people in a general assembly"></Image> <Image src="/pages/index/section3images/4.jpeg" width={2976 / 2} height={1984 / 2} alt="people in a general assembly"></Image>
+							<Image src="/pages/index/section3images/5.jpeg" width={2976 / 2} height={1984 / 2} alt="people in a general assembly"></Image> <Image src="/pages/index/section3images/6.jpeg" width={2976 / 2} height={1984 / 2} alt="people in a general assembly"></Image>
 						</div>
 					</div>
 					<div className={style.section4}>

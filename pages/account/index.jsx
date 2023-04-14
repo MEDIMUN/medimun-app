@@ -4,15 +4,15 @@ import style from "../../styles/account.module.css";
 import { getSession } from "next-auth/react";
 import { Image, Spacer } from "@nextui-org/react";
 import { BeatLoader, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Lorem, ModalFooter } from "@chakra-ui/react";
-import { useState, useRef, Fragment, use } from "react";
+import { useState, useRef, Fragment, use, Children } from "react";
 import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import axios, { AxiosRequestConfig } from "axios";
 import ProfileBanner from "../../app-components/ProfileBanner";
-import { findUserDetails } from "../../lib/user-operations/user-roles";
+import { findUserDetails } from "@lib/user-roles";
 import { useEffect } from "react";
 import { useFirstRender } from "../../hooks/useFirstRender";
-import post from "../../hooks/post";
+import post from "@lib/post";
 import { countryCodesAndNames } from "../../data/countries";
 
 import { capitaliseEachWord } from "../../lib/capitalise-each-word";
@@ -21,6 +21,8 @@ const disallowedCharacters = ["#", "/", "(", ")", "@", "--", "[", "]", "{", "}",
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function AccountPage(props) {
+	console.log(props.user.pastRoles);
+	console.log(props.user.currentRoles);
 	const router = useRouter();
 	const firstRender = useFirstRender();
 	const toast = useToast();
@@ -45,7 +47,6 @@ export default function AccountPage(props) {
 	const title = (title, description) => {
 		return (
 			<Fragment>
-				<Spacer y={1} />
 				<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 					<strong>{title}</strong>
 					{description && <br />}
@@ -70,7 +71,6 @@ export default function AccountPage(props) {
 		return (
 			<Fragment>
 				<Fragment>
-					<Spacer y={1} />
 					<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
 						<strong>{title}</strong>
 						{description && <br />}
@@ -334,74 +334,77 @@ export default function AccountPage(props) {
 	const profile_banner_ref = useRef(null);
 
 	return (
-		<Layout>
-			<div className={style.page}>
+		<Layout className={style.page}>
+			<div className={style.banner}>
 				<ProfileBanner name={props.user.displayName || props.user.officialName + " " + props.user.officialSurname} school={props.user.school} country={props.user.nationality} role={props.user.highestCurrentRoleName} />
-				<div className={style.section}>
-					{title("PROFILE PICTURE", "An official looking portrait of yourself")}
-					<div className={style.uploadButtons}>
-						<Input placeholder="Upload" className={style.uploadButton} backgroundColor="#EDF2F7" type="file" />
-						<Button>Upload & Save</Button>
-						<Button>Remove</Button>
-					</div>
+			</div>
+			{title("PROFILE OPTIONS")}
+			<div className={style.category}>
+				{title("PROFILE PICTURE", "An official looking portrait of yourself")}
+				<div className={style.uploadButtons}>
+					<Input placeholder="Upload" className={style.uploadButton} backgroundColor="#EDF2F7" type="file" />
+					<Button>Upload & Save</Button>
+					<Button>Remove</Button>
+				</div>
+				<Spacer />
+				{title("PROFILE BANNER")}
+				<div className={style.uploadButtons}>
+					<Input className={style.uploadButton} backgroundColor="#EDF2F7" type="file" />
+					<Button>Upload & Save</Button>
+					<Button>Remove</Button>
+				</div>
+			</div>
+			{title("PERSONAL INFORMATION")}
+			<div className={style.category}>
+				{NameInput("OFFICIAL FIRSTNAME", "Will be used on your certificate, must match the name on your passport", officialName, handleOfficialNameChange, disableOfficialName, officialNameButtonDisabled, officislNameLoading, updateOfficialName, officialNameButtonText)}
+				{NameInput("OFFICIAL SURNAME", "Will be used on your certificate, must match the name on your passport", officialSurname, handleOfficialSurnameChange, disableOfficialSurname, officialSurnameButtonDisabled, officialSurnameLoading, updateOfficialSurname, officialSurnameButtonText)}
+			</div>
+			<div className={style.category}>
+				{NameInput("DISPLAY NAME", "Will be used on your nametag and profile, leave empty if not applicable", displayName, handleDisplaynameChange, disableDisplayName, displayNameButtonDisabled, displayNameLoading, updateDisplayName, displayNameButtonText)}
+				{title("PRONOUNS", "Will be used on your nametag and profile, leave empty if not applicable")}
+				<div className="fdr">
+					<Input value={pronoun1} onChange={handlePronoun1Change} placeholder="PRONOUN 1" isDisabled={disablePronoun1} maxLength="5" borderRadius="5px 0 0 5px" variant="filled" width="calc(50%)" borderRight="2px solid #e2e8f0" />
+					<Input value={pronoun2} onChange={handlePronoun2Change} placeholder="PRONOUN 2" isDisabled={disablePronoun2} maxLength="5" borderRadius="0 5px 5px 0" variant="filled" width="calc(50%)" />
+					<Button ml={2}>Edit</Button>
+				</div>
+				{title("GENDER")}
+				<div className="fdr">
+					<Select value={natioality} disabled={disableNationality} defaultValue="" variant="filled" width="calc(100%)" size="md" type="date">
+						<option value="Male">Male</option>
+						<option value="Female">Female</option>
+						<option value="Non-Binary">Non-Binary</option>
+						<option value="Other">Other</option>
+						<option value="">Prefer not to say</option>
+					</Select>
+					<Button ml={2}>Edit</Button>
+				</div>
+			</div>
+			<div className={style.category}>
+				{title("DATE OF BIRTH", "Will be used to determine your age group, must match the date of birth on your passport")}
 
-					{title("PROFILE BANNER")}
-					<div className={style.uploadButtons}>
-						<Input className={style.uploadButton} backgroundColor="#EDF2F7" type="file" />
-						<Button>Upload & Save</Button>
-						<Button>Remove</Button>
-					</div>
+				<div className="fdr">
+					<Input value={dateOfBirth} onChange={handleDateOfBirthChange} disabled={disableDateOfBirth} variant="filled" width="calc(100%)" placeholder="Select Date and Time" size="md" type="date" />
+					<Button ml={2}>Edit</Button>
+				</div>
 
-					{NameInput("OFFICIAL FIRSTNAME", "Will be used on your certificate, must match the name on your passport", officialName, handleOfficialNameChange, disableOfficialName, officialNameButtonDisabled, officislNameLoading, updateOfficialName, officialNameButtonText)}
-
-					{NameInput("OFFICIAL SURNAME", "Will be used on your certificate, must match the name on your passport", officialSurname, handleOfficialSurnameChange, disableOfficialSurname, officialSurnameButtonDisabled, officialSurnameLoading, updateOfficialSurname, officialSurnameButtonText)}
-
-					{NameInput("DISPLAY NAME", "Will be used on your nametag and profile, leave empty if not applicable", displayName, handleDisplaynameChange, disableDisplayName, displayNameButtonDisabled, displayNameLoading, updateDisplayName, displayNameButtonText)}
-
-					{title("PRONOUNS", "Will be used on your nametag and profile, leave empty if not applicable")}
-					<div className="fdr">
-						<Input value={pronoun1} onChange={handlePronoun1Change} placeholder="PRONOUN 1" isDisabled={disablePronoun1} maxLength="5" borderRadius="5px 0 0 5px" variant="filled" width="calc(50%)" borderRight="2px solid #e2e8f0" />
-						<Input value={pronoun2} onChange={handlePronoun2Change} placeholder="PRONOUN 2" isDisabled={disablePronoun2} maxLength="5" borderRadius="0 5px 5px 0" variant="filled" width="calc(50%)" />
-						<Button ml={2}>Edit</Button>
-					</div>
-
-					{title("DATE OF BIRTH", "Will be used to determine your age group, must match the date of birth on your passport")}
-
-					<div className="fdr">
-						<Input value={dateOfBirth} onChange={handleDateOfBirthChange} disabled={disableDateOfBirth} variant="filled" width="calc(100%)" placeholder="Select Date and Time" size="md" type="date" />
-						<Button ml={2}>Edit</Button>
-					</div>
-
-					{title("GENDER")}
-
-					<div className="fdr">
-						<Select value={natioality} disabled={disableNationality} defaultValue="" variant="filled" width="calc(100%)" size="md" type="date">
-							<option value="Male">Male</option>
-							<option value="Female">Female</option>
-							<option value="Non-Binary">Non-Binary</option>
-							<option value="Other">Other</option>
-							<option value="">Prefer not to say</option>
-						</Select>
-						<Button ml={2}>Edit</Button>
-					</div>
-
-					{title("NATIONALITY")}
-
-					<div className="fdr">
-						<Select onChange={handleNationalityChange} value={natioality} /**disabled={disableNationality}*/ variant="filled" width="calc(100%)" size="md" type="date">
-							{props.countries.map((country) => {
-								return (
-									<option key={country.countryCode} value={country.countryCode}>
-										{getFlagEmoji(country.countryCode)} {country.countryName}
-									</option>
-								);
-							})}
-						</Select>
-						<Button ml={2}>Edit</Button>
-					</div>
-
-					{title("SCHOOL")}
-
+				{title("NATIONALITY")}
+				<div className="fdr">
+					<Select onChange={handleNationalityChange} value={natioality} /**disabled={disableNationality}*/ variant="filled" width="calc(100%)" size="md" type="date">
+						{props.countries.map((country) => {
+							return (
+								<option key={country.countryCode} value={country.countryCode}>
+									{getFlagEmoji(country.countryCode)} {country.countryName}
+								</option>
+							);
+						})}
+					</Select>
+					<Button ml={2}>Edit</Button>
+				</div>
+			</div>
+			<div>
+				{title("SCHOOL SETTINGS")}
+				<div className={style.category}>
+					{title("SELECT SCHOOL")}
 					<div className="fdr">
 						<Select onChange={handleNationalityChange} value={natioality} disabled={disableNationality} variant="filled" width="calc(100%)" size="md" type="date">
 							{schools.map((school) => {
@@ -414,21 +417,45 @@ export default function AccountPage(props) {
 						</Select>
 						<Button ml={2}>Edit</Button>
 					</div>
+				</div>
+				<div className={style.category}>
+					{title("CHANGE SCHOOL", "To change your school you must leave your current school and then join a new one. To complete this action while being enrolled in the current session please contact us.")}
+					<Button color="red" mt="5px" ml="10px">
+						LEAVE SCHOOL
+					</Button>
+				</div>
+				<div className={style.category}>
+					{title("REMOVE FROM SCHOOL", "If you don't recognise this student, you can remove them from the school you manage. You won't be able to undo this action.")}
+					<Button color="red" mt="5px" ml="10px">
+						{`REMOVE ${props.user.officialName.toUpperCase()} ${props.user.officialSurname.toUpperCase()} FROM ${school.toUpperCase() || "SCHOOL"}`}
+					</Button>
+				</div>
+			</div>
+			<div>
+				{title("ROLES & AWARDS")}
+				<div className={style.category}>{title("ROLES")}</div>
+				<div className={style.category}>{title("AWARDS")}</div>
+			</div>
 
+			<div>
+				{title("PRIVACY SETTINGS")}
+				<div className={style.category}>
 					{title("SHOW PHONE NUMBER TO CHAIR")}
 					<div className={style.switch}>
 						<Spacer x={1} />
 						<Switch size="lg" />
 						<Text marginLeft="14px">If turned off, only higher management will be able to see your phone number.</Text>
 					</div>
-
+				</div>
+				<div className={style.category}>
 					{title("ALLOW DIRECT MESSAGING")}
 					<div className={style.switch}>
 						<Spacer x={1} />
 						<Switch onChange={() => set_allow_public_messaging(!allow_public_messaging)} size="lg" />
 						<Text marginLeft="14px">If turned on, only people enrolled in the current session of MEDIMUN will be able to message you.</Text>
 					</div>
-
+				</div>
+				<div className={style.category}>
 					{title("PROFILE VISIBILITY", "Your choice may be disregarded if you are enrolled in the current session")}
 					<RadioGroup isDisabled={disableProfileVisibility} onChange={setProfileVisibility} value={profileVisibility} backgroundColor="#EDF2F7" borderRadius="5px" padding="10px" marginLeft="4px">
 						{profileVisibilityRadio("1", "Public Profile", "Everyone with or without an account will be able to see your profile.")}
@@ -470,6 +497,8 @@ export async function getServerSideProps(context) {
 				allowPublicMessaging: user.allowMessagesFromEveryone,
 				profileVisibility: user.profileVisibility,
 				highestCurrentRoleName: userDetails.highestCurrentRoleName,
+				currentRoles: userDetails.allCurrentRoles ?? [],
+				pastRoles: userDetails.allPastRoles ?? [],
 			},
 			countries: countryCodesAndNames,
 			schools: [{ schoolName: "The English School", schoolCode: "english_school" }],

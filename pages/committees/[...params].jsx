@@ -10,7 +10,8 @@ export default function Page(props) {
 	}, [router]);
 	return <></>;
 }
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+	const { params } = context.query;
 	let currentSession = await prisma.session.findFirst({
 		where: {
 			isCurrent: true,
@@ -31,7 +32,7 @@ export async function getServerSideProps() {
 
 	return {
 		props: {
-			redirect: `/sessions/${await currentSession.number}/committees`,
+			redirect: `/sessions/${await currentSession.number}/committees/${params.join("/")}`,
 		},
 	};
 }

@@ -2,11 +2,11 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/router";
 import prisma from "../../prisma/client";
 
-import style from "../../styles/sign-up.module.css";
+import style from "@styles/sign-up.module.css";
 
 import { Button, Loading, Spacer, Input } from "@nextui-org/react";
-import Pagelayout from "../../page-components/layout";
-import SignUpModal from "../../components/page/pages/sign-up/sign-up-modal";
+import Pagelayout from "@page-layout";
+import SignUpModal from "@page-components/sign-up-modal";
 import { useToast } from "@chakra-ui/react";
 
 /** @param {import('next').InferGetStaticPropsType<typeof getStaticProps> } props */
@@ -110,18 +110,7 @@ export default function SignUpPage(props) {
 		router.reload();
 	}
 
-	let pageName = [
-		"Terms and Conditions",
-		"Before you begin",
-		"Personal Details",
-		"Personal Details",
-		"Personal Details",
-		"Personal Details",
-		"Personal Details",
-		"Create Your Password",
-		"Email Verification",
-		"Welcome to MEDIMUN",
-	];
+	let pageName = ["Terms and Conditions", "Before you begin", "Personal Details", "Personal Details", "Personal Details", "Personal Details", "Personal Details", "Create Your Password", "Email Verification", "Welcome to MEDIMUN"];
 
 	async function nextPage() {
 		// Terms and Conditions
@@ -333,9 +322,7 @@ export default function SignUpPage(props) {
 
 
 O */}
-						{currentPage === 2 ? (
-							<div>The MEDIMUN App is the place where you can manage everything about MEDIMUN.</div>
-						) : null}
+						{currentPage === 2 ? <div>The MEDIMUN App is the place where you can manage everything about MEDIMUN.</div> : null}
 						{/* N
 
 
@@ -354,35 +341,15 @@ O */}
 									<h5>We recommend that you use your school email</h5>
 								</div>
 								<Spacer y={2} />
-								<Input
-									size="lg"
-									ref={email_ref}
-									width="90%"
-									color="secondary"
-									underlined
-									labelPlaceholder={"Email"}
-									onInput={CheckEmailInputs}
-								/>
+								<Input size="lg" ref={email_ref} width="90%" color="secondary" underlined labelPlaceholder={"Email"} onInput={CheckEmailInputs} />
 								<Spacer y={2} />
-								<Input
-									ref={confirm_email_ref}
-									width="90%"
-									color="secondary"
-									size="lg"
-									underlined
-									labelPlaceholder={"Confirm Email"}
-									onInput={CheckEmailInputs}
-								/>
+								<Input ref={confirm_email_ref} width="90%" color="secondary" size="lg" underlined labelPlaceholder={"Confirm Email"} onInput={CheckEmailInputs} />
 								<Spacer y={2} />
 								<div className={style.title}>
 									{!check1 ? <h5 className={style.validation}>Email is required</h5> : null}
 									{!check2 && email_ref.current ? <h5 className={style.validation}>Invalid email</h5> : null}
-									{!check3 && email_ref.current ? (
-										<h5 className={style.validation}>Confirm email field is required</h5>
-									) : null}
-									{!check4 && confirm_email_ref.current ? (
-										<h5 className={style.validation}>Emails do not match</h5>
-									) : null}
+									{!check3 && email_ref.current ? <h5 className={style.validation}>Confirm email field is required</h5> : null}
+									{!check4 && confirm_email_ref.current ? <h5 className={style.validation}>Emails do not match</h5> : null}
 								</div>
 							</div>
 						) : null}
@@ -401,32 +368,13 @@ O */}
 								<div className={style.title}>
 									<h3>Official Name</h3>
 									<h6>The official name must match the name on your passport</h6>
-									<h6>
-										The official name will only be used on official documents. You can optionally declare a display name
-										on the next stage to be used on your nametag
-									</h6>
+									<h6>The official name will only be used on official documents. You can optionally declare a display name on the next stage to be used on your nametag</h6>
 									<h6>You can change your official name later in the app</h6>
 								</div>
 								<Spacer y={2} />
-								<Input
-									ref={official_name_ref}
-									width="90%"
-									color="secondary"
-									size="lg"
-									underlined
-									labelPlaceholder="Official Name"
-									onInput={CheckOfficialNameInputs}
-								/>
+								<Input ref={official_name_ref} width="90%" color="secondary" size="lg" underlined labelPlaceholder="Official Name" onInput={CheckOfficialNameInputs} />
 								<Spacer y={2} />
-								<Input
-									ref={official_surname_ref}
-									width="90%"
-									color="secondary"
-									size="lg"
-									underlined
-									labelPlaceholder="Official Surname"
-									onInput={CheckOfficialNameInputs}
-								/>
+								<Input ref={official_surname_ref} width="90%" color="secondary" size="lg" underlined labelPlaceholder="Official Surname" onInput={CheckOfficialNameInputs} />
 								<Spacer y={2} />
 								<div className={style.title}>
 									{!check1 ? <h5 className={style.validation}>Official Name is required</h5> : null}
@@ -494,16 +442,7 @@ O */}
 									<h6>The date of birth must match the date of birth on your passport</h6>
 								</div>
 								<Spacer y={2} />
-								<Input
-									size="lg"
-									ref={date_of_birth_ref}
-									color="secondary"
-									type="date"
-									width="90%"
-									underlined
-									label="Date of Birth"
-									onInput={CheckDateOfBirthInputs}
-								/>
+								<Input size="lg" ref={date_of_birth_ref} color="secondary" type="date" width="90%" underlined label="Date of Birth" onInput={CheckDateOfBirthInputs} />
 							</div>
 						) : null}
 						{/* N
@@ -531,36 +470,16 @@ O */}
 									</h6>
 								</div>
 								<Spacer y={2} />
-								<Input
-									size="lg"
-									ref={password_ref}
-									width="90%"
-									color="secondary"
-									type="password"
-									labelPlaceholder="Password"
-									onInput={CheckPasswordInput}
-									underlined
-								/>
+								<Input size="lg" ref={password_ref} width="90%" color="secondary" type="password" labelPlaceholder="Password" onInput={CheckPasswordInput} underlined />
 								<Spacer y={2} />
-								<Input
-									size="lg"
-									ref={confirm_password_ref}
-									width="90%"
-									color="secondary"
-									type="password"
-									labelPlaceholder="Confirm Password"
-									onInput={CheckPasswordInput}
-									underlined
-								/>
+								<Input size="lg" ref={confirm_password_ref} width="90%" color="secondary" type="password" labelPlaceholder="Confirm Password" onInput={CheckPasswordInput} underlined />
 								<div className={style.title}>
 									{!check1 ? <h5 className={style.validation}>Password is required</h5> : null}
 									{!check2 ? <h5 className={style.validation}>Password must have lowercase letters</h5> : null}
 									{!check3 ? <h5 className={style.validation}>Password must have capital letters</h5> : null}
 									{!check4 ? <h5 className={style.validation}>Password must have numbers</h5> : null}
 									{!check5 ? <h5 className={style.validation}>Password must be at least 8 characters long</h5> : null}
-									{!check6 ? (
-										<h5 className={style.validation}>Passwords must not be longer than 64 characters</h5>
-									) : null}
+									{!check6 ? <h5 className={style.validation}>Passwords must not be longer than 64 characters</h5> : null}
 									{!check7 ? <h5 className={style.validation}>Two passwords must match</h5> : null}
 								</div>
 							</div>
@@ -583,8 +502,7 @@ O */}
 								<div>
 									<div className={style.PAVmessage}>
 										<h6>
-											If you don<span>&apos;</span>t have access to your email please ask a member of staff to verify
-											your account. You may be asked to proove your identity.
+											If you don<span>&apos;</span>t have access to your email please ask a member of staff to verify your account. You may be asked to proove your identity.
 										</h6>
 									</div>
 								</div>

@@ -1,17 +1,14 @@
 import { useRouter } from "next/router";
 import { Fragment, useContext, useState, useEffect } from "react";
 import { getSession, useSession } from "next-auth/react";
-import { AiOutlineMenu } from "react-icons/ai";
 
 import style from "./layout.module.css";
 
-import DashboardNavbar from "../components/app/navigation/navbar/navbar";
-import Sidebar from "../components/app/navigation/sidebar/sidebar";
-import AppContext from "../components/app/context/Navigation";
-import Landscape from "../common-components/popups/landscape/index";
+import Sidebar from "@app-components/sidebar";
+import AppContext from "@app-components/context/Navigation";
+import Landscape from "@/common-components/popups/landscape/index";
 import { Navbar, Spacer } from "@nextui-org/react";
-import { Text } from "@chakra-ui/react";
-import Logo from "../components/common/branding/logo/main";
+import Logo from "@logo";
 export default function Layout(props) {
 	const { data: session, status } = useSession();
 	const loading = status === "loading";

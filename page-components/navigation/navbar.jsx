@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import style from "./navbar.module.css";
 import { Dropdown, Navbar, Button, Link, Text, css, Spacer } from "@nextui-org/react";
-import Logo from "../../components/common/branding/logo/main";
+import Logo from "@logo";
 
 function Navigation(props) {
 	const pages = [

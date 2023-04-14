@@ -2,7 +2,7 @@ import style from "../styles/404.module.css";
 import { Navbar, Spacer } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import Logo from "../components/common/branding/logo/main";
+import Logo from "@logo";
 
 function NotFound() {
 	const router = useRouter();
@@ -24,11 +24,7 @@ function NotFound() {
 			</div>
 			<Spacer y={2} />
 			<div className={style.center}>
-				<Button
-					className={style.button}
-					onPress={() => router.back()}
-					color={"white"}
-					size={"lg"}>
+				<Button className={style.button} onPress={() => router.back()} color={"white"} size={"lg"}>
 					<p className={style.buttonText}>Back</p>
 				</Button>
 			</div>

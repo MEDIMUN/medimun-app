@@ -1,26 +1,12 @@
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { findUserDetails } from "../../../lib/user-operations/user-roles";
+import { findUserDetails } from "@lib/user-roles";
 import prisma from "../../../prisma/client";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import Layout from "../../../app-components/layout";
 import { SessionPageContent } from "..";
-import {
-	Drawer,
-	DrawerBody,
-	DrawerFooter,
-	DrawerHeader,
-	DrawerOverlay,
-	DrawerContent,
-	DrawerCloseButton,
-	Text,
-	useDisclosure,
-	Button,
-	Input,
-	Toast,
-	Textarea,
-} from "@chakra-ui/react";
+import { Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, Text, useDisclosure, Button, Input, Toast, Textarea } from "@chakra-ui/react";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function EditSession(props) {
@@ -93,48 +79,18 @@ export default function EditSession(props) {
 
 					<DrawerBody>
 						<Text>Session number</Text>
-						<Input
-							onChange={() => setSessionNumber(session_number_ref.current.value)}
-							ref={session_number_ref}
-							value={sessionNumber}
-							mb={3}
-							placeholder="e.g 18"
-						/>
+						<Input onChange={() => setSessionNumber(session_number_ref.current.value)} ref={session_number_ref} value={sessionNumber} mb={3} placeholder="e.g 18" />
 
 						<Text>Primary theme phrase</Text>
-						<Input
-							onChange={() => setPrimaryTheme(primary_theme_ref.current.value)}
-							value={primaryTheme}
-							ref={primary_theme_ref}
-							mb={3}
-							placeholder="e.g Building Resilience"
-						/>
+						<Input onChange={() => setPrimaryTheme(primary_theme_ref.current.value)} value={primaryTheme} ref={primary_theme_ref} mb={3} placeholder="e.g Building Resilience" />
 
 						<Text>Secondary theme phrase</Text>
-						<Input
-							onChange={() => setSecondaryTheme(secondary_theme_ref.current.value)}
-							value={secondaryTheme}
-							ref={secondary_theme_ref}
-							mb={3}
-							placeholder="e.g A Transformative Agenda"
-						/>
+						<Input onChange={() => setSecondaryTheme(secondary_theme_ref.current.value)} value={secondaryTheme} ref={secondary_theme_ref} mb={3} placeholder="e.g A Transformative Agenda" />
 
 						<Text>Session Description</Text>
-						<Textarea
-							placeholder="Will be used on the website about section."
-							onChange={() => setDescriptionText(description_text_ref.current.value)}
-							value={descriptionText}
-							mb={3}
-							ref={description_text_ref}
-						/>
+						<Textarea placeholder="Will be used on the website about section." onChange={() => setDescriptionText(description_text_ref.current.value)} value={descriptionText} mb={3} ref={description_text_ref} />
 						<Text>Session Welcome Text</Text>
-						<Textarea
-							placeholder="Will be used on the website homepage."
-							onChange={() => setWelcomeText(welcome_text_ref.current.value)}
-							value={welcomeText}
-							mb={3}
-							ref={welcome_text_ref}
-						/>
+						<Textarea placeholder="Will be used on the website homepage." onChange={() => setWelcomeText(welcome_text_ref.current.value)} value={welcomeText} mb={3} ref={welcome_text_ref} />
 					</DrawerBody>
 
 					<DrawerFooter>
@@ -171,12 +127,7 @@ export async function getServerSideProps(context) {
 		};
 	}
 
-	if (
-		userDetails.highestCurrentRoleName !== "Global Admin" &&
-		userDetails.highestCurrentRoleName !== "Senior Director" &&
-		userDetails.highestCurrentRoleName !== "Secretary-Genaral" &&
-		userDetails.highestCurrentRoleName !== "President of the General Assembly"
-	) {
+	if (userDetails.highestCurrentRoleName !== "Global Admin" && userDetails.highestCurrentRoleName !== "Senior Director" && userDetails.highestCurrentRoleName !== "Secretary-Genaral" && userDetails.highestCurrentRoleName !== "President of the General Assembly") {
 		return {
 			notFound: true,
 		};

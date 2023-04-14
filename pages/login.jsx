@@ -8,9 +8,9 @@ import { useToast } from "@chakra-ui/react";
 import style from "../styles/login.module.css";
 
 import { Button, Input, Spacer, Text, Loading } from "@nextui-org/react";
-import Logo from "../components/common/branding/logo/main";
-import Pagelayout from "../app-components/layout";
-import PageFooter from "../page-components/navigation/footer";
+import Logo from "@logo";
+import Pagelayout from "@app-layout";
+import PageFooter from "@page-components/navigation/footer";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 function LoginPage(props) {
@@ -92,21 +92,9 @@ function LoginPage(props) {
 						</Text>
 					</div>
 					<div>
-						<Input
-							css={{ color: "white" }}
-							size="lg"
-							width={"auto"}
-							labelPlaceholder="Email or Username"
-							ref={emailInputRef}
-						/>
+						<Input css={{ color: "white" }} size="lg" width={"auto"} labelPlaceholder="Email or Username" ref={emailInputRef} />
 						<Spacer y={2} />
-						<Input.Password
-							size="lg"
-							color={"#FFFFFF"}
-							width={"auto"}
-							labelPlaceholder="Password"
-							ref={passwordInputRef}
-						/>
+						<Input.Password size="lg" color={"#FFFFFF"} width={"auto"} labelPlaceholder="Password" ref={passwordInputRef} />
 					</div>
 					<div>
 						{!loading ? (

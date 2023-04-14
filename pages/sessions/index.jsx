@@ -2,29 +2,13 @@ import { useRouter } from "next/router";
 import { getSession, useSession } from "next-auth/react";
 import { Fragment, useState, useRef } from "react";
 import { Loading, Spacer } from "@nextui-org/react";
-import {
-	Text,
-	Card,
-	CardBody,
-	Button,
-	useDisclosure,
-	Modal,
-	ModalOverlay,
-	ModalHeader,
-	ModalCloseButton,
-	ModalBody,
-	ModalContent,
-	FormControl,
-	FormLabel,
-	Input,
-	ModalFooter,
-} from "@chakra-ui/react";
+import { Text, Card, CardBody, Button, useDisclosure, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalContent, FormControl, FormLabel, Input, ModalFooter } from "@chakra-ui/react";
 import Layout from "../../app-components/layout";
 import Pagelayout from "../../page-components/layout";
 import useSWR from "swr";
 import style from "../../styles/session.module.css";
 import prisma from "../../prisma/client";
-import { findUserDetails } from "../../lib/user-operations/user-roles";
+import { findUserDetails } from "@lib/user-roles";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
@@ -65,12 +49,7 @@ export function SessionPageContent({ sessions, currentRoles }) {
 	const initialRef = useRef(null);
 	const finalRef = useRef(null);
 
-	if (
-		currentRoles.includes("Global Admin") ||
-		currentRoles.includes("Senior Director") ||
-		currentRoles.includes("Secretary-General") ||
-		currentRoles.includes("President of the General Assembly")
-	) {
+	if (currentRoles.includes("Global Admin") || currentRoles.includes("Senior Director") || currentRoles.includes("Secretary-General") || currentRoles.includes("President of the General Assembly")) {
 		edit = true;
 	}
 	const router = useRouter();
@@ -157,12 +136,7 @@ export function SessionPageContent({ sessions, currentRoles }) {
 					return (
 						<li key={session.number} className={style.sessionCard}>
 							<Card>
-								<CardBody
-									padding="10px"
-									justifyContent="space-between"
-									alignItems="center"
-									display="flex"
-									flexDirection="row">
+								<CardBody padding="10px" justifyContent="space-between" alignItems="center" display="flex" flexDirection="row">
 									<Text fontWeight={600}>
 										{session.number}
 										<sup>{sup}</sup> Annual Session
@@ -215,12 +189,7 @@ export function SessionPageContent({ sessions, currentRoles }) {
 					return (
 						<li key={session.number} className={style.sessionCard}>
 							<Card>
-								<CardBody
-									padding="10px"
-									justifyContent="space-between"
-									alignItems="center"
-									display="flex"
-									flexDirection="row">
+								<CardBody padding="10px" justifyContent="space-between" alignItems="center" display="flex" flexDirection="row">
 									<Text fontWeight={600}>
 										{session.number}
 										<sup>{sup}</sup> Annual Session

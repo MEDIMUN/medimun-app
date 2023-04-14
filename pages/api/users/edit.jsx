@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/react";
 import CapitaliseEachWord from "../../../lib/capitalise-each-word";
 import prisma from "../../../prisma/client";
-import { findUserDetails } from "../../../lib/user-operations/user-roles";
+import { findUserDetails } from "@lib/user-roles";
 
 export default async function UpdateAccount(req, res) {
 	if (req.method !== "PATCH") {

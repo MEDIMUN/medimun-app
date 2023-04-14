@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { verifyPassword } from "../../../lib/auth";
-import prisma from "../../../prisma/client";
+import { verifyPassword } from "@lib/auth";
+import prisma from "@client";
 
 let current;
 
@@ -300,33 +300,13 @@ export default NextAuth({
 					};
 				});
 
-				current = [
-					...seniorDirectorRole,
-					...sgRole,
-					...dsgRole,
-					...pgaRole,
-					...schoolDirectorRole,
-					...teamManagerRole,
-					...chairRole,
-					...teamMemberRole,
-					...delegateRole,
-				]
+				current = [...seniorDirectorRole, ...sgRole, ...dsgRole, ...pgaRole, ...schoolDirectorRole, ...teamManagerRole, ...chairRole, ...teamMemberRole, ...delegateRole]
 					.filter((role) => role.isCurrent)
 					.map((role) => {
 						delete role.isCurrent;
 						return role;
 					});
-				const pastroles = [
-					...seniorDirectorRole,
-					...sgRole,
-					...dsgRole,
-					...pgaRole,
-					...schoolDirectorRole,
-					...teamManagerRole,
-					...chairRole,
-					...teamMemberRole,
-					...delegateRole,
-				]
+				const pastroles = [...seniorDirectorRole, ...sgRole, ...dsgRole, ...pgaRole, ...schoolDirectorRole, ...teamManagerRole, ...chairRole, ...teamMemberRole, ...delegateRole]
 					.filter((role) => !role.isCurrent)
 					.map((role) => {
 						return {
@@ -364,17 +344,7 @@ export default NextAuth({
 
 			return token;
 		},
-		async session({
-			session,
-			token,
-			user,
-			officialName,
-			officialSurname,
-			displayName,
-			displaySurname,
-			email,
-			dateOfBirth,
-		}) {
+		async session({ session, token, user, officialName, officialSurname, displayName, displaySurname, email, dateOfBirth }) {
 			session.user.role = token.role;
 			session.user.userNumber = token.userNumber;
 			session.user.officialName = token.officialName;

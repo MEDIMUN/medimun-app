@@ -4,22 +4,12 @@ import style from "../../../styles/account.module.css";
 import prisma from "../../../prisma/client";
 import { getSession } from "next-auth/react";
 import { Divider, Image, Spacer } from "@nextui-org/react";
-import {
-	BeatLoader,
-	Button,
-	Modal,
-	ModalOverlay,
-	ModalContent,
-	ModalHeader,
-	ModalCloseButton,
-	ModalBody,
-	ModalFooter,
-} from "@chakra-ui/react";
+import { BeatLoader, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from "@chakra-ui/react";
 import { useState, useRef, Fragment } from "react";
 import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import axios, { AxiosRequestConfig } from "axios";
-import { currentUserRoles, pastUserRoles, findUserDetails } from "../../../lib/user-operations/user-roles";
+import { currentUserRoles, pastUserRoles, findUserDetails } from "@lib/user-roles";
 import ProfileBanner from "../../../app-components/ProfileBanner";
 
 function Title(props) {
@@ -257,11 +247,7 @@ export default function AccountPage(props) {
 		setSchoolTeamCommittee("Team");
 
 		if (role === "Manager") {
-			setNewAvailableTeamAssignments(
-				props.availableTeamAssignments.filter(
-					(committee) => committee.session_id === selected_session_ref.current.value
-				)
-			);
+			setNewAvailableTeamAssignments(props.availableTeamAssignments.filter((committee) => committee.session_id === selected_session_ref.current.value));
 			return;
 		}
 
@@ -269,11 +255,7 @@ export default function AccountPage(props) {
 			setNewRoleButtons(false);
 
 			setSchoolTeamCommittee("Team");
-			setNewAvailableTeamAssignments(
-				props.availableTeamAssignments.filter(
-					(committee) => committee.session_id === selected_session_ref.current.value
-				)
-			);
+			setNewAvailableTeamAssignments(props.availableTeamAssignments.filter((committee) => committee.session_id === selected_session_ref.current.value));
 			return;
 		}
 
@@ -281,11 +263,7 @@ export default function AccountPage(props) {
 			setNewRoleButtons(false);
 
 			setSchoolTeamCommittee("Committee");
-			setNewAvailableTeamAssignments(
-				props.availableCommitteeAssignments.filter(
-					(committee) => committee.session_id === selected_session_ref.current.value
-				)
-			);
+			setNewAvailableTeamAssignments(props.availableCommitteeAssignments.filter((committee) => committee.session_id === selected_session_ref.current.value));
 			return;
 		}
 
@@ -293,11 +271,7 @@ export default function AccountPage(props) {
 			setNewRoleButtons(false);
 
 			setSchoolTeamCommittee("Committee");
-			setNewAvailableTeamAssignments(
-				props.availableCommitteeAssignments.filter(
-					(committee) => committee.session_id === selected_session_ref.current.value
-				)
-			);
+			setNewAvailableTeamAssignments(props.availableCommitteeAssignments.filter((committee) => committee.session_id === selected_session_ref.current.value));
 			return;
 		}
 
@@ -432,11 +406,7 @@ export default function AccountPage(props) {
 					{newAvailableTeamAssignments.length > 0 ? (
 						<Fragment>
 							<Spacer y={1} />
-							<Select
-								onChange={newFinalChoice1Selected}
-								ref={selected_committee_ref}
-								variant="filled"
-								placeholder={schoolTeamCommittee}>
+							<Select onChange={newFinalChoice1Selected} ref={selected_committee_ref} variant="filled" placeholder={schoolTeamCommittee}>
 								{newAvailableTeamAssignments.map((committee) => (
 									<option key={committee.id} value={committee.id}>
 										{committee.name}
@@ -494,11 +464,7 @@ export default function AccountPage(props) {
 					))}
 					<Spacer y={1.4} />
 					<Divider></Divider>
-					<Title
-						title="PROFILE PICTURE AND COVER IMAGE"
-						description="You can remove a profile picture or a cover image if it's offensive."
-						space="1.2"
-					/>
+					<Title title="PROFILE PICTURE AND COVER IMAGE" description="You can remove a profile picture or a cover image if it's offensive." space="1.2" />
 					<div className={style.removeButtons}>
 						<Button mr={3} isLoading={profile_picture} onClick={removeProfilePicture}>
 							Remove profile picture
@@ -509,29 +475,10 @@ export default function AccountPage(props) {
 					</div>
 					<Spacer y={1.4} />
 					<Divider></Divider>
-					<Title
-						title="OFFICIAL NAME"
-						description="The official name will be used on the certificate and must match passport name."
-					/>
-					<Input
-						maxLength="20"
-						ref={official_name_ref}
-						variant="filled"
-						width="calc(100%)"
-						placeholder={props.official_name}
-					/>
-					<Title
-						title="OFFICIAL SURNAME"
-						description="The official surname will be used on the certificate and must match passport surname."
-						space="1"
-					/>
-					<Input
-						maxLength="20"
-						ref={official_surname_ref}
-						variant="filled"
-						width="calc(100%)"
-						placeholder={props.official_surname}
-					/>
+					<Title title="OFFICIAL NAME" description="The official name will be used on the certificate and must match passport name." />
+					<Input maxLength="20" ref={official_name_ref} variant="filled" width="calc(100%)" placeholder={props.official_name} />
+					<Title title="OFFICIAL SURNAME" description="The official surname will be used on the certificate and must match passport surname." space="1" />
+					<Input maxLength="20" ref={official_surname_ref} variant="filled" width="calc(100%)" placeholder={props.official_surname} />
 					<Spacer y={1} />
 					<div>
 						<Text marginLeft="15px" fontFamily="sans-serif" fontWeight="500">
@@ -539,47 +486,23 @@ export default function AccountPage(props) {
 						</Text>
 						<div className="fdr">
 							<Spacer x={1} />
-							<Switch
-								defaultChecked={props.useDisplayNames}
-								onChange={() => set_display_names_toggle(!display_names_toggle)}
-								size="lg"
-							/>
+							<Switch defaultChecked={props.useDisplayNames} onChange={() => set_display_names_toggle(!display_names_toggle)} size="lg" />
 							<Text marginLeft="14px">If turned off, yor official name and surname will be used instead.</Text>
 						</div>
 					</div>
 					{display_names_toggle && (
 						<div>
 							<Title title="DISPLAY NAME" description="The display name is used on the profile and on the nametag" />
-							<Input
-								maxLength="20"
-								ref={display_name_ref}
-								variant="filled"
-								width="calc(100%)"
-								placeholder={props.display_name}
-							/>
-							<Title
-								title="DISPLAY SURNAME"
-								description="The display surname is used on the profile and on the nametag"
-								space="1"
-							/>
-							<Input
-								maxLength="20"
-								ref={display_surname_ref}
-								variant="filled"
-								width="calc(100%)"
-								placeholder={props.display_surname}
-							/>
+							<Input maxLength="20" ref={display_name_ref} variant="filled" width="calc(100%)" placeholder={props.display_name} />
+							<Title title="DISPLAY SURNAME" description="The display surname is used on the profile and on the nametag" space="1" />
+							<Input maxLength="20" ref={display_surname_ref} variant="filled" width="calc(100%)" placeholder={props.display_surname} />
 						</div>
 					)}
 					<div>
 						<Title title="PRONOUNS" />
 						<div className="fdr">
 							<Spacer x={1} />
-							<Switch
-								defaultChecked={props.usePronouns}
-								onChange={() => set_pronouns_toggle(!pronouns_toggle)}
-								size="lg"
-							/>
+							<Switch defaultChecked={props.usePronouns} onChange={() => set_pronouns_toggle(!pronouns_toggle)} size="lg" />
 							<Text marginLeft="14px">If turned off, the pronouns will not be displayed.</Text>
 						</div>
 					</div>
@@ -591,35 +514,13 @@ export default function AccountPage(props) {
 							</Text>
 
 							<div>
-								<Input
-									maxLength="5"
-									ref={pronoun_1_ref}
-									borderRadius="5px 0 0 5px"
-									variant="filled"
-									width="calc(50%)"
-									borderRight="2px solid #e2e8f0"
-									placeholder={props.pronoun1 || "First Pronoun"}
-								/>
-								<Input
-									maxLength="5"
-									ref={pronoun_2_ref}
-									borderRadius="0 5px 5px 0"
-									variant="filled"
-									width="calc(50%)"
-									placeholder={props.pronoun2 || "Second Pronoun"}
-								/>
+								<Input maxLength="5" ref={pronoun_1_ref} borderRadius="5px 0 0 5px" variant="filled" width="calc(50%)" borderRight="2px solid #e2e8f0" placeholder={props.pronoun1 || "First Pronoun"} />
+								<Input maxLength="5" ref={pronoun_2_ref} borderRadius="0 5px 5px 0" variant="filled" width="calc(50%)" placeholder={props.pronoun2 || "Second Pronoun"} />
 							</div>
 						</Fragment>
 					)}
 					<Title title="DATE OF BIRTH" />
-					<Input
-						ref={date_of_birth_ref}
-						variant="filled"
-						width="calc(100%)"
-						placeholder="Select Date and Time"
-						size="md"
-						type="date"
-					/>
+					<Input ref={date_of_birth_ref} variant="filled" width="calc(100%)" placeholder="Select Date and Time" size="md" type="date" />
 					<Spacer x={1} />
 				</div>
 				<Button isLoading={loading} ml={3} mr={3} onClick={onOpen}>
@@ -770,18 +671,7 @@ export async function getServerSideProps(context) {
 	// GLOBAL ADMIN ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (queryUserHighestRole == "Global Admin") {
-		availableRoleAssignments = [
-			"Global Admin",
-			"Senior Director",
-			"Secretary-General",
-			"President of the General Assembly",
-			"Deputy Secretary-General",
-			"Manager",
-			"Chair",
-			"Member",
-			"School Director",
-			"Delegate",
-		];
+		availableRoleAssignments = ["Global Admin", "Senior Director", "Secretary-General", "President of the General Assembly", "Deputy Secretary-General", "Manager", "Chair", "Member", "School Director", "Delegate"];
 		//
 		canSeePhoneNumber = true;
 		availableCommitteeAssignments = allCommittees;
@@ -795,17 +685,7 @@ export async function getServerSideProps(context) {
 	// SENIOR DIRECTOR ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (queryUserHighestRole == "Senior Director") {
-		availableRoleAssignments = [
-			"Senior Director",
-			"Secretary-General",
-			"President of the General Assembly",
-			"Deputy Secretary-General",
-			"Manager",
-			"Chair",
-			"Member",
-			"School Director",
-			"Delegate",
-		];
+		availableRoleAssignments = ["Senior Director", "Secretary-General", "President of the General Assembly", "Deputy Secretary-General", "Manager", "Chair", "Member", "School Director", "Delegate"];
 		canSeePhoneNumber = true;
 		availableCommitteeAssignments = allCommittees;
 		availableTeamAssignments = allTeams;

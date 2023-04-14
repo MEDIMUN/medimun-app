@@ -1,6 +1,6 @@
 import prisma from "../../../prisma/client";
 import { getSession } from "next-auth/react";
-import { findUserDetails } from "../../../lib/user-operations/user-roles";
+import { findUserDetails } from "@lib/user-roles";
 
 export default async function handler(req, res) {
 	const session = await getSession({ req: req });
@@ -50,18 +50,7 @@ export default async function handler(req, res) {
 		});
 	}
 
-	if (
-		organiserUser.highestCurrentRoleName == "Delegate" ||
-		organiserUser.highestCurrentRoleName == "Member" ||
-		organiserUser.highestCurrentRoleName == "Applicant" ||
-		organiserUser.highestCurrentRoleName == "Alumni" ||
-		organiserUser.highestCurrentRoleName == "Guest" ||
-		organiserUser.highestCurrentRoleName == "Chair" ||
-		organiserUser.highestCurrentRoleName == "Manager" ||
-		organiserUser.highestCurrentRoleName == "School Director" ||
-		!session ||
-		req.method !== "DELETE"
-	) {
+	if (organiserUser.highestCurrentRoleName == "Delegate" || organiserUser.highestCurrentRoleName == "Member" || organiserUser.highestCurrentRoleName == "Applicant" || organiserUser.highestCurrentRoleName == "Alumni" || organiserUser.highestCurrentRoleName == "Guest" || organiserUser.highestCurrentRoleName == "Chair" || organiserUser.highestCurrentRoleName == "Manager" || organiserUser.highestCurrentRoleName == "School Director" || !session || req.method !== "DELETE") {
 		unauthorised();
 		return;
 	}
@@ -146,10 +135,7 @@ export default async function handler(req, res) {
 		return;
 	}
 	if (roleName == "Senior Director") {
-		if (
-			organiserUser.highestCurrentRoleName !== "Global Admin" &&
-			organiserUser.highestCurrentRoleName !== "Senior Director"
-		) {
+		if (organiserUser.highestCurrentRoleName !== "Global Admin" && organiserUser.highestCurrentRoleName !== "Senior Director") {
 			unauthorised();
 			return;
 		}

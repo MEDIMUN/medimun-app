@@ -31,7 +31,7 @@ export async function getServerSideProps() {
 
 	return {
 		props: {
-			redirect: `/sessions/${await currentSession.number}/committees`,
+			redirect: `/sessions/${await currentSession.number}/departments`,
 		},
 	};
 }
