@@ -10,40 +10,27 @@ import Landscape from "@/common-components/popups/landscape/index";
 import { Navbar, Spacer } from "@nextui-org/react";
 import Logo from "@logo";
 export default function Layout(props) {
-	const { data: session, status } = useSession();
-	const loading = status === "loading";
-
-	const [isLoading, setIsLoading] = useState(true);
 	const [sidebar, setSidebar] = useState(true);
-	const router = useRouter();
-	useEffect(() => {
-		getSession().then((session) => {
-			if (!session) {
-				router.replace("/login");
-			} else {
-				setIsLoading(false);
-			}
-		});
-	}, [router]);
 
 	const SidebarCtx = useContext(AppContext);
-
 	const sidebarVisibility = SidebarCtx.sidebarVisibility;
 
+	function toggleSidebar() {
+		SidebarCtx.toggleSidebarVisibility();
+	}
+
 	return (
-		<div className={style.layout}>
+		<div className={sidebarVisibility ? style.layout : style.boxedLayout}>
 			<Landscape />
-			{sidebar && (
-				<div className={style.sidebar}>
-					<Sidebar setSidebar={setSidebar} />
-				</div>
-			)}
-			<div className={style.content}>
-				<nav>
+			<div className={style.sidebar}>
+				<Sidebar setSidebar={toggleSidebar} />
+			</div>
+			<div className={sidebarVisibility ? style.content : style.boxedContent}>
+				<nav className={style.navbar}>
 					<Navbar maxWidth="fluid" isCompact>
 						<div className="fdr">
-							<Navbar.Toggle onChange={setSidebar} isSelected={sidebar} css={{ color: "black" }} />
-							{!sidebar && (
+							<Navbar.Toggle onChange={toggleSidebar} isSelected={sidebarVisibility} css={{ color: "black" }} />
+							{!sidebarVisibility && (
 								<Fragment>
 									<Spacer x={0.5} />
 									<Navbar.Brand>

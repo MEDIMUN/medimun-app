@@ -7,9 +7,11 @@ import Head from "next/head";
 import Layout from "../../../app-components/layout";
 import { SessionPageContent } from "..";
 import { Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, Text, useDisclosure, Button, Input, Toast, Textarea } from "@chakra-ui/react";
+import { updateUserProps, updateUser } from "@lib/user-update";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function EditSession(props) {
+	updateUser(props.userUpdate);
 	const router = useRouter();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	useEffect(() => {
@@ -154,6 +156,7 @@ export async function getServerSideProps(context) {
 			sessions: sessions,
 			currentRoles: currentRoles,
 			currentRoles: currentRoles,
+			userUpdate: await updateUserProps(userDetails),
 		},
 	};
 }

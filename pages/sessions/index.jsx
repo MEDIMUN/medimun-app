@@ -9,11 +9,13 @@ import useSWR from "swr";
 import style from "../../styles/session.module.css";
 import prisma from "../../prisma/client";
 import { findUserDetails } from "@lib/user-roles";
+import { updateUserProps, updateUser } from "@lib/user-update";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function SessionPage(props) {
+	updateUser(props.userUpdate);
 	const { data: session, status } = useSession();
 	const loading = status === "loading";
 	const [isLoading, setIsLoading] = useState(true);
@@ -240,6 +242,7 @@ export async function getServerSideProps(context) {
 		props: {
 			sessions: sessions,
 			currentRoles: currentRoles,
+			userUpdate: await updateUserProps(await userDetails),
 		},
 	};
 }

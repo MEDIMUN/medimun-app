@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useSession, getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useState, useEffect, useRef } from "react";
 import style from "../../styles/users.module.css";
 import { Fragment } from "react";
@@ -9,11 +9,15 @@ import { Spacer, Table, User, useAsyncList } from "@nextui-org/react";
 import Layout from "../../app-components/layout";
 import { Text, Button, Input, Tab, Tabs, TabList, TabPanel, TabPanels } from "@chakra-ui/react";
 import prisma from "../../prisma/client";
+import { findUserDetails } from "@lib/user-roles";
+import { updateUserProps, updateUser } from "@lib/user-update";
+import { getSession } from "next-auth/react";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 function UsersPage(props) {
 	const { data: session, status } = useSession();
 	const loading = status === "loading";
+	updateUser(props.userUpdate);
 
 	const [isLoading, setIsLoading] = useState(true);
 	const [filterInput, setFilterInput] = useState("");
@@ -160,6 +164,7 @@ export default UsersPage;
 
 export async function getServerSideProps(context) {
 	const session = await getSession({ req: context.req });
+	const userDetails = await findUserDetails(await session.user.userNumber);
 
 	if (!session) {
 		return {
@@ -184,6 +189,6 @@ export async function getServerSideProps(context) {
 	});
 	console.log(users);
 	return {
-		props: { session, users },
+		props: { session, users, userUpdate: await updateUserProps(userDetails) },
 	};
 }

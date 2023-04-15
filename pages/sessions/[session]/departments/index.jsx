@@ -1,24 +1,22 @@
 import Layout from "@app-layout";
 import { useRouter } from "next/router";
-/* import prisma from "@client";
- */
+import { updateUserProps, updateUser } from "@lib/user-update";
+import { findUserDetails } from "@lib/user-roles";
+import { getSession } from "next-auth/react";
+
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function Page(props) {
+	updateUser(props.userUpdate);
 	const router = useRouter();
-	return (
-		<Layout>
-			<h1>{`SESSION: ${props.session} - COMMITTEE:${props.committee} - DEPARTMENT:${props.department}`}</h1>
-		</Layout>
-	);
+	return <Layout></Layout>;
 }
 
 export async function getServerSideProps(context) {
-	const { session, committee, department } = context.query;
+	const session = await getSession({ req: context.req });
+	const userDetails = await findUserDetails(await session.user.userNumber);
 	return {
 		props: {
-			session,
-			committee: committee ?? "not defined",
-			department: department ?? "not defined",
+			userUpdate: await updateUserProps(userDetails),
 		},
 	};
 }

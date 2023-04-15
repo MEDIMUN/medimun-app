@@ -1,29 +1,30 @@
 import { useState, createContext } from "react";
+import { useSession } from "next-auth/react";
 
 const AppContext = createContext({
 	sidebarVisibility: false,
 	setSidebarVisibility: function () {},
 	sidebarOptionsVisibility: false,
 	setSidebarOptionsVisibility: function () {},
+	userData: {},
+	setUserData: function () {},
+	selectedSession: {},
+	setSelectedSession: function () {},
+	allSessions: [],
+	setAllSessions: function () {},
 });
 
 export function AppContextProvider(props) {
-	const [sidebarVisibility, setSidebarVisibility] = useState("Shown");
+	const { data: session, status } = useSession();
+
+	const [sidebarVisibility, setSidebarVisibility] = useState(true);
 	const [sidebarOptionsVisibility, setSidebarOptionsVisibility] = useState(false);
+	const [userData, setUserData] = useState(session ? session.user : {});
+	const [selectedSession, setSelectedSession] = useState();
+	const [allSessions, setAllSessions] = useState([]);
 
 	async function toggleSidebarHandler() {
-		const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-		if (sidebarVisibility === "Hidden" || sidebarVisibility === "Hide") {
-			setSidebarVisibility("Show");
-			await delay(500);
-			setSidebarVisibility("Shown");
-		}
-		if (sidebarVisibility === "Shown" || sidebarVisibility === "Hide") {
-			setSidebarVisibility("Hide");
-			await delay(500);
-
-			setSidebarVisibility("Hidden");
-		}
+		setSidebarVisibility(!sidebarVisibility);
 	}
 
 	function toggleSidebarOptionsHandler() {
@@ -35,6 +36,12 @@ export function AppContextProvider(props) {
 		toggleSidebarVisibility: toggleSidebarHandler,
 		sidebarOptionsVisibility: sidebarOptionsVisibility,
 		toggleSidebarOptionsVisibility: toggleSidebarOptionsHandler,
+		userData: userData,
+		setUserData: setUserData,
+		selectedSession: selectedSession,
+		setSelectedSession: setSelectedSession,
+		allSessions: allSessions,
+		setAllSessions: setAllSessions,
 	};
 
 	return <AppContext.Provider value={context}>{props.children}</AppContext.Provider>;

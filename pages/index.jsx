@@ -7,13 +7,29 @@ import { SlArrowDown } from "react-icons/sl";
 import { Spacer, Text } from "@nextui-org/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { Button, Text as TextC } from "@chakra-ui/react";
 import prisma from "@client";
+import { useContext, useEffect } from "react";
+import AppContext from "@app-components/context/Navigation";
+import { useRouter } from "next/router";
 
 /** @param {import('next').InferGetStaticPropsType<typeof getStaticProps> } props */
 export default function HomePage(props) {
+	const SidebarCtx = useContext(AppContext);
+	const setUserData = SidebarCtx.setUserData;
 	const router = useRouter();
+
+	useEffect(() => {
+		if (!session) return;
+
+		fetch("/api/user")
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data);
+			});
+		updateUser(props.userUpdate);
+	}, [session]);
+
 	const [height, setHeight] = useState();
 	const [year, setYear] = useState();
 	const [herotext1, setherotext1] = useState(props.currentSession.phrase1 || "");

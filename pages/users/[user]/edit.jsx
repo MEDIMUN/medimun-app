@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import axios, { AxiosRequestConfig } from "axios";
 import { currentUserRoles, pastUserRoles, findUserDetails } from "@lib/user-roles";
 import ProfileBanner from "../../../app-components/ProfileBanner";
+import { updateUserProps, updateUser } from "@lib/user-update";
 
 function Title(props) {
 	return (
@@ -55,6 +56,8 @@ export default function AccountPage(props) {
 	let pronoun_1;
 	let pronoun_2;
 	let date_of_birth;
+
+	updateUser(props.userUpdate);
 
 	async function removeRole(roleName, roleId) {
 		setLoading(true);
@@ -364,7 +367,7 @@ export default function AccountPage(props) {
 	return (
 		<Layout>
 			<div className={style.page}>
-				<ProfileBanner />
+				<ProfileBanner country={props.nationality} />
 				<Spacer y={1} />
 				<Text marginLeft="28px" fontFamily="sans-serif" fontWeight="500">
 					<strong> USER INFORMATION </strong>
@@ -781,7 +784,7 @@ export async function getServerSideProps(context) {
 			notFound: true,
 		};
 	}
-
+	/* 
 	var Minio = require("minio");
 
 	var minioClient = new Minio.Client({
@@ -789,7 +792,7 @@ export async function getServerSideProps(context) {
 		useSSL: false,
 		accessKey: "admin",
 		secretKey: "BPbpMinio2006!",
-	});
+	}); */
 
 	if (linkUser.displayName || linkUser.displaySurname) {
 		useDisplayNames = true;
@@ -853,6 +856,7 @@ export async function getServerSideProps(context) {
 			allSchools: allSchools,
 			userNumber: linkUser.userNumber,
 			allRoles: allRoles.allRoles,
+			userUpdate: updateUserProps(allRoles),
 		},
 	};
 }

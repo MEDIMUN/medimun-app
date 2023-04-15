@@ -49,8 +49,8 @@ const theme = createTheme({
 function MyApp({ Component, pageProps }) {
 	return (
 		<SSRProvider>
-			<AppContextProvider>
-				<SessionProvider session={pageProps.session}>
+			<SessionProvider session={pageProps.session}>
+				<AppContextProvider>
 					<NextUIProvider theme={theme}>
 						<ChakraProvider>
 							<Head>
@@ -59,8 +59,8 @@ function MyApp({ Component, pageProps }) {
 							<Component {...pageProps} />
 						</ChakraProvider>
 					</NextUIProvider>
-				</SessionProvider>
-			</AppContextProvider>
+				</AppContextProvider>
+			</SessionProvider>
 		</SSRProvider>
 	);
 }

@@ -1,15 +1,15 @@
-import prisma from "../../../prisma/client";
+import prisma from "@client";
 import { getSession } from "next-auth/react";
-import { findUserDetails } from "../../../lib/user-operations/user-roles";
+import { findUserDetails } from "@lib/user-roles";
 
 export default async function handler(req, res) {
-	const session = await getSession({ req: req });
+	const session = await getSession({ req });
 	const roleName = req.body.role;
 	const userNumber = parseInt(req.body.userNumber);
 	const committeeId = parseInt(req.body.committeeId);
 	const sessionId = parseInt(req.body.sessionId);
 	const peasantUser = await findUserDetails(userNumber);
-	const organiserUser = await findUserDetails(session.user.userNumber);
+	const organiserUser = await findUserDetails(await session.user.userNumber);
 
 	function alredyAdded(error) {
 		if (error) {
@@ -56,18 +56,7 @@ export default async function handler(req, res) {
 			duration: 5000,
 		});
 	}
-	if (
-		organiserUser.highestCurrentRoleName == "Delegate" ||
-		organiserUser.highestCurrentRoleName == "Member" ||
-		organiserUser.highestCurrentRoleName == "Applicant" ||
-		organiserUser.highestCurrentRoleName == "Alumni" ||
-		organiserUser.highestCurrentRoleName == "Guest" ||
-		organiserUser.highestCurrentRoleName == "Chair" ||
-		organiserUser.highestCurrentRoleName == "Manager" ||
-		organiserUser.highestCurrentRoleName == "School Director" ||
-		!session ||
-		req.method !== "PUT"
-	) {
+	if (organiserUser.highestCurrentRoleName == "Delegate" || organiserUser.highestCurrentRoleName == "Member" || organiserUser.highestCurrentRoleName == "Applicant" || organiserUser.highestCurrentRoleName == "Alumni" || organiserUser.highestCurrentRoleName == "Guest" || organiserUser.highestCurrentRoleName == "Chair" || organiserUser.highestCurrentRoleName == "Manager" || organiserUser.highestCurrentRoleName == "School Director" || !session || req.method !== "PUT") {
 		return unauthorised();
 	}
 	//
@@ -169,10 +158,7 @@ export default async function handler(req, res) {
 		if (!sessionId) {
 			return fillAll();
 		}
-		if (
-			organiserUser.highestCurrentRoleName !== "Global Admin" &&
-			organiserUser.highestCurrentRoleName !== "Senior Director"
-		) {
+		if (organiserUser.highestCurrentRoleName !== "Global Admin" && organiserUser.highestCurrentRoleName !== "Senior Director") {
 			return unauthorised();
 		}
 		try {
@@ -198,10 +184,7 @@ export default async function handler(req, res) {
 		if (!sessionId) {
 			return fillAll();
 		}
-		if (
-			organiserUser.highestCurrentRoleName !== "Global Admin" &&
-			organiserUser.highestCurrentRoleName !== "Senior Director"
-		) {
+		if (organiserUser.highestCurrentRoleName !== "Global Admin" && organiserUser.highestCurrentRoleName !== "Senior Director") {
 			return unauthorised();
 		}
 		try {
@@ -227,10 +210,7 @@ export default async function handler(req, res) {
 		if (!sessionId) {
 			return fillAll();
 		}
-		if (
-			organiserUser.highestCurrentRoleName !== "Global Admin" &&
-			organiserUser.highestCurrentRoleName !== "Senior Director"
-		) {
+		if (organiserUser.highestCurrentRoleName !== "Global Admin" && organiserUser.highestCurrentRoleName !== "Senior Director") {
 			return unauthorised();
 		}
 		try {
@@ -256,12 +236,7 @@ export default async function handler(req, res) {
 		if (!sessionId || !committeeId) {
 			return fillAll();
 		}
-		if (
-			organiserUser.highestCurrentRoleName !== "Global Admin" &&
-			organiserUser.highestCurrentRoleName !== "Senior Director" &&
-			organiserUser.highestCurrentRoleName !== "Secretary-General" &&
-			organiserUser.highestCurrentRoleName !== "President of the General Assembly"
-		) {
+		if (organiserUser.highestCurrentRoleName !== "Global Admin" && organiserUser.highestCurrentRoleName !== "Senior Director" && organiserUser.highestCurrentRoleName !== "Secretary-General" && organiserUser.highestCurrentRoleName !== "President of the General Assembly") {
 			return unauthorised();
 		}
 		try {
@@ -285,10 +260,7 @@ export default async function handler(req, res) {
 	}
 	//
 	if (roleName == "Senior Director") {
-		if (
-			organiserUser.highestCurrentRoleName !== "Global Admin" &&
-			organiserUser.highestCurrentRoleName !== "Senior Director"
-		) {
+		if (organiserUser.highestCurrentRoleName !== "Global Admin" && organiserUser.highestCurrentRoleName !== "Senior Director") {
 			return unauthorised();
 		}
 		try {

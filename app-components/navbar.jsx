@@ -4,6 +4,7 @@ import { signOut, useSession, getSession } from "next-auth/react";
 import { NavbarToggleIcon } from "./icons";
 import { BiMenuAltLeft } from "react-icons/bi";
 import { TbMessage, TbSettings, TbBellRinging } from "react-icons/tb";
+import AppContext from "@app-components/context/Navigation";
 
 import style from "./navbar.module.css";
 

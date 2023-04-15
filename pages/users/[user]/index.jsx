@@ -8,12 +8,16 @@ import s from "../../../styles/users.module.css";
 import { Grid, Image, Spacer, User, Text as TextN } from "@nextui-org/react";
 import { Text, Tabs, TabList, TabPanels, Tab, TabPanel, Avatar } from "@chakra-ui/react";
 import ProfileBanner from "../../../app-components/ProfileBanner";
+import { updateUserProps, updateUser } from "@lib/user-update";
+import { findUserDetails } from "@lib/user-roles";
+import { getSession } from "next-auth/react";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function UsersPage(props) {
 	const { data: session, status } = useSession();
 	const loading = status === "loading";
 	const [isLoading, setIsLoading] = useState(true);
+	updateUser(props.userUpdate);
 
 	if (session) {
 		return (
@@ -33,15 +37,16 @@ export default function UsersPage(props) {
 	}
 }
 
-function UserPage(props) {
-	const currentroles = props.props.currentroles;
-	const pastroles = props.props.pastroles;
+function UserPage({ props }) {
+	const currentroles = props.currentroles;
+	const pastroles = props.pastroles;
 
 	return (
 		<div className={s.page}>
-			<ProfileBanner />
-			<Spacer y={1} />
-			<div>
+			<div className={s.category}>
+				<ProfileBanner role={props.userinfo.role} name={props.userinfo.name} country={props.userinfo.nationality} />
+			</div>
+			<div className={s.category}>
 				<Tabs variant="soft-rounded">
 					<TabList css={{ paddingLeft: "20px" }}>
 						<Tab>Current Roles</Tab>
@@ -98,6 +103,8 @@ function UserPage(props) {
 }
 
 export async function getServerSideProps(context) {
+	const session = await getSession({ req: context.req });
+	const userDetails = await findUserDetails(await session.user.userNumber);
 	const userquery = context.query.user;
 	let user;
 	if (userquery[0] == "@") {
@@ -352,14 +359,14 @@ export async function getServerSideProps(context) {
 			};
 		});
 
-	var Minio = require("minio");
+	/* 	var Minio = require("minio");
 
 	var minioClient = new Minio.Client({
 		endPoint: "storage-s3.manage.beoz.org",
 		useSSL: false,
 		accessKey: "admin",
 		secretKey: "BPbpMinio2006!",
-	});
+	}); */
 
 	let school;
 
@@ -372,12 +379,12 @@ export async function getServerSideProps(context) {
 	return {
 		props: {
 			userinfo: {
-				name: user.displayName || user.officialName,
-				surname: user.displaySurname || user.officialSurname,
+				name: `${user.displayName || user.officialName} ${!user.displayName ? user.officialSurname : ""}`,
 				username: user.username,
 				pronouns: { pronoun1: user.pronoun1, pronoun2: user.pronoun1 },
 				nationality: user.nationality,
 				school: school,
+				role: userDetails.highestCurrentRoleName,
 			},
 			currentroles,
 			pastroles,
@@ -385,6 +392,7 @@ export async function getServerSideProps(context) {
 			coverImageLink: await minioClient.presignedGetObject("cover-images", `${user.userNumber}`, 6 * 60 * 60), */
 			profilePictureLink: "/public",
 			coverImageLink: "/public",
+			userUpdate: await updateUserProps(userDetails),
 		},
 	};
 }
