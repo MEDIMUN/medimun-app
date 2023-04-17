@@ -1,0 +1,29 @@
+@font-face {
+   font-family: "LondiniaMedium";
+   src: url("/fonts/LondiniaMedium.ttf");
+}
+
+@font-face {
+   font-family: "GTAmericaRegular";
+   src: url("/fonts/GTAmericaRegular.ttf");
+}
+
+@font-face {
+   font-family: "Canela";
+   src: url("/fonts/Canela.otf");
+}
+
+.body {
+   padding: 0;
+   margin: 0;
+}
+
+.main {
+   min-height: 100vh;
+}
+
+@media only screen and (max-width: 768px) {
+   .main {
+      min-height: 100svh;
+   }
+}

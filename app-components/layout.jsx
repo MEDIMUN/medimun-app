@@ -6,7 +6,6 @@ import style from "./layout.module.css";
 
 import Sidebar from "@app-components/sidebar";
 import AppContext from "@app-components/context/Navigation";
-import Landscape from "@/common-components/popups/landscape/index";
 import { Navbar, Spacer } from "@nextui-org/react";
 import Logo from "@logo";
 export default function Layout(props) {
@@ -21,7 +20,6 @@ export default function Layout(props) {
 
 	return (
 		<div className={sidebarVisibility ? style.layout : style.boxedLayout}>
-			<Landscape />
 			<div className={style.sidebar}>
 				<Sidebar setSidebar={toggleSidebar} />
 			</div>
