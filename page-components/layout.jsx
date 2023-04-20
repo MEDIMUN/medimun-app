@@ -6,7 +6,6 @@ import style from "./layout.module.css";
 
 import PageNavbar from "./navigation/navbar";
 import PageFooter from "./navigation/footer";
-import Landscape from "../common-components/popups/landscape";
 import { IoPeopleSharp } from "react-icons/io5";
 import { Spacer } from "@nextui-org/react";
 
@@ -31,7 +30,6 @@ export default function Pagelayout(props) {
 
 	return (
 		<Fragment>
-			<Landscape />
 			<PageNavbar className={style.pageNavbar} backgroundColor={props.backgroundColor} />
 			<main className={style.page}>{props.children}</main>
 			<footer>

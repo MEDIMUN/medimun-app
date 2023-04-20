@@ -26,15 +26,21 @@ model PendingUser {
   emailVerificationCode String
 }
 
+model Account {
+  id          Int      @id @default(autoincrement())
+  //
+  password    String
+  isDisabled  Boolean  @default(false)
+  //
+  timeCreated DateTime @default(now())
+  User        User[]
+}
+
 model User {
   id                            Int                                        @id @default(autoincrement())
   //
   showPhoneNumber               Boolean                                    @default(false)
   allowMessagesFromEveryone     Boolean                                    @default(false) @map("amfe")
-  createdAt                     DateTime                                   @default(now())
-  password                      String                                     @map("pw")
-  userNumber                    String                                     @unique
-  username                      String?
   //
   profileVisibility             Int                                        @default(5)
   organiserProfileVisibility    Int                                        @default(2)
@@ -44,19 +50,20 @@ model User {
   //
   bio                           String                                     @default("")
   //
+  userNumber                    String                                     @unique
+  username                      String?
+  //
   officialName                  String
   officialSurname               String
-  //
   displayName                   String?
-  displaySurname                String?
   //
   nationality                   String?
   dateOfBirth                   DateTime                                   @map("dob")
   pronoun1                      String?                                    @default("")
   pronoun2                      String?                                    @default("")
   //
-  profilePicture                String?                                    @default("")
-  coverPhoto                    String?                                    @default("")
+  account                       Account?                                   @relation(fields: [accountId], references: [id])
+  accountId                     Int?
   //
   member                        Member[]
   delegate                      Delegate[]

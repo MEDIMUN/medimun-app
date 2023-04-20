@@ -1,0 +1,45 @@
+.delegatesColored {
+   width: 100%;
+   position: fixed;
+   bottom: 0;
+   min-width: 1400px;
+   z-index: 40;
+   max-height: calc(50vh);
+   min-height: calc(50vh);
+   object-fit: cover;
+   object-position: top center;
+   -webkit-filter: drop-shadow(0px 0px 5px var(--medired));
+   filter: drop-shadow(0px 0px 5px var(--medired));
+}
+
+@media only screen and (min-width: 1000px) {
+   .delegatesColored {
+      min-width: none;
+   }
+
+   .delegatesColored {}
+}
+
+@media only screen and (min-width: 1300px) {
+   .delegatesColored {
+      min-width: none;
+   }
+
+   .delegatesColored {}
+}
+
+@media only screen and (min-width: 1800px) {
+   .delegatesColored {
+      min-width: none;
+   }
+
+   .delegatesColored {}
+}
+
+@media only screen and (max-width: 768px) {
+   .delegatesColored {
+      max-height: calc(60vh);
+      min-height: calc(60vh);
+      object-position: top right
+   }
+}
