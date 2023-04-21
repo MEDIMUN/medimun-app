@@ -25,9 +25,9 @@ export function CommandMenu() {
 			<CommandList>
 				<CommandEmpty>No results found.</CommandEmpty>
 				<CommandGroup heading="Pages">
-					<CommandItem onClick={router.push("/")}>Home</CommandItem>
+					<CommandItem>Home</CommandItem>
 					<CommandItem>MediBook</CommandItem>
-					<CommandItem onClick={router.push("/about")}>About</CommandItem>
+					<CommandItem>About</CommandItem>
 					<CommandItem>Feedback</CommandItem>
 					<CommandItem>Register</CommandItem>
 					<CommandItem>Register</CommandItem>

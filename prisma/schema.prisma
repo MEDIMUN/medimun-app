@@ -12,15 +12,10 @@ model PendingUser {
   //
   email                 String   @unique
   //
-  officialName          String
-  officialSurname       String
-  //
-  displayName           String?
-  displaySurname        String?
-  //
   password              String
   //
-  dateOfBirth           String
+  officialName          String
+  officialSurname       String
   //
   timeCreated           DateTime @default(now())
   emailVerificationCode String
@@ -30,7 +25,6 @@ model Account {
   id          Int      @id @default(autoincrement())
   //
   password    String
-  isDisabled  Boolean  @default(false)
   //
   timeCreated DateTime @default(now())
   User        User[]
@@ -39,46 +33,54 @@ model Account {
 model User {
   id                            Int                                        @id @default(autoincrement())
   //
-  showPhoneNumber               Boolean                                    @default(false)
-  allowMessagesFromEveryone     Boolean                                    @default(false) @map("amfe")
-  //
-  profileVisibility             Int                                        @default(5)
-  organiserProfileVisibility    Int                                        @default(2)
-  //
-  email                         String                                     @unique
-  phoneNumber                   String                                     @default("")
-  //
-  bio                           String                                     @default("")
-  //
   userNumber                    String                                     @unique
-  username                      String?
+  email                         String                                     @unique
+  phoneNumber                   String?
+  //
+  isDisabled                    Boolean                                    @default(false)
   //
   officialName                  String
   officialSurname               String
   displayName                   String?
+  username                      String?                                    @unique
   //
   nationality                   String?
-  dateOfBirth                   DateTime                                   @map("dob")
-  pronoun1                      String?                                    @default("")
-  pronoun2                      String?                                    @default("")
+  dateOfBirth                   DateTime?                                  @map("dob")
+  gender                        String?
   //
+  bio                           String?
+  pronoun1                      String?
+  pronoun2                      String?
+  //
+  showPhoneNumber               Boolean                                    @default(false) @map("spn")
+  allowMessagesFromEveryone     Boolean                                    @default(false) @map("amfe")
+  profileVisibility             Int                                        @default(5) @map("pv")
+  organiserProfileVisibility    Int                                        @default(2) @map("opv")
+  //ACCOUNT
   account                       Account?                                   @relation(fields: [accountId], references: [id])
   accountId                     Int?
   //
   member                        Member[]
   delegate                      Delegate[]
-  schoolStudent                 SchoolStudent[]
   schoolDirector                SchoolDirector[]
   chair                         Chair[]
   manager                       Manager[]
-  AssignedBy                    Task[]                                     @relation("assigned_by")
-  AssignedTo                    Task[]                                     @relation("assigned_to")
-  rollCall                      RollCall[]
   globalAdmin                   GlobalAdmin[]
   seniorDirecor                 SeniorDirector[]
   secretaryGeneral              SecretariatSecretaryGeneral[]
   presidentOfTheGeneralAssembly SecretariatPresidentOfTheGeneralAssembly[]
   deputySecretaryGeneral        SecretariatDeputySecretaryGeneral[]
+  Admin                         Admin[]
+  Message                       Message[]
+  Reaction                      Reaction[]
+  Student                       Student[]
+  ChatMemeber                   ChatMemeber[]
+  GroupChatMemeber              GroupChatMemeber[]
+  GeneralAnnouncement           GeneralAnnouncement[]
+  CommitteeAnnouncement         CommitteeAnnouncement[]
+  DepartmentAnnouncement        DepartmentAnnouncement[]
+  AlumniAnnouncement            AlumniAnnouncement[]
+  EnrolledAnnouncement          EnrolledAnnouncement[]
 }
 
 model Session {
@@ -87,7 +89,7 @@ model Session {
   isCurrent   Boolean @default(false)
   number      Int     @unique
   //
-  phrase1     String  @default("")
+  theme       String  @default("")
   phrase2     String  @default("")
   //
   description String  @default("")
@@ -96,21 +98,26 @@ model Session {
   explanation                   String                                     @default("")
   //
   committee                     Committee[]
-  delegate                      Delegate[]
-  chair                         Chair[]
-  member                        Member[]
-  manager                       Manager[]
   schoolDirector                SchoolDirector[]
   workshopDay                   WorkshopDay[]
   conferenceDay                 ConferenceDay[]
-  task                          Task[]
   secretaryGeneral              SecretariatSecretaryGeneral[]
   presidentOfTheGeneralAssembly SecretariatPresidentOfTheGeneralAssembly[]
   deputySecretaryGeneral        SecretariatDeputySecretaryGeneral[]
-  team                          Team[]
+  department                    Department[]
+  Chat                          Chat[]
+  GroupChat                     GroupChat[]
+  EnrolledAnnouncement          EnrolledAnnouncement[]
 }
 
 model GlobalAdmin {
+  id     Int  @id @default(autoincrement())
+  //
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+model Admin {
   id     Int  @id @default(autoincrement())
   //
   user   User @relation(fields: [userId], references: [id])
@@ -152,26 +159,24 @@ model SecretariatDeputySecretaryGeneral {
 }
 
 model ConferenceDay {
-  id          Int        @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   //
   name        String?
   //
   startDate   DateTime
   endDate     DateTime
   //
-  description String     @default("")
+  description String    @default("")
   //
-  location    Location?  @relation(fields: [locationId], references: [id])
+  location    Location? @relation(fields: [locationId], references: [id])
   locationId  Int?
   //
-  session     Session    @relation(fields: [sessionId], references: [id])
+  session     Session   @relation(fields: [sessionId], references: [id])
   sessionId   Int
-  //
-  rollCall    RollCall[]
 }
 
 model WorkshopDay {
-  id          Int        @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   //
   name        String?
   //
@@ -180,45 +185,28 @@ model WorkshopDay {
   //
   description String
   //
-  location    Location?  @relation(fields: [locationId], references: [id])
+  location    Location? @relation(fields: [locationId], references: [id])
   locationId  Int?
   //
-  session     Session    @relation(fields: [sessionId], references: [id])
+  session     Session   @relation(fields: [sessionId], references: [id])
   sessionId   Int
-  //
-  rollCall    RollCall[]
-}
-
-model RollCall {
-  id              Int            @id @default(autoincrement())
-  //
-  user            User           @relation(fields: [userId], references: [id])
-  userId          Int
-  //
-  status          Int            @default(0)
-  //
-  workshopDay     WorkshopDay?   @relation(fields: [workshopDayId], references: [id])
-  workshopDayId   Int?
-  //
-  conferenceDay   ConferenceDay? @relation(fields: [conferenceDayId], references: [id])
-  conferenceDayId Int?
 }
 
 model School {
   id             Int              @id @default(autoincrement())
   //
   name           String           @unique
-  slug           String?          @unique
+  slug           String           @unique
   joinYear       Int?
   //
   Location       Location?        @relation(fields: [locationId], references: [id])
   locationId     Int?
   //
-  SchoolMember   SchoolStudent[]
   SchoolDirector SchoolDirector[]
+  Student        Student[]
 }
 
-model SchoolStudent {
+model Student {
   id       Int    @id @default(autoincrement())
   //
   user     User   @relation(fields: [userId], references: [id])
@@ -242,16 +230,18 @@ model SchoolDirector {
 }
 
 model Committee {
-  id          Int        @id @default(autoincrement())
+  id                    Int                     @id @default(autoincrement())
   //
-  name        String
-  description String     @default("")
+  name                  String
+  description           String                  @default("")
   //
-  session     Session    @relation(fields: [sessionId], references: [id])
-  sessionId   Int
+  session               Session                 @relation(fields: [sessionId], references: [id])
+  sessionId             Int
   //
-  delegate    Delegate[]
-  chair       Chair[]
+  delegate              Delegate[]
+  chair                 Chair[]
+  Channel               Channel[]
+  CommitteeAnnouncement CommitteeAnnouncement[]
 }
 
 model Delegate {
@@ -263,9 +253,6 @@ model Delegate {
   //
   committee   Committee @relation(fields: [committeeId], references: [id])
   committeeId Int
-  //
-  session     Session   @relation(fields: [sessionId], references: [id])
-  sessionId   Int
 }
 
 model Chair {
@@ -276,50 +263,47 @@ model Chair {
   //
   committee   Committee @relation(fields: [committeeId], references: [id])
   committeeId Int
-  //
-  session     Session   @relation(fields: [sessionId], references: [id])
-  sessionId   Int
 }
 
-model Team {
-  id          Int       @id @default(autoincrement())
+model Department {
+  id                     Int                      @id @default(autoincrement())
   //
-  name        String
-  description String    @default("")
+  name                   String
+  description            String                   @default("")
   //
-  session     Session   @relation(fields: [sessionId], references: [id])
-  sessionId   Int
+  isMedinews             Boolean                  @default(false)
+  isIt                   Boolean                  @default(false)
+  isShop                 Boolean                  @default(false)
   //
-  member      Member[]
-  manager     Manager[]
+  session                Session                  @relation(fields: [sessionId], references: [id])
+  sessionId              Int
+  //
+  member                 Member[]
+  manager                Manager[]
+  Channel                Channel[]
+  DepartmentAnnouncement DepartmentAnnouncement[]
 }
 
 model Member {
-  id        Int     @id @default(autoincrement())
+  id     Int        @id @default(autoincrement())
   //
-  job       String  @default("")
+  job    String     @default("")
   //
-  user      User    @relation(fields: [userId], references: [id])
-  userId    Int
+  user   User       @relation(fields: [userId], references: [id])
+  userId Int
   //
-  team      Team    @relation(fields: [teamId], references: [id])
-  teamId    Int
-  //
-  session   Session @relation(fields: [sessionId], references: [id])
-  sessionId Int
+  team   Department @relation(fields: [teamId], references: [id])
+  teamId Int
 }
 
 model Manager {
-  id        Int     @id @default(autoincrement())
+  id     Int        @id @default(autoincrement())
   //
-  user      User    @relation(fields: [userId], references: [id])
-  userId    Int
+  user   User       @relation(fields: [userId], references: [id])
+  userId Int
   //
-  team      Team    @relation(fields: [teamId], references: [id])
-  teamId    Int
-  //
-  session   Session @relation(fields: [sessionId], references: [id])
-  sessionId Int
+  team   Department @relation(fields: [teamId], references: [id])
+  teamId Int
 }
 
 model Location {
@@ -346,29 +330,195 @@ model Location {
   SessionWorkshopDay   WorkshopDay[]
 }
 
-model Task {
-  id            Int       @id @default(autoincrement())
+// CHAT GROUPS ///////////////////////////////////////////////////////////
+
+model Chat {
+  id          Int           @id @default(autoincrement())
   //
-  name          String
-  description   String    @default("")
-  isCompleted   Boolean   @default(false)
+  session     Session       @relation(fields: [sessionId], references: [id])
+  sessionId   Int
   //
-  assignedDate  DateTime  @default(now())
-  dueDate       DateTime?
-  completedDate DateTime?
-  //
-  assignedBy    User      @relation("assigned_by", fields: [assignedById], references: [id])
-  assignedById  Int
-  //
-  assignedTo    User?     @relation("assigned_to", fields: [assignedToId], references: [id])
-  assignedToId  Int?
-  //
-  session       Session   @relation(fields: [sessionId], references: [id])
-  sessionId     Int
+  Message     Message[]
+  ChatMemeber ChatMemeber[]
 }
 
-model TermsAndConditions {
+model ChatMemeber {
+  id     Int  @id @default(autoincrement())
+  //
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+  //
+  chat   Chat @relation(fields: [chatId], references: [id])
+  chatId Int
+}
+
+model GroupChat {
+  id               Int                @id @default(autoincrement())
+  //
+  session          Session            @relation(fields: [sessionId], references: [id])
+  sessionId        Int
+  //
+  Message          Message[]
+  GroupChatMemeber GroupChatMemeber[]
+}
+
+model GroupChatMemeber {
+  id     Int       @id @default(autoincrement())
+  //
+  user   User      @relation(fields: [userId], references: [id])
+  userId Int
+  //
+  chat   GroupChat @relation(fields: [chatId], references: [id])
+  chatId Int
+}
+
+model Channel {
+  id           Int         @id @default(autoincrement())
+  //
+  name         String
+  description  String
+  //
+  committe     Committee?  @relation(fields: [committeId], references: [id])
+  committeId   Int?
+  //
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId Int?
+  //
+  Message      Message[]
+}
+
+// MESSAGE ///////////////////////////////////////////////////////////
+
+model Message {
+  id          Int        @id @default(autoincrement())
+  //
+  content     String
+  time        DateTime   @default(now())
+  sender      User       @relation(fields: [senderId], references: [id])
+  senderId    Int
+  //
+  Chat        Chat?      @relation(fields: [chatId], references: [id])
+  chatId      Int?
+  GroupChat   GroupChat? @relation(fields: [groupChatId], references: [id])
+  groupChatId Int?
+  replyTo     Message?   @relation("reply", fields: [replyToId], references: [id])
+  replyToId   Int?
+  replies     Message[]  @relation("reply")
+  //
+  Reaction    Reaction[]
+  Channel     Channel?   @relation(fields: [channelId], references: [id])
+  channelId   Int?
+}
+
+model Reaction {
+  id        Int          @id @default(autoincrement())
+  //
+  type      ReactionType
+  //
+  sender    User         @relation(fields: [senderId], references: [id])
+  senderId  Int
+  //
+  message   Message      @relation(fields: [messageId], references: [id])
+  messageId Int
+}
+
+// ANNOUNCEMENT ///////////////////////////////////////////////////////////
+
+model GeneralAnnouncement {
+  id       Int      @id @default(autoincrement())
+  //
+  title    String
+  content  String
+  time     DateTime @default(now())
+  //
+  sender   User     @relation(fields: [senderId], references: [id])
+  senderId Int
+}
+
+model CommitteeAnnouncement {
+  id          Int       @id @default(autoincrement())
+  //
+  title       String
+  content     String
+  time        DateTime  @default(now())
+  //
+  sender      User      @relation(fields: [senderId], references: [id])
+  senderId    Int
+  //
+  committee   Committee @relation(fields: [committeeId], references: [id])
+  committeeId Int
+}
+
+model DepartmentAnnouncement {
+  id           Int        @id @default(autoincrement())
+  //
+  title        String
+  content      String
+  time         DateTime   @default(now())
+  //
+  sender       User       @relation(fields: [senderId], references: [id])
+  senderId     Int
+  //
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId Int
+}
+
+model AlumniAnnouncement {
+  id       Int      @id @default(autoincrement())
+  //
+  title    String
+  content  String
+  time     DateTime @default(now())
+  //
+  sender   User     @relation(fields: [senderId], references: [id])
+  senderId Int
+}
+
+model EnrolledAnnouncement {
+  id        Int      @id @default(autoincrement())
+  //
+  title     String
+  content   String
+  time      DateTime @default(now())
+  //
+  sender    User     @relation(fields: [senderId], references: [id])
+  senderId  Int
+  //
+  session   Session  @relation(fields: [sessionId], references: [id])
+  sessionId Int
+}
+
+// TERMS, CONDITIONS AND PRIVACY ///////////////////////////////////////////////////////////
+
+model Term {
   id      Int    @id @default(autoincrement())
+  index   Int    @default(0)
   title   String
   content String
+}
+
+model Condition {
+  id      Int    @id @default(autoincrement())
+  index   Int    @default(0)
+  title   String
+  content String
+}
+
+model Privacy {
+  id      Int    @id @default(autoincrement())
+  index   Int    @default(0)
+  title   String
+  content String
+}
+
+// ENUMS ///////////////////////////////////////////////////////////
+
+enum ReactionType {
+  LOVE
+  LAUGH
+  SURPRISED
+  SAD
+  ANGRY
+  LIKE
+  DISLIKE
 }

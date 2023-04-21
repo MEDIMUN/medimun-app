@@ -64,6 +64,7 @@
 .themeOneWord {
    color: white;
    text-shadow: 2px 2px #000000;
+   background-position: bottom;
 }
 
 .heroText2>*:nth-child(1) {
