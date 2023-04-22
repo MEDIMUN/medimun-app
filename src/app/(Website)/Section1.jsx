@@ -20,8 +20,6 @@ export default function Section1({ children }) {
 
 		section < 0.5 ? setHeight(heightPx) : setHeight(heightPx2);
 
-		console.log({ heightPx, heightPx2, section });
-
 		if (position > 100) {
 		}
 	}

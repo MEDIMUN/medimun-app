@@ -3,6 +3,7 @@ import Landscape from "./Landscape";
 import Navbar from "./Navbar";
 import { GeistProvider } from "./providers";
 import { CommandMenu } from "./CommandMenu";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
 	title: "MediBook",
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
 					<Landscape />
 					<Navbar />
 					{children}
+					<Toaster />
 				</body>
 			</GeistProvider>
 		</html>

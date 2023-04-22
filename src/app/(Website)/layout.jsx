@@ -7,6 +7,7 @@ import "@/src/app/globals.css";
 
 import { NextAuthProvider } from "./providers";
 import { CommandMenu } from "./CommandMenu";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
 	title: "Home | MEDIMUN",
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
 					<Beta />
 					<CommandMenu className={style.menu} />
 					<main className={style.main}>{children}</main>
+					<Toaster />
 					<Footer />
 				</body>
 			</NextAuthProvider>

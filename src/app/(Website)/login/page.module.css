@@ -37,7 +37,7 @@
    margin-right: calc(100vw - 180px);
    color: transparent;
    transform: rotate(-90deg) translateY(-102px);
-   -webkit-text-stroke-color: white;
+   -webkit-text-stroke-color: rgb(87, 87, 87);
    -webkit-text-stroke-width: 1px;
 }
 
