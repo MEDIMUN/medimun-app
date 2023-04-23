@@ -2,14 +2,14 @@ import Image from "next/image";
 import style from "./page.module.css";
 import HeroImage from "./HeroImage";
 import Section1 from "./Section1";
-import { Button } from "@/components/ui/button";
 import RegisterButton from "./RegisterButton";
+import AuthRedirect from "./AuthRedirect";
 
 const currentYear = new Date().getFullYear();
 
 const theme1 = "Building Resilience";
 
-export default function Page() {
+export function HomePage() {
 	return (
 		<div className={style.page}>
 			<div>
@@ -37,5 +37,14 @@ export default function Page() {
 			<section></section>
 			<section></section>
 		</div>
+	);
+}
+
+export default function Page() {
+	return (
+		<>
+			<AuthRedirect authenticated="/medibook" />
+			<HomePage />
+		</>
 	);
 }

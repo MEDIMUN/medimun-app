@@ -35,7 +35,8 @@ export default function Login() {
 				email: enteredEmail,
 				password: enteredPassword,
 			});
-			if (!response.ok) {
+			console.log(response);
+			if (response.error) {
 				toast({
 					title: "We couldn't sign you in",
 					description: response.error,
@@ -43,7 +44,7 @@ export default function Login() {
 				});
 				throw new Error(response);
 			}
-			if (response.ok) {
+			if (!response.error) {
 				toast({
 					title: "Signed in",
 				});
@@ -61,7 +62,7 @@ export default function Login() {
 
 	return (
 		<div className={style.login}>
-			<div className="h-[100%] px-[25px] py-auto w-auto flex-col flex justify-center align-middle">
+			<div className="h-[100%] px-[40px] py-auto w-auto flex-col flex justify-center align-middle">
 				<Input autoCapitalize="off" ref={emailInputRef} className="text-base focus-visible:outline-none focus-visible:ring-offset-0 my-3 text-white rounded-none border-b-2 border-t-0 border-l-0 border-r-0 w-[100%] focus-visible:border-b-2 focus-visible:border-b-[var(--medired)] focus-visible:ring-0" type="username" placeholder="Email, Username or UserID" />
 				<Input ref={passwordInputRef} className="text-base focus-visible:outline-none focus-visible:ring-offset-0 my-3 text-white rounded-none border-b-2 border-t-0 border-l-0 border-r-0 w-[100%] focus-visible:border-b-2 focus-visible:border-b-[var(--medired)] focus-visible:ring-0" type="password" placeholder="Password" />
 				<Button onClick={submitHandler} disabled={isFetching} className="w-[80%] rounded-[50px] bg-[var(--medired)] mx-auto mt-6">

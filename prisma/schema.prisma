@@ -9,23 +9,17 @@ generator client {
 
 model PendingUser {
   id                    Int      @id @default(autoincrement())
-  //
   email                 String   @unique
-  //
   password              String
-  //
   officialName          String
   officialSurname       String
-  //
   timeCreated           DateTime @default(now())
   emailVerificationCode String
 }
 
 model Account {
   id          Int      @id @default(autoincrement())
-  //
   password    String
-  //
   timeCreated DateTime @default(now())
   user        User[]
 }

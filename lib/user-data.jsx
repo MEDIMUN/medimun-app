@@ -146,6 +146,7 @@ export async function userData(user) {
 			userNumber: roles.userNumber,
 			officialName: roles.officialName,
 			officialSurname: roles.officialSurname,
+			email: roles.email,
 			displayName: roles.displayName,
 			schoolName: roles.school ? roles.student.school.name : "null",
 			isDisabled: roles.isDisabled,

@@ -36,6 +36,7 @@ export default function Navbar() {
 	async function handleLogoColor() {
 		const pageColors = {
 			"/": "black",
+			"/home": "black",
 			"/medibook": "black",
 			"/login": "black",
 			"/register": "white",

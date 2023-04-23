@@ -1,15 +1,9 @@
-"use client";
-
-import { signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import AvatarMenu from "./AvatarMenu";
 
 export default function NavOptions() {
-	async function handleSignOut() {
-		signOut({ callbackUrl: "/login" });
-	}
 	return (
-		<div>
-			<Button onClick={handleSignOut}>Sign Out</Button>
+		<div className="h-[32px] my-[6px] pr-[24px]">
+			<AvatarMenu />
 		</div>
 	);
 }

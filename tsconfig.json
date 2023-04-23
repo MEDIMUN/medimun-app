@@ -27,8 +27,7 @@
 			"@page-layout": ["./page-components/layout.jsx"],
 			"@client": ["./prisma/client.ts"],
 			"@logo": ["./branding/logos/main.jsx"],
-			"@public/*": ["./public/*"],
-			"@pages/*": ["./pages/*"]
+			"@public/*": ["./public/*"]
 		},
 		"plugins": [
 			{

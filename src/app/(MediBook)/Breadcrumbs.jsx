@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import axios from "axios";
-import { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 import { Skeleton } from "@components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -37,13 +37,13 @@ export default function Breadcrumb() {
 			</Link>
 			<Separator />
 			{status == "authenticated" && (
-				<Fragment>
+				<>
 					<Avatar className="w-[30px] h-[30px] mr-[8px]">
 						<AvatarImage src="" />
-						<AvatarFallback>{session.user.officialName[0] + session.user.officialSurname[0]}</AvatarFallback>
+						<AvatarFallback className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white">{session.user.officialName[0] + session.user.officialSurname[0]}</AvatarFallback>
 					</Avatar>
-					<p className="h-[20px] weig text-sm font-medium truncate">{session.user.preferredName}</p> <Badge className="ml-[8px] hidden md:block">{session.currentRoleNames[0]}</Badge>
-				</Fragment>
+					<p className="h-[20px] weig text-sm font-medium truncate">{session.user.preferredName}</p> <Badge className="ml-[8px] hidden md:block truncate">{session.currentRoleNames[0]}</Badge>
+				</>
 			)}
 			{status == "loading" && <Skeleton className="h-5 w-[100px] bg-gray-300" />}
 			{status == "unauthenticated" && <Skeleton className="h-5 w-[100px] bg-red-600" />}
