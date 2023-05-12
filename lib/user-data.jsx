@@ -1,6 +1,7 @@
 import prisma from "@client";
 
 export async function userData(user) {
+	await prisma.$connect();
 	const roles = await prisma.user.findFirst({
 		where: { OR: [{ email: user }, { userNumber: user }, { username: user }] },
 		include: {
@@ -115,11 +116,11 @@ export async function userData(user) {
 	let allPastRoles = allRoles.filter((role) => !role.isCurrent);
 
 	const allFullCurrentRoles = allCurrentRoles.map((role) => {
-		return { name: role.role, session: role.session };
+		return { name: role.role, session: role.session, committee: role.committee, team: role.team };
 	});
 
 	const allFullPastRoles = allPastRoles.map((role) => {
-		return { name: role.role, session: role.session };
+		return { name: role.role, session: role.session, committee: role.committee, team: role.team };
 	});
 
 	const allFilteredCurrentRoles = allCurrentRoles.map((role) => {

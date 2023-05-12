@@ -1,7 +1,6 @@
 import style from "./Navbar.module.css";
 
 import Breadcrumb from "./Breadcrumbs";
-import Submenu from "./SubMenu";
 import NavOptions from "./NavOptions";
 
 export default async function Navbar() {
@@ -11,7 +10,6 @@ export default async function Navbar() {
 				<Breadcrumb />
 				<NavOptions />
 			</div>
-			<Submenu />
 		</nav>
 	);
 }

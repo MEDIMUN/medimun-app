@@ -1,6 +1,6 @@
 "use client";
 
-import style from "./Section1.module.css";
+import style from "./styles/Section1.module.css";
 
 import { useEffect, useState } from "react";
 

@@ -13,11 +13,12 @@ import { signOut } from "next-auth/react";
 export default function AvatarMenu() {
 	const { data: session, status } = useSession();
 	const router = useRouter();
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger>
 				<Avatar className="w-[30px] h-[30px]">
-					{status === "loading" ? <Skeleton /> : <AvatarImage src="" />}
+					{status === "loading" ? <Skeleton /> : <AvatarImage src={`/api/user/${status === "authenticated" && session.user.userNumber}/profilePicture`} />}
 					<AvatarFallback className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white">{status === "authenticated" ? session.user.officialName[0] + session.user.officialSurname[0] : ""}</AvatarFallback>
 				</Avatar>
 			</DropdownMenuTrigger>
@@ -29,6 +30,7 @@ export default function AvatarMenu() {
 					<DropdownMenuItem>Account Settings</DropdownMenuItem>
 					<DropdownMenuItem>Dashboard</DropdownMenuItem>
 					<DropdownMenuItem>My Team</DropdownMenuItem>
+					<DropdownMenuItem>Certificates & Awards</DropdownMenuItem>
 					<DropdownMenuSeparator className="bg-gray-300 mb-3 mt-2" />
 					<DropdownMenuItem>
 						Command Menu

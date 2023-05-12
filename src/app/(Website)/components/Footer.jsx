@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import style from "./Footer.module.css";
+import style from "./styles/Footer.module.css";
 
 import Logo from "./Logo";
-import { Text } from "@chakra-ui/react";
 import { ChakraProvider } from "@chakra-ui/react";
 
 const currentYear = new Date().getFullYear();

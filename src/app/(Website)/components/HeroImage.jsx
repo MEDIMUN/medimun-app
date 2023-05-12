@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import style from "./HeroImage.module.css";
+import style from "./styles/HeroImage.module.css";
 import delegatesColored from "@public/assets/delegates-colored.png";
 import Image from "next/image";
 

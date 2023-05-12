@@ -11,7 +11,7 @@ export default function SubMenu() {
 	const [sticky, setSticky] = useState(false);
 
 	const handleScroll = () => {
-		window.scrollY > 32 ? setSticky(true) : setSticky(false);
+		window.scrollY > 50 ? setSticky(true) : setSticky(false);
 	};
 
 	useEffect(() => {
@@ -21,7 +21,7 @@ export default function SubMenu() {
 		};
 	}, []);
 	return (
-		<div className={`${sticky && "fixed top-0 bg-white left-0 right-0 shadow-md"} px-2 h-[48px] w-full flex justify-start border-b-[1px] border-[#EAEAEA]`}>
+		<div className={`${sticky && "fixed top-0 bg-white left-0 right-0 shadow-md"} px-2 h-[48px] w-full flex z-50 justify-start border-b-[1px] border-[#EAEAEA]`}>
 			<NavigationMenu className="w-[100%] flex justify-start overflow-x-auto">
 				<NavigationMenuList>
 					{sticky && (
@@ -37,18 +37,18 @@ export default function SubMenu() {
 						</Fragment>
 					)}
 					<NavigationMenuItem>
-						<Link href="/docs" legacyBehavior passHref>
-							<NavigationMenuLink className={linkStyle}>Delegates</NavigationMenuLink>
+						<Link href="/medibook/sessions" legacyBehavior passHref>
+							<NavigationMenuLink className={linkStyle}>Sessions</NavigationMenuLink>
 						</Link>
 					</NavigationMenuItem>
 					<NavigationMenuItem>
-						<Link href="/docs" legacyBehavior passHref>
-							<NavigationMenuLink className={linkStyle}>Other Thing</NavigationMenuLink>
+						<Link href="/medibook/users" legacyBehavior passHref>
+							<NavigationMenuLink className={linkStyle}>Users</NavigationMenuLink>
 						</Link>
 					</NavigationMenuItem>
 					<NavigationMenuItem>
-						<Link href="/docs" legacyBehavior passHref>
-							<NavigationMenuLink className={linkStyle}>Conference</NavigationMenuLink>
+						<Link href="/medibook/announcements" legacyBehavior passHref>
+							<NavigationMenuLink className={linkStyle}>Announcements</NavigationMenuLink>
 						</Link>
 					</NavigationMenuItem>
 					<NavigationMenuItem>

@@ -2,7 +2,6 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { verifyPassword } from "@lib/auth";
 import prisma from "@client";
-import { setTimeout } from "timers/promises";
 import { userData } from "@lib/user-data";
 
 export const authOptions = {
@@ -10,50 +9,48 @@ export const authOptions = {
 		strategy: "jwt",
 	},
 	providers: [
-		CredentialsProvider({
+		CredentialsProvider( {
 			type: "credentials",
 			credentials: {},
-			async authorize(credentials, req) {
+			async authorize ( credentials, req ) {
 				const username = credentials.email.trim().toLowerCase();
 				const password = credentials.password.trim();
-
-				await setTimeout(3000);
-
-				if (!username || !password) {
-					throw new Error("Please enter a username and password");
+				if ( !username || !password ) {
+					throw new Error( "Please enter a username and password" );
 				}
 				let userDetails;
 				try {
-					userDetails = await prisma.user.findFirst({
-						where: { OR: [{ email: username }, { userNumber: username }, { username: username }] },
+					await prisma.$connect();
+					userDetails = await prisma.user.findFirst( {
+						where: { OR: [ { email: username }, { userNumber: username }, { username: username } ] },
 						include: { account: true },
-					});
-				} catch (error) {
-					throw new Error("Internal Server Error, please try again later");
+					} );
+				} catch ( error ) {
+					throw new Error( "Internal Server Error, please try again later" );
 				}
-				if (userDetails === null) {
-					throw new Error("No user found");
+				if ( userDetails === null ) {
+					throw new Error( "No user found" );
 				}
-				if (!userDetails.account) {
-					throw new Error("The account has not been activated yet");
+				if ( !userDetails.account ) {
+					throw new Error( "The account has not been activated yet" );
 				}
-				if (userDetails.isDisabled) {
-					throw new Error("This account has been disabled, please contact us for more information");
+				if ( userDetails.isDisabled ) {
+					throw new Error( "This account has been disabled, please contact us for more information" );
 				}
-				if (!(password === userDetails.account.password)) {
-					/////////ADD BCRYPTJS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////REMINDERS/
-					throw new Error("Invalid password");
-				} else {
-					const user = await userData(userDetails.userNumber);
+				if ( ( password === userDetails.account.password ) ) {
+					const user = await userData( userDetails.userNumber );
 					return user;
+				} else {
+					throw new Error( "Incorrect Password" );
 				}
-				throw new Error("Internal Server Error, please try again later");
+
+				throw new Error( "Internal Server Error, please try again later" );
 			},
-		}),
+		} ),
 	],
 	callbacks: {
-		async jwt({ token, user }) {
-			if (user) {
+		async jwt ( { token, user } ) {
+			if ( user ) {
 				token.user = user.user;
 				token.user.preferredName = user.user.displayName ? user.user.displayName : user.user.officialName + " " + user.user.officialSurname;
 				token.currentRoles = user.currentRoles;
@@ -65,12 +62,12 @@ export const authOptions = {
 			}
 			return token;
 		},
-		async session({ session, token }) {
+		async session ( { session, token } ) {
 			const timeNow = Date.now();
 			const timeExpire = token.lastUpdated;
-			if (timeNow - timeExpire > 10 * 1000) {
-				const data = await userData(token.user.userNumber);
-				if (data.user.isDisabled) {
+			if ( timeNow - timeExpire > 10 * 1000 ) {
+				const data = await userData( token.user.userNumber );
+				if ( data.user.isDisabled ) {
 					token = {};
 					session = {};
 					return session, token;
@@ -107,6 +104,5 @@ export const authOptions = {
 	},
 	pages: { signIn: "/login" },
 };
-
-const handler = NextAuth(authOptions);
+const handler = NextAuth( authOptions );
 export { handler as GET, handler as POST };

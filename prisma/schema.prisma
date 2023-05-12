@@ -83,7 +83,7 @@ model Session {
   id                                  Int                                   @id @default(autoincrement())
   //
   isCurrent                           Boolean                               @default(false)
-  number                              Int                                   @unique
+  number                              String                                @unique
   //
   theme                               String                                @default("")
   phrase2                             String                                @default("")

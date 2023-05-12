@@ -3,7 +3,7 @@ import BlackLogo from "@public/assets/branding/logos/logo-black.svg";
 import WhiteLogo from "@public/assets/branding/logos/logo-white.svg";
 
 import Image from "next/image";
-import style from "./Logo.module.css";
+import style from "./styles/Logo.module.css";
 
 export default function Logo({ color = "white", quality = 75 }) {
 	switch (color) {

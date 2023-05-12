@@ -39,7 +39,7 @@ export default function Breadcrumb() {
 			{status == "authenticated" && (
 				<>
 					<Avatar className="w-[30px] h-[30px] mr-[8px]">
-						<AvatarImage src="" />
+						<AvatarImage src={`/api/user/${session.user.userNumber}/profilePicture`} />
 						<AvatarFallback className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white">{session.user.officialName[0] + session.user.officialSurname[0]}</AvatarFallback>
 					</Avatar>
 					<p className="h-[20px] weig text-sm font-medium truncate">{session.user.preferredName}</p> <Badge className="ml-[8px] hidden md:block truncate">{session.currentRoleNames[0]}</Badge>

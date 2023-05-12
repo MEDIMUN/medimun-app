@@ -1,13 +1,19 @@
 import Image from "next/image";
 import style from "./page.module.css";
-import HeroImage from "./HeroImage";
-import Section1 from "./Section1";
-import RegisterButton from "./RegisterButton";
-import AuthRedirect from "./AuthRedirect";
+import HeroImage from "./components/HeroImage";
+import Section1 from "./components/Section1";
+import RegisterButton from "./components/RegisterButton";
+import AuthRedirect from "@/src/app/(Website)/components/AuthRedirect";
 
 const currentYear = new Date().getFullYear();
 
 const theme1 = "Building Resilience";
+
+export const metadata = {
+	title: "Home - MEDIMUN",
+	description: "The biggest THIMUN-affiliated MUN conference in the Mediterranean Region, established in 2005.",
+	themeColor: "#000000",
+};
 
 export function HomePage() {
 	return (

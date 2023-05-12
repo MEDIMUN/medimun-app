@@ -3,7 +3,6 @@
 import { signIn, getSession, signOut } from "next-auth/react";
 
 import { useEffect, useState, useRef } from "react";
-import style from "./Login.module.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -54,18 +53,17 @@ export default function Login() {
 		},
 		enabled: false,
 		refetchOnWindowFocus: false,
-		refetchOnWindowFocus: false,
 		refetchOnMount: false,
 		refetchOnReconnect: false,
 		retry: false,
 	});
 
 	return (
-		<div className={style.login}>
+		<div>
 			<div className="h-[100%] px-[40px] py-auto w-auto flex-col flex justify-center align-middle">
 				<Input autoCapitalize="off" ref={emailInputRef} className="text-base focus-visible:outline-none focus-visible:ring-offset-0 my-3 text-white rounded-none border-b-2 border-t-0 border-l-0 border-r-0 w-[100%] focus-visible:border-b-2 focus-visible:border-b-[var(--medired)] focus-visible:ring-0" type="username" placeholder="Email, Username or UserID" />
 				<Input ref={passwordInputRef} className="text-base focus-visible:outline-none focus-visible:ring-offset-0 my-3 text-white rounded-none border-b-2 border-t-0 border-l-0 border-r-0 w-[100%] focus-visible:border-b-2 focus-visible:border-b-[var(--medired)] focus-visible:ring-0" type="password" placeholder="Password" />
-				<Button onClick={submitHandler} disabled={isFetching} className="w-[80%] rounded-[50px] bg-[var(--medired)] mx-auto mt-6">
+				<Button onClick={submitHandler} disabled={isFetching} className="w-[80%] rounded-2 bg-[var(--medired)] mx-auto mt-6">
 					Log in
 				</Button>
 				<div className="mx-auto mt-3">

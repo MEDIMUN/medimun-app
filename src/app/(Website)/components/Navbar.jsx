@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import style from "./Navbar.module.css";
+import style from "./styles/Navbar.module.css";
 import Logo from "./Logo";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { AiOutlineMenu } from "react-icons/ai";
 import LoginButton from "./LoginButton";
 
-export default function Navbar() {
+export default function Navbar({ children }) {
 	const [isTransparent, setIsTransparent] = useState(true);
 	const [currentColor, setCurrentColor] = useState("black");
 

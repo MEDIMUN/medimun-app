@@ -1,3 +1,19 @@
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/src/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+
+export default async function AuthRedirect(props) {
+	const session = await getServerSession(authOptions);
+	if (session && props.authenticated) {
+		redirect(props.authenticated);
+	}
+	if (!session && props.unauthenticated) {
+		redirect(props.unauthenticated);
+	}
+	return <></>;
+}
+
+/* 
 "use client";
 
 import { useSession } from "next-auth/react";
@@ -17,3 +33,4 @@ export default function AuthRedirect(props) {
 	}, [status]);
 	return <></>;
 }
+ */

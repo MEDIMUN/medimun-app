@@ -1,4 +1,4 @@
-import style from "./Landscape.module.css";
+import style from "./styles/Landscape.module.css";
 import Logo from "./Logo";
 
 export default function Landscape() {
