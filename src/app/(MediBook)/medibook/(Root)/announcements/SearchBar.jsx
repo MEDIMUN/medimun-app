@@ -11,7 +11,7 @@ export default async function SearchBar(props) {
 			<>
 				<div className="flex flex-row mx-auto max-w-[1200px]">
 					<Input type="search" placeholder="Type to search for older announcements" className="text-md w-full rounded-[4px]" />
-					<Link href="/medibook/announcements?add">
+					<Link href="/medibook/announcements?action=create">
 						<Button className="w-[190px] ml-2">Add Announcement</Button>
 					</Link>
 				</div>

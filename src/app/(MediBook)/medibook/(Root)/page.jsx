@@ -14,7 +14,7 @@ export default async function Page() {
 	};
 	const greeting = timeGreeting() + ", " + (session.user.displayName || session.user.officialName);
 	return (
-		<div className="p-5 max-w-[1200px] mx-auto select-none">
+		<div className="p-5 max-w-[1200px] mx-auto -none">
 			<div className="pl-2">
 				<h2 className="font-md text-3xl font-bold tracking-tight">{greeting + " 👋"}</h2>
 				<h3 className="text-sm pl-0.5">

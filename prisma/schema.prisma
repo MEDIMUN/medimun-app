@@ -70,13 +70,9 @@ model User {
   student                             Student[]
   chatMemeber                         ChatMemeber[]
   groupChatMemeber                    GroupChatMemeber[]
-  generalAnnouncement                 GeneralAnnouncement[]
-  committeeAnnouncement               CommitteeAnnouncement[]
-  departmentAnnouncement              DepartmentAnnouncement[]
-  alumniAnnouncement                  AlumniAnnouncement[]
-  enrolledAnnouncement                EnrolledAnnouncement[]
   deputyPresidentOfTheGeneralAssembly DeputyPresidentOfTheGeneralAssembly[]
   organiser                           Organiser[]
+  Announcement                        Announcement[]
 }
 
 model Session {
@@ -106,6 +102,7 @@ model Session {
   enrolledAnnouncement                EnrolledAnnouncement[]
   deputyPresidentOfTheGeneralAssembly DeputyPresidentOfTheGeneralAssembly[]
   organiser                           Organiser[]
+  SessionAnnouncement                 SessionAnnouncement[]
 }
 
 model GlobalAdmin {
@@ -381,73 +378,82 @@ model Reaction {
 
 // ANNOUNCEMENT ///////////////////////////////////////////////////////////
 
-model GeneralAnnouncement {
-  id       Int      @id @default(autoincrement())
-  isEdited Boolean  @default(false)
+model Announcement {
+  id                     String                   @id @default(uuid())
+  isEdited               Boolean                  @default(false)
+  isAnonymous            Boolean                  @default(false)
+  isSecretariat          Boolean                  @default(false)
+  isBoard                Boolean                  @default(false)
+  isEmail                Boolean                  @default(false)
+  isMedibook             Boolean                  @default(false)
+  isWebsite              Boolean                  @default(false)
+  isPinned               Boolean                  @default(false)
   //
-  title    String
-  content  String
-  time     DateTime @default(now())
+  title                  String
+  description            String
+  markdown               String
+  time                   DateTime                 @default(now())
   //
-  sender   User     @relation(fields: [senderId], references: [id])
-  senderId Int
+  sender                 User                     @relation(fields: [senderId], references: [id])
+  senderId               Int
+  GlobalAnnouncement     GlobalAnnouncement[]
+  RegisteredAnnouncement RegisteredAnnouncement[]
+  CommitteeAnnouncement  CommitteeAnnouncement[]
+  DepartmentAnnouncement DepartmentAnnouncement[]
+  AlumniAnnouncement     AlumniAnnouncement[]
+  EnrolledAnnouncement   EnrolledAnnouncement[]
+  SessionAnnouncement    SessionAnnouncement[]
+}
+
+model GlobalAnnouncement {
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcementId String
+}
+
+model RegisteredAnnouncement {
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcementId String
 }
 
 model CommitteeAnnouncement {
-  id          Int       @id @default(autoincrement())
-  isEdited    Boolean   @default(false)
-  //
-  title       String
-  content     String
-  time        DateTime  @default(now())
-  //
-  sender      User      @relation(fields: [senderId], references: [id])
-  senderId    Int
-  //
-  committee   Committee @relation(fields: [committeeId], references: [id])
-  committeeId Int
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcementId String
+  committee      Committee    @relation(fields: [committeeId], references: [id])
+  committeeId    Int
 }
 
 model DepartmentAnnouncement {
-  id           Int        @id @default(autoincrement())
-  isEdited     Boolean    @default(false)
-  //
-  title        String
-  content      String
-  time         DateTime   @default(now())
-  //
-  sender       User       @relation(fields: [senderId], references: [id])
-  senderId     Int
-  //
-  department   Department @relation(fields: [departmentId], references: [id])
-  departmentId Int
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcementId String
+  department     Department   @relation(fields: [departmentId], references: [id])
+  departmentId   Int
+}
+
+model SessionAnnouncement {
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcementId String
+  session        Session      @relation(fields: [sessionId], references: [id])
+  sessionId      Int
 }
 
 model AlumniAnnouncement {
-  id       Int      @id @default(autoincrement())
-  isEdited Boolean  @default(false)
-  //
-  title    String
-  content  String
-  time     DateTime @default(now())
-  //
-  sender   User     @relation(fields: [senderId], references: [id])
-  senderId Int
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcementId String
 }
 
 model EnrolledAnnouncement {
-  id        Int      @id @default(autoincrement())
-  isEdited  Boolean  @default(false)
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcementId String
   //
-  title     String
-  content   String
-  time      DateTime @default(now())
-  //
-  sender    User     @relation(fields: [senderId], references: [id])
-  senderId  Int
-  //
-  session   Session  @relation(fields: [sessionId], references: [id])
-  sessionId Int
+  session        Session      @relation(fields: [sessionId], references: [id])
+  sessionId      Int
 }
 
 // TERMS, CONDITIONS AND PRIVACY ///////////////////////////////////////////////////////////

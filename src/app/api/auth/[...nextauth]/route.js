@@ -65,6 +65,7 @@ export const authOptions = {
 		async session ( { session, token } ) {
 			const timeNow = Date.now();
 			const timeExpire = token.lastUpdated;
+			console.log( new Date( timeNow ), new Date( timeExpire ), timeNow - timeExpire > 10 * 1000 );
 			if ( timeNow - timeExpire > 10 * 1000 ) {
 				const data = await userData( token.user.userNumber );
 				if ( data.user.isDisabled ) {

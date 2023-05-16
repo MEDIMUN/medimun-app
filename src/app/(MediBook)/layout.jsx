@@ -11,6 +11,9 @@ export const metadata = {
 	description: "MediBook is the new platform for everything MEDIMUN.",
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
