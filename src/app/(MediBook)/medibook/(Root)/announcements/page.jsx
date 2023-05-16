@@ -1,6 +1,11 @@
 import SearchBar from "./SearchBar";
 import Drawer from "./Drawer";
 
+export const metadata = {
+	title: "Announcements - MediBook",
+	description: "View all the latest announcements from MEDIMUN.",
+};
+
 export default async function Page() {
 	return (
 		<>

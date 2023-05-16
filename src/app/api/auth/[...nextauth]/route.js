@@ -65,13 +65,12 @@ export const authOptions = {
 		async session ( { session, token } ) {
 			const timeNow = Date.now();
 			const timeExpire = token.lastUpdated;
-			console.log( new Date( timeNow ), new Date( timeExpire ), timeNow - timeExpire > 10 * 1000 );
+			console.log( new Date( timeNow ), new Date( timeExpire ), timeNow - timeExpire > 10 * 1000, ( timeNow - timeExpire ) / 1000 );
 			if ( timeNow - timeExpire > 10 * 1000 ) {
 				const data = await userData( token.user.userNumber );
 				if ( data.user.isDisabled ) {
-					token = {};
-					session = {};
-					return session, token;
+					session = { isDisabled: true };
+					return session;
 				}
 				const date = Date.now();
 				session.user = data.user;
@@ -90,10 +89,10 @@ export const authOptions = {
 				token.pastRoleNames = data.pastRoleNames;
 				token.lastUpdated = date;
 				token.signOut = false;
-				return session;
+				return session, token;
 			}
 			session.user = token.user;
-			token.user.preferredName = token.user.preferredName;
+			session.user.preferredName = token.user.preferredName;
 			session.currentRoles = token.currentRoles;
 			session.pastRoles = token.pastRoles;
 			session.currentRoleNames = token.currentRoleNames;

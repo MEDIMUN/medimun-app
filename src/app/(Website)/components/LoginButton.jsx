@@ -7,9 +7,11 @@ import { cn } from "@/lib/utils";
 
 import style from "./styles/LoginButton.module.css";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function LoginButton() {
-	const { status } = useSession();
+	const { data: session, status } = useSession();
+	status === "authenticated" && session.isDisabled ? redirect("/medibook/signout") : null;
 
 	if (status === "loading") {
 		return (

@@ -1,10 +1,20 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/src/app/api/auth/[...nextauth]/route";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, CreditCard, DollarSign, Users, CalendarClock, BookOpenCheck } from "lucide-react";
+import {
+	Activity,
+	CreditCard,
+	DollarSign,
+	Users,
+	CalendarClock,
+	BookOpenCheck,
+} from "lucide-react";
+import { signOut } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export default async function Page() {
 	const session = await getServerSession(authOptions);
+	if (!session || session.isDisabled) redirect("/medibook/signout");
 	const uid = session.user.userNumber.replace(/(.{4})/g, "$1-").slice(0, -1);
 
 	const timeGreeting = () => {

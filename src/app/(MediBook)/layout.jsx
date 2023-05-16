@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
 					<CommandMenu />
 					<Landscape />
 					<Navbar />
-					<main className="min-h-[calc(100svh-90px)]">{children}</main>
+					<main className="min-h-[calc(100svh)]">{children}</main>
 					<Footer />
 					<Toaster />
 				</body>

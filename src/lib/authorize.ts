@@ -1,72 +1,65 @@
-export enum Scope {
-	"Global Admin",
-	"Admin",
-	"Admins",
-	"Senior Director",
-	"Director",
-	"Board",
-	"Secretary-General",
-	"Deputy Secretary-General",
-	"President of the General Assembly",
-	"Deputy President of the General Assembly",
-	"Secretariat",
-	"Higher Secretariat",
+export enum s {
+	globalAdmin = "Global Admin",
+	admin = "Admin",
+	admins = "Admins",
+	sd = "Senior Director",
+	director = "Director",
+	board = "Board",
+	sg = "Secretary-General",
+	dsg = "Deputy Secretary-General",
+	pga = "President of the General Assembly",
+	dpga = "Deputy President of the General Assembly",
+	sec = "Secretariat",
+	highsec = "Higher Secretariat",
+	management = "Management",
 }
 
-//make how do I make it accept an array of Scopes?
-
-export const authorize = (userdata: any, scope: Scope[]) => {
-	console.log("run");
+export const authorize = (userdata: any, scope: s[]) => {
 	const user = userdata.currentRoleNames;
-	let isTrue = false;
+	if (userdata.isDisabled) return false;
+	if (userdata) return false;
 	const isTrueArray: any = [];
 
-	// repeat for each scope in the scope array prop
 	scope.forEach((scope) => {
 		if (user.includes("Global Admin")) return isTrueArray.push(true);
 		if (user.includes("Admin")) {
-			if (scope === Scope.Admin) return isTrueArray.push(true);
+			if (scope === s.admin) return isTrueArray.push(true);
 		}
 		if (user.includes("Admin") || user.includes("Global Admin")) {
-			if (scope === Scope.Admins) return isTrueArray.push(true);
+			if (scope === s.admins) return isTrueArray.push(true);
 		}
-		//ADMINS
 		if (user.includes("Senior Director")) {
-			if (scope === Scope["Senior Director"]) return isTrueArray.push(true);
+			if (scope === s.sd) return isTrueArray.push(true);
 		}
 		if (user.includes("Director")) {
-			if (scope === Scope.Director) return isTrueArray.push(true);
+			if (scope === s.director) return isTrueArray.push(true);
 		}
 		if (user.includes("Senior Director") || user.includes("Director")) {
-			if (scope === Scope.Board) return isTrueArray.push(true);
+			if (scope === s.board) return isTrueArray.push(true);
 		}
-		//BOARD
 		if (user.includes("Secretary-General")) {
-			if (scope === Scope["Secretary-General"]) return isTrueArray.push(true);
+			if (scope === s.sg) return isTrueArray.push(true);
 		}
 		if (user.includes("Deputy Secretary-General")) {
-			if (scope === Scope["Deputy Secretary-General"]) return isTrueArray.push(true);
+			if (scope === s.dsg) return isTrueArray.push(true);
 		}
 		if (user.includes("President of the General Assembly")) {
-			if (scope === Scope["President of the General Assembly"]) return isTrueArray.push(true);
+			if (scope === s.pga) return isTrueArray.push(true);
 		}
 		if (user.includes("Deputy President of the General Assembly")) {
-			if (scope === Scope["Deputy President of the General Assembly"])
-				return isTrueArray.push(true);
+			if (scope === s.dpga) return isTrueArray.push(true);
 		}
-		//SECRETARIAT
 		if (
 			user.includes("Secretary-General") ||
 			user.includes("Deputy Secretary-General") ||
 			user.includes("President of the General Assembly") ||
 			user.includes("Deputy President of the General Assembly")
 		) {
-			if (scope === Scope.Secretariat) return isTrueArray.push(true);
+			if (scope === s.sec) return isTrueArray.push(true);
 		}
 		if (user.includes("Secretary-General") || user.includes("President of the General Assembly")) {
-			if (scope === Scope["Higher Secretariat"]) return isTrueArray.push(true);
+			if (scope === s.highsec) return isTrueArray.push(true);
 		}
-		//HIGHER ORGANIZER all roles above managers and chairs, basically all roles written above
 		if (
 			user.includes("Global Admin") ||
 			user.includes("Admin") ||
@@ -77,13 +70,11 @@ export const authorize = (userdata: any, scope: Scope[]) => {
 			user.includes("President of the General Assembly") ||
 			user.includes("Deputy President of the General Assembly")
 		) {
-			if (scope === Scope["Higher Organizer"]) return isTrueArray.push(true);
+			if (scope === s.management) return isTrueArray.push(true);
 		}
 
 		return isTrueArray.push(false);
 	});
-	console.log("isTrueArray");
-	console.log(isTrueArray);
 	if (isTrueArray.includes(true)) return true;
 	return false;
 };

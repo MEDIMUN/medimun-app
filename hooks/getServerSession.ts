@@ -10,6 +10,7 @@ function parseUrl(url: string | undefined) {
 
 	if (url && !url.startsWith("http")) {
 		url = `https://${url}`;
+		url = url.replace("localhost", "127.0.0.1");
 	}
 
 	const _url = new URL((_url2 = url) !== null && _url2 !== void 0 ? _url2 : defaultUrl);
@@ -47,7 +48,8 @@ const logger = {
 	debug: console.log,
 };
 
-export const getServerSession = async () => {
+export const getServerSession = async (authOptions: any) => {
+	console.log("upd");
 	// code from `next-auth/next` for RSC
 	const req: any = {
 		headers: Object.fromEntries(headers()),

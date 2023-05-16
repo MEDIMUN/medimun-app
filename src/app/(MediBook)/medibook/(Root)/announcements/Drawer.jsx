@@ -32,7 +32,7 @@ import { useEffect, useState, useRef, Suspense, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createAnnouncement } from "./create-announcement.server";
 import { useToast } from "@/components/ui/use-toast";
-import { Scope, authorize } from "@/src/lib/authorize";
+import { s, authorize } from "@/src/lib/authorize";
 import { useSession } from "next-auth/react";
 import { useDebouncedValue } from "@mantine/hooks";
 import markdownExample from "@/src/defaults/markdown";
@@ -48,20 +48,25 @@ export default function SearchBar() {
 	const [debounced] = useDebouncedValue(markdown, 1000);
 
 	useEffect(() => {
-		search == "create" ? setOpen(true) : setOpen(false);
+		search == "create" && status === "authenticated" && authorize(session, [s.management])
+			? setOpen(true)
+			: setOpen(false);
 		console.log(markdownExample);
-	}, [searchParams]);
+		status === "authenticated" && session.isDisabled ? redirect("/medibook/signout") : null;
+	}, [searchParams, status]);
 
 	const handleSubmit = async () =>
 		startTransition(async () => {
 			const res = await createAnnouncement(new FormData(main));
-			if (res == "success") {
+			console.log(res);
+			if (res.status == 200) {
 				toast({ title: "Announcement Created" });
+				router.push("/medibook/announcements");
 			}
-			if (res == "error") {
+			if (res == 500) {
 				toast({ title: "Something went wrong", description: res.error, variant: "destructive" });
 			}
-			if (res == "invalid") {
+			if (res == 403) {
 				toast({ title: "Something went wrong", description: res.error, variant: "destructive" });
 			}
 		});
@@ -102,16 +107,14 @@ export default function SearchBar() {
 						<Label htmlFor="scope" className="text-right mr-auto">
 							Announcement Scope
 						</Label>
-						<Select defaultValue="2" required name="scope">
+						<Select defaultValue="global" required name="scope">
 							<SelectTrigger value="@peduarte" className="col-span-3 min-h-[50px]">
 								<SelectValue placeholder="Select a scope" />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="1">Global</SelectItem>
-								<SelectItem value="2">Registered</SelectItem>
-								<SelectItem value="3">Enrolled</SelectItem>
-								<SelectItem value="4">Current Session</SelectItem>
-								<SelectItem value="5">Alumni</SelectItem>
+								<SelectItem value="global">Global</SelectItem>
+								<SelectItem value="registered">Registered</SelectItem>
+								<SelectItem value="alumni">Alumni</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
@@ -129,15 +132,15 @@ export default function SearchBar() {
 								Show in Website Feed
 							</Label>
 						</div>
-						{status == "authenticated" &&
-							authorize(session, [Scope.Admins, Scope.Board, Scope["Higher Secretariat"]]) && (
-								<div className="w-full flex gap-2 row">
-									<Switch name="isEmail" />
-									<Label className="my-auto" htmlFor="isEmail">
-										Send as Email <strong className="text-red-500">Non Reverasable Action</strong>
-									</Label>
-								</div>
-							)}
+						{status == "authenticated" && authorize(session, [s.admins, s.board, s.highsec]) && (
+							<div className="w-full flex gap-2 row">
+								<Switch name="isEmail" />
+								<Label className="my-auto" htmlFor="isEmail">
+									Send as Email{" "}
+									<strong className="text-red-500">Non Reversable after publishing</strong>
+								</Label>
+							</div>
+						)}
 					</div>
 					<Label className="my-auto mr-auto">Visibility Options</Label>
 					<div className="w-[100%] flex flex-col p-2 gap-3 border-[1px] border-200 rounded-md">
@@ -147,7 +150,7 @@ export default function SearchBar() {
 								Send as Anonymous
 							</Label>
 						</div>
-						{status == "authenticated" && authorize(session, [Scope.Secretariat]) && (
+						{status == "authenticated" && authorize(session, [s.sec]) && (
 							<div className="w-full flex gap-2 row">
 								<Switch name="isSecretariat" />
 								<Label className="my-auto" htmlFor="isSecretariat">
@@ -155,7 +158,7 @@ export default function SearchBar() {
 								</Label>
 							</div>
 						)}
-						{status == "authenticated" && authorize(session, [Scope.Board, Scope.Admins]) && (
+						{status == "authenticated" && authorize(session, [s.board, s.admins]) && (
 							<div className="w-full flex gap-2 row">
 								<Switch name="isBoard" />
 								<Label className="my-auto" htmlFor="isBoard">
@@ -201,9 +204,9 @@ export default function SearchBar() {
 									Learn more about <strong className="text-blue-500">markdown</strong>.
 								</Link>
 								<Textarea
-									onChange={() => setMarkdown(event.target.value)}
+									onChange={(event) => setMarkdown(event.target.value)}
 									name="markdown"
-									className="col-span-3 min-h-[300px]"
+									className="col-span-3 min-h-[500px]"
 									value={markdown}
 								/>
 							</div>
@@ -211,12 +214,12 @@ export default function SearchBar() {
 						<TabsContent value="preview">
 							<div className="w-[100%] grid gap-2">
 								<Link
-									className="font-light ml-2"
+									className="font-light ml-2 max-w-96 line-clamp-3"
 									href="https://youtu.be/4z0l5Kl2Q6E"
 									target="_blank">
 									Learn more about <strong className="text-blue-500">markdown</strong>.
 								</Link>
-								<ReactMarkdown className="h-auto border-[1px] border-gray-200 rounded-md p-3 w-[100%] min-h-[300px]">
+								<ReactMarkdown className="h-auto border-[1px] border-gray-200 rounded-md p-3 w-[100%] min-h-[500px] max-w-[542.5px]">
 									{debounced}
 								</ReactMarkdown>
 							</div>
