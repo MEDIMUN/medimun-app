@@ -1,0 +1,132 @@
+.in,
+.out {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100vh;
+   background: black;
+   z-index: 250;
+   overflow: hidden;
+}
+
+.in {
+   animation: slide-in 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.out {
+   animation: slide-out 0.45s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+}
+
+@keyframes slide-in {
+   0% {
+      transform: translateY(-100vh);
+   }
+
+   100% {
+      transform: translateY(0);
+   }
+}
+
+@keyframes slide-out {
+   0% {
+      transform: translateY(0);
+   }
+
+   100% {
+      transform: translateY(-100vh);
+   }
+}
+
+.close {
+   right: 34px;
+   font-size: 2.3rem;
+   color: white;
+   cursor: pointer;
+   padding: 5px;
+   border-radius: 50%;
+   border: 1px solid rgb(124, 124, 124);
+   margin-left: auto;
+   position: absolute;
+}
+
+.quickAccess {
+   width: 100%;
+   height: 80px;
+   border-top: 1px solid rgb(122, 122, 122);
+   position: absolute;
+   bottom: 0;
+}
+
+.close:hover {
+   border: 1px solid rgb(255, 255, 255);
+}
+
+
+.icon {
+   color: white;
+   font-size: 1.5rem;
+}
+
+
+.branding {
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   width: 100%;
+   min-height: 90px;
+   min-width: 190px;
+   padding-left: 40px;
+   padding-right: 40px;
+}
+
+.grid {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+   gap: 5px;
+   grid-gap: 10px;
+   padding: 10px;
+   width: 100%;
+}
+
+.logo {
+   overflow: hidden;
+   height: 64px !important;
+   position: relative;
+   margin-right: auto;
+   max-height: 56px;
+}
+
+.logo>* {
+   position: relative !important;
+}
+
+.branding>* {
+   margin-right: auto;
+   padding: 0;
+   max-width: 196px;
+}
+
+
+@media only screen and (min-width: 768px) {
+   .logo {
+      max-height: 56px;
+   }
+
+   .branding {
+      min-height: 90px;
+      min-width: 190px;
+      padding-left: 20px;
+      padding-right: 20px;
+   }
+}
+
+@media only screen and (max-width: 768px) {
+   .branding {
+      margin-left: 10px;
+      margin-right: auto;
+      padding: 0;
+      max-width: 196px;
+   }
+}

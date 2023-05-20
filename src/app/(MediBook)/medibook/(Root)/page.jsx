@@ -26,7 +26,7 @@ export default async function Page() {
 	return (
 		<div className="p-5 max-w-[1200px] mx-auto -none">
 			<div className="pl-2">
-				<h2 className="font-md text-3xl font-bold tracking-tight">{greeting + " 👋"}</h2>
+				<h2 className="font-md text-3xl font-bold tracking-tight truncate">{greeting + " 👋"}</h2>
 				<h3 className="text-sm pl-0.5">
 					<span className="select-text">{session.currentRoleNames[0] + ", " ?? ""}</span>
 					<span className="font-thin">UserID </span>

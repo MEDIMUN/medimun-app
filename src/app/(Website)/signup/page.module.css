@@ -23,10 +23,10 @@
 }
 
 .page {
-   background-image: url("/assets/delegates-indoors.jpg");
+   background-image: url("/assets/delegates-indoors-2.jpg");
    min-height: 100svh;
-   background-position: bottom;
-
+   background-size: cover;
+   background-position: center;
 }
 
 .title {

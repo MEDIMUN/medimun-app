@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/src/app/api/auth/[...nextauth]/route";
-import { authorize } from "@/src/lib/authorize";
+import { authorize, s } from "@/src/lib/authorize";
 import { redirect } from "next/navigation";
 
 export default async function SearchBar(props) {

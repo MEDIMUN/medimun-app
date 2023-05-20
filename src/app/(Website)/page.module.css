@@ -12,7 +12,7 @@
    align-items: center;
    justify-content: center;
    z-index: 5;
-   margin-bottom: 60px;
+   margin-bottom: 200px;
 }
 
 .heroText>* {
@@ -154,7 +154,7 @@
    }
 
    .heroText {
-      margin-bottom: 360px;
+      margin-bottom: 200px;
    }
 
    .heroText>*:nth-child(1) {

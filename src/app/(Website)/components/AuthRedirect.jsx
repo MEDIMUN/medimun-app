@@ -13,6 +13,8 @@ export default async function AuthRedirect(props) {
 	return <></>;
 }
 
+export const revalidate = 0;
+
 /* 
 "use client";
 

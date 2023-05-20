@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+
+const withMDX = require( '@next/mdx' )( {
+  options: {
+    providerImportSource: "@mdx-js/react",
+  },
+} );
+
+const nextConfig = withMDX( {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
@@ -10,6 +17,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-};
+} );
+
 
 module.exports = nextConfig;

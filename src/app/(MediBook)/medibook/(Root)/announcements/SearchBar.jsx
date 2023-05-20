@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 
 export default async function SearchBar(props) {
 	const session = await getServerSession(authOptions);
-	session.isDisabled ? redirect("/medibook/signout") : null;
+	!session || session.isDisabled ? redirect("/medibook/signout") : null;
 
 	return (
 		<div className="flex flex-row mx-auto max-w-[1200px]">

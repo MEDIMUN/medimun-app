@@ -11,7 +11,8 @@ const theme1 = "Building Resilience";
 
 export const metadata = {
 	title: "Home - MEDIMUN",
-	description: "The biggest THIMUN-affiliated MUN conference in the Mediterranean Region, established in 2005.",
+	description:
+		"The biggest THIMUN-affiliated MUN conference in the Mediterranean Region, established in 2005.",
 	themeColor: "#000000",
 };
 
@@ -21,7 +22,7 @@ export function HomePage() {
 			<div>
 				<HeroImage />
 			</div>
-			<Section1>
+			<Section1 className={style.section}>
 				<div className={style.heroText}>
 					<h1>
 						{theme1.split(" ").map((word, index) => (
@@ -33,15 +34,22 @@ export function HomePage() {
 					<h2>A Transformative Agenda</h2>
 				</div>
 			</Section1>
-			<section>
+			<section className={style.section}>
 				<div className={style.heroText2}>
 					<h1>Welcome to MEDIMUN {currentYear}</h1>
-					<h2>We have a terrific team of students working to make our 18th Annual Conference a reality. Our conference theme this year will be Building Resilience; stressing the need to facilitate global strength and security against the conflicts and vulnerabilities faced by today's modern society. We hope that you will join us on the 3rd and 4th February 2023, at our new venue of The University of Nicosia, and feel the passion of debate on a range of crucial international issues.</h2>
+					<h2>
+						We have a terrific team of students working to make our 18th Annual Conference a
+						reality. Our conference theme this year will be Building Resilience; stressing the need
+						to facilitate global strength and security against the conflicts and vulnerabilities
+						faced by today's modern society. We hope that you will join us on the 3rd and 4th
+						February 2023, at our new venue of The University of Nicosia, and feel the passion of
+						debate on a range of crucial international issues.
+					</h2>
 					<RegisterButton />
 				</div>
 			</section>
-			<section></section>
-			<section></section>
+			<section className={style.section}></section>
+			<section className={style.section}></section>
 		</div>
 	);
 }

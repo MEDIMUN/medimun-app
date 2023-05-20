@@ -17,7 +17,8 @@ export enum s {
 export const authorize = (userdata: any, scope: s[]) => {
 	const user = userdata.currentRoleNames;
 	if (userdata.isDisabled) return false;
-	if (userdata) return false;
+	if (!userdata) return false;
+	if (user.includes("Global Admin")) return true;
 	const isTrueArray: any = [];
 
 	scope.forEach((scope) => {
