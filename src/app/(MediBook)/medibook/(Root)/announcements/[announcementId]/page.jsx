@@ -33,13 +33,7 @@ async function getData({ params, searchParams }) {
 	const displayName = announcement?.sender.displayName;
 	const preferredName =
 		(!announcement?.isBoard && !announcement?.isSecretariat ? " · " : " · ") +
-		(!announcement?.isAnonymous
-			? displayName || fullName
-			: announcement?.isBoard
-			? ""
-			: announcement?.isSecretariat
-			? ""
-			: "Anonymous");
+		(!announcement?.isAnonymous ? displayName || fullName : announcement?.isBoard ? "" : announcement?.isSecretariat ? "" : "Anonymous");
 	const publishedDate = announcement?.time.toLocaleString().split(",")[0];
 	const title = announcement?.title || "No Title";
 	const board = announcement?.isBoard ? " · MEDIMUN Board" : "";
@@ -60,10 +54,7 @@ export default async function Page({ params, searchParams }) {
 				<h1 className="font-md text-3xl font-bold tracking-tight">{title}</h1>
 				<h2 className="font-md text-md mb-5 tracking-tight">{info}</h2>
 				<div class="my-8 h-[1px] border-0 bg-gray-300 dark:bg-gray-700" />
-				<MDXRemote
-					components={{ img: ResponsiveImage, h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }}
-					source={announcement?.markdown || "No Content"}
-				/>
+				<MDXRemote components={{ img: ResponsiveImage, h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={announcement?.markdown || "No Content"} />
 				<p className="mt-auto select-none text-sm font-extralight text-gray-300">
 					<strong>This text contains Automatically Generated Content</strong>
 					<br />
@@ -77,7 +68,7 @@ export default async function Page({ params, searchParams }) {
 const ResponsiveImage = (props) => {
 	return (
 		<Image
-			className="rounded-xl bg-gray-100 p-4 shadow-lg duration-300 hover:shadow-xl"
+			className="mx-auto rounded-xl bg-gray-100 p-4 shadow-lg duration-300 hover:shadow-xl"
 			alt="custom image"
 			width={100}
 			height={100}
@@ -88,9 +79,7 @@ const ResponsiveImage = (props) => {
 };
 
 const h1 = (props) => {
-	return (
-		<h1 className="font-md mb-3 select-none text-3xl tracking-tight text-red-700" {...props} />
-	);
+	return <h1 className="font-md mb-3 select-none text-3xl tracking-tight text-red-700" {...props} />;
 };
 
 const h2 = (props) => {
@@ -152,10 +141,5 @@ const ol = (props) => {
 };
 
 const ul = (props) => {
-	return (
-		<ol
-			className="font-md text-md mb-5 border-l-2 border-gray-300 pl-3 tracking-tight"
-			{...props}
-		/>
-	);
+	return <ol className="font-md text-md mb-5 border-l-2 border-gray-300 pl-3 tracking-tight" {...props} />;
 };

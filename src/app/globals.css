@@ -2,6 +2,21 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+@font-face {
+  font-family: "LondiniaMedium";
+  src: url("/fonts/LondiniaMedium.ttf");
+}
+
+@font-face {
+  font-family: "GTAmericaRegular";
+  src: url("/fonts/GTAmericaRegular.ttf");
+}
+
+@font-face {
+  font-family: "Canela";
+  src: url("/fonts/Canela.otf");
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -112,4 +127,18 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+.globallogo>* {
+  position: relative !important;
+  display: inline-block;
+  vertical-align: middle;
+  width: fit-content;
+}
+
+.globallogo {
+  position: relative !important;
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
 }

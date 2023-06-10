@@ -1,4 +1,3 @@
-import style from "./layout.module.css";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Landscape from "./components/Landscape";
@@ -12,11 +11,11 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
 			<NextAuthProvider>
-				<body className={style.body}>
+				<body className="m-0  p-0">
 					<Landscape />
 					<Navbar />
-					<CommandMenu className={style.menu} />
-					<main className={style.main}>{children}</main>
+					<CommandMenu className="z-[500]" />
+					<main className="min-h-[100svh] min-w-[100vw] max-w-[100vw] overflow-y-hidden ">{children}</main>
 					<Toaster />
 					<Footer />
 				</body>
