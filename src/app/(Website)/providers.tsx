@@ -20,7 +20,8 @@ export const NextAuthProvider = ({ children }: Props) => {
 		<QueryClientProvider client={queryClient}>
 			<SessionProvider>
 				{children}
-				<ReactQueryDevtools />
+				{/* 				<ReactQueryDevtools />
+				 */}
 			</SessionProvider>
 		</QueryClientProvider>
 	);
