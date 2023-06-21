@@ -1,7 +1,8 @@
+import "@/styles/globals.css";
+
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Landscape from "./components/Landscape";
-import "@/src/app/globals.css";
 
 import { NextAuthProvider } from "./providers";
 import { CommandMenu } from "./components/CommandMenu";
