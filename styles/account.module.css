@@ -2,6 +2,32 @@
   width: 100%;
   height: 100%;
   overflow-y: auto;
+  background: radial-gradient(circle at 18.7% 37.8%, rgb(250, 250, 250) 0%, rgb(225, 234, 238) 90%);
+  padding: 10px;
+}
+
+.banner {
+  top: -300px;
+  background: radial-gradient(circle at 18.7% 37.8%, rgb(250, 250, 250) 0%, rgb(225, 234, 238) 90%);
+  z-index: 10;
+  background: radial-gradient(circle at 18.7% 37.8%, rgb(250, 250, 250) 0%, rgb(225, 234, 238) 90%);
+  border-radius: 10px;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.category {
+  background: radial-gradient(circle at 18.7% 37.8%, rgb(250, 250, 250) 0%, rgb(225, 234, 238) 90%);
+  background: rgb(255, 255, 255);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .section {
@@ -52,19 +78,7 @@
 }
 
 
-.page>div:nth-child(1) {
-  height: 256px;
-  width: calc(100% + 0px);
-  display: flex;
-  flex-direction: column;
-  border-radius: 0 0 1rem 1rem;
-  margin-top: -10px;
-  text-align: left;
-  align-items: left;
-  background-size: cover;
-  background-position: center;
-  padding-top: 148px;
-}
+
 
 .infoList>li {
   display: flex;
@@ -108,6 +122,52 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.profileRadio {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.radio {
+  display: none !important;
+  padding: 5px;
+  width: 100% !important;
+
+}
+
+.selectedRadio {
+  background-color: #3182CE !important;
+  color: #ffffff !important;
+  border-radius: 5px;
+  width: fill-available;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);
+}
+
+.deselectedRadio:hover {
+  background-color: #71a1ce !important;
+  color: #ffffff !important;
+  border-radius: 5px;
+  width: fill-available;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);
+}
+
+.deselectedRadio {
+  color: #000000 !important;
+  border-radius: 5px;
+  width: fill-available;
+}
+
+.switch {
+  display: flex;
+  flex-direction: row;
+  background-color: #EDF2F7;
+  padding: 5px;
+  border-radius: 5px;
+  align-items: center;
+  margin-bottom: 3px;
+  min-height: 50px;
 }
 
 .removeRoles {

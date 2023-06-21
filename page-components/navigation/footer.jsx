@@ -1,7 +1,7 @@
 import { BsInstagram, BsFacebook, BsYoutube } from "react-icons/bs";
 import style from "./footer.module.css";
 
-import Logo from "../../components/common/branding/logo/main";
+import Logo from "@logo";
 import { Text } from "@chakra-ui/react";
 import { Fragment } from "react";
 import { useRouter } from "next/router";

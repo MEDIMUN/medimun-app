@@ -1,52 +1,34 @@
 import { useRouter } from "next/router";
 import { Fragment, useContext, useState, useEffect } from "react";
 import { getSession, useSession } from "next-auth/react";
-import { AiOutlineMenu } from "react-icons/ai";
 
 import style from "./layout.module.css";
 
-import DashboardNavbar from "../components/app/navigation/navbar/navbar";
-import Sidebar from "../components/app/navigation/sidebar/sidebar";
-import AppContext from "../components/app/context/Navigation";
-import Landscape from "../common-components/popups/landscape/index";
+import Sidebar from "@app-components/sidebar";
+import AppContext from "@app-components/context/Navigation";
 import { Navbar, Spacer } from "@nextui-org/react";
-import { Text } from "@chakra-ui/react";
-import Logo from "../components/common/branding/logo/main";
+import Logo from "@logo";
 export default function Layout(props) {
-	const { data: session, status } = useSession();
-	const loading = status === "loading";
-
-	const [isLoading, setIsLoading] = useState(true);
 	const [sidebar, setSidebar] = useState(true);
-	const router = useRouter();
-	useEffect(() => {
-		getSession().then((session) => {
-			if (!session) {
-				router.replace("/login");
-			} else {
-				setIsLoading(false);
-			}
-		});
-	}, [router]);
 
 	const SidebarCtx = useContext(AppContext);
-
 	const sidebarVisibility = SidebarCtx.sidebarVisibility;
 
+	function toggleSidebar() {
+		SidebarCtx.toggleSidebarVisibility();
+	}
+
 	return (
-		<div className={style.layout}>
-			<Landscape />
-			{sidebar && (
-				<div className={style.sidebar}>
-					<Sidebar setSidebar={setSidebar} />
-				</div>
-			)}
-			<div className={style.content}>
-				<nav>
+		<div className={sidebarVisibility ? style.layout : style.boxedLayout}>
+			<div className={style.sidebar}>
+				<Sidebar setSidebar={toggleSidebar} />
+			</div>
+			<div className={sidebarVisibility ? style.content : style.boxedContent}>
+				<nav className={style.navbar}>
 					<Navbar maxWidth="fluid" isCompact>
 						<div className="fdr">
-							<Navbar.Toggle onChange={setSidebar} isSelected={sidebar} css={{ color: "black" }} />
-							{!sidebar && (
+							<Navbar.Toggle onChange={toggleSidebar} isSelected={sidebarVisibility} css={{ color: "black" }} />
+							{!sidebarVisibility && (
 								<Fragment>
 									<Spacer x={0.5} />
 									<Navbar.Brand>
@@ -57,7 +39,7 @@ export default function Layout(props) {
 						</div>
 						<Navbar.Content>
 							<Navbar.Item>
-								<Text className={style.title}>Users</Text>
+								<h1 className={style.title}>Users</h1>
 							</Navbar.Item>
 						</Navbar.Content>
 					</Navbar>
