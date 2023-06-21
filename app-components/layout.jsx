@@ -3,7 +3,6 @@ import { Fragment, useContext, useState, useEffect } from "react";
 import { getSession, useSession } from "next-auth/react";
 
 import style from "./layout.module.css";
-//hello
 import Sidebar from "@app-components/sidebar";
 import AppContext from "@app-components/context/Navigation";
 import { Navbar, Spacer } from "@nextui-org/react";
