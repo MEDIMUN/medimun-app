@@ -3,10 +3,10 @@
 Object.defineProperty( exports, "__esModule", {
    value: true
 } );
-const _log = /*#__PURE__*/ _interop_require_wildcard( require( "../build/output/log" ) );
+const _log = /*#__PURE__*/ _interop_require_wildcard( require( "node_modules/build/output/log" ) );
 const _index = /*#__PURE__*/ _interop_require_default( require( "next/dist/compiled/arg/index.js" ) );
-const _constants = require( "../lib/constants" );
-const _commands = require( "../lib/commands" );
+const _constants = require( "node_modules/lib/constants" );
+const _commands = require( "node_modules/lib/commands" );
 function _interop_require_default ( obj ) {
    return obj && obj.__esModule ? obj : {
       default: obj
