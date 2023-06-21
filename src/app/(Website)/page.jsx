@@ -17,7 +17,7 @@ const welcomeText =
 	"We have a terrific team of students working to make our 18th Annual Conference a reality. Our conference theme this year will be Building Resilience; stressing the need to facilitate global strength and security against the conflicts and vulnerabilities faced by today's modern society. We hope that you will join us on the 3rd and 4th February 2023, at our new venue of The University of Nicosia, and feel the passion of debate on a range of crucial international issues.";
 
 export const metadata = {
-	description: "Mediterranean Model United Nations as known as MEDIMUN is the biggest THIMUN-affiliated MUN conference in the Mediterranean Region, established in 2006.",
+	description: "Mediterranean Model United Nations, also known as MEDIMUN is the biggest THIMUN-affiliated MUN conference in the Mediterranean Region, established in 2006.",
 	themeColor: "#000000",
 	keywords: ["MEDIMUN", "THIMUN", "MUN", "MEDMUN", "UCYMUN", "Mediterranean Model United Nations", "Model United Nations", "MUN Cyprus", "MUN Europe", "MYMUN"],
 };
