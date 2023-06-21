@@ -1,9 +1,0 @@
-@media only screen and (max-width: 768px) {
-  .navbar {
-    margin-top: 0;
-  }
-}
-
-.navbar {
-  position: absolute !important;
-}

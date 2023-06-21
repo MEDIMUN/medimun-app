@@ -53,7 +53,7 @@ export default async function Page({ params, searchParams }) {
 			<div className="min-h-auto mx-auto mt-5 max-w-[1200px] gap-[24px] ">
 				<h1 className="font-md text-3xl font-bold tracking-tight">{title}</h1>
 				<h2 className="font-md text-md mb-5 tracking-tight">{info}</h2>
-				<div class="my-8 h-[1px] border-0 bg-gray-300 dark:bg-gray-700" />
+				<div className="my-8 h-[1px] border-0 bg-gray-300 dark:bg-gray-700" />
 				<MDXRemote components={{ img: ResponsiveImage, h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={announcement?.markdown || "No Content"} />
 				<p className="mt-auto select-none text-sm font-extralight text-gray-300">
 					<strong>This text contains Automatically Generated Content</strong>
