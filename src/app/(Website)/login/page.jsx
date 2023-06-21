@@ -5,14 +5,12 @@ import { authOptions } from "@/src/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-	title: "Log in to MediBook - MEDIMUN",
+	title: "Log In",
 	description: "Login to MediBook to access your account.",
 };
 
 export default async function Page() {
 	const session = await getServerSession(authOptions);
-	console.log(session);
-
 	if (session) {
 		return redirect("/medibook");
 	}
@@ -29,5 +27,3 @@ export default async function Page() {
 		</div>
 	);
 }
-
-const getSession = async () => {};

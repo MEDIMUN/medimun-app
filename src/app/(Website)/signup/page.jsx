@@ -5,7 +5,7 @@ import { authOptions } from "@/src/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-	title: "Create An Account - MEDIMUN",
+	title: "Sign Up",
 	description: "Create an account to access MEDIMUN's online platform MediBook.",
 };
 

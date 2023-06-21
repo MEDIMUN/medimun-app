@@ -17,9 +17,9 @@ const welcomeText =
 	"We have a terrific team of students working to make our 18th Annual Conference a reality. Our conference theme this year will be Building Resilience; stressing the need to facilitate global strength and security against the conflicts and vulnerabilities faced by today's modern society. We hope that you will join us on the 3rd and 4th February 2023, at our new venue of The University of Nicosia, and feel the passion of debate on a range of crucial international issues.";
 
 export const metadata = {
-	title: "Home - MEDIMUN",
-	description: "The biggest THIMUN-affiliated MUN conference in the Mediterranean Region, established in 2005.",
+	description: "Mediterranean Model United Nations as known as MEDIMUN is the biggest THIMUN-affiliated MUN conference in the Mediterranean Region, established in 2006.",
 	themeColor: "#000000",
+	keywords: ["MEDIMUN", "THIMUN", "MUN", "MEDMUN", "UCYMUN", "Mediterranean Model United Nations", "Model United Nations", "MUN Cyprus", "MUN Europe", "MYMUN"],
 };
 
 const sectionStyle =
@@ -47,6 +47,23 @@ export function HomePage() {
 				<div className="h-[100svh]"></div>
 				<div id="totalH">
 					<section className={outerStyle + "bg-gradient-to-t from-[var(--medired)]"}>
+						<div className={sectionStyle}>
+							<div className="mx-auto max-w-[1400px]">
+								<h1 className="mb-4 from-80% pl-[20px] font-['Canela'] text-[30px] leading-[40px] text-transparent [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[55px]">
+									{welcomeTitle}
+								</h1>
+								<h2 className="mb-3 from-80% pl-[20px] font-['Canela'] text-[15px] leading-[20px] text-white [text-shadow:_2px_2px_#000000] md:text-[30px]  md:leading-[40px]">
+									{welcomeText}
+								</h2>
+								<Link href="/medibook">
+									<h2 className="mb-3 w-[210px] cursor-pointer rounded-[100px] from-80% pl-[20px] font-['canela'] text-[15px] leading-[45px] text-gray-400 duration-200 [text-shadow:_2px_2px_#000000] hover:ml-[20px] hover:bg-white hover:text-[var(--medired)] hover:shadow-lg hover:[text-shadow:_none] md:text-[25px]">
+										Learn more →
+									</h2>
+								</Link>
+							</div>
+						</div>
+					</section>
+					<section className={outerStyle + "bg-[var(--medired)]"}>
 						<div className={sectionStyle}>
 							<div className="mx-auto max-w-[1400px]">
 								<h1 className="mb-4 from-80% pl-[20px] font-['Canela'] text-[30px] leading-[40px] text-transparent [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[55px]">

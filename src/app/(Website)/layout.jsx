@@ -7,6 +7,13 @@ import { NextAuthProvider } from "./providers";
 import { CommandMenu } from "./components/CommandMenu";
 import { Toaster } from "@/components/ui/toaster";
 
+export const metadata = {
+	title: {
+		template: "%s | MEDIMUN",
+		default: "MEDIMUN",
+	},
+};
+
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
