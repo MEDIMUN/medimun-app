@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "@/src/styles/globals.css";
 import Landscape from "../(Website)/components/Landscape";
 import Navbar from "./Navbar";
 import { GeistProvider } from "./providers";
