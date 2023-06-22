@@ -8,18 +8,14 @@ import { redirect } from "next/navigation";
 
 export default async function SearchBar(props) {
 	const session = await getServerSession(authOptions);
-	!session || session.isDisabled ? redirect("/medibook/signout") : null;
+	if (!session || session.isDisabled) redirect("/medibook/signout");
 
 	return (
-		<div className="flex flex-row mx-auto max-w-[1200px]">
-			<Input
-				type="search"
-				placeholder="Type to search for older announcements"
-				className="text-md w-full rounded-[4px]"
-			/>
+		<div className="mx-auto flex max-w-[1200px] flex-row">
+			<Input type="search" placeholder="Type to search for older announcements" className="text-md w-full rounded-[4px]" />
 			{authorize(session, [s.board, s.sec]) && (
 				<Link href="/medibook/announcements?action=create">
-					<Button className="w-[165px] ml-2">Add Announcement</Button>
+					<Button className="ml-2 w-[165px]">Add Announcement</Button>
 				</Link>
 			)}
 		</div>

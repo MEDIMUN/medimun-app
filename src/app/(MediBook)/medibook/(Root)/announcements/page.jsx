@@ -19,7 +19,7 @@ const announcementsPerPage = 15;
 
 export default async function Page({ params, searchParams }) {
 	const session = await getServerSession(authOptions);
-	if (!session || session.isDisabled) redirect("/signout");
+	if (!session || session.isDisabled) redirect("/medibook/signout");
 
 	let skip = searchParams.page ? (searchParams.page - 1) * announcementsPerPage : 0;
 	skip = skip < 0 ? 0 : skip;

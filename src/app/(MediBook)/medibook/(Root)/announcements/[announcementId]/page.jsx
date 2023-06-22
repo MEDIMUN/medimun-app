@@ -45,7 +45,7 @@ async function getData({ params, searchParams }) {
 
 export default async function Page({ params, searchParams }) {
 	const session = await getServerSession(authOptions);
-	if (!session || session.isDisabled) redirect("/signout");
+	if (!session || session.isDisabled) redirect("/medibook/signout");
 
 	const { announcement, title, info } = await getData({ params, searchParams });
 	return (

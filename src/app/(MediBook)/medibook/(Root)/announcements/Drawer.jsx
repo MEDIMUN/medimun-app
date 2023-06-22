@@ -23,7 +23,7 @@ import markdownExample from "@/src/defaults/markdown";
 
 export default function SearchBar() {
 	const { data: session, status } = useSession();
-	if (!status == "loading" && (!session || session.isDisabled)) redirect("/signout");
+	if (!status == "loading" && (!session || session.isDisabled)) redirect("/medibook/signout");
 
 	const router = useRouter();
 	const { toast } = useToast();
