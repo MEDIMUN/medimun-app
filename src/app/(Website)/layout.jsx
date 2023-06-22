@@ -1,7 +1,8 @@
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Landscape from "./components/Landscape";
-import "@/src/styles/globals.css";
+import "@/styles/globals.css";
+import "tailwindcss/tailwind.css";
 
 import { NextAuthProvider } from "./providers";
 import { CommandMenu } from "./components/CommandMenu";

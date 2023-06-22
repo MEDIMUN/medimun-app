@@ -36,7 +36,7 @@ export function HomePage() {
 				<Paper />
 				<Section1>
 					<div className="absolute bottom-0 mb-[63svh] w-full  text-left md:mb-[45svh]">
-						<h1 className="mb-3 select-none bg-gradient-to-t from-[var(--medired)] from-80% pl-[20px] font-['Canela'] text-[70px] leading-[70px] text-white [text-shadow:_4px_4px_#000000] md:text-[120px] md:leading-[120px]">
+						<h1 className="mb-3 select-none bg-gradient-to-t from-[var(--medired)] from-80% to-80% pl-[20px] font-['Canela'] text-[70px] leading-[70px] text-white [text-shadow:_4px_4px_#000000] md:text-[120px] md:leading-[120px]">
 							{theme1}
 						</h1>
 						<h2 className="ml-[20px] select-none stroke-white font-['Canela'] text-[40px] leading-[45px] text-[var(--medired)] [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[70px] md:leading-[70px]">
