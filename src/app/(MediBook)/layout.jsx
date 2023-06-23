@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import "tailwindcss/tailwind.css";
 import Landscape from "../(Website)/components/Landscape";
 import Navbar from "./Navbar";
-import { GeistProvider } from "./providers";
+import { ClientProvider } from "./providers";
 import { CommandMenu } from "./CommandMenu";
 import { Toaster } from "@/components/ui/toaster";
 import AuthRedirect from "../(Website)/components/AuthRedirect";
@@ -18,7 +18,7 @@ export const revalidate = 0;
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
-			<GeistProvider>
+			<ClientProvider>
 				<AuthRedirect unauthenticated="/login" />
 				<body>
 					<CommandMenu />
@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
 					<Footer />
 					<Toaster />
 				</body>
-			</GeistProvider>
+			</ClientProvider>
 		</html>
 	);
 }

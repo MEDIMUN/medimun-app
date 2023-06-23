@@ -101,7 +101,7 @@ export function HomePage() {
 						<div className={sectionStyle}>
 							<div className="mx-auto max-w-[1400px]">
 								<h1 className="mb-4 from-80% pl-[20px] font-['Canela'] text-[30px] leading-[40px] text-transparent [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[55px]">
-									{welcomeTitle}
+									The MediBook App
 								</h1>
 								<h2 className="mb-3 from-80% pl-[20px] font-['Canela'] text-[15px] leading-[20px] text-white [text-shadow:_2px_2px_#000000] md:text-[30px]  md:leading-[40px]">
 									{welcomeText}
@@ -118,7 +118,7 @@ export function HomePage() {
 						<div className={sectionStyle}>
 							<div className="mx-auto max-w-[1400px]">
 								<h1 className="mb-4 from-80% pl-[20px] font-['Canela'] text-[30px] leading-[40px] text-transparent [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[55px]">
-									{welcomeTitle}
+									Past Conferences
 								</h1>
 								<h2 className="mb-3 from-80% pl-[20px] font-['Canela'] text-[15px] leading-[20px] text-white [text-shadow:_2px_2px_#000000] md:text-[30px]  md:leading-[40px]">
 									{welcomeText}

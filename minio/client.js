@@ -1,12 +1,14 @@
 var Minio = require( 'minio' );
 
+const use_ssl = process.env.MINIO_USE_SSL === 'true' ? true : false;
+
 exports.minio = function () {
    let client = minioClient = new Minio.Client( {
-      endPoint: 'media.medimun.org',
-      port: 443,
-      useSSL: true,
-      accessKey: 'mediuser',
-      secretKey: 'Qr!0IlTE@bP3'
+      endPoint: process.env.MINIO_END_POINT,
+      port: parseInt( process.env.MINIO_PORT ),
+      useSSL: use_ssl,
+      accessKey: process.env.MINIO_ACCESS_KEY,
+      secretKey: process.env.MINIO_SECRET_KEY,
    } );
    return client;
 };

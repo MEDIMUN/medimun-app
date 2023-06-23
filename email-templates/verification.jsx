@@ -8,7 +8,6 @@ import { Preview } from "@react-email/preview";
 import { Section } from "@react-email/section";
 import { Text } from "@react-email/text";
 import { render } from "@react-email/render";
-import { Button } from "@chakra-ui/react";
 import { Fragment } from "react";
 
 function But() {
@@ -29,12 +28,7 @@ export default function EmailExport() {
 					<Container style={container}>
 						<Section>
 							<Section style={headerBlue}>
-								<Img
-									src={`${baseUrl}email/google-play-header.png`}
-									width="305"
-									height="28"
-									alt="Google Play developers header blue transparent"
-								/>
+								<Img src={`${baseUrl}email/google-play-header.png`} width="305" height="28" alt="Google Play developers header blue transparent" />
 							</Section>
 							<Section style={sectionLogo}>
 								<Img src={`${baseUrl}logos/logo-blue.svg`} width="155" height="31" alt="Google Play" />
@@ -51,8 +45,7 @@ export default function EmailExport() {
 								<Link href="https://notifications.google.com" style={link}>
 									Target API Level policy
 								</Link>
-								. Because this is a clarification, our enforcement standards and practices for this policy remain the
-								same.
+								. Because this is a clarification, our enforcement standards and practices for this policy remain the same.
 							</Text>
 							<Section style={paragraphList}>
 								<Text style={paragraph}>
@@ -64,18 +57,16 @@ export default function EmailExport() {
 									<Link href="https://notifications.google.com" style={link}>
 										Help Center article.
 									</Link>
-									These exceptions include permanently private apps and apps that target automotive or wearables form
-									factors and are bundled within the same package.{" "}
+									These exceptions include permanently private apps and apps that target automotive or wearables form factors and are bundled within the same package.{" "}
 									<Link href="https://notifications.google.com" style={link}>
 										Learn more
 									</Link>
 								</Text>
 							</Section>
 							<Text style={paragraph}>
-								We’re also extending the deadline to give you more time to adjust to these changes. Now, apps that
-								target API level 29 or below will start experiencing reduced distribution starting <b>Jan 31, 2023</b>{" "}
-								instead of Nov 1, 2022. If you need more time to update your app, you can request an extension to keep
-								your app discoverable to all users until May 1, 2023.
+								We’re also extending the deadline to give you more time to adjust to these changes. Now, apps that target API level 29 or below will start experiencing reduced
+								distribution starting <b>Jan 31, 2023</b> instead of Nov 1, 2022. If you need more time to update your app, you can request an extension to keep your app
+								discoverable to all users until May 1, 2023.
 							</Text>
 							<Hr style={hr} />
 						</Section>
@@ -137,13 +128,11 @@ export default function EmailExport() {
 					</Container>
 				</Section>
 			</Html>
-			<Button onClick={But}></Button>
 		</Fragment>
 	);
 }
 
-const fontFamily =
-	'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif';
+const fontFamily = '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif';
 
 const main = {
 	backgroundColor: "#dbddde",

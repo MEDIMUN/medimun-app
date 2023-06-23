@@ -1,5 +1,5 @@
 import Link from "next/link";
-import thimunLogo from "@public/logos/thimun-logo.png";
+import thimunLogo from "@/public/assets/branding/thimun/thimun-logo.png";
 
 import Logo from "./Logo";
 import Image from "next/image";
@@ -14,7 +14,7 @@ export default function Footer() {
 					<strong className="text-xl text-white sm:text-xl">Ready to join?</strong>
 
 					<a
-						className="inline-flex items-center gap-2 rounded-full border border-white bg-white px-8 py-3 text-[var(--medired)] hover:bg-transparent hover:text-white focus:outline-none focus:ring active:bg-white/90"
+						className="inline-flex items-center gap-2 rounded-full border border-white bg-white px-8 py-3 text-[var(--medired)] duration-200 hover:bg-transparent hover:text-white focus:outline-none focus:ring active:bg-white/90"
 						href="/">
 						<span className="text-sm font-medium"> Let's Get Started </span>
 
@@ -30,25 +30,25 @@ export default function Footer() {
 
 						<ul className="mt-8 space-y-4 text-sm">
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Company History
 								</a>
 							</li>
 
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Meet the Team
 								</a>
 							</li>
 
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Employee Handbook
 								</a>
 							</li>
 
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Careers
 								</a>
 							</li>
@@ -60,26 +60,20 @@ export default function Footer() {
 
 						<ul className="mt-8 space-y-4 text-sm">
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Web Development
 								</a>
 							</li>
 
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Web Design
 								</a>
 							</li>
 
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Marketing
-								</a>
-							</li>
-
-							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
-									Google Ads
 								</a>
 							</li>
 						</ul>
@@ -90,31 +84,31 @@ export default function Footer() {
 
 						<ul className="mt-8 space-y-4 text-sm">
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Online Guides
 								</a>
 							</li>
 
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Conference Notes
 								</a>
 							</li>
 
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Forum
 								</a>
 							</li>
 
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Downloads
 								</a>
 							</li>
 
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Upcoming Events
 								</a>
 							</li>
@@ -126,18 +120,18 @@ export default function Footer() {
 
 						<ul className="mt-8 space-y-4 text-sm">
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									FAQs
 								</a>
 							</li>
 
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									Support
 								</a>
 							</li>
 							<li>
-								<a className="text-gray-700 transition hover:text-gray-700/75" href="/">
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
 									THIMUN Foundation
 								</a>
 							</li>
@@ -206,7 +200,7 @@ export default function Footer() {
 								</div>
 							</div>{" "}
 						</div>
-						<p className="mt-4 text-center text-sm text-gray-500 sm:mt-0 sm:text-right">
+						<p className="mt-4 text-center text-sm font-light text-gray-500 sm:mt-0 sm:text-right">
 							<Link
 								href="http://foundation.thimun.org/affiliation-programme/affiliated-conferences/#february"
 								target="_blank"
@@ -222,7 +216,7 @@ export default function Footer() {
 								<strong>THIMUN Foundation</strong>
 							</Link>
 							<br />
-							&copy; 2006-{currentYear} <strong>Mediterranean Model United Nations</strong>, also known as <strong>MEDIMUN</strong>
+							&copy; 2006-{currentYear} <strong>Mediterranean Model United Nations</strong>, aka <strong>MEDIMUN</strong>
 						</p>
 					</div>
 				</div>

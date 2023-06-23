@@ -1,12 +1,12 @@
 "use client";
 
-import React, { Fragment } from "react";
+import React from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SessionProvider } from "next-auth/react";
 import { MDXProvider } from "@/src/providers/mdx";
 
-export const GeistProvider = ({ children }) => {
+export const ClientProvider = ({ children }) => {
 	const queryClient = new QueryClient();
 
 	return (
