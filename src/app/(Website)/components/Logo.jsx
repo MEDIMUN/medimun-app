@@ -8,10 +8,10 @@ import style from "./styles/Logo.module.css";
 export default function Logo({ color = "white", quality = 75 }) {
 	switch (color) {
 		case "red":
-			return <Image className={style.logo} quality={quality} src={RedLogo} alt="MEDIMUN Logo" fill />;
+			return <Image className={style.logo} quality={quality} src={RedLogo} alt="MEDIMUN Logo" />;
 		case "black":
-			return <Image className={style.logo} quality={quality} src={BlackLogo} alt="MEDIMUN Logo" fill />;
+			return <Image className={style.logo} quality={quality} src={BlackLogo} alt="MEDIMUN Logo" />;
 		case "white":
-			return <Image className={style.logo} quality={quality} src={WhiteLogo} alt="MEDIMUN Logo" fill />;
+			return <Image className={style.logo} quality={quality} src={WhiteLogo} alt="MEDIMUN Logo" />;
 	}
 }

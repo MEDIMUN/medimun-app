@@ -196,7 +196,7 @@ export default function Footer() {
 									<Logo className="globallogo " color="black" quality={100} />
 								</div>
 								<div className="m-auto flex max-w-[200px] justify-center align-middle">
-									<Image className="globallogo w-min rounded-2xl" src={thimunLogo}></Image>
+									<Image alt="Logo of the THIMUN Foundation" className="globallogo w-min rounded-2xl" src={thimunLogo}></Image>
 								</div>
 							</div>{" "}
 						</div>

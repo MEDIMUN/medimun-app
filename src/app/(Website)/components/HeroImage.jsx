@@ -34,8 +34,8 @@ export function Hero() {
 				filter: `grayscale(${grayFilter})`,
 			}}
 			alt="Image of 20 delegates lifting their placards containing the name of the country they represent."
-			quality={90}
-			className="fixed bottom-0 z-[40] h-[60svh] select-none object-cover object-left-top md:h-[50svh]"
+			quality={85}
+			className="fixed bottom-0 z-[40] h-[calc(50svh)] select-none overflow-x-auto object-cover object-left-top opacity-95"
 			src={delegatesColored}
 		/>
 	);

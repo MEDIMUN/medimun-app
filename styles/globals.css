@@ -114,14 +114,8 @@ html {
 
 .globallogo>* {
   position: relative !important;
-  display: inline-block;
-  vertical-align: middle;
-  width: fit-content;
 }
 
 .globallogo {
   position: relative !important;
-  display: inline-block;
-  vertical-align: middle;
-  overflow: hidden;
 }

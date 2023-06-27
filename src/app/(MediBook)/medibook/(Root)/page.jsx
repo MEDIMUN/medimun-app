@@ -1,14 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/src/app/api/auth/[...nextauth]/route";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-	Activity,
-	CreditCard,
-	DollarSign,
-	Users,
-	CalendarClock,
-	BookOpenCheck,
-} from "lucide-react";
+import { Activity, CreditCard, DollarSign, Users, CalendarClock, BookOpenCheck } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 
@@ -24,16 +17,16 @@ export default async function Page() {
 	};
 	const greeting = timeGreeting() + ", " + (session.user.displayName || session.user.officialName);
 	return (
-		<div className="p-5 max-w-[1200px] mx-auto -none">
+		<div className="-none mx-auto max-w-[1200px] p-5">
 			<div className="pl-2">
-				<h2 className="font-md text-3xl font-bold tracking-tight truncate">{greeting + " 👋"}</h2>
-				<h3 className="text-sm pl-0.5">
+				<h2 className="font-md truncate text-3xl font-bold tracking-tight">{greeting + " 👋"}</h2>
+				<h3 className="pl-0.5 text-sm">
 					<span className="select-text">{session.currentRoleNames[0] + ", " ?? ""}</span>
 					<span className="font-thin">UserID </span>
-					<span className="select-text font-regular pr-2">{uid}</span>
+					<span className="font-regular select-text pr-2">{uid}</span>
 				</h3>
 			</div>
-			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-5">
+			<div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Days Until Conference</CardTitle>
@@ -76,7 +69,7 @@ export default async function Page() {
 				</Card>
 			</div>
 			<div>
-				<div className="pl-2 mt-5">
+				<div className="mt-5 pl-2">
 					<h2 className="font-md text-xl font-bold tracking-tight">Latest Announcements</h2>
 				</div>
 			</div>

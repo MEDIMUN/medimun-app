@@ -78,6 +78,19 @@ export default function HeroImage() {
 		}
 	}
 
+	const imageStyles =
+		"globallogo m-auto max-h-[80%] w-auto max-w-[90%] rounded-xl hover:rounded-3xl duration-500 object-contain shadow-none hover:shadow-2xl hover:shadow-[var(--medired)]";
+	const imageWrapperStyle = "left-0 flex min-w-[100vw] p-5 md:p-20";
+
+	const images = [
+		{ src: img1, alt: "Delegates in the middle of a debate" },
+		{ src: img2, alt: "Expert speaker giving a speech to a committee" },
+		{ src: img3, alt: "Delegates in the middle of a debate" },
+		{ src: img4, alt: "Delegates and chairs playing an ice-breaker challenge within their committee" },
+		{ src: img5, alt: "Delegates lifting their plackards during a debate" },
+		{ src: img6, alt: "Delegates listening to their chair" },
+	];
+
 	if (displayed) {
 		return (
 			<div className="fixed z-[5] flex h-[100dvh] w-[100%] justify-center bg-[#181818] align-middle">
@@ -87,36 +100,11 @@ export default function HeroImage() {
 					</div>
 				)}
 				<ul style={{ transform: `translateX(-${parseInt(scroll)}%)` }} className={`flex max-w-[100%] flex-row duration-500`}>
-					<li className="left-0 flex min-w-[100vw] p-5 md:p-20">
-						<div className="rounded-10 m-auto max-h-[80%] w-[90%] overflow-hidden rounded-2xl md:w-[80%]">
-							<Image alt="" fill className="globallogo shadow-2xl" src={img1} />
-						</div>
-					</li>
-					<li className="left-0 flex min-w-[100vw] p-5 md:p-20">
-						<div className="rounded-10 m-auto max-h-[80%] w-[90%] overflow-hidden rounded-2xl md:w-[80%]">
-							<Image alt="" fill className="globallogo shadow-2xl" src={img2} />
-						</div>
-					</li>
-					<li className="left-0 flex min-w-[100vw] p-5 md:p-20">
-						<div className="rounded-10 m-auto max-h-[80%] w-[90%] overflow-hidden rounded-2xl md:w-[80%]">
-							<Image alt="" fill className="globallogo shadow-2xl" src={img3} />
-						</div>
-					</li>
-					<li className="left-0 flex min-w-[100vw] p-5 md:p-20">
-						<div className="rounded-10 m-auto max-h-[80%] w-[90%] overflow-hidden rounded-2xl md:w-[80%]">
-							<Image alt="" fill className="globallogo shadow-2xl" src={img4} />
-						</div>
-					</li>
-					<li className="left-0 flex min-w-[100vw] p-5 md:p-20">
-						<div className="rounded-10 m-auto max-h-[80%] w-[90%] overflow-hidden rounded-2xl md:w-[80%]">
-							<Image alt="" fill className="globallogo shadow-2xl" src={img5} />
-						</div>
-					</li>
-					<li className="left-0 flex min-w-[100vw] p-5 md:p-20">
-						<div className="rounded-10 m-auto max-h-[80%] w-[90%] overflow-hidden rounded-2xl md:w-[80%]">
-							<Image alt="" fill className="globallogo shadow-2xl" src={img6} />
-						</div>
-					</li>
+					{images.map((image) => (
+						<li key={Math.random()} className={imageWrapperStyle}>
+							<Image alt={image.alt} className={imageStyles} src={image.src} />
+						</li>
+					))}
 					<li className="left-0 flex min-w-[100vw] p-5">
 						<div className="rounded-10 m-auto max-h-[80%] w-[80%] overflow-hidden rounded-2xl text-center font-['canela'] text-[50px] text-white md:text-[100px]">
 							<Link href="/signup">
@@ -124,10 +112,8 @@ export default function HeroImage() {
 							</Link>
 						</div>
 					</li>
-					<li className="left-0 flex min-w-[100vw] p-10">
-						<div className="rounded-10 m-auto max-h-[80%] w-[100%] overflow-hidden rounded-2xl">
-							<Image alt="" fill className="globallogo w-[100%] shadow-2xl" src={delegatesOutside} />
-						</div>
+					<li className={imageWrapperStyle}>
+						<Image alt="Delegates standing together to take the final day photo outside" fill className={imageStyles} src={delegatesOutside} />
 					</li>
 				</ul>
 			</div>

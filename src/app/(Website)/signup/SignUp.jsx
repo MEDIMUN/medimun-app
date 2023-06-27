@@ -22,13 +22,10 @@ export default function Login() {
 				/>
 				<Button className="rounded-2 mx-auto mt-6 w-[80%] bg-[var(--medired)]">Log in</Button>
 				<div className="mx-auto mt-3">
-					<span className="mx-auto ml-auto rounded-[100px] px-3 py-1 text-right text-sm text-stone-400 hover:cursor-pointer hover:bg-slate-200 hover:text-[var(--medired)]">
-						Reset password
-					</span>
 					<Link
-						href="signup"
+						href="login"
 						className="mx-auto ml-auto mt-1 rounded-[100px] px-3 py-1 text-right text-sm text-stone-400 hover:cursor-pointer hover:bg-slate-200 hover:text-[var(--medired)]">
-						Create an account
+						Log in instead
 					</Link>
 				</div>
 			</div>
