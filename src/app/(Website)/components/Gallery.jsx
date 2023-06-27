@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function HeroImage() {
-	const [displayed, setDisplayed] = useState(0);
+	const [displayed, setDisplayed] = useState(false);
 	const [scroll, setScroll] = useState(0);
 	let h;
 
@@ -40,7 +40,11 @@ export default function HeroImage() {
 		const height = window.innerHeight;
 		const section = position / height;
 		const current = position - (h + height);
-		section > 1.55 ? setDisplayed(true) : setDisplayed(false);
+		if (section > 1.55) {
+			setDisplayed(true);
+		} else {
+			setDisplayed(false);
+		}
 
 		const difference = height / 3;
 
@@ -79,7 +83,7 @@ export default function HeroImage() {
 	}
 
 	const imageStyles =
-		"globallogo m-auto max-h-[80%] w-auto max-w-[90%] rounded-xl hover:rounded-3xl duration-500 object-contain shadow-none hover:shadow-2xl hover:shadow-[var(--medired)]";
+		"globallogo m-auto max-h-[80%] w-auto max-w-[90%] rounded-xl hover:rounded-3xl duration-600 object-contain shadow-none hover:shadow-2xl hover:shadow-[var(--medired)]";
 	const imageWrapperStyle = "left-0 flex min-w-[100vw] p-5 md:p-20";
 
 	const images = [
@@ -102,7 +106,7 @@ export default function HeroImage() {
 				<ul style={{ transform: `translateX(-${parseInt(scroll)}%)` }} className={`flex max-w-[100%] flex-row duration-500`}>
 					{images.map((image) => (
 						<li key={Math.random()} className={imageWrapperStyle}>
-							<Image alt={image.alt} className={imageStyles} src={image.src} />
+							<Image placeholder="blur" la alt={image.alt} className={imageStyles} src={image.src} />
 						</li>
 					))}
 					<li className="left-0 flex min-w-[100vw] p-5">
