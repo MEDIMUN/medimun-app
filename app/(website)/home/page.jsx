@@ -1,5 +1,5 @@
 import { HomePage } from "../page";
-import AuthRedirect from "@/app/(Website)/components/AuthRedirect";
+import AuthRedirect from "@/components/website/AuthRedirect";
 
 export default function Page() {
 	return (
