@@ -44,10 +44,17 @@
 		".next/types/**/*.ts",
 		"app/layout.jsx",
 		"app/providers.jsx",
-		"app/(MediBook)/layout.jsx",
-		"src/app/(MediBook)/SubMenu.jsx",
-		"src/app/(MediBook)/medibook/(Root)/announcements/[announcementId]/page.jsx",
-		"src/app/(MediBook)/medibook/(Root)/announcements/page.jsx"
+		"app/(medibook)/layout.jsx",
+		"components/medibook/SubMenu.jsx",
+		"app/(medibook)/medibook/(Root)/announcements/[announcementId]/page.jsx",
+		"app/(medibook)/medibook/(Root)/announcements/page.jsx",
+		"app/(website)/signup/signup.server.jsx",
+		"app/(medibook)/medibook/sessions/create-session.server.js",
+		"app/(medibook)/medibook/sessions/[sessionNumber]/departments/page.jsx",
+		"app/(medibook)/medibook/(Root)/announcements/create-announcement.server.js",
+		"app/(medibook)/medibook/sessions/[sessionNumber]/departments/[departmentId]/announcements/delete-announcement.server.js",
+		"app/(medibook)/medibook/sessions/[sessionNumber]/committees/announcements/delete-announcement.server.js",
+		"app/(medibook)/medibook/sessions/[sessionNumber]/committees/add-committee.server.js"
 	],
 	"exclude": ["node_modules"]
 }

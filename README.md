@@ -1,1 +1,1 @@
-This is the official MEDIMUN app being developed for The English School
+#The All New MediMun App: MediBook and The New MediMun Website

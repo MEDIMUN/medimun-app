@@ -43,3 +43,5 @@ next-env.d.ts
 /page-components
 
 # captain files
+
+/react-email

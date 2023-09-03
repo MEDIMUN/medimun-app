@@ -8,13 +8,22 @@ generator client {
 }
 
 model PendingUser {
-  id                    Int      @id @default(autoincrement())
-  email                 String   @unique
+  id                    Int       @id @default(autoincrement())
+  email                 String    @unique
   password              String
   officialName          String
   officialSurname       String
-  timeCreated           DateTime @default(now())
+  nationality           String?
+  dateOfBirth           DateTime?
+  timeCreated           DateTime  @default(now())
   emailVerificationCode String
+}
+
+model passwordReset {
+  id                Int      @id @default(autoincrement())
+  email             String   @unique
+  timeCreated       DateTime @default(now())
+  passwordResetCode String
 }
 
 model Account {
@@ -80,6 +89,7 @@ model Session {
   //
   isCurrent                           Boolean                               @default(false)
   number                              String                                @unique
+  numberInteger                       Int                                   @unique
   //
   theme                               String                                @default("")
   phrase2                             String                                @default("")
@@ -99,10 +109,11 @@ model Session {
   department                          Department[]
   chat                                Chat[]
   groupChat                           GroupChat[]
-  enrolledAnnouncement                EnrolledAnnouncement[]
   deputyPresidentOfTheGeneralAssembly DeputyPresidentOfTheGeneralAssembly[]
   organiser                           Organiser[]
   SessionAnnouncement                 SessionAnnouncement[]
+  ChairAnnouncement                   ChairAnnouncement[]
+  ManagerAnnouncement                 ManagerAnnouncement[]
 }
 
 model GlobalAdmin {
@@ -216,15 +227,25 @@ model SchoolDirector {
 }
 
 model Committee {
-  id           Int                     @id @default(autoincrement())
-  name         String
-  description  String?
-  session      Session                 @relation(fields: [sessionId], references: [id])
-  sessionId    Int
-  delegate     Delegate[]
-  chair        Chair[]
-  channel      Channel[]
-  announcement CommitteeAnnouncement[]
+  id                String                  @id @unique @default(uuid())
+  name              String
+  shortName         String?
+  slug              String?
+  description       String?
+  type              CommitteeType
+  topic1            String?
+  topic1description String?
+  topic2            String?
+  topic2description String?
+  topic3            String?
+  topic3description String?
+  session           Session                 @relation(fields: [sessionId], references: [id])
+  sessionId         Int
+  delegate          Delegate[]
+  chair             Chair[]
+  channel           Channel[]
+  announcement      CommitteeAnnouncement[]
+  ChairAnnouncement ChairAnnouncement[]
 }
 
 model Delegate {
@@ -233,7 +254,7 @@ model Delegate {
   user        User      @relation(fields: [userId], references: [id])
   userId      Int
   committee   Committee @relation(fields: [committeeId], references: [id])
-  committeeId Int
+  committeeId String
 }
 
 model Chair {
@@ -241,22 +262,25 @@ model Chair {
   user        User      @relation(fields: [userId], references: [id])
   userId      Int
   committee   Committee @relation(fields: [committeeId], references: [id])
-  committeeId Int
+  committeeId String
 }
 
 model Department {
-  id           Int                      @id @default(autoincrement())
-  name         String
-  description  String?
-  isMedinews   Boolean                  @default(false)
-  isIt         Boolean                  @default(false)
-  isShop       Boolean                  @default(false)
-  session      Session                  @relation(fields: [sessionId], references: [id])
-  sessionId    Int
-  member       Member[]
-  manager      Manager[]
-  channel      Channel[]
-  announcement DepartmentAnnouncement[]
+  id                  String                   @id @default(uuid())
+  name                String
+  shortName           String?
+  slug                String?
+  description         String?
+  isMedinews          Boolean                  @default(false)
+  isIt                Boolean                  @default(false)
+  isShop              Boolean                  @default(false)
+  session             Session                  @relation(fields: [sessionId], references: [id])
+  sessionId           Int
+  member              Member[]
+  manager             Manager[]
+  channel             Channel[]
+  announcement        DepartmentAnnouncement[]
+  ManagerAnnouncement ManagerAnnouncement[]
 }
 
 model Member {
@@ -265,7 +289,7 @@ model Member {
   user         User       @relation(fields: [userId], references: [id])
   userId       Int
   department   Department @relation(fields: [departmentId], references: [id])
-  departmentId Int
+  departmentId String
 }
 
 model Manager {
@@ -273,7 +297,7 @@ model Manager {
   user         User       @relation(fields: [userId], references: [id])
   userId       Int
   department   Department @relation(fields: [departmentId], references: [id])
-  departmentId Int
+  departmentId String
 }
 
 model Location {
@@ -334,10 +358,10 @@ model Channel {
   id           Int         @id @default(autoincrement())
   name         String
   description  String
-  committe     Committee?  @relation(fields: [committeId], references: [id])
-  committeId   Int?
+  committee    Committee?  @relation(fields: [committeeId], references: [id])
+  committeeId  String?
   department   Department? @relation(fields: [departmentId], references: [id])
-  departmentId Int?
+  departmentId String?
   message      Message[]
 }
 
@@ -380,92 +404,110 @@ model Reaction {
 
 model Announcement {
   id                     String                   @id @default(uuid())
-  isEdited               Boolean                  @default(false)
+  time                   DateTime                 @default(now())
+  editTime               DateTime                 @default(now())
+  //
   isAnonymous            Boolean                  @default(false)
   isSecretariat          Boolean                  @default(false)
   isBoard                Boolean                  @default(false)
-  isEmail                Boolean                  @default(false)
-  isMedibook             Boolean                  @default(false)
-  isWebsite              Boolean                  @default(false)
+  //
   isPinned               Boolean                  @default(false)
   //
   title                  String
   description            String
   markdown               String
-  time                   DateTime                 @default(now())
   //
-  sender                 User                     @relation(fields: [senderId], references: [id])
-  senderId               Int
+  user                   User                     @relation(fields: [userId], references: [id])
+  userId                 Int
   GlobalAnnouncement     GlobalAnnouncement[]
-  RegisteredAnnouncement RegisteredAnnouncement[]
-  CommitteeAnnouncement  CommitteeAnnouncement[]
-  DepartmentAnnouncement DepartmentAnnouncement[]
+  MediBookAnnouncement   MediBookAnnouncement[]
   AlumniAnnouncement     AlumniAnnouncement[]
-  EnrolledAnnouncement   EnrolledAnnouncement[]
+  WebsiteAnnouncement    WebsiteAnnouncement[]
   SessionAnnouncement    SessionAnnouncement[]
+  DepartmentAnnouncement DepartmentAnnouncement[]
+  CommitteeAnnouncement  CommitteeAnnouncement[]
+  ChairAnnouncement      ChairAnnouncement[]
+  ManagerAnnouncement    ManagerAnnouncement[]
+  ApplicanAnnouncement   ApplicanAnnouncement[]
 }
 
 model GlobalAnnouncement {
   id             Int          @id @default(autoincrement())
-  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
   announcementId String
 }
 
-model RegisteredAnnouncement {
+model MediBookAnnouncement {
   id             Int          @id @default(autoincrement())
-  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
   announcementId String
-}
-
-model CommitteeAnnouncement {
-  id             Int          @id @default(autoincrement())
-  announcement   Announcement @relation(fields: [announcementId], references: [id])
-  announcementId String
-  committee      Committee    @relation(fields: [committeeId], references: [id])
-  committeeId    Int
-}
-
-model DepartmentAnnouncement {
-  id             Int          @id @default(autoincrement())
-  announcement   Announcement @relation(fields: [announcementId], references: [id])
-  announcementId String
-  department     Department   @relation(fields: [departmentId], references: [id])
-  departmentId   Int
-}
-
-model SessionAnnouncement {
-  id             Int          @id @default(autoincrement())
-  announcement   Announcement @relation(fields: [announcementId], references: [id])
-  announcementId String
-  session        Session      @relation(fields: [sessionId], references: [id])
-  sessionId      Int
 }
 
 model AlumniAnnouncement {
   id             Int          @id @default(autoincrement())
-  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
   announcementId String
 }
 
-model EnrolledAnnouncement {
+model WebsiteAnnouncement {
   id             Int          @id @default(autoincrement())
-  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
   announcementId String
-  //
+}
+
+model SessionAnnouncement {
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  announcementId String
   session        Session      @relation(fields: [sessionId], references: [id])
   sessionId      Int
+}
+
+model DepartmentAnnouncement {
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  announcementId String
+  department     Department   @relation(fields: [departmentId], references: [id])
+  departmentId   String
+}
+
+model CommitteeAnnouncement {
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  announcementId String
+  committee      Committee    @relation(fields: [committeeId], references: [id])
+  committeeId    String
+}
+
+model ChairAnnouncement {
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  announcementId String
+  session        Session?     @relation(fields: [sessionId], references: [id])
+  sessionId      Int?
+  committee      Committee?   @relation(fields: [committeeId], references: [id])
+  committeeId    String?
+}
+
+model ManagerAnnouncement {
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  announcementId String
+  session        Session?     @relation(fields: [sessionId], references: [id])
+  sessionId      Int?
+  department     Department?  @relation(fields: [departmentId], references: [id])
+  departmentId   String?
+}
+
+model ApplicanAnnouncement {
+  id             Int          @id @default(autoincrement())
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  announcementId String
 }
 
 // TERMS, CONDITIONS AND PRIVACY ///////////////////////////////////////////////////////////
 
 model Term {
-  id      Int    @id @default(autoincrement())
-  index   Int    @default(0)
-  title   String
-  content String
-}
-
-model Condition {
   id      Int    @id @default(autoincrement())
   index   Int    @default(0)
   title   String
@@ -489,4 +531,10 @@ enum ReactionType {
   ANGRY
   LIKE
   DISLIKE
+}
+
+enum CommitteeType {
+  GENERALASSEMBLY
+  SECURITYCOUNCIL
+  SPECIALCOMMITTEE
 }

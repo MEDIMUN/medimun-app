@@ -1,4 +1,4 @@
-const countries = [
+export const countries = [
 
   {
     "countryNameEn": "Cyprus",
@@ -4017,8 +4017,7 @@ const countries = [
   },
 ];
 
-export const countryCodesAndNames = countries.map( ( country ) =>
-{
+export const countryCodesAndNames = countries.map( ( country ) => {
   return {
     countryCode: country.countryCode,
     countryName: country.countryNameEn,

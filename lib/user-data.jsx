@@ -10,9 +10,9 @@ export async function userData(user) {
 			seniorDirecor: true,
 			student: { select: { school: { select: { name: true } } } },
 			delegate: { include: { committee: { select: { session: true, name: true } } } },
-			chair: { include: { committee: { select: { session: true, name: true } } } },
-			member: { include: { department: { select: { session: true, name: true } } } },
-			manager: { include: { department: { select: { session: true, name: true } } } },
+			chair: { include: { committee: { select: { session: true, name: true, id: true } } } },
+			member: { include: { department: { select: { session: true, name: true, id: true } } } },
+			manager: { include: { department: { select: { session: true, name: true, id: true } } } },
 			schoolDirector: { include: { school: true, session: { select: { isCurrent: true, number: true } } } },
 			secretaryGeneral: { include: { session: { select: { isCurrent: true, number: true } } } },
 			presidentOfTheGeneralAssembly: { include: { session: { select: { isCurrent: true, number: true } } } },
@@ -20,6 +20,8 @@ export async function userData(user) {
 			deputyPresidentOfTheGeneralAssembly: { include: { session: { select: { isCurrent: true, number: true } } } },
 		},
 	});
+
+	if (!roles) return null;
 
 	let delegateRole = roles.delegate.map((delegate) => {
 		return {
@@ -35,6 +37,7 @@ export async function userData(user) {
 		return {
 			role: "Chair",
 			committee: chair.committee.name,
+			committeeId: chair.committee.id,
 			isCurrent: chair.committee.session.isCurrent,
 			session: chair.committee.session.number,
 		};
@@ -42,7 +45,8 @@ export async function userData(user) {
 	let teamMemberRole = roles.member.map((member) => {
 		return {
 			role: "Member",
-			committee: member.department.name,
+			department: member.department.name,
+			departmentId: member.department.id,
 			isCurrent: member.department.session.isCurrent,
 			session: member.session.number,
 		};
@@ -50,7 +54,8 @@ export async function userData(user) {
 	let teamManagerRole = roles.manager.map((manager) => {
 		return {
 			role: "Manager",
-			team: manager.department.name,
+			department: manager.department.name,
+			departmentId: manager.department.id,
 			isCurrent: manager.department.session.isCurrent,
 			session: manager.department.session.number,
 		};
@@ -110,17 +115,30 @@ export async function userData(user) {
 		};
 	});
 
-	let allRoles = [...globalAdminRole, ...adminRole, ...seniorDirectorRole, ...sgRole, ...pgaRole, ...dsgRole, ...dpgaRole, ...schoolDirectorRole, ...teamManagerRole, ...chairRole, ...teamMemberRole, ...delegateRole];
+	let allRoles = [
+		...globalAdminRole,
+		...adminRole,
+		...seniorDirectorRole,
+		...sgRole,
+		...pgaRole,
+		...dsgRole,
+		...dpgaRole,
+		...schoolDirectorRole,
+		...teamManagerRole,
+		...chairRole,
+		...teamMemberRole,
+		...delegateRole,
+	];
 
 	let allCurrentRoles = allRoles.filter((role) => role.isCurrent);
 	let allPastRoles = allRoles.filter((role) => !role.isCurrent);
 
 	const allFullCurrentRoles = allCurrentRoles.map((role) => {
-		return { name: role.role, session: role.session, committee: role.committee, team: role.team };
+		return { name: role.role, session: role.session, committee: role.committee, department: role.department, ommitteeId: role.committeeId, departmentId: role.departmentId };
 	});
 
 	const allFullPastRoles = allPastRoles.map((role) => {
-		return { name: role.role, session: role.session, committee: role.committee, team: role.team };
+		return { name: role.role, session: role.session, committee: role.committee, department: role.department, committeeId: role.committeeId, departmentId: role.departmentId };
 	});
 
 	const allFilteredCurrentRoles = allCurrentRoles.map((role) => {
@@ -133,7 +151,12 @@ export async function userData(user) {
 
 	let sessions = [];
 
-	if (allFilteredCurrentRoles.includes("Global Admin") || allFilteredCurrentRoles.includes("Admin") || allFilteredCurrentRoles.includes("Senior Director") || allFilteredCurrentRoles.includes("Director")) {
+	if (
+		allFilteredCurrentRoles.includes("Global Admin") ||
+		allFilteredCurrentRoles.includes("Admin") ||
+		allFilteredCurrentRoles.includes("Senior Director") ||
+		allFilteredCurrentRoles.includes("Director")
+	) {
 		sessions = await prisma.session.findMany({
 			select: {
 				number: true,
