@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
-		"start": "next start",
+		"start": "next star -p 8080",
 		"lint": "next lint",
 		"emaildev": "email dev",
 		"export": "email export",
