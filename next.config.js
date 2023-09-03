@@ -10,7 +10,6 @@ const nextConfig = withMDX( {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
-    appDir: true,
     serverActions: true,
     mdxRs: true,
   },
