@@ -8,9 +8,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { TitleBar } from "@/components/medibook/TitleBar";
 
-function error(e) {
-	if (process.env.NODE_ENV == "development") console.log(e);
-}
+function error(e) {}
 
 export default async function Page() {
 	const session = await getServerSession(authOptions);

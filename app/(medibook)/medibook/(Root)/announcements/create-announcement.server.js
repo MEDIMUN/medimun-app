@@ -22,7 +22,6 @@ export async function createAnnouncement ( formData ) {
 
 
 	function error ( e ) {
-		if ( process.env.NODE_ENV == "development" ) console.log( e );
 		return { ok: false, error: "Error", title: "An error occurred while creating the announcement", variant: "destructive" };
 	}
 

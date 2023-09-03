@@ -61,7 +61,6 @@ export async function createAnnouncement ( formData ) {
          },
       } );
    } catch ( e ) {
-      if ( process.env.NODE_ENV == "development" ) console.log( e );
       return { ok: false, error: "Internal server error", title: "An error occured while creating announcement", variant: "destructive" };
    }
    return { ok: true, error: null, title: "Announcement created", variant: "default" };
