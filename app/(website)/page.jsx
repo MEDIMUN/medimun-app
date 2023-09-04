@@ -40,9 +40,7 @@ async function getTheme() {
 				number: true,
 			},
 		});
-	} catch (error) {
-		return null;
-	}
+	} catch (error) {}
 	return theme;
 }
 
