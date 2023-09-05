@@ -105,7 +105,7 @@ export default function HeroImage() {
 				<ul style={{ transform: `translateX(-${parseInt(scroll)}%)` }} className={`flex max-w-[100%] flex-row duration-500`}>
 					{images.map((image) => (
 						<li key={Math.random()} className={imageWrapperStyle}>
-							<Image placeholder="blur" la alt={image.alt} className={imageStyles} src={image.src} />
+							<Image placeholder="blur" alt={image.alt} className={imageStyles} src={image.src} />
 						</li>
 					))}
 					<li className="left-0 flex min-w-[100vw] p-5">

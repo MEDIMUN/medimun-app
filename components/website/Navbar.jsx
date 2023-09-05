@@ -9,25 +9,24 @@ import { AiOutlineMenu } from "react-icons/ai";
 import LoginButton from "./LoginButton";
 import Menu from "./Menu";
 
+const pageColors = {
+	"/": "black",
+	"/home": "black",
+	"/medibook": "black",
+	"/login": "white",
+	"/register": "white",
+	"/signup": "white",
+	"/loginhelp": "black",
+};
+
+const hideMenu = ["/loginhelp", "/register", "/signup"];
+const hideLogo = ["/loginhelp", "/register"];
+
 export default function Navbar({ children }) {
-	const pageColors = {
-		"/": "black",
-		"/home": "black",
-		"/medibook": "black",
-		"/login": "white",
-		"/register": "white",
-		"/signup": "white",
-		"/loginhelp": "black",
-	};
-
-	const hideMenu = ["/loginhelp", "/login", "/register", "/signup"];
-	const hideLogo = ["/loginhelp", "/register"];
-
+	const pathname = usePathname();
 	const [isTransparent, setIsTransparent] = useState(true);
 	const [currentColor, setCurrentColor] = useState("black");
 	const [isVisable, setIsVisable] = useState(false);
-
-	const pathname = usePathname();
 
 	let previousOffset = 0;
 	function handleScroll() {

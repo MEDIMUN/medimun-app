@@ -43,7 +43,6 @@ export const authOptions = {
 				} else {
 					throw new Error( "Incorrect Password" );
 				}
-				throw new Error( "Internal Server Error, please try again later" ); //check this
 			},
 		} ),
 	],

@@ -81,7 +81,7 @@ export default function Login() {
 				toast({
 					title: "Welcome back!",
 					description: "You've been successfully logged in.",
-					variant: "success",
+					variant: "default",
 				});
 				router.push("/medibook");
 			}

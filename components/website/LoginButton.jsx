@@ -11,7 +11,6 @@ import { redirect } from "next/navigation";
 
 export default function LoginButton() {
 	const { data: session, status } = useSession();
-	status === "authenticated" && session.isDisabled ? redirect("/medibook/signout") : null;
 
 	if (status === "loading") {
 		return (
