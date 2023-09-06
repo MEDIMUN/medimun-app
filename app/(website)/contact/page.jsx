@@ -47,30 +47,44 @@ export default function Page() {
 		background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, #AE2D2890 0%, rgb(0, 0, 0) 70%, rgb(0, 0, 0) 100%)`,
 	};
 	return (
-		<div className="min-h-[100vh] w-full bg-black">
+		<div className="h-[128vh] w-full bg-black md:h-[100vh]">
 			<Image fill src={image6} className="object-cover" />
 			<div className="absolute h-full bg-black"></div>
 			<div style={vignette} className="absolute h-full w-full ">
 				<div className="h-full w-full pt-[48px] md:p-4 md:pt-[96px]">
-					<div className="h-full w-full bg-opacity-40 p-8 shadow-lg md:w-[380px] md:rounded-xl md:border-[1px] md:border-[var(--medired)] md:bg-black">
-						<h1 className="rounded-3xl font-[Montserrat] text-[35px] font-[700] text-white">Contact Us</h1>
+					<div className="h-full w-full p-8 shadow-lg md:w-[380px] md:rounded-3xl md:border-[1px] md:border-[var(--medired)] md:bg-black">
+						<h1 className="select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-white">Contact Us</h1>
+						<h2 className="rounded-3xl font-[Montserrat] text-[25px] font-[700] text-white"></h2>
 						<form id="main" action={contactUsWrapper} className="flex flex-col gap-4 py-4 font-[Montserrat] font-[700] uppercase">
-							<Label htmlFor="name" className="text-white">
+							<Label htmlFor="name" className="select-none text-white">
 								Name
 							</Label>
-							<Input className="text-md bg-black text-white md:text-sm" type="text" required id="name" name="name" placeholder="Name" />
-							<Label htmlFor="email" className="text-white">
+							<Input className="text-md border-[var(--medired)] bg-black text-white md:text-sm" type="text" required id="name" name="name" placeholder="Name" />
+							<Label htmlFor="email" className="select-none text-white">
 								Email
 							</Label>
-							<Input className="text-md bg-black text-white md:text-sm" type="email" required id="email" name="email" placeholder="Email" />
-							<Label htmlFor="message" className=" text-white">
+							<Input className="text-md border-[var(--medired)] bg-black text-white md:text-sm" type="email" required id="email" name="email" placeholder="Email" />
+							<Label htmlFor="message" className=" select-none text-white">
 								Message
 							</Label>
-							<Textarea className="text-md max-h-[300px] min-h-[300px] bg-black text-white md:text-sm" type="message" required id="message" name="message" placeholder="Message" />
+							<Textarea
+								className="text-md max-h-[300px] min-h-[300px] border-[var(--medired)] bg-black text-white md:text-sm"
+								type="message"
+								required
+								id="message"
+								name="message"
+								placeholder="Message"
+							/>
 							<ReCAPTCHA size="invisible" className="my-auto" sitekey="6Lft5AEoAAAAAKq2x2L-8qgGVISfV0JlH9aFCHVi" ref={recaptchaRef} />
 							<Button type="submit" className="bottom-0 mt-auto w-full bg-white text-black hover:bg-[var(--medired)] hover:text-white">
 								SEND
 							</Button>
+							<p className="text-white">
+								This service isn't active yet, please email us at{" "}
+								<a className="text-blue-500" href="mailto:medimun.cyprus@gmail.com">
+									medimun.cyprus@gmail.com
+								</a>
+							</p>
 						</form>
 					</div>
 				</div>

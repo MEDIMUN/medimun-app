@@ -208,14 +208,6 @@ export default function Footer() {
 								<strong>MEDIMUN</strong> is affiliated with the <strong>THIMUN Foundation</strong>
 							</Link>
 							<br />
-							The <strong>THIMUN</strong> logo is the property of the{" "}
-							<Link
-								href="http://foundation.thimun.org/affiliation-programme/affiliated-conferences/#february"
-								target="_blank"
-								className="duration-200 hover:mb-2 hover:rounded-full hover:bg-white hover:px-4 hover:text-[var(--medired)] hover:after:content-['_↗']">
-								<strong>THIMUN Foundation</strong>
-							</Link>
-							<br />
 							&copy; 2006-{currentYear} <strong>Mediterranean Model United Nations</strong>, aka <strong>MEDIMUN</strong>
 						</p>
 					</div>

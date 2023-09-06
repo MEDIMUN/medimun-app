@@ -76,7 +76,7 @@ const MenuItems = (props) => {
 				{link.alt}
 			</MenuLink>
 		));
-	}, []);
+	}, [props.pathname]);
 	return (
 		<div className="z-5 absolute ml-4 mt-40 grid max-h-min w-fit grid-cols-1 gap-2 overflow-y-auto font-[canela] text-[35px] font-[40] text-white md:ml-10 md:text-[48px]">
 			{menuItems}
@@ -126,7 +126,7 @@ export default function Menu({ props }) {
 				<div className="absolute bottom-0 z-[300] h-[80px] w-full min-w-full overflow-x-auto border-t-[1px] border-[rgb(122,122,122)] px-4 md:gap-10 md:px-10 ">
 					<ul className="flex h-full w-fit min-w-fit flex-row gap-10 overflow-x-auto">
 						{quickActions.map((action) => (
-							<li className="my-auto px-3">
+							<li key={action.href + Math.random()} className="my-auto px-3">
 								<Link href={action.href}>
 									<p className="w-max min-w-fit rounded-3xl text-center font-[canela] text-[20px] font-[40] text-white duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
 										{action.alt}

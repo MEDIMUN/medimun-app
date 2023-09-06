@@ -11,6 +11,6 @@ export async function contactUs ( formData ) {
    const email = formData.get( "email" );
    const message = formData.get( "message" );
    if ( !name || !email || !message ) return { ok: false, error: "Please fill out all fields", title: "Please fill out all fields", variant: "destructive" };
-   console.log( { name, email, message } );
-   return { ok: true, title: "Message Sent", description: "We will be in touch soon", variant: "default" };
+   return { ok: true, title: "Message not sent", description: "This service isn't running yet, please email us at medimun.cyprus@gmail.com", variant: "default" };
+   //return { ok: true, title: "Message Sent", description: "We will be in touch soon", variant: "default" };
 }
