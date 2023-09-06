@@ -17,7 +17,7 @@ export function Hero() {
 	}, []);
 
 	function handleScroll() {
-		const position = window.pageYOffset;
+		const position = window.scrollY;
 		const height = window.innerHeight;
 		const section = position / height;
 
@@ -53,7 +53,7 @@ export function Paper() {
 	}, []);
 
 	function handleScroll() {
-		const position = window.pageYOffset;
+		const position = window.scrollY;
 		const height = window.innerHeight;
 		const section = position / height;
 

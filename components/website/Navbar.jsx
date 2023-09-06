@@ -17,6 +17,7 @@ const pageColors = {
 	"/register": "white",
 	"/signup": "white",
 	"/loginhelp": "black",
+	"/contact": "red",
 };
 
 const hideMenu = ["/loginhelp", "/register", "/signup"];

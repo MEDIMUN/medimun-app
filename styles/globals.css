@@ -17,6 +17,11 @@
   src: url("/fonts/Canela.otf");
 }
 
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat.ttf");
+}
+
 @layer base {
   :root {
     --medired: #AE2D28;
