@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
 					<Landscape />
 					<Navbar />
 					<CommandMenu className="z-[500]" />
-					<main className="min-h-[100svh] min-w-[100vw] max-w-[100vw] overflow-y-hidden">{children}</main>
+					<main className="min-h-[100svh] w-full overflow-y-hidden">{children}</main>
 					<Toaster />
 					<Footer />
 				</body>

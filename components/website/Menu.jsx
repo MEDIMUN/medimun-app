@@ -15,13 +15,14 @@ import image7 from "@/public/placeholders/delegates-2.jpg";
 
 const links = [
 	{ pathname: "/about", src: image1, alt: "About" },
-	{ pathname: "/announcements", src: image2, alt: "News" },
+	{ pathname: "/news", src: image7, alt: "News" },
 	{ pathname: "/topics", src: image3, alt: "Topics" },
 	{ pathname: "/sessions", src: image4, alt: "Sessions" },
 	{ pathname: "/events", src: image1, alt: "Events" },
 	{ pathname: "/resources", src: image5, alt: "Resources" },
+	{ pathname: "/announcements", src: image2, alt: "Announcements" },
 	{ pathname: "/contact", src: image6, alt: "Contact" },
-];
+].sort((a, b) => (a.alt.length > b.alt.length ? 1 : -1));
 
 const quickActions = [
 	{ href: "/login", alt: "Login" },

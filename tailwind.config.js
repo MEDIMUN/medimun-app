@@ -16,6 +16,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        medired: "var(--medired)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

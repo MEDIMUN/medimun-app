@@ -53,7 +53,8 @@ async function getData({ params }) {
 export default async function Page({ params, searchParams }) {
 	const session = await getServerSession(authOptions);
 	const announcement = await getData({ params, searchParams, session });
-	const fullName = !announcement.isAnonymous ? announcement.user.displayName || announcement.user.officialName + " " + announcement.user.officialSurname : "Anonymous";
+	const user = announcement.user;
+	const fullName = !announcement.isAnonymous ? user.displayName || user.officialName + " " + user.officialSurname : "Anonymous";
 	const publishedDate = announcement?.time.toLocaleString("en-uk", { month: "long", day: "numeric", year: "numeric" });
 	return (
 		<>
@@ -88,6 +89,18 @@ export default async function Page({ params, searchParams }) {
 }
 
 const ResponsiveImage = (props) => {
+	if (props.src.includes("http")) {
+		return (
+			<img
+				className="mx-auto rounded-xl bg-gray-100 p-4 shadow-lg duration-300 hover:shadow-xl"
+				alt="custom image"
+				width={100}
+				height={100}
+				style={{ width: "70%", height: "auto" }}
+				{...props}
+			/>
+		);
+	}
 	return (
 		<Image
 			className="mx-auto rounded-xl bg-gray-100 p-4 shadow-lg duration-300 hover:shadow-xl"
