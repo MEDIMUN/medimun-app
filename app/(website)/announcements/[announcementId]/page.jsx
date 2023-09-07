@@ -39,7 +39,7 @@ export default async function Page({ params, props }) {
 	);
 }
 
-export async function getData(announcementId) {
+async function getData(announcementId) {
 	console.log(announcementId);
 	let announcement;
 	try {
