@@ -30,7 +30,6 @@ export default function Page() {
 		const token = await recaptchaRef.current.executeAsync();
 		formData.append("token", token);
 		const res = await contactUs(formData);
-		console.log(res);
 		if (res)
 			toast({
 				title: res?.title,

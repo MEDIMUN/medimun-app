@@ -161,7 +161,7 @@ export async function signUp ( user ) {
 			error: "Invalid password",
 		};
 	}
-
+	console.log( officialName, officialSurname, email, emailVerificationCode.toString() );
 	try {
 		await sendVerificationEmail( officialName, email, emailVerificationCode.toString() );
 	} catch ( e ) {

@@ -45,7 +45,6 @@ export async function editTopics ( formData ) {
 			},
 		} );
 	} catch ( e ) {
-		console.log( e );
 		return { ok: false, error: "Internal server error", title: "Internal server error", description: "An error occurred while adding the committee", variant: "destructive" };
 	}
 	return { ok: true, title: "Committee Updated", variant: "default" };

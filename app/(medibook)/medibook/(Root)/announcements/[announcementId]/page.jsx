@@ -68,7 +68,6 @@ export default async function Page({ params, searchParams }) {
 				button2action={async () => {
 					"use server";
 					const res = await deleteAnnouncement(params.announcementId);
-					console.log("kk", res);
 					if (res?.ok) redirect("/medibook/announcements");
 				}}
 				button2style="bg-red-500 text-white hover:bg-red hover:text-white"

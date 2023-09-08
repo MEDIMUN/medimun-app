@@ -7,7 +7,6 @@ import { authorize, s } from "@/lib/authorize";
 import { redirect } from "next/navigation";
 
 function error ( e ) {
-   console.log( e );
    return { ok: false, error: "Error", title: "An error occurred while deleting the announcement", variant: "destructive" };
 }
 

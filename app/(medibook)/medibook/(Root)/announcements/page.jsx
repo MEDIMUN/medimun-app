@@ -26,12 +26,7 @@ export default async function Page({ params, searchParams }) {
 	};
 
 	function error(e) {
-		console.log(e);
 		return;
-	}
-
-	function success() {
-		console.log("executo");
 	}
 
 	let skip = searchParams.page ? (searchParams.page - 1) * announcementsPerPage : 0;

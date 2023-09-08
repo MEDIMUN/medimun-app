@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default async function Page({ params, props }) {
+export default async function Page({ params }) {
 	const id = Math.random().toString(36);
 	const announcement = await getData(params.announcementId);
 	const user = announcement.user;
@@ -40,7 +40,6 @@ export default async function Page({ params, props }) {
 }
 
 async function getData(announcementId) {
-	console.log(announcementId);
 	let announcement;
 	try {
 		announcement = await prisma.announcement.findUnique({

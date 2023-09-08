@@ -17,7 +17,6 @@ import MainTemplate from "./main";
 
 function EmailVerification(props) {
 	const baseUrl = "https://www.medimun.org";
-	console.log(props);
 
 	return (
 		<MainTemplate title="VERIFY YOUR EMAIL">
