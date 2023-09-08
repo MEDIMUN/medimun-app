@@ -79,7 +79,7 @@ const MenuItems = (props) => {
 		));
 	}, [props.pathname]);
 	return (
-		<div className="z-5 absolute ml-4 mt-40 grid max-h-min w-fit grid-cols-1 gap-2 overflow-y-auto font-[canela] text-[35px] font-[40] text-white md:ml-10 md:text-[48px]">
+		<div className="z-5 absolute ml-4 mt-20 grid max-h-min w-fit grid-cols-1 gap-2 overflow-y-auto font-[canela] text-[35px] font-[40] text-white md:ml-10 md:mt-40 md:text-[48px]">
 			{menuItems}
 		</div>
 	);
