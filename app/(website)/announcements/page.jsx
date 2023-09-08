@@ -1,6 +1,7 @@
 import prisma from "@/prisma/client";
 import Background from "@/components/website/Background";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 export default async function Page() {
 	const announcements = await getData();
