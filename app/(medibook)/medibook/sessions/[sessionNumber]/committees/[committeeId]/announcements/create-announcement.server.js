@@ -55,7 +55,7 @@ export async function createAnnouncement ( formData ) {
             },
             user: {
                connect: {
-                  userNumber: session.user.userNumber
+                  id: session.user.id
                }
             },
          },

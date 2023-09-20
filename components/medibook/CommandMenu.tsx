@@ -4,7 +4,8 @@ import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, C
 import React from "react";
 
 export function CommandMenu() {
-	const [open, setOpen] = React.useState(false);
+	return;
+	/* 	const [open, setOpen] = React.useState(false);
 
 	React.useEffect(() => {
 		const down = (e: KeyboardEvent) => {
@@ -30,15 +31,8 @@ export function CommandMenu() {
 					<CommandItem>Calculator</CommandItem>
 					<CommandItem>Calendar</CommandItem>
 					<CommandItem>Search Emoji</CommandItem>
-					<CommandItem>Calculator</CommandItem>
-					<CommandItem>Calendar</CommandItem>
-					<CommandItem>Search Emoji</CommandItem>
-					<CommandItem>Calculator</CommandItem>
-					<CommandItem>Calendar</CommandItem>
-					<CommandItem>Search Emoji</CommandItem>
-					<CommandItem>Calculator</CommandItem>
 				</CommandGroup>
 			</CommandList>
 		</CommandDialog>
-	);
+	); */
 }

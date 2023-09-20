@@ -14,10 +14,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { resetPassword } from "./reset-password.server";
 
-export default function Login() {
+export default function Login(props) {
 	const { toast } = useToast();
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const { currentSession } = props;
 
 	const [isHelp, setIsHelp] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -83,7 +84,8 @@ export default function Login() {
 					description: "You've been successfully logged in.",
 					variant: "default",
 				});
-				router.push("/medibook");
+				if (currentSession) router.push(`/medibook/sessions/${currentSession.number}`);
+				if (!currentSession) router.push(`/medibook`);
 			}
 		},
 		enabled: false,

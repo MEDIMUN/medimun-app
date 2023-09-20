@@ -10,7 +10,7 @@ import LoginButton from "./LoginButton";
 import Menu from "./Menu";
 
 const pageColors = {
-	"/": "black",
+	"/": "red",
 	"/home": "black",
 	"/medibook": "black",
 	"/login": "white",

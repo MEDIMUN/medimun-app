@@ -2,24 +2,22 @@
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 
 import { useSession } from "next-auth/react";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { useRouter } from "next/navigation";
 
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 export default function AvatarMenu() {
 	const { data: session, status } = useSession();
-	const router = useRouter();
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger>
 				<Avatar className="h-[30px] w-[30px]">
-					{status === "loading" ? <Skeleton /> : <AvatarImage src={`/api/user/${status === "authenticated" && session.user.userNumber}/profilePicture`} />}
+					{status === "loading" ? <Skeleton /> : <AvatarImage className="object-cover" src={`/api/user/${status === "authenticated" && session.user.id}/profilePicture`} />}
 					<AvatarFallback className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white">
 						{status === "authenticated" ? session.user.officialName[0] + session.user.officialSurname[0] : ""}
 					</AvatarFallback>
@@ -31,10 +29,16 @@ export default function AvatarMenu() {
 					<DropdownMenuLabel className="py-0 text-gray-500">{session.user.email}</DropdownMenuLabel>
 					<DropdownMenuLabel className="py-0 text-gray-500">{session.currentRoleNames[0] || (session.pastRoleNames.length == 0 ? "Applicant" : "Alumni")}</DropdownMenuLabel>
 					<DropdownMenuSeparator className="mb-2 mt-3 bg-gray-300" />
-					<DropdownMenuItem>Account Settings</DropdownMenuItem>
-					<DropdownMenuItem>Dashboard</DropdownMenuItem>
+					<Link href="/medibook/account">
+						<DropdownMenuItem>Account Settings</DropdownMenuItem>
+					</Link>
+					<Link href="/medibook/certificates">
+						<DropdownMenuItem>Certificates & Awards</DropdownMenuItem>
+					</Link>
+					<Link href="/medibook">
+						<DropdownMenuItem>Dashboard</DropdownMenuItem>
+					</Link>
 					<DropdownMenuItem>My Team</DropdownMenuItem>
-					<DropdownMenuItem>Certificates & Awards</DropdownMenuItem>
 					<DropdownMenuSeparator className="mb-3 mt-2 bg-gray-300" />
 					<DropdownMenuItem>
 						Command Menu
@@ -46,7 +50,9 @@ export default function AvatarMenu() {
 						</kbd>
 					</DropdownMenuItem>
 					<DropdownMenuSeparator className="mb-2 mt-3 bg-gray-300" />
-					<DropdownMenuItem onClick={() => router.push("/home")}>View Homepage</DropdownMenuItem>
+					<Link href="/home">
+						<DropdownMenuItem>View Homepage</DropdownMenuItem>
+					</Link>
 					<DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>Log Out</DropdownMenuItem>
 				</DropdownMenuContent>
 			)}

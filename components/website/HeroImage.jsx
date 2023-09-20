@@ -57,7 +57,7 @@ export function Paper() {
 		const height = window.innerHeight;
 		const section = position / height;
 
-		const moveStartingSection = 0.2;
+		const moveStartingSection = 0;
 		const grayStartingSection = 0.1;
 		section > moveStartingSection ? setTranslateY((section - moveStartingSection) * 100 * 6) : setTranslateY(0);
 		section > grayStartingSection ? setGrayFilter(1 - section * 2) : setGrayFilter(1);
@@ -69,9 +69,9 @@ export function Paper() {
 				transform: `translateY(${translateY * 1.3}px)`,
 				filter: `grayscale(${grayFilter})`,
 			}}
-			alt="Image of 20 delegates lifting their placards containing the name of the country they represent."
+			alt="20 delegates lifting their placards containing the name of the country they represent."
 			quality={90}
-			className="fixed bottom-[60%] left-0 z-[41] w-[100px] select-none"
+			className="fixed bottom-[43%] left-0 z-[41] w-[100px] select-none"
 			src={paper}
 		/>
 	);

@@ -46,7 +46,7 @@ export default function Page() {
 		background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, #AE2D2890 0%, rgb(0, 0, 0) 70%, rgb(0, 0, 0) 100%)`,
 	};
 	return (
-		<div className="h-[128vh] w-full bg-black md:h-[100vh]">
+		<div className="h-[128vh] w-full bg-black md:h-screen">
 			<Image fill src={image6} className="object-cover" />
 			<div className="absolute h-full bg-black"></div>
 			<div style={vignette} className="absolute h-full w-full ">

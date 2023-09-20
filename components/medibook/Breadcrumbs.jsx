@@ -14,13 +14,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import MediBookLogo from "@public/assets/branding/logos/medibook-logo-white-2.svg";
 import MediBookBadge from "@public/assets/branding/badges/medibook-badge-white-1.svg";
-import { useRouter } from "next/navigation";
 
 export default function Breadcrumb() {
 	const { data: session, status, update } = useSession();
 	if (status === "authenticated" && session.isDisabled) signOut();
 	const pathname = usePathname();
-	const router = useRouter();
 	const [currentPath, setCurrentPath] = useState([]);
 
 	const Separator = (props) => {
@@ -56,7 +54,7 @@ export default function Breadcrumb() {
 				.filter((item) => item !== "medibook")
 		);
 		//update();
-	}, [pathname]);
+	}, [pathname, session]);
 
 	return (
 		<div className="fdr my-1.5 flex max-h-[50px] w-[100%] items-center pl-[20px]">
@@ -73,10 +71,10 @@ export default function Breadcrumb() {
 				<>
 					<Separator className="hidden md:block" />
 					<Avatar className="mr-[8px] hidden h-[30px] w-[30px] md:block">
-						<AvatarImage src={`/api/user/${session.user.userNumber}/profilePicture`} />
+						<AvatarImage className="object-cover" src={`/api/user/${session.user.id}/profilePicture`} />
 						<AvatarFallback className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white">{session.user.officialName[0] + session.user.officialSurname[0]}</AvatarFallback>
 					</Avatar>
-					<p className="weig hidden h-[20px] truncate text-sm font-medium md:block">{session.user.officialName + " " + session.user.officialSurname}</p>
+					<p className="weig hidden h-[20px] truncate text-sm font-medium md:block">{session.user.displayName || session.user.officialName + " " + session.user.officialSurname}</p>
 					<Badge className="ml-[8px] hidden truncate md:block">{session.currentRoleNames[0] || (session.pastRoleNames.length == 0 ? "Applicant" : "Alumni")}</Badge>
 				</>
 			)}

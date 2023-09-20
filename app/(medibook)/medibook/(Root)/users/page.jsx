@@ -1,5 +1,6 @@
 import SearchBar from "./SearchBar";
 import { TitleBar, e as s } from "@/components/medibook/TitleBar";
+import DataTableDemo from "./table";
 
 export const metadata = {
 	title: "Users - MediBook",
@@ -14,7 +15,9 @@ export default function Page() {
 			/>
 			<div className="p-5">
 				<SearchBar />
-				<div className="mx-auto mt-5 grid max-w-[1200px] grid-cols-1 gap-[24px] md:grid-cols-2 lg:grid-cols-3"></div>
+				<div className="mx-auto mt-5 max-w-[1200px] grid-cols-1 gap-[24px] md:grid-cols-2 lg:grid-cols-3">
+					<DataTableDemo />
+				</div>
 			</div>
 		</>
 	);

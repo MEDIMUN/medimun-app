@@ -58,12 +58,9 @@ export default async function Page({ params, searchParams }) {
 				title="Global Announcements"
 				button1roles={[s.board, s.sec]}
 				button1href={`/medibook/announcements?create`}
-				button1style="text-black bg-white"
-				bgColor="bg-gradient-to-br from-gray-200 via-gray-400 to-gray-600"
 				button1text="Publish Announcement"
 				button2text="↻"
 				button2href="/medibook/announcements"
-				button2roles={[s.all]}
 			/>
 			<div className="p-5">
 				<SearchBar />

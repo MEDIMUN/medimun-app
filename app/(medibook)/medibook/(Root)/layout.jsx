@@ -1,6 +1,6 @@
 import SubMenu from "@/components/medibook/SubMenu";
 
-export const menuItems = [
+const menuItems = [
 	{
 		title: "Home",
 		href: "/medibook",

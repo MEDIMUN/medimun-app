@@ -34,11 +34,11 @@ model Account {
 }
 
 model User {
-  id                                  Int                                   @id @default(autoincrement())
-  //
-  userNumber                          String                                @unique
+  id                                  String                                @id @unique
   email                               String                                @unique
   phoneNumber                         String?
+  phoneCode                           String?
+  profilePicture                      String?                               @map("pp")
   //
   isDisabled                          Boolean                               @default(false)
   //
@@ -61,7 +61,7 @@ model User {
   organiserProfileVisibility          Int                                   @default(2) @map("opv")
   //ACCOUNT
   account                             Account?                              @relation(fields: [accountId], references: [id])
-  accountId                           Int?
+  accountId                           Int?                                  @unique
   //
   member                              Member[]
   delegate                            Delegate[]
@@ -117,35 +117,35 @@ model Session {
 }
 
 model GlobalAdmin {
-  id     Int  @id @default(autoincrement())
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model Admin {
-  id     Int  @id @default(autoincrement())
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model SeniorDirector {
-  id     Int  @id @default(autoincrement())
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model SecretaryGeneral {
   id        Int     @id @default(autoincrement())
-  userId    Int
   session   Session @relation(fields: [sessionId], references: [id])
   sessionId Int
   User      User    @relation(fields: [userId], references: [id])
+  userId    String
 }
 
 model DeputySecretaryGeneral {
   id        Int     @id @default(autoincrement())
   user      User    @relation(fields: [userId], references: [id])
-  userId    Int
+  userId    String
   session   Session @relation(fields: [sessionId], references: [id])
   sessionId Int
 }
@@ -153,7 +153,7 @@ model DeputySecretaryGeneral {
 model PresidentOfTheGeneralAssembly {
   id        Int     @id @default(autoincrement())
   user      User    @relation(fields: [userId], references: [id])
-  userId    Int
+  userId    String
   session   Session @relation(fields: [sessionId], references: [id])
   sessionId Int
 }
@@ -161,7 +161,7 @@ model PresidentOfTheGeneralAssembly {
 model DeputyPresidentOfTheGeneralAssembly {
   id        Int     @id @default(autoincrement())
   user      User    @relation(fields: [userId], references: [id])
-  userId    Int
+  userId    String
   session   Session @relation(fields: [sessionId], references: [id])
   sessionId Int
 }
@@ -169,7 +169,7 @@ model DeputyPresidentOfTheGeneralAssembly {
 model Organiser {
   id        Int     @id @default(autoincrement())
   user      User    @relation(fields: [userId], references: [id])
-  userId    Int
+  userId    String
   session   Session @relation(fields: [sessionId], references: [id])
   sessionId Int
 }
@@ -211,7 +211,7 @@ model School {
 model Student {
   id       Int    @id @default(autoincrement())
   user     User   @relation(fields: [userId], references: [id])
-  userId   Int
+  userId   String
   school   School @relation(fields: [schoolId], references: [id])
   schoolId Int
 }
@@ -219,7 +219,7 @@ model Student {
 model SchoolDirector {
   id        Int     @id @default(autoincrement())
   user      User    @relation(fields: [userId], references: [id])
-  userId    Int
+  userId    String
   school    School  @relation(fields: [schoolId], references: [id])
   schoolId  Int
   session   Session @relation(fields: [sessionId], references: [id])
@@ -252,7 +252,7 @@ model Delegate {
   id          Int       @id @default(autoincrement())
   country     String?
   user        User      @relation(fields: [userId], references: [id])
-  userId      Int
+  userId      String
   committee   Committee @relation(fields: [committeeId], references: [id])
   committeeId String
 }
@@ -260,7 +260,7 @@ model Delegate {
 model Chair {
   id          Int       @id @default(autoincrement())
   user        User      @relation(fields: [userId], references: [id])
-  userId      Int
+  userId      String
   committee   Committee @relation(fields: [committeeId], references: [id])
   committeeId String
 }
@@ -271,9 +271,7 @@ model Department {
   shortName           String?
   slug                String?
   description         String?
-  isMedinews          Boolean                  @default(false)
-  isIt                Boolean                  @default(false)
-  isShop              Boolean                  @default(false)
+  type                DepartmentType?
   session             Session                  @relation(fields: [sessionId], references: [id])
   sessionId           Int
   member              Member[]
@@ -287,7 +285,7 @@ model Member {
   id           Int        @id @default(autoincrement())
   job          String?
   user         User       @relation(fields: [userId], references: [id])
-  userId       Int
+  userId       String
   department   Department @relation(fields: [departmentId], references: [id])
   departmentId String
 }
@@ -295,7 +293,7 @@ model Member {
 model Manager {
   id           Int        @id @default(autoincrement())
   user         User       @relation(fields: [userId], references: [id])
-  userId       Int
+  userId       String
   department   Department @relation(fields: [departmentId], references: [id])
   departmentId String
 }
@@ -331,10 +329,10 @@ model Chat {
 }
 
 model ChatMemeber {
-  id     Int  @id @default(autoincrement())
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-  chat   Chat @relation(fields: [chatId], references: [id])
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  chat   Chat   @relation(fields: [chatId], references: [id])
   chatId Int
 }
 
@@ -349,7 +347,7 @@ model GroupChat {
 model GroupChatMemeber {
   id     Int       @id @default(autoincrement())
   user   User      @relation(fields: [userId], references: [id])
-  userId Int
+  userId String
   chat   GroupChat @relation(fields: [chatId], references: [id])
   chatId Int
 }
@@ -372,8 +370,8 @@ model Message {
   //
   content     String
   time        DateTime   @default(now())
-  sender      User       @relation(fields: [senderId], references: [id])
-  senderId    Int
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String
   //
   chat        Chat?      @relation(fields: [chatId], references: [id])
   chatId      Int?
@@ -393,8 +391,8 @@ model Reaction {
   //
   type      ReactionType
   //
-  sender    User         @relation(fields: [senderId], references: [id])
-  senderId  Int
+  user      User         @relation(fields: [userId], references: [id])
+  userId    String
   //
   message   Message      @relation(fields: [messageId], references: [id])
   messageId Int
@@ -418,7 +416,7 @@ model Announcement {
   markdown               String
   //
   user                   User                     @relation(fields: [userId], references: [id])
-  userId                 Int
+  userId                 String
   GlobalAnnouncement     GlobalAnnouncement[]
   MediBookAnnouncement   MediBookAnnouncement[]
   AlumniAnnouncement     AlumniAnnouncement[]
@@ -537,4 +535,10 @@ enum CommitteeType {
   GENERALASSEMBLY
   SECURITYCOUNCIL
   SPECIALCOMMITTEE
+}
+
+enum DepartmentType {
+  IT
+  MEDINEWS
+  SALES
 }

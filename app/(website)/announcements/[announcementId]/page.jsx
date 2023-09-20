@@ -14,7 +14,7 @@ export default async function Page({ params }) {
 	const publishedDate = announcement?.time.toLocaleString("en-uk", { month: "long", day: "numeric", year: "numeric" });
 	return (
 		<>
-			<div id={id} className="z-[40] h-auto min-h-[100vh] w-full bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 font-[Montserrat] text-xl font-[700] text-black">
+			<div id={id} className="z-[40] h-auto min-h-screen w-full bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 font-[Montserrat] text-xl font-[700] text-black">
 				<div className="mx-auto flex w-full max-w-[1200px] flex-col gap-10 pt-[96px] md:p-4 md:pt-[96px]">
 					<div>
 						<Link href="/announcements">

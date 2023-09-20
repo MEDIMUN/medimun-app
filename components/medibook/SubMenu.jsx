@@ -40,7 +40,7 @@ export default function SubMenu(props) {
 	return (
 		<>
 			{sticky && <div className="h-12"></div>}
-			<div className={`${sticky && "fixed left-0 right-0 top-0 bg-white shadow-md"} z-50 flex h-[48px] w-full justify-start border-b-[1px] border-[#EAEAEA] px-2`}>
+			<div className={`${sticky && "fixed left-0 right-0 top-0 bg-white"} z-50 flex h-[48px] w-full justify-start border-[#EAEAEA] px-2`}>
 				<NavigationMenu className="flex w-[100%] justify-start overflow-x-auto">
 					<NavigationMenuList>
 						{sticky && (

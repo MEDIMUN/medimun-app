@@ -21,7 +21,7 @@ export async function currentSession ( formData ) {
       prisma.$connect();
       currentUser = await prisma.user.findUnique( {
          where: {
-            userNumber: session.user.userNumber,
+            id: session.user.id,
          },
          select: {
             account: {

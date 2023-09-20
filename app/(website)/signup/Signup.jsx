@@ -18,6 +18,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { countries } from "@/data/countries.js";
 import useWindowDimensions from "@/lib/window-size";
 import Confetti from "react-confetti";
+import { titleCase } from "@/lib/title-case";
 
 export default function SignUp() {
 	//STATES
@@ -111,14 +112,6 @@ export default function SignUp() {
 	}
 
 	//FUNCTIONS
-
-	function titleCase(str, separator) {
-		let splitStr = str.split(separator);
-		for (var i = 0; i < splitStr.length; i++) {
-			splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-		}
-		return splitStr.join(separator);
-	}
 
 	async function nextPage(event) {
 		event.preventDefault();

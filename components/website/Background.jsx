@@ -28,8 +28,8 @@ export default function Background(props) {
 
 	return (
 		<>
-			<div style={{ height: elementHeight, background: vignette }} className="absolute -z-[1] min-h-[100vh] w-full" />
-			<div style={{ height: elementHeight }} className="absolute -z-[2] min-h-[100vh] w-full bg-[url(/assets/delegates-indoors-2.jpg)] bg-cover" />
+			<div style={{ height: elementHeight, background: vignette }} className="absolute -z-[1] min-h-screen w-full" />
+			<div style={{ height: elementHeight }} className="absolute -z-[2] min-h-screen w-full bg-[url(/assets/delegates-indoors-2.jpg)] bg-cover" />
 		</>
 	);
 }

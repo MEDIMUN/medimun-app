@@ -32,7 +32,7 @@ export async function createAnnouncement ( formData ) {
 					...announcement,
 					user: {
 						connect: {
-							userNumber: session.user.userNumber
+							id: session.user.id
 						},
 					},
 					WebsiteAnnouncement: {
@@ -49,7 +49,7 @@ export async function createAnnouncement ( formData ) {
 					...announcement,
 					user: {
 						connect: {
-							userNumber: session.user.userNumber
+							id: session.user.id
 						},
 					},
 					WebsiteAnnouncement: {
@@ -63,7 +63,7 @@ export async function createAnnouncement ( formData ) {
 					...announcement,
 					user: {
 						connect: {
-							userNumber: session.user.userNumber
+							id: session.user.id
 						},
 					},
 					MediBookAnnouncement: {

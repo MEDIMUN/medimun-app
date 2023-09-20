@@ -22,7 +22,7 @@ export const authOptions = {
 				try {
 					await prisma.$connect();
 					userDetails = await prisma.user.findFirst( {
-						where: { OR: [ { email: username }, { userNumber: username }, { username: username } ] },
+						where: { OR: [ { email: username }, { id: username }, { username: username } ] },
 						include: { account: true },
 					} );
 				} catch ( error ) {
@@ -37,8 +37,8 @@ export const authOptions = {
 				if ( userDetails.isDisabled ) {
 					throw new Error( "This account has been disabled, please contact us for more information" );
 				}
-				if ( ( password === userDetails.account.password ) ) {
-					const user = await userData( userDetails.userNumber );
+				if ( !( await verifyPassword( userDetails.account.password, password ) ) ) {
+					const user = await userData( userDetails.id );
 					return user;
 				} else {
 					throw new Error( "Incorrect Password" );
@@ -59,10 +59,9 @@ export const authOptions = {
 				token.signOut = false;
 				return token;
 			} else {
-				//				if ( trigger !== "update" ) return token;
 				const timeExpire = token.lastUpdated;
-				if ( !( timeNow - timeExpire > 10 * 1000 ) ) return token;
-				const data = await userData( token.user.userNumber );
+				if ( !( ( timeNow - timeExpire > 10 * 1000 ) || trigger == "update" ) ) return token;
+				const data = await userData( token.user.id );
 				if ( data.user.isDisabled ) return token;
 				token.user = data.user;
 				token.currentRoles = data.currentRoles;

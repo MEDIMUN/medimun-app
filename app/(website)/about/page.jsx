@@ -42,8 +42,8 @@ export default function Page() {
 	const normalStyle = `opacity-0`;
 
 	return (
-		<div className="-bg-[url(/assets/delegates-indoors-2.jpg)] px h-auto min-h-[100vh] w-full bg-medired  bg-gradient-to-r from-gray-700 via-gray-900 to-black bg-cover font-[Montserrat] text-xl font-[700] text-white">
-			<div className="mx-auto flex h-auto min-h-[100vh] w-full max-w-[1200px] flex-col gap-10 p-4 pt-[96px]">
+		<div className="-bg-[url(/assets/delegates-indoors-2.jpg)] px h-auto min-h-screen w-full bg-medired  bg-gradient-to-r from-gray-700 via-gray-900 to-black bg-cover font-[Montserrat] text-xl font-[700] text-white">
+			<div className="mx-auto flex h-auto min-h-screen w-full max-w-[1200px] flex-col gap-10 p-4 pt-[96px]">
 				<section>
 					<h1 className="ml-4 select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-white">About MEDIMUN</h1>
 					<h2 className="ml-4 mt-2 select-none rounded-3xl font-[Montserrat] text-[20px] font-[300] text-white">The Mediterranean Model United Nations</h2>

@@ -25,7 +25,6 @@ export default async function Page({ params, searchParams }) {
 			<Drawer selectedSession={selectedSession} />
 			<TitleBar
 				title={`${selectedSession.number + ordinal} Annual Session`}
-				description={`${delegateCount} Delegates and ${staffCount} Organisers`}
 				button1roles={[s.sd, s.director, s.admins, s.secretariat]}
 				button1text="Edit"
 				button1href={`/medibook/sessions/${selectedSession.number}?edit`}

@@ -1,9 +1,10 @@
+import { countries } from "@/data/countries";
 import prisma from "@client";
 
 export async function userData(user) {
 	await prisma.$connect();
 	const roles = await prisma.user.findFirst({
-		where: { OR: [{ email: user }, { userNumber: user }, { username: user }] },
+		where: { OR: [{ email: user }, { id: user }, { username: user }] },
 		include: {
 			globalAdmin: true,
 			admin: true,
@@ -151,34 +152,28 @@ export async function userData(user) {
 
 	let sessions = [];
 
-	if (
-		allFilteredCurrentRoles.includes("Global Admin") ||
-		allFilteredCurrentRoles.includes("Admin") ||
-		allFilteredCurrentRoles.includes("Senior Director") ||
-		allFilteredCurrentRoles.includes("Director")
-	) {
-		sessions = await prisma.session.findMany({
-			select: {
-				number: true,
-			},
-		});
-		sessions = sessions.map((session) => session.number.toString());
-	}
+	const nationality = countries.filter((country) => {
+		if (country.countryCode === roles.nationality) {
+			return country;
+		}
+	})[0];
 
 	return {
 		user: {
-			userNumber: roles.userNumber,
+			id: roles.id,
 			officialName: roles.officialName,
 			officialSurname: roles.officialSurname,
 			email: roles.email,
 			displayName: roles.displayName,
 			schoolName: roles.school ? roles.student.school.name : "null",
 			isDisabled: roles.isDisabled,
+			nationality: nationality,
+			pronoun1: roles.pronoun1,
+			pronoun2: roles.pronoun2,
 		},
 		currentRoles: allFullCurrentRoles,
 		pastRoles: allFullPastRoles,
 		currentRoleNames: allFilteredCurrentRoles,
 		pastRoleNames: allFilteredPastRoles,
-		sessions: sessions,
 	};
 }

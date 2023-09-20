@@ -7,6 +7,27 @@ const withMDX = require( '@next/mdx' )( {
 } );
 
 const nextConfig = withMDX( {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'media.medimun.org',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.medimun.org',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
   reactStrictMode: true,
   swcMinify: true,
   experimental: {

@@ -1,15 +1,25 @@
-import { getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import prisma from "@/prisma/client";
 
 export default async function AuthRedirect(props) {
 	const session = await getServerSession(authOptions);
+
 	if (session && props.authenticated) {
-		redirect(props.authenticated);
+		const currentSession = await prisma.session
+			.findFirst({
+				where: { isCurrent: true },
+				select: { number: true },
+			})
+			.catch(() => {
+				console.log("No current session");
+				redirect(`/medibook`);
+			});
+		redirect(`/medibook/sessions/${currentSession.number}`);
 	}
-	if (!session && props.unauthenticated) {
-		redirect(props.unauthenticated);
-	}
+
+	if (!session && props.unauthenticated) redirect(props.unauthenticated);
 	return <></>;
 }
 

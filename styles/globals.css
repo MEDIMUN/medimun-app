@@ -8,13 +8,28 @@
 }
 
 @font-face {
-  font-family: "GTAmericaRegular";
-  src: url("/fonts/GTAmericaRegular.ttf");
+  font-family: "Sequel";
+  src: url("/fonts/Sequel.ttf");
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter.ttf");
+}
+
+@font-face {
+  font-family: "SequelThin";
+  src: url("/fonts/SequelThin.ttf");
+}
+
+@font-face {
+  font-family: "SequelBlack";
+  src: url("/fonts/SequelBlack.ttf");
 }
 
 @font-face {
   font-family: "Canela";
-  src: url("/fonts/Canela.otf");
+  src: url("/fonts/Canela2.ttf");
 }
 
 @font-face {

@@ -23,6 +23,10 @@ export default function Layout(props) {
 			title: "Documents",
 			href: `/medibook/sessions/${props.params.sessionNumber}/documents`,
 		},
+		{
+			title: "Session Announcements",
+			href: `/medibook/sessions/${props.params.sessionNumber}/announcements`,
+		},
 	];
 	return (
 		<>

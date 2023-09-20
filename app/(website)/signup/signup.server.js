@@ -4,6 +4,7 @@ import "server-only";
 
 import prisma from "@/prisma/client";
 import sendVerificationEmail from "@/email/templates/email-verification";
+import { hashPassword } from "@/lib/auth";
 
 
 function titleCase ( str, separator ) {
@@ -242,10 +243,10 @@ export async function createUser ( email, code ) {
 				officialSurname: user.officialSurname,
 				nationality: user.nationality,
 				dateOfBirth: user.dateOfBirth,
-				userNumber: generateRandom12DigitNumber().toString(),
+				id: generateRandom12DigitNumber().toString(),
 				account: {
 					create: {
-						password: user.password,
+						password: await hashPassword( user.password ),
 					},
 				},
 			},

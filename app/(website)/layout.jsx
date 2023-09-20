@@ -25,9 +25,9 @@ export default function RootLayout({ children }) {
 					<CommandMenu className="z-[500]" />
 					<main className="min-h-[100svh] w-full overflow-y-hidden">
 						{children}
-						<div className="fixed bottom-0 left-0 z-[400] h-6 w-full border-t-[1px] border-t-medired bg-black px-4 text-center font-bold text-medired">
+						{/* 						<div className="fixed bottom-0 left-0 z-[400] h-6 w-full border-t-[1px] border-t-medired bg-black px-4 text-center font-bold text-medired">
 							This site is under construction
-						</div>
+						</div> */}
 					</main>
 					<Toaster />
 					<Footer />

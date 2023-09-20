@@ -17,20 +17,10 @@ export default async function Page() {
 		<>
 			<Drawer />
 			<SubMenu menuItems={menuItems} />
-			<TitleBar
-				title="Sessions"
-				button1roles={[s.admins, s.sd]}
-				button1href={`/medibook/sessions?add`}
-				button1style="text-black bg-white hover:text-white"
-				bgColor="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900"
-				button1text="Add Session"
-				button2text="↻"
-				button2href="/medibook/sessions"
-				button2style="text-black bg-white hover:text-white"
-			/>
-			<div className="mx-auto max-w-[1200px] p-5">
+			<TitleBar title="Sessions" button1roles={[s.admins, s.sd]} button1href={`/medibook/sessions?add`} button1text="Add Session" />
+			<div className="mx-auto max-w-[1248px] p-6">
 				<SearchBar />
-				<div className="mt-5 grid grid-cols-1 gap-[24px] md:grid-cols-2 lg:grid-cols-3">
+				<div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 					{data.length === 0 && (
 						<div className="col-span-3 row-span-3 flex w-full text-center align-middle">
 							<h2 className="m-auto">No Sessions found</h2>

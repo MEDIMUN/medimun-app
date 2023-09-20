@@ -54,7 +54,9 @@
 		"app/(medibook)/medibook/(Root)/announcements/create-announcement.server.js",
 		"app/(medibook)/medibook/sessions/[sessionNumber]/departments/[departmentId]/announcements/delete-announcement.server.js",
 		"app/(medibook)/medibook/sessions/[sessionNumber]/committees/announcements/delete-announcement.server.js",
-		"app/(medibook)/medibook/sessions/[sessionNumber]/committees/add-committee.server.js"
+		"app/(medibook)/medibook/sessions/[sessionNumber]/committees/add-committee.server.js",
+		"components/medibook/CommandMenu.jsx",
+		"app/(medibook)/medibook/account/get-user.js"
 	],
 	"exclude": ["node_modules"]
 }
