@@ -4,15 +4,34 @@ import Link from "next/link";
 import SubMenu from "@/components/medibook/SubMenu";
 import Drawer from "./Drawer";
 import { TitleBar, e as s } from "@/components/medibook/TitleBar";
-import { menuItems } from "../(Root)/layout";
 
 export const metadata = {
 	title: "Sessions - MediBook",
 	description: "All Sessions of the Mediterranean Model United Nations",
 };
 
+const menuItems = [
+	{
+		title: "Home",
+		href: "/medibook",
+	},
+	{
+		title: "Sessions",
+		href: `/medibook/sessions`,
+	},
+	{
+		title: "Announcements",
+		href: `/medibook/announcements`,
+	},
+	{
+		title: "Users",
+		href: `/medibook/users`,
+	},
+];
+
 export default async function Page() {
 	const data = await GetData();
+	console.log(data);
 	return (
 		<>
 			<Drawer />
@@ -159,11 +178,6 @@ async function GetData() {
 			secretariat: secretariat,
 		};
 	});
-	return sessions.sort((a, b) => {
-		if (parseInt(a) > parseInt(b)) {
-			return -1;
-		} else {
-			return 1;
-		}
-	});
+	console.log(sessions);
+	return sessions.filter((session) => session.number !== 0);
 }

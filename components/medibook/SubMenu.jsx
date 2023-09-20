@@ -36,6 +36,7 @@ export default function SubMenu(props) {
 	}, []);
 
 	if (props.hide) return;
+	if (!props.menuItems) return;
 
 	return (
 		<>

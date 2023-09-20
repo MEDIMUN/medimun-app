@@ -1,5 +1,14 @@
 import SubMenu from "@/components/medibook/SubMenu";
 
+export default function Layout({ children }) {
+	return (
+		<>
+			<SubMenu menuItems={menuItems} />
+			{children}
+		</>
+	);
+}
+
 const menuItems = [
 	{
 		title: "Home",
@@ -18,12 +27,3 @@ const menuItems = [
 		href: `/medibook/users`,
 	},
 ];
-
-export default function Layout({ children }) {
-	return (
-		<>
-			<SubMenu menuItems={menuItems} />
-			{children}
-		</>
-	);
-}
