@@ -56,7 +56,6 @@ async function getData() {
 		});
 	} catch (e) {
 		console.log(e);
-		notFound();
 	}
 	return announcements;
 }
