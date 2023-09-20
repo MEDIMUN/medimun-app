@@ -36,6 +36,5 @@ export async function getUser () {
 		return notFound();
 	}
 	if ( !user ) notFound();
-	console.log( "user", user );
 	return user;
 }

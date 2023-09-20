@@ -13,7 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function Page({ params }) {
 	const { user, currentRoleNames, pastRoleNames, pastRoles, currentRoles } = await getData(params);
-	console.log(user, currentRoleNames, pastRoleNames, pastRoles, currentRoles);
 	return (
 		<div className="my-auto bg-[#f5f5f5]">
 			<div className="mx-auto  flex min-h-screen max-w-[1000px] flex-col border-[#ccc] font-[montserrat] lg:flex-row">
@@ -124,7 +123,6 @@ async function getData(params) {
 	if (userId.includes("%40")) {
 		userId = userId.split("%40")[1];
 	}
-	console.log(userId);
 	const user = await userData(userId);
 	if (!user) {
 		notFound();

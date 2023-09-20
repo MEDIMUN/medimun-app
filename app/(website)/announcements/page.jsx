@@ -54,7 +54,8 @@ async function getData() {
 			},
 			take: 10,
 		});
-	} catch (err) {
+	} catch (e) {
+		console.log(e);
 		notFound();
 	}
 	return announcements;
