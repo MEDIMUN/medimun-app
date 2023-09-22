@@ -49,7 +49,7 @@ export async function updateProfilePicture ( formData ) {
 
    if ( currentProfilePicture ) {
       try {
-         await minioClient.removeObject( 'profile-pictures', "profile-pictures/" + currentProfilePicture );
+         await minioClient.removeObject( 'medibook', "profile-pictures/" + currentProfilePicture );
       } catch ( error ) {
          console.error( error );
          return { ok: false, title: "Error updating profile picture", variant: "destructive" };
@@ -99,7 +99,7 @@ export async function removeProfilePicture () {
 
    if ( currentProfilePicture ) {
       try {
-         await minioClient.removeObject( 'profile-pictures', "profile-pictures/" + currentProfilePicture );
+         await minioClient.removeObject( 'medibook', "profile-pictures/" + currentProfilePicture );
       } catch ( error ) {
          console.error( error );
          return { ok: false, title: "Error updating profile picture", variant: "destructive" };

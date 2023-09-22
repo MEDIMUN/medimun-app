@@ -24,7 +24,7 @@ export async function GET ( request, { params } ) {
    let minioClient = minio();
    let url;
    try {
-      url = await minioClient.presignedGetObject( 'profile-pictures', "profile-pictures/" + userExists.profilePicture, 30 * 60 );
+      url = await minioClient.presignedGetObject( 'medibook', "profile-pictures/" + userExists.profilePicture, 30 * 60 );
    } catch ( e ) {
       notFound();
    }

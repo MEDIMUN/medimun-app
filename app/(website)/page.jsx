@@ -5,6 +5,8 @@ import { Paper } from "@/components/website/HeroImage";
 import AuthRedirect from "@/components/website/AuthRedirect";
 import Link from "next/link";
 import { Section2 } from "./Section2";
+import Logo from "@/components/website/Logo";
+import Footer from "@/components/website/Footer";
 
 const bgColor = "bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-gray-100 to-gray-300" && "bg-gradient-to-r from-red-500 to-red-800";
 
@@ -24,6 +26,7 @@ export async function HomePage() {
 				<Paper />
 			</section>
 			<Section2 />
+			<section className="min-h-screen"></section>
 		</>
 	);
 }
@@ -31,8 +34,35 @@ export async function HomePage() {
 export default function Page() {
 	return (
 		<>
+			<div className="absolute z-[500] h-screen w-screen bg-black">
+				<div className="mx-auto min-h-screen max-w-[1248px] p-5 font-[canela] text-white">
+					{" "}
+					<div className="w-[256px] pb-5">
+						<Logo color="red" />
+					</div>
+					<h1 className="text-[50px] font-bold leading-[60px]">Exciting Enhancements to Our Digital Portfolio!</h1>
+					<h2 className="pt-5 text-[30px] font-semibold leading-[35px]">
+						Esteemed delegates and participants, our website is undergoing a meticulous redesign set to launch next month. Additionally, our brand-new application, two years in the
+						making, is slated for a test release in early 2024.
+					</h2>
+					<h2 className="py-5 text-[30px] font-semibold leading-[35px]">
+						For inquiries, please contact us at{" "}
+						<a className="text-medired" href="mailto:medimun.cyprus@gmail.com">
+							medimun.cyprus@gmail.com
+						</a>
+						. Stay tuned to our social media for crucial dates and further details.
+					</h2>
+					<h2 className="pt-5 text-[30px] font-semibold leading-[35px]">
+						Mark your calendars: The 19<sup>th</sup> Annual Session is scheduled for February 2024. More information to come.
+					</h2>
+				</div>
+				<Footer />
+			</div>
+
 			<AuthRedirect authenticated="/medibook/sessions" />
-			<HomePage />
+			{
+				//<HomePage />
+			}
 		</>
 	);
 }
