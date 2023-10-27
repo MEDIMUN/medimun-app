@@ -13,8 +13,6 @@ import { createSession } from "./create-session.server";
 
 export default function Drawer() {
 	const { data: session, status } = useSession();
-	if (!status == "loading" && (!session || session.isDisabled)) redirect("/medibook/signout");
-
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
 	const { toast } = useToast();

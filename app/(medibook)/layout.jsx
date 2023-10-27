@@ -5,7 +5,7 @@ import Navbar from "@/components/medibook/Navbar";
 import { ClientProvider } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 import AuthRedirect from "@/components/website/AuthRedirect";
-import Footer from "@/components/website/Footer";
+import Footer from "@/components/medibook/Footer";
 export const metadata = {
 	title: "MediBook",
 	description: "MediBook is the new platform for everything MEDIMUN.",

@@ -4,10 +4,3 @@
    vertical-align: middle;
    width: fit-content;
 }
-
-.logo {
-   position: relative !important;
-   display: inline-block;
-   vertical-align: middle;
-   overflow: hidden;
-}

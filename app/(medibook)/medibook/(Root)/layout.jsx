@@ -26,4 +26,12 @@ const menuItems = [
 		title: "Users",
 		href: `/medibook/users`,
 	},
+	{
+		title: "Schools",
+		href: `/medibook/schools`,
+	},
+	{
+		title: "Places",
+		href: `/medibook/places`,
+	},
 ];

@@ -11,7 +11,7 @@ import Menu from "./Menu";
 
 const pageColors = {
 	"/": "red",
-	"/home": "black",
+	"/home": "red",
 	"/medibook": "black",
 	"/login": "white",
 	"/register": "white",
