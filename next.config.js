@@ -31,6 +31,7 @@ const nextConfig = withMDX( {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
+    serverActions: true,
     mdxRs: true,
   },
   eslint: {
