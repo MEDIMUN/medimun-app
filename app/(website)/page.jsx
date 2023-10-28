@@ -53,10 +53,19 @@ export default function Page() {
 						Please complete the{" "}
 						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/YJjpbrQXKLnxYVLo9">
 							Form 1
-						</a>{" "}
-						and{" "}
+						</a>
+						{", "}
 						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/TtA2qFJ7YirkBmkF8">
 							Form 2
+						</a>
+						{", "}
+						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/YJjpbrQXKLnxYVLo9">
+							Form 3
+						</a>
+						{", "}
+						and{" "}
+						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/TtA2qFJ7YirkBmkF8">
+							Form 4
 						</a>{" "}
 						After checking out the{" "}
 						<a target="_blank" className="text-yellow-500 underline" href="https://drive.google.com/file/d/1BBBbX8RepI6toL4M2WUS3KE2IkuM2g2d/view?usp=sharing">
