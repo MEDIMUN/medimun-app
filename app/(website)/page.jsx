@@ -48,33 +48,35 @@ export default function Page() {
 						in early 2024.
 					</h2>
 					<h2 className="rounded-xl bg-medired p-5 text-[20px] font-semibold leading-[25px]">
-						Delegate Applications are now open!
+						<strong>Delegate Applications are now open!</strong>
+						<br />
 						<br />
 						Please complete the{" "}
 						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/YJjpbrQXKLnxYVLo9">
 							Form 1
 						</a>
-						{", "}
+						{" and "}
 						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/TtA2qFJ7YirkBmkF8">
 							Form 2
-						</a>
-						{", "}
-						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/YJjpbrQXKLnxYVLo9">
-							Form 3
-						</a>
-						{", "}
-						and{" "}
-						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/TtA2qFJ7YirkBmkF8">
-							Form 4
 						</a>{" "}
-						After checking out the{" "}
+						after checking out the{" "}
 						<a target="_blank" className="text-yellow-500 underline" href="https://drive.google.com/file/d/1BBBbX8RepI6toL4M2WUS3KE2IkuM2g2d/view?usp=sharing">
 							prospectus
 						</a>
-						. Please note that we do not accept individual delegate applications. All applications must be submitted by a school or a registered organization.
+						{". Then, after you receive your country allocations, complete "}
+						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/cmfqKTgBvNrZ54oq6">
+							Form 3
+						</a>
+						{" and "}
+						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/4MASnoHVWfgyVVGx9">
+							Form 4
+						</a>
+						.
+						<br /> <br />
+						Please note that we do not accept individual delegate applications. All applications must be submitted by a school or a registered organization.
 					</h2>
-					<h2 className="pt-5 text-[20px] font-semibold leading-[25px]">
-						Mark your calendars:
+					<h2 className="mt-5 rounded-xl bg-medired p-5 text-[20px] font-semibold leading-[25px]">
+						<strong>Mark your calendars</strong>
 						<br />
 						The 19<sup>th</sup> Annual Session is scheduled for 2<sup>nd</sup> to 4<sup>th</sup> of February 2024.
 						<br />
