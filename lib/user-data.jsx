@@ -163,6 +163,7 @@ export async function userData(user) {
 			id: roles.id,
 			officialName: roles.officialName,
 			officialSurname: roles.officialSurname,
+			bio: roles.bio,
 			email: roles.email,
 			displayName: roles.displayName,
 			schoolName: roles.school ? roles.student.school.name : "null",
