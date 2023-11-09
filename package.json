@@ -1,6 +1,6 @@
 {
 	"name": "medimun-app",
-	"version": "0.6.0",
+	"version": "0.7.2",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
@@ -80,6 +80,7 @@
 		"dotenv": "^16.0.3",
 		"feather-icons": "^4.29.0",
 		"formidable": "^2.1.1",
+		"geist": "^1.1.0",
 		"lucide-react": "^0.263.1",
 		"minio": "^7.0.33",
 		"moment": "^2.29.4",

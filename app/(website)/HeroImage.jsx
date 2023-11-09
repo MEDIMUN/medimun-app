@@ -22,12 +22,17 @@ export default function HeroImage() {
 		};
 	}, []);
 	return (
-		<div
-			style={{
-				transform: "translateY(" + scrollY + "px)",
-			}}
-			className="fixed bottom-0 max-h-[90vh] min-h-[60vh]">
-			<Image className=" min-h-[65vh] object-cover object-right opacity-90 grayscale" src={heroImage} />
-		</div>
+		<>
+			<div
+				style={{
+					transform: "translateY(" + scrollY + "px)",
+				}}
+				className="fixed bottom-0 hidden max-h-[90vh] min-h-[60vh] md:block">
+				<Image className=" min-h-[65vh] object-cover object-right opacity-90 grayscale" src={heroImage} />
+			</div>
+			<div className="absolute bottom-0 mt-auto block max-h-[90vh] min-h-[60vh] md:hidden">
+				<Image className=" min-h-[65vh] object-cover object-right opacity-90 grayscale" src={heroImage} />
+			</div>
+		</>
 	);
 }

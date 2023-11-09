@@ -4,9 +4,11 @@ import { Paper } from "@/components/website/HeroImage";
 import AuthRedirect from "@/components/website/AuthRedirect";
 import Link from "next/link";
 import { Section2 } from "./Section2";
+import Gallery from "@/components/website/Gallery";
 import Logo from "@/components/website/Logo";
 import Footer from "@/components/website/Footer";
 import heroImage from "@/public/pages/index/hero2.png";
+import { Button } from "@/components/ui/button";
 
 const bgColor = "bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-gray-100 to-gray-300" && "bg-gradient-to-r from-red-500 to-red-800";
 
@@ -15,20 +17,54 @@ const numbah = 400;
 export async function HomePage() {
 	return (
 		<>
-			<section className={"min-h-screen bg-medired"}>
+			<section className={"min-h-[100svh] bg-medired md:min-h-screen"}>
 				<div className="flex h-[45svh] w-full flex-col justify-end gap-3 px-5 align-middle duration-300 md:h-[50vh] md:text-center">
 					<h1 className="-[text-shadow:_4px_4px_#000000] font-[canela] text-[50px] font-[750] leading-[50px] tracking-tight text-white md:text-[90px] md:leading-[83px]">
 						Strengtening Sustainability
 					</h1>
 					<h2 className="-[text-shadow:_2px_2px_#777]  font-[SequelBold] text-[40px] font-[300] leading-[35px] tracking-tight text-gray-100">Enchancing Global Partnerships</h2>
-					{/* 					<h1 className="bg-medired px-4 font-[Canela] text-[55px] font-[900] leading-[50px] tracking-tight text-white [text-shadow:_4px_4px_#000000] md:text-[80px] md:leading-[73px]">
-						Strengtening Sustainability
-					</h1>
-					<h2 className="px-4 font-[SequelBold] text-[55px] font-[300] leading-[45px] tracking-tight text-gray-300 [text-shadow:_2px_2px_#777]">Enchancing Global Partnerships</h2> */}
 				</div>
 				<HeroImage />
 			</section>
 			<Section2 />
+			<Gallery />
+			<section className="h-[750px] bg-black font-[montserrat] duration-300 md:h-[250px]">
+				<div className="mx-auto grid h-full max-w-[1260px] grid-cols-1 gap-5 p-5 pt-[10px] md:grid-cols-3">
+					<div className="text-900 h-full overflow-hidden rounded-xl border-2 border-slate-200 bg-[url(/placeholders/the-english-school-1.jpg)] bg-cover duration-300 hover:shadow-xl">
+						<div className="flex h-full w-full flex-col bg-white bg-opacity-50 p-5">
+							<div className="">
+								About The English School <br />
+								<span className="text-sm">Discover the rich history spanning over 120 years of the creators behind MEDIMUN.</span>
+							</div>
+							<Link className="ml-auto mt-auto" href="https://www.englishschool.ac.cy/" target="_blank">
+								<Button>Learn More</Button>
+							</Link>
+						</div>
+					</div>
+					<div className="text-900 h-full overflow-hidden rounded-xl border-2 border-slate-200 bg-[url(/pages/index/medibook.png)] bg-cover object-bottom duration-300 hover:shadow-xl">
+						<div className="flex h-full w-full flex-col bg-white bg-opacity-70 p-5">
+							<div>
+								About The MediBook App <br />
+								<span className="text-sm">Discover MediBook, the essential MEDIMUN companion app designed for your convenience and efficiency.</span>
+							</div>
+							<Link className="ml-auto mt-auto" href="/medibook">
+								<Button>Learn More</Button>
+							</Link>
+						</div>
+					</div>
+					<div className="text-900 h-full overflow-hidden rounded-xl border-2 border-slate-200 bg-[url(/pages/index/branding-3.png)] bg-cover object-bottom duration-300 hover:shadow-xl">
+						<div className="flex h-full w-full flex-col bg-white bg-opacity-40 p-5">
+							<div>
+								About The MediBook App <br />
+								<span className="text-sm">Our branding and identity guidelines to ensure a consistent representation of our brand across all channels.</span>
+							</div>
+							<Link className="ml-auto mt-auto" href="">
+								<Button disabled>Download</Button>
+							</Link>
+						</div>
+					</div>{" "}
+				</div>
+			</section>
 		</>
 	);
 }
@@ -36,66 +72,8 @@ export async function HomePage() {
 export default function Page() {
 	return (
 		<>
-			<div className="absolute z-[500] h-auto w-screen bg-black">
-				<div className="mx-auto h-auto min-h-screen max-w-[1248px] p-5 font-[montserrat] font-[800] text-white">
-					{" "}
-					<div className="w-[256px] pb-5">
-						<Logo color="red" />
-					</div>
-					<h1 className="text-[40px] font-bold leading-[40px]">Exciting Enhancements to Our Digital Portfolio!</h1>
-					<h2 className="py-5 text-[20px] font-semibold leading-[25px]">
-						Our website is undergoing a meticulous redesign set to launch next month. Additionally, our brand-new application, two years in the making, is slated for a test release
-						in early 2024.
-					</h2>
-					<h2 className="rounded-xl bg-medired p-5 text-[20px] font-semibold leading-[25px]">
-						<strong>Delegate Applications are now open!</strong>
-						<br />
-						<br />
-						Please complete Form 1 and Form 2 after checking out the prospectus. Then, after you receive your country allocations, complete Form 3{" and "}
-						Form 4
-						<br /> <br />
-						Links: <br />
-						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/YJjpbrQXKLnxYVLo9">
-							Form 1
-						</a>{" "}
-						(Deadline: October 19<sup>th</sup> 2023) <br />
-						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/TtA2qFJ7YirkBmkF8">
-							Form 2
-						</a>{" "}
-						(Deadline: October 19<sup>th</sup> 2023) <br />
-						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/cmfqKTgBvNrZ54oq6">
-							Form 3
-						</a>{" "}
-						(Deadline: November 10<sup>th</sup> 2023) <br />
-						<a target="_blank" className="text-yellow-500 underline" href="https://forms.gle/4MASnoHVWfgyVVGx9">
-							Form 4
-						</a>{" "}
-						(Deadline: November 3<sup>rd</sup> 2023) <br />
-						<br />
-						Please note that we do not accept individual delegate applications. All applications must be submitted by a school or a registered organization.
-					</h2>
-					<h2 className="mt-5 rounded-xl bg-medired p-5 text-[20px] font-semibold leading-[25px]">
-						<strong>Mark your calendars</strong>
-						<br />
-						The 19<sup>th</sup> Annual Session is scheduled for 2<sup>nd</sup> to 4<sup>th</sup> of February 2024.
-						<br />
-						The workshop will be held on the 18
-						<sup>th</sup> of November 2023. At The English School.
-					</h2>
-					<h2 className="py-5 text-[20px] font-semibold leading-[25px]">
-						For inquiries, please contact us at{" "}
-						<a className="text-medired" href="mailto:medimun.cyprus@gmail.com">
-							medimun.cyprus@gmail.com
-						</a>
-						. Stay tuned to our social media for crucial dates and further details.
-					</h2>
-				</div>
-			</div>
-
 			<AuthRedirect authenticated="/medibook/sessions" />
-			{
-				//<HomePage />
-			}
+			<HomePage />
 		</>
 	);
 }

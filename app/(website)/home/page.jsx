@@ -5,7 +5,7 @@ export default function Page() {
 	return (
 		<>
 			<AuthRedirect unauthenticated="/" />
-			<HomePage />;
+			<HomePage />
 		</>
 	);
 }

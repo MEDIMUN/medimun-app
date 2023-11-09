@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { s, authorize } from "@/lib/authorize";
 import { redirect } from "next/navigation";
 import prisma from "@/prisma/client";
+import { verifyPassword } from "@/lib/auth";
 
 export async function currentSession ( formData ) {
    const session = await getServerSession( authOptions );
@@ -40,9 +41,9 @@ export async function currentSession ( formData ) {
          variant: "destructive",
       };
    }
-
+   console.log( currentUser );
    if ( !currentUser ) return { ok: false, error: "User does not exist", title: "User does not exist", variant: "destructive" };
-   if ( currentUser.account.password !== password ) return { ok: false, error: "Incorrect password", title: "Incorrect password", variant: "destructive" };
+   if ( !( await verifyPassword( password, currentUser.account.password ) ) ) return { ok: false, error: "Incorrect password", title: "Incorrect password", variant: "destructive" };
 
    try {
       prisma.$connect();
@@ -90,6 +91,6 @@ export async function currentSession ( formData ) {
          variant: "destructive",
       };
    }
-
+   return { ok: true, title: "Updated Current Session", variant: "destructive" };
    redirect( `/medibook/sessions/${ sessionNumber }` );
 }

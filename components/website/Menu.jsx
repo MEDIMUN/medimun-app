@@ -16,16 +16,15 @@ import image7 from "@/public/placeholders/delegates-2.jpg";
 const links = [
 	{ pathname: "/about", src: image1, alt: "About" },
 	{ pathname: "/news", src: image7, alt: "News" },
-	{ pathname: "/topics", src: image3, alt: "Topics" },
+	{ pathname: "/register", src: image3, alt: "Register" },
 	{ pathname: "/sessions", src: image4, alt: "Sessions" },
-	{ pathname: "/events", src: image1, alt: "Events" },
 	{ pathname: "/resources", src: image5, alt: "Resources" },
 	{ pathname: "/announcements", src: image2, alt: "Announcements" },
-	{ pathname: "/contact", src: image6, alt: "Contact" },
 ].sort((a, b) => (a.alt.length > b.alt.length ? 1 : -1));
 
 const quickActions = [
 	{ href: "/login", alt: "Login" },
+	{ href: "/contact", alt: "Contact Us" },
 	{ href: "/signup", alt: "Sign Up" },
 	{ href: "/verify", alt: "Document Verification" },
 	{ href: "/donate", alt: "Donate" },
@@ -61,7 +60,7 @@ const MenuLink = React.memo((props) => {
 
 	return (
 		<Fragment key={props?.children}>
-			<li onMouseEnter={handleMouseEnter} className="z-[11] w-fit">
+			<li onMouseEnter={handleMouseEnter} className="z-[11] h-min w-fit">
 				<Link href={props?.href || "#"}>
 					<p className={style.animate + ` ${props?.href === props?.pathname && " !text-[var(--medired)]"}`}>{props?.children}</p>
 				</Link>
@@ -78,11 +77,7 @@ const MenuItems = (props) => {
 			</MenuLink>
 		));
 	}, [props.pathname]);
-	return (
-		<div className="z-5 absolute ml-4 mt-20 grid max-h-min w-fit grid-cols-1 gap-2 overflow-y-auto font-[canela] text-[35px] font-[40] text-white md:ml-10 md:mt-40 md:text-[48px]">
-			{menuItems}
-		</div>
-	);
+	return <div className="absolute ml-4 flex h-[100dvh] flex-col justify-center gap-2 text-[35px]  font-[40] md:ml-10 md:text-[48px]">{menuItems}</div>;
 };
 
 export default function Menu({ props }) {
@@ -107,7 +102,7 @@ export default function Menu({ props }) {
 	}, [links])[isHovered];
 
 	return (
-		<menu>
+		<menu className="font-[canela] text-white">
 			<div className={`fixed left-0 top-0 z-[250] h-[100dvh] w-full bg-black duration-500 ${!isVisable && "-translate-y-[100%]"}`}>
 				<div>
 					<Link href="/">
@@ -116,7 +111,7 @@ export default function Menu({ props }) {
 						</div>
 					</Link>
 					<div
-						className="absolute right-4 top-4 z-[12] cursor-pointer rounded-2xl border-[1px] border-white p-2 text-white shadow-white duration-200 md:right-10 md:top-10 md:shadow-lg md:hover:rounded-3xl md:hover:bg-white md:hover:text-black"
+						className="absolute right-4 top-4 z-[12] cursor-pointer rounded-2xl border-[1px] border-white p-2 shadow-white duration-200 md:right-10 md:top-10 md:shadow-lg md:hover:rounded-3xl md:hover:bg-white md:hover:text-black"
 						onClick={() => setIsVisable(false)}>
 						<CloseIcon />
 					</div>
@@ -129,7 +124,7 @@ export default function Menu({ props }) {
 						{quickActions.map((action) => (
 							<li key={action.href + Math.random()} className="my-auto px-3">
 								<Link href={action.href}>
-									<p className="w-max min-w-fit rounded-3xl text-center font-[canela] text-[20px] font-[40] text-white duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
+									<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
 										{action.alt}
 									</p>
 								</Link>

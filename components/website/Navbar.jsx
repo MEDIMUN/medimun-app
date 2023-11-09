@@ -14,16 +14,18 @@ const pageColors = {
 	"/home": "red",
 	"/medibook": "black",
 	"/login": "white",
-	"/register": "white",
+	"/register": "black",
 	"/signup": "white",
 	"/loginhelp": "black",
 	"/contact": "red",
 	"/about": "red",
 	"/announcements": "red",
+	"/sessions": "red",
 };
 
-const hideMenu = ["/loginhelp", "/register", "/signup"];
-const hideLogo = ["/loginhelp", "/register"];
+const hideMenu = ["/loginhelp", "/signup"];
+const hideLogo = ["/loginhelp"];
+const hideNotification = ["/login", "/signup", "/register"];
 
 export default function Navbar({ children }) {
 	const pathname = usePathname();
@@ -59,8 +61,40 @@ export default function Navbar({ children }) {
 
 	if (hideMenu.includes(pathname) && hideLogo.includes(pathname)) return null;
 
+	const notification = {
+		t0ext: "Website is being tested. You may encounter issues. Some links may temporarily not work.",
+		linkText: "Report",
+		link: "https://forms.gle/eSFYucMmJbQzMyPa6",
+	};
+
+	useEffect(() => {
+		if (isVisable) {
+			document.body.style.overflow = "hidden";
+			document.body.style.touchAction = "none";
+			window.scrollTo(0, 0);
+		} else {
+			document.body.style.overflow = "scroll";
+			document.body.style.touchAction = "auto";
+		}
+		return () => {
+			document.body.style.overflow = "unset";
+		};
+	}, [isVisable]);
+
 	return (
 		<>
+			{!hideNotification.includes(pathname) && notification.text && (
+				<div className="flex w-full justify-center bg-[#dfdfdf] py-1 font-[Montserrat] text-sm capitalize text-black">
+					<span className="my-auto inline-block text-center">
+						{notification.text.trim().toLowerCase() + " "}
+						{notification.linkText && (
+							<Link className="rounded-2xl bg-medired px-2 py-[2px] capitalize text-white duration-200 hover:bg-white hover:text-medired" target="_blank" href={notification.link}>
+								{notification.linkText.trim().toLowerCase() + " →"}
+							</Link>
+						)}
+					</span>
+				</div>
+			)}
 			<header className={style.header}>
 				<nav className={isTransparent ? style.transparentNav : style.opaqueNav}>
 					{!hideLogo.includes(pathname) && (

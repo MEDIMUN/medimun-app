@@ -15,18 +15,10 @@ export async function generateMetadata({ params }) {
 	};
 }
 
-const errorChecker = (fn) => {
-	try {
-		fn();
-	} catch (e) {
-		if (process.env.NODE_ENV == "development") console.log(e);
-	}
-};
-
 async function getData({ params }) {
 	let announcement;
-	errorChecker(
-		(announcement = await prisma.announcement.findUnique({
+	try {
+		announcement = await prisma.announcement.findUnique({
 			where: {
 				id: params.announcementId,
 			},
@@ -44,8 +36,11 @@ async function getData({ params }) {
 					},
 				},
 			},
-		}))
-	);
+		});
+	} catch (e) {
+		if (process.env.NODE_ENV == "development") console.log(e);
+	}
+
 	if (!announcement) return notFound();
 	return announcement;
 }

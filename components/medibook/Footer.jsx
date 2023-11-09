@@ -11,7 +11,6 @@ export default async function Footer() {
 					{parseInt(process.env.VERSION[0]) < 1 && " BETA"}
 				</div>
 			</div>
-			<div className="bg-gray-600 px-6 py-2 text-[10px] text-white	">Copyright © {new Date().getFullYear()} Mediterranean Model United Nations. All rights reserved.</div>
 		</footer>
 	);
 }

@@ -30,21 +30,15 @@ export default function Footer() {
 
 						<ul className="mt-8 space-y-4 text-sm">
 							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
-									Company History
-								</a>
+								<Link className="text-gray-400 transition hover:text-gray-400/75" href="/about">
+									History
+								</Link>
 							</li>
 
 							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
+								<Link className="text-gray-400 transition hover:text-gray-400/75" href="/team">
 									Meet the Team
-								</a>
-							</li>
-
-							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
-									Employee Handbook
-								</a>
+								</Link>
 							</li>
 
 							<li>
@@ -84,33 +78,21 @@ export default function Footer() {
 
 						<ul className="mt-8 space-y-4 text-sm">
 							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
-									Online Guides
-								</a>
+								<Link className="text-gray-400 transition hover:text-gray-400/75" href="/resources#resolutions">
+									Resolution Booklets
+								</Link>
 							</li>
 
 							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
-									Conference Notes
-								</a>
+								<Link className="text-gray-400 transition hover:text-gray-400/75" href="/resources#delegate">
+									Delegate Resources
+								</Link>
 							</li>
 
 							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
-									Forum
-								</a>
-							</li>
-
-							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
-									Downloads
-								</a>
-							</li>
-
-							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
-									Upcoming Events
-								</a>
+								<Link className="text-gray-400 transition hover:text-gray-400/75" href="/resources#school">
+									School Resources
+								</Link>
 							</li>
 						</ul>
 					</div>

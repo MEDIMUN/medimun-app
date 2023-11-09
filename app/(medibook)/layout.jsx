@@ -6,6 +6,9 @@ import { ClientProvider } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 import AuthRedirect from "@/components/website/AuthRedirect";
 import Footer from "@/components/medibook/Footer";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+
 export const metadata = {
 	title: "MediBook",
 	description: "MediBook is the new platform for everything MEDIMUN.",
@@ -16,7 +19,7 @@ export const revalidate = 0;
 
 export default function RootLayout({ children }) {
 	return (
-		<html lang="en">
+		<html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
 			<ClientProvider>
 				<AuthRedirect unauthenticated="/login" />
 				<body>
