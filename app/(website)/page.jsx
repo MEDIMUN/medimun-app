@@ -30,13 +30,36 @@ export async function HomePage() {
 			</section>
 			<Section2 />
 			<Gallery />
-			<section className="hidden h-[50vh] w-full flex-row bg-gray-200 font-[LondiniaMedium] md:flex">
-				<div className="top-screen absolute right-[calc(50%-.5px)] z-[0] h-[25vh] w-[1px] bg-gradient-to-b from-black to-transparent opacity-50" />
-				<div className="absolute right-[calc(50%-.5px)] top-[175vh] z-[0] h-[25vh] w-[1px] bg-gradient-to-t from-black to-transparent" />
-				<div className="mr-auto flex h-full w-[50vw] flex-col gap-5 p-5">
-					<p className="mt-auto p-5 text-[25px] leading-[30px] md:text-[30px] md:leading-[30px] lg:text-[33px] lg:leading-[42px]">
-						They research their nation's policies to draft and debate resolutions on global issues, fostering diverse and in-depth discussions.
-					</p>
+			<section className="h-auto w-full bg-gray-200 font-[LondiniaMedium] ">
+				<div className="top-screen absolute right-[calc(50%-.5px)] z-[0] hidden h-[25vh] w-[1px] bg-gradient-to-b from-black to-transparent opacity-50 md:block" />
+				<div className="mx-auto flex max-w-[1280px] flex-col md:flex-row">
+					<div className="mr-auto flex h-full w-full flex-col gap-5 p-5 md:w-[50%]">
+						<p className="mt-auto p-5 text-[25px] leading-[30px] md:text-[30px] md:leading-[30px] lg:text-[33px] lg:leading-[42px]">
+							<span className="text-medired">Thinking of joining?</span>
+							<br />
+							Here are some answers to the most frequently asked questions.
+						</p>
+					</div>
+					<ul className="mr-auto flex h-full w-full flex-col gap-5 p-10 pt-0 decoration-0 md:w-[50%] md:pt-10">
+						<li className="text-[25px] leading-[30px] md:text-[30px] md:leading-[30px] lg:text-[33px] lg:leading-[42px]">
+							When is the workshop?
+							<br />
+							<p className="text-sm">
+								Our workshop is scheduled to take place on the 18<sup>th</sup> of November 2023 at The English School
+							</p>
+						</li>
+						<li className="text-[25px] leading-[30px] md:text-[30px] md:leading-[30px] lg:text-[33px] lg:leading-[42px]">
+							Can I apply as an individual?
+							<br />
+							<p className="text-sm">MEDIMUN only accepts applications from schools. If you are interested in becoming a delegate, please contact your school's administration.</p>
+						</li>
+						<li className="text-[25px] leading-[30px] md:text-[30px] md:leading-[30px] lg:text-[33px] lg:leading-[42px]">
+							When is the conference?
+							<p className="text-sm">
+								MEDIMUN XIX is scheduled for the 2<sup>nd</sup> to 4<sup>th</sup> of February at the European University Cyprus.
+							</p>
+						</li>
+					</ul>
 				</div>
 			</section>
 			<section className="z-[0] h-[750px] bg-black font-[montserrat] duration-300 md:h-[250px]">

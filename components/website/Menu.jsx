@@ -17,18 +17,21 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 
 const links = [
 	{ pathname: "/about", src: image1, alt: "About" },
-	{ pathname: "/news", src: image7, alt: "News" },
-	{ pathname: "/register", src: image3, alt: "Register" },
-	{ pathname: "/sessions", src: image4, alt: "Sessions" },
+	{ pathname: "/program", src: image1, alt: "Program" },
+	{ pathname: "/news", src: image7, alt: "News", hidden: true },
+	{ pathname: "/register", src: image3, alt: "Register", hidden: true },
+	{ pathname: "/sessions", src: image4, alt: "Sessions", hidden: true },
 	{ pathname: "/resources", src: image5, alt: "Resources" },
 	{ pathname: "/announcements", src: image2, alt: "Announcements" },
-].sort((a, b) => (a.alt.length > b.alt.length ? 1 : -1));
+]
+	.sort((a, b) => (a.alt.length > b.alt.length ? 1 : -1))
+	.filter((a) => !a.hidden);
 
 const quickActions = [
 	{ href: "/contact", alt: "Contact Us" },
-	{ href: "/verify", alt: "Document Verification" },
-	{ href: "/donate", alt: "Donate" },
-];
+	{ href: "/verify", alt: "Document Verification", hidden: true },
+	{ href: "/donate", alt: "Donate", hidden: true },
+].filter((a) => !a.hidden);
 
 const CloseIcon = () => {
 	return (
@@ -170,5 +173,3 @@ export default function Menu({ props }) {
 		</menu>
 	);
 }
-
-status == "loading" || status == "unauthenticated";

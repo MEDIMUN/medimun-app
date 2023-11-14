@@ -112,6 +112,7 @@
 		"@types/minio": "^7.0.18",
 		"@types/node": "^15.12.2",
 		"@types/react": "18.0.27",
+		"@wixc3/react-board": "^2.3.0",
 		"autoprefixer": "^10.4.14",
 		"eslint": "8.24.0",
 		"eslint-config-next": "^14.0.0",

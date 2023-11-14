@@ -33,7 +33,6 @@ export function Section2() {
 			<section className="hidden h-screen w-full flex-row bg-gray-200 font-[LondiniaMedium] md:flex">
 				<div className="top-screen absolute right-[calc(50%-.5px)] z-[0] h-[25vh] w-[1px] bg-gradient-to-b from-black to-transparent opacity-50" />
 				<div className="absolute right-[calc(50%-.5px)] top-[175vh] z-[0] h-[25vh] w-[1px] bg-gradient-to-t from-black to-transparent" />
-
 				<div className="mx-auto flex h-full w-[50vw] flex-col gap-5 p-5">
 					<p
 						style={{ transform: "translateY(" + -scrollY / 3 + "px)" }}
@@ -59,7 +58,7 @@ export function Section2() {
 					/>
 				</div>
 			</section>
-			<section className="flex h-screen w-full flex-col bg-gray-200 font-[LondiniaMedium] md:hidden md:flex-row">
+			<section className="flex h-auto w-full flex-col bg-gray-200 pb-5 font-[LondiniaMedium] md:hidden md:flex-row">
 				<div className="top-screen absolute right-[calc(50%-.5px)] z-[0] h-[25vh] w-[1px] bg-gradient-to-b from-black to-transparent opacity-50" />
 				<div className="absolute right-[calc(50%-.5px)] top-[175vh] z-[0] h-[25vh] w-[1px] bg-gradient-to-t from-black to-transparent" />
 
