@@ -11,7 +11,6 @@ export async function updateUser ( newUserForm ) {
    const session = await getServerSession( authOptions );
    if ( !session ) notFound();
    const userId = session.user.id;
-   console.log( newUserForm );
 
    if ( !newUserForm ) return notFound();
    if ( !newUserForm.officialName || typeof newUserForm.officialName !== "string" ) return { ok: false, title: "Official name is required", variant: "destructive" };
@@ -60,7 +59,6 @@ export async function updateUser ( newUserForm ) {
          data: newUser,
       } );
    } catch ( e ) {
-      console.log( e );
       return { ok: false, title: "Something went wrong" };
    }
    return { ok: true, title: "Your data has been updated", description: "It may take some time for changes to be reflected everywhere." };

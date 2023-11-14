@@ -11,6 +11,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "next-auth/react";
 import { flushSync } from "react-dom";
 
+export function Outer(props) {
+	return <div className="flex flex-col gap-2 rounded-xl bg-gray-200 p-4">{props.children}</div>;
+}
+
 export default function ProfileUploader() {
 	const router = useRouter();
 	const { data: session, status } = useSession();
@@ -115,10 +119,6 @@ export default function ProfileUploader() {
 			setUrl(`/api/user/${session.user.id}/profilePicture`);
 		}
 	}, [status, session]);
-
-	useEffect(() => {
-		console.log("DDDDD", profilePictureInput);
-	}, [profilePictureInput]);
 
 	if (status === "authenticated" && session.user)
 		return (

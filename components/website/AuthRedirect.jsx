@@ -13,7 +13,6 @@ export default async function AuthRedirect(props) {
 				select: { number: true },
 			})
 			.catch(() => {
-				console.log("No current session");
 				redirect(`/medibook`);
 			});
 		redirect(`/medibook/sessions/${currentSession?.number || ""}`);

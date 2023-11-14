@@ -19,13 +19,7 @@ export default async function Page({ params, searchParams }) {
 	return (
 		<>
 			<Drawer selectedSession={selectedSession} />
-			<TitleBar
-				title={`${selectedSession + ordinal} Annual Session Days`}
-				button1roles={[s.sd, s.director, s.admins]}
-				button1text="Add Day"
-				button1href="?add"
-				button1style="text-black bg-white"
-			/>
+			<TitleBar title={`${selectedSession + ordinal} Annual Session Days`} button1roles={[s.sd, s.director, s.admins]} button1text="Add Day" button1href="?add" button1style="text-black bg-white" />
 			<div className="mx-auto mt-5 flex max-w-[1248px] flex-col p-6 font-[montserrat] text-3xl font-extralight">
 				<h2 className="pl-4  text-[18px] font-[700]  uppercase">COnference Days</h2>
 				<div className="grid">
@@ -87,11 +81,7 @@ async function getData(params) {
 			where: { session: { number: params } },
 			orderBy: [{ date: "asc" }],
 		});
-	} catch (e) {
-		console.log(e);
-	}
-
-	console.log(conferenceDays, workshopDays);
+	} catch (e) {}
 
 	return {
 		conferenceDays,

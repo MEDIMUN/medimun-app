@@ -41,7 +41,6 @@ export async function currentSession ( formData ) {
          variant: "destructive",
       };
    }
-   console.log( currentUser );
    if ( !currentUser ) return { ok: false, error: "User does not exist", title: "User does not exist", variant: "destructive" };
    if ( !( await verifyPassword( password, currentUser.account.password ) ) ) return { ok: false, error: "Incorrect password", title: "Incorrect password", variant: "destructive" };
 

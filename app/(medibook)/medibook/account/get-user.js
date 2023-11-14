@@ -32,7 +32,6 @@ export async function getUser () {
 			},
 		} );
 	} catch ( error ) {
-		console.log( "error", error );
 		return notFound();
 	}
 	if ( !user ) notFound();

@@ -31,7 +31,6 @@ const menuItems = [
 
 export default async function Page() {
 	const data = await GetData();
-	console.log(data);
 	return (
 		<>
 			<Drawer />
@@ -49,10 +48,7 @@ export default async function Page() {
 						<Link href={`/medibook/sessions/${session.number}`}>
 							<div className="relative h-[212px] rounded-lg border-[1px] border-[#E2E8F0] p-[24px] shadow-md duration-200 md:hover:shadow-xl lg:hover:shadow-xl" key={session.id}>
 								<div className="flex flex-row align-middle">
-									<h2
-										className={`${
-											session.isCurrent ? "bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%" : "bg-black"
-										} my-auto mr-5 flex h-[40px] w-[40px] justify-center rounded-3xl px-3 align-middle text-[24px] text-white shadow-xl`}>
+									<h2 className={`${session.isCurrent ? "bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%" : "bg-black"} my-auto mr-5 flex h-[40px] w-[40px] justify-center rounded-3xl px-3 align-middle text-[24px] text-white shadow-xl`}>
 										<span className="my-auto font-thin">{session.number}</span>
 									</h2>
 									<div className="leading-[20px]">
@@ -178,6 +174,5 @@ async function GetData() {
 			secretariat: secretariat,
 		};
 	});
-	console.log(sessions);
 	return sessions.filter((session) => session.number !== 0);
 }

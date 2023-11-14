@@ -57,8 +57,6 @@ async function getData() {
 			},
 			take: 10,
 		});
-	} catch (e) {
-		console.log(e);
-	}
+	} catch (e) {}
 	return announcements;
 }

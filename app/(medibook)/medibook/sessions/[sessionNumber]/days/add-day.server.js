@@ -17,8 +17,6 @@ export async function addDay ( formData ) {
    const dayName = formData.get( "name" );
    const dayDescription = formData.get( "description" );
 
-   console.log( dayType );
-
    if ( !authorize( session, [ s.admin, s.sd ] ) ) redirect( `/medibook/sessions/${ sessionNumber }/days` );
    if ( typeof dayType !== "string" || typeof dayDate !== "string" || typeof dayName !== "string" || typeof dayDescription !== "string" ) return { ok: false, error: "Invalid input", title: "Invalid input", description: "Invalid input", variant: "destructive" };
    if ( !dayType || !dayDate ) return { ok: false, error: "Invalid input", title: "Invalid input", description: "Invalid input", variant: "destructive" };

@@ -17,12 +17,8 @@ import { useEffect, useState } from "react";
 import { getUser } from "./get-user";
 import { updateUser } from "./update-user";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { flushSync } from "react-dom";
 import ProfileUploader from "./ProfilePictureFrame";
-
-export function Outer(props) {
-	return <div className="flex flex-col gap-2 rounded-xl bg-gray-200 p-4">{props.children}</div>;
-}
+import { Outer } from "./ProfilePictureFrame";
 
 export default function Page() {
 	const { data: session, status, update } = useSession();
@@ -98,7 +94,6 @@ export default function Page() {
 			dateOfBirth: moment(new Date(fetch?.dateOfBirth)).format("YYYY-MM-DD") || moment().format("YYYY-MM-DD"),
 		};
 		setPerson(user);
-		console.log(user);
 	}
 
 	useEffect(() => {
