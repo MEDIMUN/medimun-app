@@ -13,15 +13,15 @@ export default function Footer() {
 				<div className="flex flex-col items-center gap-4 rounded-lg bg-[var(--medired)] p-6 shadow-lg sm:flex-row sm:justify-between">
 					<strong className="text-xl text-white sm:text-xl">Ready to join?</strong>
 
-					<a
+					<Link
 						className="inline-flex items-center gap-2 rounded-full border border-white bg-white px-8 py-3 text-[var(--medired)] duration-200 hover:bg-transparent hover:text-white focus:outline-none focus:ring active:bg-white/90"
-						href="/">
+						href="/signup">
 						<span className="text-sm font-medium"> Let's Get Started </span>
 
 						<svg className="h-5 w-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
 						</svg>
-					</a>
+					</Link>
 				</div>
 
 				<div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -50,7 +50,7 @@ export default function Footer() {
 					</div>
 
 					<div className="text-center sm:text-left">
-						<p className="text-lg font-medium text-white">Our Services</p>
+						<p className="text-lg font-medium text-white">Our Technologies</p>
 
 						<ul className="mt-8 space-y-4 text-sm">
 							<li>
@@ -102,20 +102,20 @@ export default function Footer() {
 
 						<ul className="mt-8 space-y-4 text-sm">
 							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
-									FAQs
-								</a>
+								<Link className="text-gray-400 transition hover:text-gray-400/75" href="/privacy">
+									Privacy Policy
+								</Link>
 							</li>
 
 							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
-									Support
+								<a className="text-gray-400 transition hover:text-gray-400/75" href="/terms">
+									Terms of Service
 								</a>
 							</li>
 							<li>
-								<a className="text-gray-400 transition hover:text-gray-400/75" href="/">
+								<Link className="text-gray-400 transition hover:text-gray-400/75" target="_blank" href="https://foundation.thimun.org/">
 									THIMUN Foundation
-								</a>
+								</Link>
 							</li>
 						</ul>
 					</div>
@@ -124,7 +124,7 @@ export default function Footer() {
 				<div className="mt-16">
 					<ul className="flex justify-center gap-6 sm:justify-end">
 						<li>
-							<a href="/" rel="noreferrer" target="_blank" className="text-white transition hover:text-[var(--medired)]">
+							<Link href="https://fb.me/medimun" rel="noreferrer" target="_blank" className="text-white transition hover:text-[var(--medired)]">
 								<span className="sr-only">Facebook</span>
 								<svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 									<path
@@ -133,11 +133,11 @@ export default function Footer() {
 										clipRule="evenodd"
 									/>
 								</svg>
-							</a>
+							</Link>
 						</li>
 
 						<li>
-							<a href="/" rel="noreferrer" target="_blank" className="text-white transition hover:text-[var(--medired)]">
+							<Link href="https://instagram.com/medimun.cy" rel="noreferrer" target="_blank" className="text-white transition hover:text-[var(--medired)]">
 								<span className="sr-only">Instagram</span>
 								<svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 									<path
@@ -146,28 +146,7 @@ export default function Footer() {
 										clipRule="evenodd"
 									/>
 								</svg>
-							</a>
-						</li>
-
-						<li>
-							<a href="/" rel="noreferrer" target="_blank" className="text-white transition hover:text-[var(--medired)]">
-								<span className="sr-only">Twitter</span>
-								<svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-									<path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-								</svg>
-							</a>
-						</li>
-						<li>
-							<a href="/" rel="noreferrer" target="_blank" className="text-white transition hover:text-[var(--medired)]">
-								<span className="sr-only">Dribbble</span>
-								<svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-									<path
-										fillRule="evenodd"
-										d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.51 0 10-4.48 10-10S17.51 2 12 2zm6.605 4.61a8.502 8.502 0 011.93 5.314c-.281-.054-3.101-.629-5.943-.271-.065-.141-.12-.293-.184-.445a25.416 25.416 0 00-.564-1.236c3.145-1.28 4.577-3.124 4.761-3.362zM12 3.475c2.17 0 4.154.813 5.662 2.148-.152.216-1.443 1.941-4.48 3.08-1.399-2.57-2.95-4.675-3.189-5A8.687 8.687 0 0112 3.475zm-3.633.803a53.896 53.896 0 013.167 4.935c-3.992 1.063-7.517 1.04-7.896 1.04a8.581 8.581 0 014.729-5.975zM3.453 12.01v-.26c.37.01 4.512.065 8.775-1.215.25.477.477.965.694 1.453-.109.033-.228.065-.336.098-4.404 1.42-6.747 5.303-6.942 5.629a8.522 8.522 0 01-2.19-5.705zM12 20.547a8.482 8.482 0 01-5.239-1.8c.152-.315 1.888-3.656 6.703-5.337.022-.01.033-.01.054-.022a35.318 35.318 0 011.823 6.475 8.4 8.4 0 01-3.341.684zm4.761-1.465c-.086-.52-.542-3.015-1.659-6.084 2.679-.423 5.022.271 5.314.369a8.468 8.468 0 01-3.655 5.715z"
-										clipRule="evenodd"
-									/>
-								</svg>
-							</a>
+							</Link>
 						</li>
 					</ul>
 

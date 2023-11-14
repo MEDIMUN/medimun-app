@@ -12,6 +12,10 @@ type Props = {
 export const NextAuthProvider = ({ children }: Props) => {
 	const queryClient = new QueryClient();
 
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
+
 	return (
 		<QueryClientProvider client={queryClient}>
 			<SessionProvider>

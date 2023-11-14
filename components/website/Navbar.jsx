@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { AiOutlineMenu } from "react-icons/ai";
 import LoginButton from "./LoginButton";
 import Menu from "./Menu";
+import { useSession } from "next-auth/react";
 
 const pageColors = {
 	"/": "red",
@@ -21,6 +22,9 @@ const pageColors = {
 	"/about": "red",
 	"/announcements": "red",
 	"/sessions": "red",
+	"/privacy": "red",
+	"/terms": "red",
+	"/conduct": "red",
 };
 
 const hideMenu = ["/loginhelp", "/signup"];
@@ -32,6 +36,7 @@ export default function Navbar({ children }) {
 	const [isTransparent, setIsTransparent] = useState(true);
 	const [currentColor, setCurrentColor] = useState("black");
 	const [isVisable, setIsVisable] = useState(false);
+	const { data: session, status } = useSession();
 
 	let previousOffset = 0;
 	function handleScroll() {
@@ -99,7 +104,7 @@ export default function Navbar({ children }) {
 				<nav className={isTransparent ? style.transparentNav : style.opaqueNav}>
 					{!hideLogo.includes(pathname) && (
 						<div className={style.branding}>
-							<Link href="/#">
+							<Link href={status == "loading" || status == "unauthenticated" ? "/" : "/home"}>
 								<div className={style.logo}>
 									<Logo color={isTransparent ? currentColor : "white"} quality={100} />
 								</div>

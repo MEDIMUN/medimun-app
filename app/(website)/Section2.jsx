@@ -1,5 +1,6 @@
 "use client";
 
+import dab from "@/public/pages/index/dabbing.jpg";
 import heroImage from "@/public/pages/index/hero.png";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,11 +10,14 @@ import { useEffect, useState } from "react";
 
 export function Section2() {
 	const [scrollY, setScrollY] = useState(0);
+	const [screenHeight, setScreenHeight] = useState(0);
 
 	useEffect(() => {
 		const handleScroll = () => {
 			setScrollY(window.scrollY);
 		};
+
+		setScreenHeight(window.screen.height);
 
 		window.addEventListener("scroll", handleScroll, { passive: true });
 
@@ -23,66 +27,64 @@ export function Section2() {
 	}, []);
 
 	const boxStyle = "rounded-xl border-[1px] border-[#eaeaea] bg-white duration-300 shadow-sm hover:shadow-xl p-4";
+
 	return (
-		<section id="about" className="h-auto gap-5 bg-gradient-to-r from-rose-100 to-teal-100 font-[montserrat] text-black">
-			<div className="mx-auto h-auto max-w-[1260px] p-5">
-				<div className="">
-					<h1 className="pb-3 text-xl font-[600] text-gray-600 ">WELCOME TO MEDIMUN</h1>
-					<p className="md:text-md text-sm">
-						MEDIMUN is a simulated United Nations experience specifically designed for teenagers between the ages of 15 and 19. During this event, students take on the roles of
-						delegates representing various UN Member States that are assigned to them. They engage in in-depth research on their assigned country's policies and use this knowledge
-						to discuss, create, and debate resolutions. These resolutions are detailed documents that outline their suggestions and solutions to global issues, forming the
-						foundation for multifaceted debates and constructive discussions on diverse topics.
+		<>
+			<section className="hidden h-screen w-full flex-row bg-gray-200 font-[LondiniaMedium] md:flex">
+				<div className="top-screen absolute right-[calc(50%-.5px)] z-[0] h-[25vh] w-[1px] bg-gradient-to-b from-black to-transparent opacity-50" />
+				<div className="absolute right-[calc(50%-.5px)] top-[175vh] z-[0] h-[25vh] w-[1px] bg-gradient-to-t from-black to-transparent" />
+
+				<div className="mx-auto flex h-full w-[50vw] flex-col gap-5 p-5">
+					<p
+						style={{ transform: "translateY(" + -scrollY / 3 + "px)" }}
+						className="mt-auto p-5 text-[25px] leading-[30px] md:text-[30px] md:leading-[30px] lg:text-[33px] lg:leading-[42px]">
+						<span className="text-medired">MEDIMUN is a simulation of the United Nations for teens aged 15-19</span>, where students represent assigned UN countries. They research
+						their nation's policies to draft and debate resolutions on global issues, fostering diverse and in-depth discussions.
+						<br />
+					</p>
+					<div className="relative m-5 flex flex-col gap-5 bg-gray-300 p-5 text-[25px] text-sm md:w-[35vw]">
+						Check out the 19th Annual Session of MEDIMUN, the largest MEDIMUN ever, set to take place from 2nd to 4th of February at The European University Cyprus.
+						<div className="flex flex-col gap-2 xl:flex-row">
+							<Button className="rounded-none bg-black">Discover the latest session</Button>
+							<Button className="rounded-none bg-black">Download the prospectus</Button>
+						</div>
+					</div>
+				</div>
+				<div className="h-full w-[50vw] p-10">
+					<Image
+						alt="300 Delegates standing up for a photo at an amphitheatre and same dabbing."
+						src={dab}
+						className="shadow-2xl"
+						style={{ transform: "translateY(" + scrollY / 4 + "px)" }}
+					/>
+				</div>
+			</section>
+			<section className="flex h-screen w-full flex-col bg-gray-200 font-[LondiniaMedium] md:hidden md:flex-row">
+				<div className="top-screen absolute right-[calc(50%-.5px)] z-[0] h-[25vh] w-[1px] bg-gradient-to-b from-black to-transparent opacity-50" />
+				<div className="absolute right-[calc(50%-.5px)] top-[175vh] z-[0] h-[25vh] w-[1px] bg-gradient-to-t from-black to-transparent" />
+
+				<div className="mx-auto flex h-full w-full flex-col gap-5 p-5 md:w-[50vw]">
+					<p style={{ transform: "translateY(" + scrollY / 14 + "px)" }} className="mt-auto p-5 text-[25px] leading-[30px] md:text-[36px] md:leading-[42px]">
+						MEDIMUN is a simulation of the United Nations for teens aged 15-19, where students represent assigned UN countries. They research their nation's policies to draft and
+						debate resolutions on global issues, fostering diverse and in-depth discussions.
 					</p>
 				</div>
-			</div>
-			<div className="mx-auto grid h-auto max-w-[1260px] grid-cols-1 gap-5 p-5 md:h-[220px] md:grid-cols-2">
-				<div className="text-900 h-full overflow-hidden rounded-xl border-2 border-slate-200 bg-[url(/assets/delegates-indoors.jpg)] bg-cover bg-center duration-300 hover:shadow-xl">
-					<div className="flex h-full w-full flex-col bg-white bg-opacity-70 p-5">
-						<div>
-							19<sup>th</sup> Annual Session <br />
-							<span className="text-sm">
-								Discover the 19th Annual Session of MEDIMUN, the largest MEDIMUN ever, set to take place from 2nd to 4th of February at The European University Cyprus.
-							</span>
-						</div>
-						<Link className="mt ml-auto mt-5 w-full md:mt-auto md:w-max" href="/sessions/19">
-							<Button className="w-full md:w-max">Explore</Button>
-						</Link>
+				<div className="h-full w-full p-10 md:w-[50vw]">
+					<Image
+						src={dab}
+						className=""
+						style={{ transform: "translateY(" + scrollY / 45 + "px)" }}
+						alt="300 Delegates standing up for a photo at an amphitheatre and same dabbing."
+					/>
+				</div>
+				<div style={{ transform: "translateY(" + scrollY / 50 + "px)" }} className="relative m-5 mt-0 flex flex-col gap-5 bg-gray-300 p-5 text-[25px] text-sm md:w-[35vw]">
+					Check out the 19th Annual Session of MEDIMUN, the largest MEDIMUN ever, set to take place from 2nd to 4th of February at The European University Cyprus.
+					<div className="flex flex-col gap-2">
+						<Button className="rounded-none bg-black">Discover the latest session</Button>
+						<Button className="rounded-none bg-black">Download the prospectus</Button>
 					</div>
 				</div>
-				<div className="text-900 h-full overflow-hidden rounded-xl border-2 border-slate-200 bg-white bg-cover bg-center duration-300 hover:shadow-xl">
-					<div className="flex h-full w-full flex-col bg-white bg-opacity-40 p-5">
-						<div>
-							Check Out The Prospectus <br />
-							<span className="text-sm">
-								The prospectus contains all the information you need to know about the 19<sup>th</sup> Annual Session, including the committees, the topics, and the rules of
-								procedure.
-							</span>
-						</div>
-						<Link className="ml-auto mt-5 w-full md:mt-auto md:w-max" target="_blank" href="https://drive.google.com/file/d/1BBBbX8RepI6toL4M2WUS3KE2IkuM2g2d/view?usp=drive_link">
-							<Button className="w-full md:w-max">View</Button>
-						</Link>
-					</div>
-				</div>
-			</div>
-			<div className="rounded-[50%_50%_0_0] ">
-				<Image className="mx-auto h-[400px] max-h-[500px] object-cover object-top opacity-90 grayscale md:h-[500px]" src={heroImage} alt="Delegates in the middle of a debate" />
-			</div>
-		</section>
+			</section>
+		</>
 	);
-}
-
-{
-	/* <div className="min-h-auto mx-auto mt-[25vh] grid h-[150vh] max-w-[1248px] gap-4 p-4 md:h-screen md:grid-cols-2 lg:grid-cols-3">
-<div className={boxStyle + " " + "row-span-2"}></div>
-<div className={boxStyle + " " + ""}></div>
-<div className={boxStyle + " " + ""}></div>
-<div className={boxStyle + " " + "row-span-2"}></div>
-<div className={boxStyle + " " + ""}></div>
-<div className={boxStyle + " " + ""}></div>
-<div className={boxStyle + " " + "row-span-3"}></div>
-<div className={boxStyle + " " + ""}></div>
-<div className={boxStyle + " " + ""}></div>
-<div className={boxStyle + " " + ""}></div>
-</div> */
 }

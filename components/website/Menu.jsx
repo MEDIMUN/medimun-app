@@ -12,6 +12,8 @@ import image4 from "@/public/placeholders/the-english-school-1.jpg";
 import image5 from "@/public/placeholders/the-english-school-2.jpg";
 import image6 from "@/public/placeholders/delegates-2.jpg";
 import image7 from "@/public/placeholders/delegates-2.jpg";
+import { signOut, useSession } from "next-auth/react";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
 const links = [
 	{ pathname: "/about", src: image1, alt: "About" },
@@ -23,9 +25,7 @@ const links = [
 ].sort((a, b) => (a.alt.length > b.alt.length ? 1 : -1));
 
 const quickActions = [
-	{ href: "/login", alt: "Login" },
 	{ href: "/contact", alt: "Contact Us" },
-	{ href: "/signup", alt: "Sign Up" },
 	{ href: "/verify", alt: "Document Verification" },
 	{ href: "/donate", alt: "Donate" },
 ];
@@ -85,6 +85,7 @@ export default function Menu({ props }) {
 	const pathname = usePathname();
 	const [isHovered, setIsHovered] = useState("/about");
 	const [isBlack, setIsBlack] = useState(false);
+	const { data: session, status } = useSession();
 
 	const setIsBlackOptimized = useCallback((val) => setIsBlack(val), []);
 	const setIsHoveredOptimized = useCallback((val) => setIsHovered(val), []);
@@ -121,6 +122,39 @@ export default function Menu({ props }) {
 				<div className={`absolute left-0 top-0 z-10 h-[calc(100%-80px)] w-full duration-300 md:ml-[0px] ${isBlack && "!bg-black"}` + " " + style.vignette}></div>
 				<div className="absolute bottom-0 z-[300] h-[80px] w-full min-w-full overflow-x-auto border-t-[1px] border-[rgb(122,122,122)] px-4 md:gap-10 md:px-10 ">
 					<ul className="flex h-full w-fit min-w-fit flex-row gap-10 overflow-x-auto">
+						{status == "loading" || status == "unauthenticated" ? (
+							<>
+								<li className="my-auto px-3">
+									<Link href="/login">
+										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
+											Login
+										</p>
+									</Link>
+								</li>
+								<li className="my-auto px-3">
+									<Link href="/signup">
+										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
+											Sign Up
+										</p>
+									</Link>
+								</li>
+							</>
+						) : (
+							<>
+								<li className="my-auto px-3">
+									<Link href="/medibook">
+										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
+											MediBook
+										</p>
+									</Link>
+								</li>
+								<li onClick={signOut} className="my-auto flex cursor-pointer px-3">
+									<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
+										Log Out of {session.user.officialName || session.user.displayName}
+									</p>
+								</li>
+							</>
+						)}
 						{quickActions.map((action) => (
 							<li key={action.href + Math.random()} className="my-auto px-3">
 								<Link href={action.href}>
@@ -136,3 +170,5 @@ export default function Menu({ props }) {
 		</menu>
 	);
 }
+
+status == "loading" || status == "unauthenticated";

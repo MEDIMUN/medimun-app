@@ -20,12 +20,16 @@ export default function Layout(props) {
 			href: `/medibook/sessions/${props.params.sessionNumber}/departments`,
 		},
 		{
-			title: "Documents",
-			href: `/medibook/sessions/${props.params.sessionNumber}/documents`,
-		},
-		{
 			title: "Session Announcements",
 			href: `/medibook/sessions/${props.params.sessionNumber}/announcements`,
+		},
+		{
+			title: "Days",
+			href: `/medibook/sessions/${props.params.sessionNumber}/days`,
+		},
+		{
+			title: "Documents",
+			href: `/medibook/sessions/${props.params.sessionNumber}/documents`,
 		},
 	];
 	return (

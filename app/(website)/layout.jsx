@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/toaster";
 export const metadata = {
 	title: {
 		template: "%s • MEDIMUN",
-		default: "MEDIMUN",
+		default: "Mediterranean Model United Nations",
 	},
 };
 

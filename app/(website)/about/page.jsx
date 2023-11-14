@@ -1,13 +1,11 @@
-"use client";
-
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import image1 from "@/public/placeholders/the-english-school-1.jpg";
 import image2 from "@/public/placeholders/the-english-school-2.jpg";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+
+export const metadata = {
+	title: "About",
+	description: "Learn more about MEDIMUN",
+};
 
 export default function Page() {
 	return (
