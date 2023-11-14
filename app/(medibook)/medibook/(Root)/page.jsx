@@ -13,7 +13,6 @@ function error(e) {}
 export default async function Page() {
 	const session = await getServerSession(authOptions);
 	if (!session || session.isDisabled) redirect("/medibook/signout");
-	const uid = session.user.id.replace(/(.{4})/g, "$1-").slice(0, -1);
 
 	const timeGreeting = () => {
 		const date = new Date();

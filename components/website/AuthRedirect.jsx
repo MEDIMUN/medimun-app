@@ -16,7 +16,7 @@ export default async function AuthRedirect(props) {
 				console.log("No current session");
 				redirect(`/medibook`);
 			});
-		redirect(`/medibook/sessions/${currentSession.number}`);
+		redirect(`/medibook/sessions/${currentSession?.number || ""}`);
 	}
 
 	if (!session && props.unauthenticated) redirect(props.unauthenticated);
