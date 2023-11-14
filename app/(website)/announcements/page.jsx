@@ -3,6 +3,9 @@ import Background from "@/components/website/Background";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 15;
+
 export default async function Page() {
 	const announcements = await getData();
 	const id = Math.random().toString(36);
