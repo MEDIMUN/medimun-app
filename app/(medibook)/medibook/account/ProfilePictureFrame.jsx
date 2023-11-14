@@ -1,17 +1,17 @@
 "use client";
 
 import { Label } from "@/components/ui/label";
-import { updateProfilePicture, removeProfilePicture } from "./profile-picture";
+import { updateProfilePicture, removeProfilePicture } from "./profile-picture.js";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "next-auth/react";
+import { flushSync } from "react-dom";
 
-export default function Page() {
+export default function ProfileUploader() {
 	const router = useRouter();
 	const { data: session, status } = useSession();
 	const [loading, setLoading] = useState(false);
@@ -20,8 +20,9 @@ export default function Page() {
 	const { toast } = useToast();
 
 	async function updateProfilePictureHandler(formData) {
-		setLoading((prev) => (prev = true));
-		console.log(loading);
+		flushSync(() => {
+			setLoading(true);
+		});
 		const profilePicture = formData.get("profilePicture");
 		if (!profilePicture) {
 			toast({
@@ -59,15 +60,13 @@ export default function Page() {
 				variant: res?.variant || "default",
 			});
 		if (res.ok) {
-			router.push("/medibook/account/profile-picture");
+			router.push("/medibook/account");
 		}
 		setLoading(false);
-		console.log(loading);
 	}
 
 	async function removeProfilePictureHandler() {
 		setLoading((prev) => (prev = true));
-		console.log(loading);
 		const res = await removeProfilePicture();
 		if (res)
 			toast({
@@ -77,10 +76,9 @@ export default function Page() {
 			});
 		if (res.ok) {
 			setLoading(false);
-			router.push("/medibook/account/profile-picture");
+			router.refresh();
 		}
 		setLoading(false);
-		console.log(loading);
 	}
 
 	const onImageUpdate = (e) => {
@@ -119,40 +117,36 @@ export default function Page() {
 	}, [status, session]);
 
 	useEffect(() => {
-		console.log(loading);
-	}, [loading]);
+		console.log("DDDDD", profilePictureInput);
+	}, [profilePictureInput]);
 
 	if (status === "authenticated" && session.user)
 		return (
 			<>
 				<div className="mb-4 w-min rounded-xl bg-gray-300 p-4">
-					<Avatar className="h-[300px] w-[300px] shadow-xl">
+					<Avatar className="h-[calc(100vw-80px)] w-[calc(100vw-80px)] shadow-xl md:h-[300px] md:w-[300px]">
 						<AvatarImage className="object-cover" src={url} alt="@shadcn" />
 						<AvatarFallback className="text-bold bg-white text-[100px]">{session.user.officialName[0] + session.user.officialSurname[0]}</AvatarFallback>
 					</Avatar>
 				</div>
 				<div className="flex flex-col gap-2">
-					<form action={updateProfilePictureHandler} className=" grid max-h-full gap-10 p-1 pt-0">
+					<form id="pfpUpdater" action={updateProfilePictureHandler} className=" grid max-h-full gap-10 pt-0">
 						<div className="flex flex-col gap-2">
-							<Label htmlFor="profilePicture">Profile Picture (Optional)</Label>
-							<p className="text-sm">
-								Your profile picture will be visible to other users, offensive pictures will be removed and your account will be suspended. Max file size 10MB, supported formats
-								png, gif, jpeg.
-							</p>
+							<Label className="ml-2" htmlFor="profilePicture">
+								Profile Picture (Optional)
+							</Label>
 							<Input value={profilePictureInput} onChange={(e) => onImageUpdate(e)} id="profilePicture" name="profilePicture" label="profilePicture" type="file" />
 						</div>
-						<Button disabled={loading} type="submit" className="justify-center">
-							Save
-						</Button>
 					</form>
-					<form action={removeProfilePictureHandler} className="mb-[400px] grid max-h-full gap-10 p-1 pt-0">
-						<Button disabled={loading} type="submit" className="justify-center bg-red-500">
-							Remove Profile Picture
+					<div className="flex gap-2 py-2">
+						<Button onClick={removeProfilePictureHandler} disabled={loading} type="submit" className="justify-center bg-red-500">
+							{!loading ? "Remove" : "Loading"}
 						</Button>
-					</form>
+						<Button form="pfpUpdater" disabled={loading} type="submit">
+							{!loading ? "Update" : "Loading"}
+						</Button>
+					</div>
 				</div>
 			</>
 		);
-
-	return <div>Loading...</div>;
 }

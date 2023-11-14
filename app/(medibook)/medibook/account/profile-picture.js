@@ -57,7 +57,7 @@ export async function updateProfilePicture ( formData ) {
    }
 
    try {
-      const res = await minioClient.putObject( 'profile-pictures', "profile-pictures/" + randomName, buffer );
+      const res = await minioClient.putObject( 'medibook', "profile-pictures/" + randomName, buffer );
    } catch ( error ) {
       console.error( error );
       return { ok: false, title: "Error updating profile picture", variant: "destructive" };

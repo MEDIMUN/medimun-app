@@ -1,20 +1,38 @@
 import { TitleBar } from "@/components/medibook/TitleBar";
-import Navigation from "./Navigation";
+import SubMenu from "@/components/medibook/SubMenu";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export default function Layout(props) {
+const menuItems = [
+	{
+		title: "Personal Information",
+		href: "/medibook/account",
+	},
+	{
+		title: "Account Security",
+		href: `/medibook/account/security`,
+	},
+	{
+		title: "School Assignment",
+		href: `/medibook/account/school`,
+	},
+	{
+		title: "Update Email",
+		href: `/medibook/account/email`,
+	},
+	{
+		title: "Notification Settings",
+		href: `/medibook/account/notifications`,
+	},
+];
+
+export default async function Layout(props) {
+	const session = await getServerSession(authOptions);
 	return (
 		<>
-			<div className="top-0 h-auto w-full bg-white pt-1">
-				<TitleBar title="Settings" />
-			</div>
-			<div className="mt-1 flex min-h-screen w-full flex-row p-4">
-				<div className="mx-auto w-full max-w-[1200px]">
-					<div className="flex flex-col md:flex-row">
-						<Navigation />
-						<div className="mt-6 min-h-screen w-full md:ml-4 md:mt-0">{props.children}</div>
-					</div>
-				</div>
-			</div>
+			<SubMenu menuItems={menuItems} />
+			<TitleBar title="Account Settings" button1text="View Profile" button1href={`/medibook/users/${session.user.id}`} />
+			<div className="mx-auto max-w-[1260px] p-2">{props.children}</div>
 		</>
 	);
 }

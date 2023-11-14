@@ -46,7 +46,7 @@ export const ClientProvider = ({ children }) => {
 
 	useEffect(() => {
 		//console.image("/fun/logo.png");
-
+		return;
 		console.log(
 			`%c
 		███    ███ ███████ ██████  ██ ███    ███ ██    ██ ███    ██
