@@ -105,5 +105,5 @@ module.exports = {
       },
     },
   },
-  plugins: [ require( "tailwindcss-animate" ), nextui() ],
+  plugins: [ nextui() ],
 };

@@ -17,12 +17,13 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 
 const links = [
 	{ pathname: "/about", src: image1, alt: "About" },
-	{ pathname: "/program", src: image1, alt: "Program" },
+	{ pathname: "/programme", src: image1, alt: "Programme" },
 	{ pathname: "/news", src: image7, alt: "News", hidden: true },
 	{ pathname: "/register", src: image3, alt: "Register", hidden: true },
 	{ pathname: "/sessions", src: image4, alt: "Sessions", hidden: true },
 	{ pathname: "/resources", src: image5, alt: "Resources" },
 	{ pathname: "/announcements", src: image2, alt: "Announcements" },
+	{ pathname: "/medinews", src: image2, alt: "MediNews" },
 ]
 	.sort((a, b) => (a.alt.length > b.alt.length ? 1 : -1))
 	.filter((a) => !a.hidden);
@@ -35,16 +36,7 @@ const quickActions = [
 
 const CloseIcon = () => {
 	return (
-		<svg
-			viewBox="0 0 24 24"
-			width="24"
-			height="24"
-			stroke="currentColor"
-			strokeWidth="1.5"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-			fill="none"
-			shapeRendering="geometricPrecision">
+		<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" shapeRendering="geometricPrecision">
 			<path d="M18 6L6 18" />
 			<path d="M6 6l12 12" />
 		</svg>
@@ -114,9 +106,7 @@ export default function Menu({ props }) {
 							<Logo color="black" quality={100} />
 						</div>
 					</Link>
-					<div
-						className="absolute right-4 top-4 z-[12] cursor-pointer rounded-2xl border-[1px] border-white p-2 shadow-white duration-200 md:right-10 md:top-10 md:shadow-lg md:hover:rounded-3xl md:hover:bg-white md:hover:text-black"
-						onClick={() => setIsVisable(false)}>
+					<div className="absolute right-4 top-4 z-[12] cursor-pointer rounded-2xl border-[1px] border-white p-2 shadow-white duration-200 md:right-10 md:top-10 md:shadow-lg md:hover:rounded-3xl md:hover:bg-white md:hover:text-black" onClick={() => setIsVisable(false)}>
 						<CloseIcon />
 					</div>
 				</div>
@@ -129,16 +119,12 @@ export default function Menu({ props }) {
 							<>
 								<li className="my-auto px-3">
 									<Link href="/login">
-										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
-											Login
-										</p>
+										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">Login</p>
 									</Link>
 								</li>
 								<li className="my-auto px-3">
 									<Link href="/signup">
-										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
-											Sign Up
-										</p>
+										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">Sign Up</p>
 									</Link>
 								</li>
 							</>
@@ -146,24 +132,18 @@ export default function Menu({ props }) {
 							<>
 								<li className="my-auto px-3">
 									<Link href="/medibook">
-										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
-											MediBook
-										</p>
+										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">MediBook</p>
 									</Link>
 								</li>
 								<li onClick={signOut} className="my-auto flex cursor-pointer px-3">
-									<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
-										Log Out of {session.user.officialName || session.user.displayName}
-									</p>
+									<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">Log Out of {session.user.officialName || session.user.displayName}</p>
 								</li>
 							</>
 						)}
 						{quickActions.map((action) => (
 							<li key={action.href + Math.random()} className="my-auto px-3">
 								<Link href={action.href}>
-									<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">
-										{action.alt}
-									</p>
+									<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">{action.alt}</p>
 								</Link>
 							</li>
 						))}

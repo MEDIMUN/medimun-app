@@ -58,6 +58,7 @@
 		"components/medibook/CommandMenu.jsx",
 		"app/(medibook)/medibook/account/get-user.js",
 		"app/(website)/announcements/page.jsx",
+		"app/(website)/conduct/page.jsx",
 		"app/(medibook)/medibook/(Root)/locations/page.jsx"
 	],
 	"exclude": ["node_modules"]
