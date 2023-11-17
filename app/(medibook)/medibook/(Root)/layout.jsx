@@ -31,7 +31,7 @@ const menuItems = [
 		href: `/medibook/schools`,
 	},
 	{
-		title: "Places",
-		href: `/medibook/places`,
+		title: "Locations",
+		href: `/medibook/locations`,
 	},
 ];

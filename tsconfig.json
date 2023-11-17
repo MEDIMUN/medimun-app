@@ -57,7 +57,8 @@
 		"app/(medibook)/medibook/sessions/[sessionNumber]/committees/add-committee.server.js",
 		"components/medibook/CommandMenu.jsx",
 		"app/(medibook)/medibook/account/get-user.js",
-		"app/(website)/announcements/page.jsx"
+		"app/(website)/announcements/page.jsx",
+		"app/(medibook)/medibook/(Root)/locations/page.jsx"
 	],
 	"exclude": ["node_modules"]
 }

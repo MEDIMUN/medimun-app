@@ -180,7 +180,7 @@ model ConferenceDay {
   description String?
   date        DateTime?
   location    Location? @relation(fields: [locationId], references: [id])
-  locationId  Int?
+  locationId  String?
   session     Session   @relation(fields: [sessionId], references: [id])
   sessionId   Int
 }
@@ -191,7 +191,7 @@ model WorkshopDay {
   description String?
   date        DateTime?
   location    Location? @relation(fields: [locationId], references: [id])
-  locationId  Int?
+  locationId  String?
   session     Session   @relation(fields: [sessionId], references: [id])
   sessionId   Int
 }
@@ -203,7 +203,7 @@ model School {
   slug        String           @unique
   joinYear    Int?
   location    Location?        @relation(fields: [locationId], references: [id])
-  locationId  Int?
+  locationId  String?
   director    SchoolDirector[]
   student     Student[]
 }
@@ -299,7 +299,7 @@ model Manager {
 }
 
 model Location {
-  id            Int             @id @default(autoincrement())
+  id            String          @id @default(uuid())
   name          String
   slug          String?
   description   String?
@@ -308,7 +308,8 @@ model Location {
   state         String?
   zipCode       String?
   country       String?
-  phone         String?
+  phoneNumber   String?
+  phoneCode     String?
   email         String?
   website       String?
   mapUrl        String?

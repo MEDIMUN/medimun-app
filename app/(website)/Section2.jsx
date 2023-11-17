@@ -30,15 +30,15 @@ export function Section2() {
 
 	return (
 		<>
-			<section className="hidden h-screen w-full flex-row bg-gray-200 font-[LondiniaMedium] md:flex">
+			<section className="hidden h-screen max-h-[1000px] w-full flex-row bg-gray-200 font-[LondiniaMedium] md:flex">
 				<div className="top-screen absolute right-[calc(50%-.5px)] z-[0] h-[25vh] w-[1px] bg-gradient-to-b from-black to-transparent opacity-50" />
 				<div className="absolute right-[calc(50%-.5px)] top-[175vh] z-[0] h-[25vh] w-[1px] bg-gradient-to-t from-black to-transparent" />
 				<div className="mx-auto flex h-full w-[50vw] flex-col gap-5 p-5">
-					<p style={{ transform: "translateY(" + -scrollY / 3 + "px)" }} className="mt-auto p-5 text-[25px] leading-[30px] md:text-[30px] md:leading-[30px] lg:text-[33px] lg:leading-[42px]">
+					<p className="p-5 text-[25px] leading-[30px] md:text-[30px] md:leading-[30px] lg:text-[33px] lg:leading-[42px]">
 						<span className="text-medired">MEDIMUN is a simulation of the United Nations for teens aged 15-19</span>, where students represent assigned UN countries. They research their nation's policies to draft and debate resolutions on global issues, fostering diverse and in-depth discussions.
 						<br />
 					</p>
-					<div className="relative m-5 flex flex-col gap-5 bg-gray-300 p-5 text-[25px] text-sm md:w-[35vw]">
+					<div className="relative m-5 mt-auto flex flex-col gap-5 bg-gray-300 p-5 text-[25px] text-sm md:w-[35vw]">
 						Check out the 19th Annual Session of MEDIMUN, the largest MEDIMUN ever, set to take place from 2nd to 4th of February at The European University Cyprus.
 						<div className="flex flex-col gap-2 xl:flex-row">
 							<Link className=" cursor-default" href="#">

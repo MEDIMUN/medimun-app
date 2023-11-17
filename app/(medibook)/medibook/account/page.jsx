@@ -19,6 +19,7 @@ import { updateUser } from "./update-user";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ProfileUploader from "./ProfilePictureFrame";
 import { Outer } from "./ProfilePictureFrame";
+import { Badge } from "@/components/ui/badge";
 
 export default function Page() {
 	const { data: session, status, update } = useSession();
@@ -26,9 +27,6 @@ export default function Page() {
 
 	const [open, setOpen] = useState(false);
 	const [phoneOpen, setPhoneOpen] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const [profilePictureInput, setProfilePictureInput] = useState("");
-	const [url, setUrl] = useState("");
 
 	const { toast } = useToast();
 
@@ -105,6 +103,7 @@ export default function Page() {
 			<Outer>
 				<Label className="my-auto ml-2 min-w-max" htmlFor={props.id}>
 					{props.name}
+					{!props.hideBadge && <Badge className="ml-2">{props.required ? "Required" : "Optional"}</Badge>}
 				</Label>
 				<Input className="text-md md:text-sm" value={props.value} onChange={props.onChange} required={props.required} id={props.id} label={props.id} name={props.id} type={props.type} disabled={props.disabled} />
 			</Outer>
@@ -200,7 +199,7 @@ export default function Page() {
 				<ProfileUploader />
 			</Outer>
 			<form action={updateUserHandler} className="flex flex-col gap-2">
-				<Inp name="User ID" value={person.id} disabled onChange={handleOnChange} id="userId" type="text" />
+				<Inp name="User ID" value={person.id} hideBadge disabled onChange={handleOnChange} id="userId" type="text" />
 				<Inp name="Official Name" value={formatName(person.officialName)} required onChange={handleOnChange} id="officialName" type="text" />
 				<Inp name="Official Surname" value={formatName(person.officialSurname)} required onChange={handleOnChange} id="officialSurname" type="text" />
 				<Inp name="Display Name" value={formatName(person.displayName)} onChange={handleOnChange} id="displayName" type="text" />
@@ -208,9 +207,13 @@ export default function Page() {
 				<NationalityInput />
 				<PhoneNumberInput />
 				<Inp name="Gender" value={person.gender} onChange={handleOnChange} id="gender" type="text" />
-				<Inp name="Pronoun #1" value={formatName(person.pronoun1)} onChange={handleOnChange} id="pronoun1" type="text" />
-				<Inp name="Pronoun #2" value={formatName(person.pronoun2)} onChange={handleOnChange} id="pronoun2" type="text" />
-				<Button type="submit">Save</Button>
+				<div className="flex w-full flex-row">
+					<Inp name="Pronoun #1" value={formatName(person.pronoun1)} onChange={handleOnChange} id="pronoun1" type="text" />
+					<Inp name="Pronoun #2" value={formatName(person.pronoun2)} onChange={handleOnChange} id="pronoun2" type="text" />
+				</div>
+				<Outer>
+					<Button type="submit">Save</Button>
+				</Outer>
 			</form>
 		</div>
 	);
