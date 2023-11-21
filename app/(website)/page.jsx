@@ -10,8 +10,6 @@ import Footer from "@/components/website/Footer";
 import heroImage from "@/public/pages/index/hero2.png";
 import { Button } from "@/components/ui/button";
 
-const bgColor = "bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-gray-100 to-gray-300" && "bg-gradient-to-r from-red-500 to-red-800";
-
 const numbah = 400;
 
 export async function HomePage() {
@@ -19,9 +17,7 @@ export async function HomePage() {
 		<>
 			<section className={"min-h-[100vh] bg-gradient-to-r from-medired to-red-500 md:min-h-screen"}>
 				<div className="flex h-[45svh] w-full flex-col justify-end gap-3 px-5 align-middle duration-300 md:h-[50vh] md:text-center">
-					<h1 className="-[text-shadow:_4px_4px_#000000] font-[canela] text-[50px] font-[750] leading-[50px] tracking-tight text-white md:text-[90px] md:leading-[83px]">
-						Strengtening Sustainability
-					</h1>
+					<h1 className="-[text-shadow:_4px_4px_#000000] font-[canela] text-[50px] font-[750] leading-[50px] tracking-tight text-white md:text-[90px] md:leading-[83px]">Strengtening Sustainability</h1>
 					<h2 className="-[text-shadow:_2px_2px_#777]  font-[SequelBold] text-[40px] font-[300] leading-[35px] tracking-tight text-gray-100">Enchancing Global Partnerships</h2>
 				</div>
 				<HeroImage />

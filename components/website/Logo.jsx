@@ -9,12 +9,12 @@ import style from "./styles/Logo.module.css";
 export default function Logo({ color = "white", quality = 75, className }) {
 	switch (color) {
 		case "red":
-			return <Image priority className={style.logo + " " + className} quality={quality} src={RedLogo} alt="MEDIMUN Logo" />;
+			return <Image priority className={style.logo + " " + className} quality={quality} src={RedLogo} alt="MEDIMUN" />;
 		case "black":
-			return <Image priority className={style.logo + " " + className} quality={quality} src={BlackLogo} alt="MEDIMUN Logo" />;
+			return <Image priority className={style.logo + " " + className} quality={quality} src={BlackLogo} alt="MEDIMUN" />;
 		case "white":
-			return <Image priority className={style.logo + " " + className} quality={quality} src={WhiteLogo} alt="MEDIMUN Logo" />;
+			return <Image priority className={style.logo + " " + className} quality={quality} src={WhiteLogo} alt="MEDIMUN" />;
 		case "gray":
-			return <Image priority className={style.logo + " " + className} quality={quality} src={GrayLogo} alt="MEDIMUN Logo" />;
+			return <Image priority className={style.logo + " " + className} quality={quality} src={GrayLogo} alt="MEDIMUN" />;
 	}
 }

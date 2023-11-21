@@ -7,10 +7,10 @@ import Image from "next/image";
 export default function Logo({ color = "white", quality = 75, className }) {
 	switch (color) {
 		case "red":
-			return <Image className={className} quality={quality} src={RedLogo} alt="MEDIMUN Logo" fill />;
+			return <Image className={className} quality={quality} src={RedLogo} alt="MEDIMUN" fill />;
 		case "black":
-			return <Image className={className} quality={quality} src={BlackLogo} alt="MEDIMUN Logo" fill />;
+			return <Image className={className} quality={quality} src={BlackLogo} alt="MEDIMUN" fill />;
 		case "white":
-			return <Image className={className} quality={quality} src={WhiteLogo} alt="MEDIMUN Logo" fill />;
+			return <Image className={className} quality={quality} src={WhiteLogo} alt="MEDIMUN" fill />;
 	}
 }
