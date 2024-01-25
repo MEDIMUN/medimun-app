@@ -3,6 +3,11 @@ import { Card, CardHeader, CardBody, CardFooter, Divider, Chip, Spacer } from "@
 import Link from "next/link";
 import Image from "next/image";
 
+export const metadata = {
+	title: "Programme",
+	description: "The conference programme for MEDIMUN XIX.",
+};
+
 export default async function Page() {
 	const elId = Math.random().toString(36);
 	return (
