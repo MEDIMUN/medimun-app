@@ -39,6 +39,12 @@ export const authOptions = {
 				}
 				if ( !( await verifyPassword( userDetails.account.password, password ) ) ) {
 					const user = await userData( userDetails.id );
+					delete user.user.bio;
+					delete user.user.phoneCode;
+					delete user.user.phoneNumber;
+					delete user.user.nationality;
+					delete user.user.dateOfBirth;
+					console.log( "u", user );
 					return user;
 				} else {
 					throw new Error( "Incorrect Password" );
@@ -53,6 +59,7 @@ export const authOptions = {
 				token.user = user.user;
 				token.currentRoles = user.currentRoles;
 				token.currentRoleNames = user.currentRoleNames;
+				token.highestRoleRank = user.highestRoleRank;
 				token.pastRoles = user.pastRoles;
 				token.pastRoleNames = user.pastRoleNames;
 				token.lastUpdated = timeNow;
@@ -63,9 +70,15 @@ export const authOptions = {
 				if ( !( ( timeNow - timeExpire > 10 * 1000 ) || trigger == "update" ) ) return token;
 				const data = await userData( token.user.id );
 				if ( data.user.isDisabled ) return token;
+				delete data.user.bio;
+				delete data.user.phoneCode;
+				delete data.user.phoneNumber;
+				delete data.user.nationality;
+				delete data.user.dateOfBirth;
 				token.user = data.user;
 				token.currentRoles = data.currentRoles;
 				token.currentRoleNames = data.currentRoleNames;
+				token.highestRoleRank = data.highestRoleRank;
 				token.pastRoles = data.pastRoles;
 				token.pastRoleNames = data.pastRoleNames;
 				token.lastUpdated = timeNow;
@@ -77,6 +90,7 @@ export const authOptions = {
 			session.user = token.user;
 			session.currentRoles = token.currentRoles;
 			session.currentRoleNames = token.currentRoleNames;
+			session.highestRoleRank = token.highestRoleRank;
 			session.pastRoles = token.pastRoles;
 			session.pastRoleNames = token.pastRoleNames;
 			session.lastUpdated = token.lastUpdated;

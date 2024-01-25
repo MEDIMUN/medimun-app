@@ -42,9 +42,7 @@ export default function MainTemplate(props) {
 								<Column className="ml-8">
 									<Img width="180" alt="Logo" title="Logo" style="display:block" src={`${baseUrl}/email/logos/logo-red.png`} />
 								</Column>
-								<Column>
-									<Img width="32" height="16" className="top-0  ml-auto mr-8" src={`${baseUrl}/email/logos/logo-mini.png`} />
-								</Column>
+								<Column></Column>
 								<Column className="w-8 bg-[#9E2723]" />
 							</Row>
 							<Row className="h-12">

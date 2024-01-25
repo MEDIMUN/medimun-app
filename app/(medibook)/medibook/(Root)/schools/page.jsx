@@ -1,5 +1,15 @@
-import { TitleBar, e as s } from "@/components/medibook/TitleBar";
+import EditUserModal from "./EditUserModal";
+import prisma from "@/prisma/client";
+import Table from "./Table";
 
-export default function Page() {
-	return <TitleBar button1text="Add School" button1href="/medibook/schools?add" button1roles={[s.management]} title="Schools" />;
+export default async function Page() {
+	let schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(() => notFound());
+	let locations = prisma.location.findMany({ orderBy: { name: "asc" }, include: { school: true } }).catch(() => notFound());
+	[schools, locations] = await Promise.all([schools, locations]);
+	return (
+		<>
+			<EditUserModal locations={locations} schools={schools} />
+			<Table schools={schools} />
+		</>
+	);
 }

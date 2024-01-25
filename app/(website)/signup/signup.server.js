@@ -166,10 +166,11 @@ export async function signUp ( user ) {
 	try {
 		await sendVerificationEmail( officialName, email, emailVerificationCode.toString() );
 	} catch ( e ) {
-		return {
-			ok: false,
-			error: "Could not sign you up, please try again later.",
-		};
+		//return {
+		//	ok: false,
+		//	error: "Could not sign you up, please try again later.",
+		//	description: "1"
+		//};
 	}
 
 	try {
@@ -187,11 +188,13 @@ export async function signUp ( user ) {
 		return {
 			ok: false,
 			error: "Could not sign you up, please try again later.",
+			description: "2"
 		};
 	}
 	return {
 		ok: true,
 		message: "Signed Up, please verify email to actvate",
+		description: "3"
 	};
 }
 

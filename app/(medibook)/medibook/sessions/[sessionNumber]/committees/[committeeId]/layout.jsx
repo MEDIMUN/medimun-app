@@ -18,8 +18,8 @@ export default function Layout(props) {
 			href: `/medibook/sessions/${sessionNumber}/committees/${committeeName}/announcements`,
 		},
 		{
-			title: "Chairs & Delegates",
-			href: `/medibook/sessions/${sessionNumber}/committees/${committeeName}/chairs-delegates`,
+			title: "Delegates",
+			href: `/medibook/sessions/${sessionNumber}/committees/${committeeName}/delegates`,
 		},
 		{
 			title: "Topics",

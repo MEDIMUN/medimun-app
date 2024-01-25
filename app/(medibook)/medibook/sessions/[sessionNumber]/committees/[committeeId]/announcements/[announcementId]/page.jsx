@@ -6,7 +6,7 @@ import prisma from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { TitleBar, e as s } from "@/components/medibook/TitleBar";
-import { deleteAnnouncement } from "./delete-announcement.server";
+import Drawer from "./Drawer";
 
 export async function generateMetadata({ params }) {
 	const { title } = await getData({ params });
@@ -16,35 +16,23 @@ export async function generateMetadata({ params }) {
 }
 
 async function getData({ params }) {
-	let announcement;
-	try {
-		announcement = await prisma.announcement.findUnique({
+	return await prisma.committeeAnnouncement
+		.findUniqueOrThrow({
 			where: {
 				id: params.announcementId,
 			},
 			include: {
 				user: {
 					select: {
+						id: true,
 						officialName: true,
 						officialSurname: true,
 						displayName: true,
 					},
 				},
-				AlumniAnnouncement: {
-					select: {
-						id: true,
-					},
-				},
 			},
-		});
-	} catch (e) {
-		if (process.env.NODE_ENV == "development") {
-			console.log(e);
-		}
-		notFound();
-	}
-	if (!announcement) return notFound();
-	return announcement;
+		})
+		.catch((e) => notFound());
 }
 
 export default async function Page({ params, searchParams }) {
@@ -54,21 +42,8 @@ export default async function Page({ params, searchParams }) {
 	const publishedDate = announcement?.time.toLocaleString("en-uk", { month: "long", day: "numeric", year: "numeric" });
 	return (
 		<>
-			<TitleBar
-				description={`${publishedDate}${" · " + fullName}${announcement.isBoard ? "· (The MEDIMUN Board)" : ""}${announcement.isSecretariat ? "· (The Secretariat)" : ""}`}
-				title={announcement.title}
-				button1text="Edit"
-				button1href={`/medibook/announcements/${params.announcementId}?edit`}
-				button1roles={[s.management]}
-				button2text="Delete"
-				button2action={async () => {
-					"use server";
-					const res = await deleteAnnouncement(params.announcementId, params);
-					if (res?.ok) redirect("/medibook/announcements");
-				}}
-				button2style="bg-red-500 text-white hover:bg-red hover:text-white"
-				button2roles={[s.management]}
-			/>
+			<Drawer announcement={announcement} />
+			<TitleBar description={`${publishedDate}${" · " + fullName}${announcement.isBoard ? "· (The MEDIMUN Board)" : ""}${announcement.isSecretariat ? "· (The Secretariat)" : ""}`} title={announcement.title} button1text="Edit" button1href={`?edit`} button1roles={[s.management]} />
 			<div className="min-h-auto max-w-full overflow-x-hidden p-5">
 				<div className="min-h-auto mx-auto mt-5 max-w-[1200px] gap-[24px] ">
 					<MDXRemote components={{ img: ResponsiveImage, h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={announcement.markdown} />
@@ -84,16 +59,7 @@ export default async function Page({ params, searchParams }) {
 }
 
 const ResponsiveImage = (props) => {
-	return (
-		<Image
-			className="mx-auto rounded-xl bg-gray-100 p-4 shadow-lg duration-300 hover:shadow-xl"
-			alt="custom image"
-			width={100}
-			height={100}
-			style={{ width: "70%", height: "auto" }}
-			{...props}
-		/>
-	);
+	return <Image className="mx-auto rounded-xl bg-gray-100 p-4 shadow-lg duration-300 hover:shadow-xl" alt="custom image" width={100} height={100} style={{ width: "70%", height: "auto" }} {...props} />;
 };
 
 const h1 = (props) => {
@@ -130,21 +96,9 @@ const a = (props) => {
 		truncated += "...";
 	}
 	if (props.href.includes("http")) {
-		return (
-			<a
-				truncated={truncated}
-				target="_blank"
-				className="font-md text-md mb-5 max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-blue-700 hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_('attr(truncated)')_↗']"
-				{...props}></a>
-		);
+		return <a truncated={truncated} target="_blank" className="font-md text-md mb-5 max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-blue-700 hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_('attr(truncated)')_↗']" {...props}></a>;
 	}
-	return (
-		<Link
-			truncated={truncated}
-			className="font-md text-md mb-5 max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-[var(--medired)] hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_(Internal_Navigation:'attr(truncated)')_↗']"
-			{...props}
-		/>
-	);
+	return <Link truncated={truncated} className="font-md text-md mb-5 max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-[var(--medired)] hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_(Internal_Navigation:'attr(truncated)')_↗']" {...props} />;
 };
 
 const hr = (props) => {

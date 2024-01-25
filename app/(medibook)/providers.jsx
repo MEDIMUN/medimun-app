@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, createContext, useState } from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
+
+export const SidebarContext = createContext();
 
 export const ClientProvider = ({ children }) => {
 	const queryClient = new QueryClient();
@@ -19,10 +21,13 @@ export const ClientProvider = ({ children }) => {
 			"background: #AE2D29; color: #FFFFFF"
 		);
 	}, []);
+	const [isHidden, setIsHidden] = useState(false);
 
 	return (
-		<SessionProvider>
-			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-		</SessionProvider>
+		<SidebarContext.Provider value={{ isHidden, setIsHidden }}>
+			<SessionProvider>
+				<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+			</SessionProvider>
+		</SidebarContext.Provider>
 	);
 };

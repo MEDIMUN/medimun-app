@@ -4,11 +4,11 @@ import dab from "@/public/pages/index/dabbing.jpg";
 import heroImage from "@/public/pages/index/hero.png";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@nextui-org/react";
 
 import { useEffect, useState } from "react";
 
-export function Section2() {
+export default function Section2() {
 	const [scrollY, setScrollY] = useState(0);
 	const [screenHeight, setScreenHeight] = useState(0);
 
@@ -16,11 +16,8 @@ export function Section2() {
 		const handleScroll = () => {
 			setScrollY(window.scrollY);
 		};
-
 		setScreenHeight(window.screen.height);
-
 		window.addEventListener("scroll", handleScroll, { passive: true });
-
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
 		};
@@ -41,14 +38,12 @@ export function Section2() {
 					<div className="relative m-5 mt-auto flex flex-col gap-5 bg-gray-300 p-5 text-[25px] text-sm md:w-[35vw]">
 						Check out the 19th Annual Session of MEDIMUN, the largest MEDIMUN ever, set to take place from 2nd to 4th of February at The European University Cyprus.
 						<div className="flex flex-col gap-2 xl:flex-row">
-							<Link className=" cursor-default" href="#">
-								<Button disabled className="rounded-none bg-black">
-									Discover the latest session
-								</Button>
-							</Link>
-							<Link href="https://drive.google.com/file/d/1BBBbX8RepI6toL4M2WUS3KE2IkuM2g2d/view?usp=drive_link">
-								<Button className="rounded-none bg-black">Download the prospectus</Button>
-							</Link>
+							<Button as={Link} isDisabled className="rounded-none bg-black text-white" href="#">
+								Discover the latest session
+							</Button>
+							<Button as={Link} href="https://drive.google.com/file/d/1BBBbX8RepI6toL4M2WUS3KE2IkuM2g2d/view?usp=drive_link" target="_blank" className="rounded-none bg-black text-white">
+								Download the prospectus
+							</Button>
 						</div>
 					</div>
 				</div>

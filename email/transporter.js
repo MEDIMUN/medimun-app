@@ -9,7 +9,7 @@ export default async function sendEmail ( emailFrom, emailTo, emailSubject, emai
 			pass: process.env.NODEMAILER_PASS,
 		},
 		tls: {
-			rejectUnauthorized: true,
+			rejectUnauthorized: false,
 		},
 	} );
 
@@ -18,7 +18,8 @@ export default async function sendEmail ( emailFrom, emailTo, emailSubject, emai
 		to: emailTo,
 		subject: emailSubject,
 		html: emailHtml,
+		reply
 	};
-	await transporter.sendMail( mailOptions );
-
+	const res = await transporter.sendMail( mailOptions );
+	console.log( res );
 }

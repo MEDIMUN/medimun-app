@@ -48,8 +48,7 @@ export default function SignUp() {
 		},
 		{
 			title: "Email",
-			description:
-				"Please enter your email address. We recommend using your school email. If we have records of your past participation you may be unable to create an account. This will be fixed in the future. For now you can contact us to get registered in that case.",
+			description: "Please enter your email address. We recommend using your school email. If we have records of your past participation you may be unable to create an account. This will be fixed in the future. For now you can contact us to get registered in that case.",
 		},
 		{
 			title: "Official Name & Surname",
@@ -69,9 +68,7 @@ export default function SignUp() {
 		},
 		{
 			title: "Verify Your Email",
-			description: `We've sent a code to ${
-				user?.email || "your email address"
-			}. Please enter it below to verify your email address. It may take a few minutes for the email to arrive.`,
+			description: `We've sent a code to ${user?.email || "your email address"}. Please enter it below to verify your email address. It may take a few minutes for the email to arrive.`,
 		},
 		{
 			title: "Congratulations!",
@@ -193,15 +190,7 @@ export default function SignUp() {
 				break;
 
 			case 5:
-				if (
-					/[A-Z]/.test(primaryPasswordInput) &&
-					/[a-z]/.test(primaryPasswordInput) &&
-					/[0-9]/.test(primaryPasswordInput) &&
-					/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(primaryPasswordInput) &&
-					primaryPasswordInput.length > 7 &&
-					primaryPasswordInput === seconparyPasswordInput &&
-					primaryPasswordInput
-				) {
+				if (/[A-Z]/.test(primaryPasswordInput) && /[a-z]/.test(primaryPasswordInput) && /[0-9]/.test(primaryPasswordInput) && /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(primaryPasswordInput) && primaryPasswordInput.length > 7 && primaryPasswordInput === seconparyPasswordInput && primaryPasswordInput) {
 					let response;
 					try {
 						response = await signUp({ ...user, password: primaryPasswordInput });
@@ -212,12 +201,12 @@ export default function SignUp() {
 							variant: "destructive",
 						});
 					}
+					console.log(response);
 					if (response && response.ok) {
 						setCurrentPage(currentPage + 1);
 					} else {
 						toast({
 							title: "Please try again later",
-							description: "Please try again later.",
 							variant: "destructive",
 						});
 					}
@@ -275,7 +264,7 @@ export default function SignUp() {
 				{currentPage == 0 && (
 					<>
 						<div className="flex flex-col gap-2">
-							<Button disa onClick={nextPage} disabled={1 || isLoading} className="my-3 bg-[var(--medired)]">
+							<Button onClick={nextPage} disabled={0 || isLoading} className="my-3 bg-[var(--medired)]">
 								{isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
 								CURRENTLY UNAVAILABLE{" "}
 								{
@@ -452,13 +441,9 @@ export default function SignUp() {
 									<div className={checklistClass + " " + `${/[A-Z]/.test(primaryPasswordInput) && "bg-green-500"}`}>At least one capital letter</div>
 									<div className={checklistClass + " " + `${/[a-z]/.test(primaryPasswordInput) && "bg-green-500"}`}>At least one lowercase letter</div>
 									<div className={checklistClass + " " + `${/[0-9]/.test(primaryPasswordInput) && "bg-green-500"}`}>At least one number</div>
-									<div className={checklistClass + " " + `${/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(primaryPasswordInput) && "bg-green-500"}`}>
-										At least one special character
-									</div>
+									<div className={checklistClass + " " + `${/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(primaryPasswordInput) && "bg-green-500"}`}>At least one special character</div>
 									<div className={checklistClass + " " + `${primaryPasswordInput.length > 7 && "bg-green-500"}`}>At least 8 characters long</div>
-									<div className={checklistClass + " " + `${primaryPasswordInput === seconparyPasswordInput && primaryPasswordInput !== "" && "bg-green-500"}`}>
-										Passwords must match
-									</div>
+									<div className={checklistClass + " " + `${primaryPasswordInput === seconparyPasswordInput && primaryPasswordInput !== "" && "bg-green-500"}`}>Passwords must match</div>
 								</div>
 							</div>
 							<NextButton />

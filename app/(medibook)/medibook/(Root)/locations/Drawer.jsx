@@ -1,193 +1,173 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { redirect, useSearchParams } from "next/navigation";
-import { useEffect, useState, useRef, Suspense, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { Input, Button, Textarea, Autocomplete, AutocompleteItem, Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, ScrollShadow, ButtonGroup } from "@nextui-org/react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { s, authorize } from "@/lib/authorize";
 import { useSession } from "next-auth/react";
 import { addLocation } from "./add-location.server";
-import { Textarea } from "@/components/ui/textarea";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { countries } from "@/data/countries";
-import { cn } from "@/lib/utils";
+import { flushSync } from "react-dom";
+import Link from "next/link";
 
-export default function Drawer() {
+export default function Drawer({ locations }) {
 	const { data: session, status } = useSession();
 	const [isOpen, setIsOpen] = useState(false);
-	const [countryOpen, setCountryOpen] = useState(false);
-	const [phoneOpen, setPhoneOpen] = useState(false);
-	const [phone, setPhone] = useState({ phoneCode: 357, phoneNumber: "" });
-	const [country, setCountry] = useState("CY");
+
+	const searchParams = useSearchParams();
+	const edit = locations.find((location) => location.id == searchParams.get("edit"));
+	const view = locations.find((location) => location.id == searchParams.get("view"));
+
+	const [country, setCountry] = useState(edit?.country || "");
+	const [isLoading, setIsLoading] = useState(false);
+	const [phoneCode, setPhoneCode] = useState(edit?.phoneCode || "");
 	const [slug, setSlug] = useState("");
 	const router = useRouter();
 	const { toast } = useToast();
 
-	const searchParams = useSearchParams();
-
 	async function createLocationHandler(formData) {
-		formData.append("country", country);
-		formData.append("phoneCode", phone.phoneCode);
+		flushSync(() => {
+			setIsLoading(true);
+		});
+		formData.append("editId", edit?.id || "");
+		formData.append("phoneCode", phoneCode || edit?.phoneCode || "");
+		formData.append("country", country || edit?.country || "");
 		const res = await addLocation(formData);
-		if (res)
-			toast({
-				title: res?.title,
-				description: res?.description,
-				variant: res?.variant,
-			});
+		if (res) toast(res);
 		if (res.ok) {
-			setCountry("CY");
 			setSlug("");
-			setPhone({ phoneCode: 357, phoneNumber: "" });
-			redirect("/medibook/locations");
+			setPhoneCode("");
+			router.push(`/medibook/locations`);
+			router.refresh();
 		}
+		setIsLoading(false);
 	}
 
 	useEffect(() => {
-		setIsOpen(searchParams.get("add") == "" && status === "authenticated" && authorize(session, [s.management]));
+		setIsOpen((searchParams.get("add") == "" || searchParams.has("edit") || searchParams.has("view")) && status === "authenticated" && authorize(session, [s.management]));
 	}, [searchParams, status, session]);
 
-	const PhoneNumberInput = (props) => {
+	if (searchParams.get("add") == "" || searchParams.has("edit")) {
 		return (
-			<div className="flex">
-				<Popover className="w-full " open={phoneOpen} onOpenChange={setPhoneOpen}>
-					<PopoverTrigger asChild>
-						<Button name="phoneCode" variant="outline" role="combobox" aria-expanded={open} className="justify-between rounded-r-none capitalize">
-							{phone.phoneCode ? " +" + phone.phoneCode : "Country"}
-							<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 rounded-r-none opacity-50" />
+			<Modal scrollBehavior="inside" isOpen={isOpen} onOpenChange={() => router.push(searchParams.get("return") || "/medibook/locations")}>
+				<ModalContent className="overflow-y-auto" position="right" size="content">
+					<ModalHeader className="flex flex-col gap-1">Add a Location</ModalHeader>
+					<ModalBody>
+						<form action={createLocationHandler} id="main" name="main" className="flex flex-col gap-4 py-4">
+							<Input size="lg" defaultValue={edit?.name} label="Location Name" placeholder=" " isRequired labelPlacement="outside" type="text" minLength={2} maxLength={64} name="name" />
+							<Input size="lg" defaultValue={edit?.slug} label="Link Slug" value={slug} onChange={(e) => setSlug(e.target.value.replace(" ", "-").replace(/[^a-z0-9-]/g, ""))} minLength={2} maxLength={32} name="slug" labelPlacement="outside" placeholder=" " />
+							<Textarea size="lg" defaultValue={edit?.description} label="Description" minLength={10} maxLength={500} name="description" labelPlacement="outside" placeholder=" " />
+							<Input size="lg" defaultValue={edit?.street} label="Street Address" type="text" minLength={5} maxLength={100} name="street" labelPlacement="outside" placeholder=" " />
+							<Input size="lg" defaultValue={edit?.state} label="State / City" type="text" minLength={2} maxLength={50} name="state" labelPlacement="outside" placeholder=" " />
+							<Input size="lg" defaultValue={edit?.zipCode} label="Zip Code" type="text" minLength={4} maxLength={10} name="zipCode" labelPlacement="outside" placeholder=" " />
+							<Autocomplete size="lg" defaultSelectedKey={edit?.country || ""} onSelectionChange={setCountry} placeholder=" " labelPlacement="outside" defaultItems={countries} label="Country">
+								{(country) => (
+									<AutocompleteItem startContent={<Avatar alt="Flag" className="h-6 w-6" src={`https://flagcdn.com/${country.countryCode.toLowerCase()}.svg`} />} key={country.countryCode}>
+										{country.countryNameEn}
+									</AutocompleteItem>
+								)}
+							</Autocomplete>
+							<ButtonGroup className="gap-2">
+								<Autocomplete size="lg" defaultSelectedKey={edit?.phoneCode} onSelectionChange={setPhoneCode} placeholder=" " labelPlacement="outside" defaultItems={countries} label="Code">
+									{(country) => <AutocompleteItem key={country.countryCallingCode}>{"+" + country.countryCallingCode + " (" + country.countryNameEn + ")"}</AutocompleteItem>}
+								</Autocomplete>
+								<Input size="lg" defaultValue={edit?.phoneNumber} label="Number" labelPlacement="outside" placeholder=" " minLength={5} maxLength={100} name="phoneNumber" />
+							</ButtonGroup>
+							<Input size="lg" defaultValue={edit?.email} label="Location Email" type="email" minLength={5} maxLength={100} name="email" labelPlacement="outside" placeholder=" " />
+							<Input size="lg" defaultValue={edit?.website} label="Location Website" type="url" minLength={5} maxLength={200} name="website" labelPlacement="outside" placeholder=" " />
+							<Input size="lg" defaultValue={edit?.mapUrl} label="Google Maps URL" minLength={5} maxLength={200} name="mapUrl" labelPlacement="outside" placeholder=" " />
+						</form>
+					</ModalBody>
+					<ModalFooter>
+						<Button isDisabled={isLoading} isLoading={isLoading} form="main" type="submit">
+							Save
 						</Button>
-					</PopoverTrigger>
-					<PopoverContent className="w-full p-0">
-						<Command>
-							<CommandInput placeholder="Search country or code..." />
-							<CommandEmpty>No country found.</CommandEmpty>
-							<CommandGroup className="max-h-[300px] w-[330px] overflow-auto">
-								{countries.map((country) => (
-									<CommandItem
-										key={country.countryCode}
-										onSelect={(currentValue) => {
-											setPhone({ ...phone, phoneCode: country.countryCallingCode });
-											setPhoneOpen(false);
-										}}>
-										<Check className={cn("mr-2 h-4 w-4", phone.phoneCode === country.countryCode ? "opacity-100" : "opacity-0")} />
-										{"+" + country.countryCallingCode + " " + country.countryNameEn + ` ${country.countryNameEn == "Turkey" ? "(& Northern Cyprus)" : ""}`}
-									</CommandItem>
-								))}
-							</CommandGroup>
-						</Command>
-					</PopoverContent>
-				</Popover>
-				<Input id="phoneNumber" name="phoneNumber" type="number" className="rounded-l-none border-l-0" />
-			</div>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
 		);
-	};
-
-	const CountryInput = () => {
+	}
+	if (searchParams.get("view"))
 		return (
-			<Popover className="w-full" open={countryOpen} onOpenChange={setCountryOpen}>
-				<PopoverTrigger asChild>
-					<Button variant="outline" role="combobox" aria-expanded={open} className="justify-between capitalize">
-						{country ? countries.find((c) => c.countryCode == country)?.flag + " " + countries.find((c) => c.countryCode === country)?.countryNameEn : "Country"}
-						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-					</Button>
-				</PopoverTrigger>
-				<PopoverContent className="w-full p-0">
-					<Command>
-						<CommandInput placeholder="Search country..." />
-						<CommandEmpty>No country found.</CommandEmpty>
-						<CommandGroup className="max-h-[300px] w-[330px] overflow-y-scroll">
-							{countries.map((country) => (
-								<CommandItem
-									key={country}
-									onSelect={(currentValue) => {
-										setCountry(country.countryCode);
-										setCountryOpen(false);
-									}}>
-									<Check className={cn("mr-2 h-4 w-4 opacity-0")} />
-									{country.flag + " " + country.countryNameEn + `${country.countryCode == "CY" ? " (Both Sides)" : ""}`}
-								</CommandItem>
-							))}
-						</CommandGroup>
-					</Command>
-				</PopoverContent>
-			</Popover>
+			<Modal scrollBehavior="inside" isOpen={isOpen} onOpenChange={() => router.push(searchParams.get("return") || "/medibook/locations")}>
+				<ModalContent className="overflow-y-auto" position="right" size="content">
+					<ModalHeader className="flex flex-col gap-1">Details of {view?.name}</ModalHeader>
+					<ModalBody>
+						<div>
+							<p>Name</p>
+							<strong>{view?.name}</strong>
+						</div>
+						{view?.slug && (
+							<div>
+								<p>Slug</p>
+								<strong>{view?.slug}</strong>
+							</div>
+						)}
+						{view?.description && (
+							<div>
+								<p>Description</p>
+								<strong>{view?.description}</strong>
+							</div>
+						)}
+						{view?.street && (
+							<div>
+								<p>Street Address</p>
+								<strong>{view?.street}</strong>
+							</div>
+						)}
+						{view?.state && (
+							<div>
+								<p>State / City</p>
+								<strong>{view?.state}</strong>
+							</div>
+						)}
+						{view?.zipCode && (
+							<div>
+								<p>Zip Code</p>
+								<strong>{view?.zipCode}</strong>
+							</div>
+						)}
+						{view?.country && (
+							<div>
+								<p>Country</p>
+								<strong>{countries.find((country) => country.countryCode == view?.country)?.countryNameEn}</strong>
+							</div>
+						)}
+						{view?.phoneCode && (
+							<div>
+								<p>Phone Number</p>
+								<Link href={`tel:+${view?.phoneCode + view?.phoneNumber}`}>
+									<strong className="text-blue-500">+{view?.phoneCode + " " + view?.phoneNumber}</strong>
+								</Link>
+							</div>
+						)}
+						{view?.email && (
+							<div>
+								<p>Email</p>
+								<Link href={`mailto:${view?.email}`}>
+									<strong>{view?.email}</strong>
+								</Link>
+							</div>
+						)}
+						{view?.website && (
+							<div>
+								<p>Website</p>
+								<strong>{view?.website}</strong>
+							</div>
+						)}
+						{view?.mapUrl && (
+							<div>
+								<p>Map URL</p>
+								<strong>{view?.mapUrl}</strong>
+							</div>
+						)}
+					</ModalBody>
+					<ModalFooter>
+						<Button href={`/medibook/locations?edit=${view.id}`} as={Link}>
+							Edit
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
 		);
-	};
-
-	return (
-		<Sheet open={isOpen} onOpenChange={() => router.push("/medibook/locations")}>
-			<SheetContent className="overflow-y-auto" position="right" size="content">
-				<SheetHeader>
-					<SheetTitle>Add a Location</SheetTitle>
-					<SheetDescription>This is the locations database. Other services requiring location data will pull the information from here.</SheetDescription>
-				</SheetHeader>
-				<form action={createLocationHandler} id="main" name="main" className="flex flex-col gap-4 py-4">
-					<Label htmlFor="name">Name (Required)</Label>
-					<Input type="text" required minLength={2} maxLength={64} id="name" name="name" className="col-span-3" />
-
-					<Label htmlFor="slug">Slug (Optional)</Label>
-					<Input type="text" value={slug} onChange={(e) => setSlug(e.target.value.replace(/[^a-z0-9-]/g, ""))} minLength={2} maxLength={50} id="slug" name="slug" className="col-span-3" placeholder="Enter slug (optional)" />
-
-					<Label htmlFor="description">Description (Optional)</Label>
-					<Textarea minLength={10} maxLength={500} id="description" name="description" className="col-span-3 max-h-[200px]" placeholder="Enter description (optional)" />
-
-					<Label htmlFor="street">Street Address (Optional)</Label>
-					<Input type="text" minLength={5} maxLength={100} id="street" name="street" className="col-span-3" placeholder="Enter street address (optional)" />
-
-					<Label htmlFor="state">State (Optional)</Label>
-					<Input type="text" minLength={2} maxLength={50} id="state" name="state" className="col-span-3" placeholder="Enter state (optional)" />
-
-					<Label htmlFor="zipCode">Zip Code (Optional)</Label>
-					<Input type="text" minLength={4} maxLength={10} id="zipCode" name="zipCode" className="col-span-3" placeholder="Enter zip code (optional)" />
-
-					<Label htmlFor="country">Country (Optional)</Label>
-					<CountryInput />
-
-					<Label htmlFor="phone">Phone (Optional)</Label>
-					<PhoneNumberInput />
-
-					<Label htmlFor="email">Email (Optional)</Label>
-					<Input type="email" minLength={5} maxLength={100} id="email" name="email" className="col-span-3" placeholder="Enter email (optional)" />
-
-					<Label htmlFor="website">Website (Optional)</Label>
-					<Input type="url" minLength={5} maxLength={200} id="website" name="website" className="col-span-3" placeholder="Enter website URL (optional)" />
-
-					<Label htmlFor="mapUrl">Map URL (Optional)</Label>
-					<Input type="url" minLength={5} maxLength={200} id="mapUrl" name="mapUrl" className="col-span-3" placeholder="Enter map URL (optional)" />
-				</form>
-				<SheetFooter>
-					<Button form="main" className="mt-4 flex w-auto" type="submit">
-						Save
-					</Button>
-				</SheetFooter>
-			</SheetContent>
-		</Sheet>
-	);
-}
-{
-	/* 	model Location {
-		id            Int             @id @default(autoincrement())
-		name          String
-		slug          String?
-		description   String?
-		street        String?
-		city          String?
-		state         String?
-		zipCode       String?
-		country       String?
-		phoneNumber         String?
-		phoneCode String?
-		email         String?
-		website       String?
-		mapUrl        String?
-		school        School[]
-		conferenceDay ConferenceDay[]
-		workshopDay   WorkshopDay[]
-	 }
-} */
 }

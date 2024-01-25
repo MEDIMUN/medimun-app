@@ -7,6 +7,7 @@ import prisma from "@/prisma/client";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { TitleBar } from "@/components/medibook/TitleBar";
+import { Console } from "console";
 
 function error(e) {}
 
@@ -22,6 +23,34 @@ export default async function Page() {
 	const greeting = timeGreeting() + ", " + (session.user.displayName || session.user.officialName);
 
 	const isAlumni = session.pastRoleNames.length > 0 ? { some: {} } : { some: {} };
+	const confDays = async () => {
+		const response = await prisma.conferenceDay.findFirst({
+			where: { session: { isCurrent: true } },
+			orderBy: { date: "desc" },
+			select: { date: true },
+			take: 1,
+		});
+		const date = response ? response.date : "";
+		if (response) {
+			const today = new Date();
+			const difference = date.getTime() - today.getTime();
+			return Math.ceil(difference / (1000 * 3600 * 24));
+		}
+	};
+	const workshopDays = async () => {
+		const response = await prisma.workshopDay.findFirst({
+			where: { session: { isCurrent: true } },
+			orderBy: { date: "desc" },
+			select: { date: true },
+			take: 1,
+		});
+		const date = response ? response.date : "";
+		if (response) {
+			const today = new Date();
+			const difference = date.getTime() - today.getTime();
+			return Math.ceil(difference / (1000 * 3600 * 24));
+		}
+	};
 	const announcements = await prisma.announcement
 		.findMany({
 			where: {
@@ -35,22 +64,26 @@ export default async function Page() {
 			take: 9,
 		})
 		.catch((e) => error(e));
+	const daysUntilConference = await confDays();
+	const daysUntilWorkshop = await workshopDays();
 	return (
 		<>
 			<TitleBar titleStyle="!normal-case" title={greeting + " 👋"} bgColor="bg-gradient-to-br from-gray-200 via-gray-400 to-gray-600" />
 			<div className="-none mx-auto max-w-[1200px] p-5">
 				<h1 className="font-md ml-4 mt-5 text-xl font-bold tracking-tight">Today's Briefing</h1>
 				<div className="mt-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-					<Card>
-						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-sm font-medium">Days Until Conference</CardTitle>
-							<CalendarClock className="h-4 w-4 text-muted-foreground" />
-						</CardHeader>
-						<CardContent>
-							<div className="text-2xl font-bold">99999</div>
-							<p className="text-xs text-muted-foreground">999 Days Until Workshop</p>
-						</CardContent>
-					</Card>
+					{daysUntilConference && daysUntilWorkshop && (
+						<Card>
+							<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+								<CardTitle className="text-sm font-medium">Days Until Conference</CardTitle>
+								<CalendarClock className="h-4 w-4 text-muted-foreground" />
+							</CardHeader>
+							<CardContent>
+								<div className="text-2xl font-bold">{daysUntilConference + " Days"}</div>
+								<p className="text-xs text-muted-foreground">{daysUntilWorkshop + " Days Until Workshop"}</p>
+							</CardContent>
+						</Card>
+					)}
 					<Card>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 							<CardTitle className="text-sm font-medium">Awaiting Tasks</CardTitle>

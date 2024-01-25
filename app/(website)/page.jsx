@@ -1,16 +1,18 @@
-import Image from "next/image";
-import HeroImage from "./HeroImage";
-import { Paper } from "@/components/website/HeroImage";
-import AuthRedirect from "@/components/website/AuthRedirect";
 import Link from "next/link";
-import { Section2 } from "./Section2";
-import Gallery from "./Gallery";
-import Logo from "@/components/website/Logo";
-import Footer from "@/components/website/Footer";
-import heroImage from "@/public/pages/index/hero2.png";
-import { Button } from "@/components/ui/button";
+import AuthRedirect from "@/components/website/AuthRedirect";
 
-const numbah = 400;
+import { Button } from "@nextui-org/react";
+
+import HeroImage from "./HeroImage";
+import Section2 from "./Section2";
+import Gallery from "./Gallery";
+
+export const metadata = {
+	title: {
+		absolute: "Mediterranean Model United Nations • MEDIMUN",
+	},
+	description: "Mediterranean Model United Nations, the largest and oldest THIMUN-affiliated MUN conference in the Mediterranean region, is a simulation of the United Nations for high school students.",
+};
 
 export async function HomePage() {
 	return (
@@ -66,9 +68,9 @@ export async function HomePage() {
 								About The English School <br />
 								<span className="text-sm">Discover the rich history spanning over 120 years of the creators behind MEDIMUN.</span>
 							</div>
-							<Link className="ml-auto mt-auto" href="https://www.englishschool.ac.cy/" target="_blank">
-								<Button>Learn More</Button>
-							</Link>
+							<Button as={Link} href="https://www.englishschool.ac.cy/" target="_blank" className="ml-auto mt-auto">
+								Learn More
+							</Button>
 						</div>
 					</div>
 					<div className="text-900 h-full overflow-hidden rounded-xl border-0 border-slate-200 bg-[url(/pages/index/medibook.png)] bg-cover bg-top duration-300 hover:shadow-xl">
@@ -77,9 +79,9 @@ export async function HomePage() {
 								About The MediBook App <br />
 								<span className="text-sm">Discover MediBook, the essential MEDIMUN companion app designed for your convenience and efficiency.</span>
 							</div>
-							<Link className="ml-auto mt-auto" href="/medibook">
-								<Button>Learn More</Button>
-							</Link>
+							<Button className="ml-auto mt-auto" href="/medibook" as={Link}>
+								Learn More
+							</Button>
 						</div>
 					</div>
 					<div className="text-900 h-full overflow-hidden rounded-xl border-0 border-slate-200 bg-[url(/pages/index/branding-3.png)] bg-cover bg-top duration-300 hover:shadow-xl">
@@ -88,9 +90,9 @@ export async function HomePage() {
 								Branding and Identity Guidelines <br />
 								<span className="text-sm">Our branding and identity guidelines to ensure a consistent representation of our brand across all channels.</span>
 							</div>
-							<Link className="ml-auto mt-auto" href="">
-								<Button disabled>Download</Button>
-							</Link>
+							<Button className="ml-auto mt-auto" href="" as={Link} isDisabled>
+								Download
+							</Button>
 						</div>
 					</div>
 				</div>

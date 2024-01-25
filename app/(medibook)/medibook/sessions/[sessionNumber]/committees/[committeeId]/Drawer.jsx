@@ -1,6 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input, Textarea, Button, RadioGroup, Radio } from "@nextui-org/react";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { redirect, useSearchParams } from "next/navigation";
@@ -10,8 +9,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { s, authorize } from "@/lib/authorize";
 import { useSession } from "next-auth/react";
 import { editCommittee } from "./edit-committee.server";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function Drawer({ committee, params }) {
 	const { data: session, status } = useSession();
@@ -24,6 +21,7 @@ export default function Drawer({ committee, params }) {
 	const searchParams = useSearchParams();
 
 	async function editCommitteeWrapper(data) {
+		data.append("committeeId", committee.id);
 		const res = await editCommittee(data);
 		if (res)
 			toast({
@@ -33,7 +31,7 @@ export default function Drawer({ committee, params }) {
 			});
 		if (res?.ok) {
 			setSlug("");
-			router.push(`/medibook/sessions/${params.sessionNumber}/committees/${committee.id}`);
+			router.push(searchParams.get("saveurl") || `/medibook/sessions/${params.sessionNumber}/committees/${committee.id}`);
 			router.refresh();
 		}
 	}
@@ -42,71 +40,48 @@ export default function Drawer({ committee, params }) {
 		setIsOpen(searchParams.get("edit") == "" && status === "authenticated" && authorize(session, [s.management]));
 	}, [searchParams, status, session]);
 
-	useEffect(() => {
-		window.scrollTo(0, 0);
-	}, []);
-
 	return (
-		<Sheet open={isOpen} onOpenChange={() => router.push(`/medibook/sessions/${committee.session.number}/committees/${committee.slug || committee.id}`)}>
+		<Sheet open={isOpen} onOpenChange={() => router.push(searchParams.get("saveurl") || `/medibook/sessions/${committee.session.number}/committees/${committee.slug || committee.id}`)}>
 			<SheetContent className="overflow-y-auto" position="right" size="content">
 				<SheetHeader>
 					<SheetTitle>Edit {committee.name}</SheetTitle>
 				</SheetHeader>
 				<form action={editCommitteeWrapper} id="main" name="main" className="flex flex-col gap-4 pb-2 pt-4">
-					<Input required type="hidden" value={committee.id} min={1} id="committeeId" name="committeeId" className="col-span-3" />
-					<Label htmlFor="name">Committee Name (Required)</Label>
-					<Input defaultValue={committee.name} required placeholder="General Assembly 1" id="name" name="name" className="col-span-3" />
-					<Label htmlFor="description">Committee Description</Label>
-					<Textarea defaultValue={committee.description} id="description" name="description" maxLength={1000} minLength={10} />
-					<Label htmlFor="shortName">Short Name</Label>
-					<Input defaultValue={committee.shortName} placeholder="GA1" id="shortName" name="shortName" className="col-span-3" />
-					<Label>Topics</Label>
-					<div>
-						<Label className="sr-only" htmlFor="topic1">
-							Topic 1
-						</Label>
-						<Input defaultValue={committee.topic1} placeholder="Topic 1" id="topic1" name="topic1" className="col-span-3 rounded-b-none" />
-						<Label className="sr-only" htmlFor="topic2">
-							Topic 2
-						</Label>
-						<Input defaultValue={committee.topic2} placeholder="Topic 2" id="topic2" name="topic2" className="col-span-3 rounded-none border-y-0" />
-						<Label className="sr-only" htmlFor="topic3">
-							Topic 3
-						</Label>
-						<Input defaultValue={committee.topic3} placeholder="Topic 3" id="topic3" name="topic3" className="col-span-3 rounded-t-none" />
-					</div>
-					<Label htmlFor="slug">Link Slug</Label>
+					<Input label="Committee Name" labelPlacement="outside" defaultValue={committee.name} isRequired placeholder="e.g. General Assembly 1" name="name" />
+					<Input label="Short Name" labelPlacement="outside" defaultValue={committee.shortName} placeholder="e.g. GA1" name="shortName" />
 					<Input
-						placeholder="general-assembly-1"
+						label="Link Slug"
+						labelPlacement="outside"
+						placeholder="e.g. general-assembly-1"
 						value={slug}
-						onChange={(e) => setSlug(e.target.value.replace(" ", "").trim().toLowerCase())}
-						id="slug"
+						onChange={(e) =>
+							setSlug(
+								e.target.value
+									.replace(" ", "-")
+									.replace(/[^a-zA-Z1-9-]/g, "")
+									.toLowerCase()
+									.replace(/-+/g, "-")
+									.replace(/^-/, "")
+									.trim()
+									.slice(0, 32)
+							)
+						}
 						name="slug"
-						maxLength={30}
 						minLength={2}
-						className="col-span-3"
 					/>
-					<Label htmlFor="committeeType">Committee Type</Label>
-					<RadioGroup name="committeeType" required defaultValue={committee.type}>
-						<div className="flex items-center space-x-2">
-							<RadioGroupItem value="GENERALASSEMBLY" id="GENERALASSEMBLY" />
-							<Label htmlFor="GENERALASSEMBLY">General Assembly</Label>
-						</div>
-						<div className="flex items-center space-x-2">
-							<RadioGroupItem value="SECURITYCOUNCIL" id="SECURITYCOUNCIL" />
-							<Label htmlFor="SECURITYCOUNCIL">Security Council</Label>
-						</div>
-						<div className="flex items-center space-x-2">
-							<RadioGroupItem value="SPECIALCOMMITTEE" id="SPECIALCOMMITTEE" />
-							<Label htmlFor="SPECIALCOMMITTEE">Special Committee</Label>
-						</div>
+					<Input label="Topic 1" labelPlacement="outside" defaultValue={committee.topic1} placeholder="e.g. The question of illicit firearms trade in undermining peace efforts" name="topic1" />
+					<Input label="Topic 2" labelPlacement="outside" defaultValue={committee.topic2} placeholder="e.g. The question of regulating rising cyber warfare" name="topic2" />
+					<Input label="Topic 3" labelPlacement="outside" defaultValue={committee.topic3} placeholder="e.g. The question of the threat of Artificial Intelligence influencing the proliferation of nuclear weapo" name="topic3" />
+					<Textarea label="Description" labelPlacement="outside" defaultValue={committee.description} name="description" maxLength={1000} minLength={10} />
+					<RadioGroup size="sm" label="Committee Type" isRequired required name="committeeType" defaultValue={committee.type}>
+						<Radio value="GENERALASSEMBLY">General Assembly</Radio>
+						<Radio value="SECURITYCOUNCIL">Security Council</Radio>
+						<Radio value="SPECIALCOMMITTEE">Special Committee</Radio>
 					</RadioGroup>
-				</form>
-				<SheetFooter>
-					<Button form="main" className="mt-4 flex w-auto" type="submit">
+					<Button color="primary" className="ml-auto" type="submit">
 						Save
 					</Button>
-				</SheetFooter>
+				</form>
 			</SheetContent>
 		</Sheet>
 	);

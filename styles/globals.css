@@ -142,6 +142,24 @@ html {
   display: none;
 }
 
+#show-scrollbar::-webkit-scrollbar {
+  display: block;
+  width: 12px;
+  padding: 10px;
+}
+
+#show-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to right, rgb(239, 68, 68), rgb(153, 27, 27));
+  border-radius: 200px;
+  width: 10px;
+}
+
+#show-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--medired);
+  border-radius: 200px;
+  width: 10px;
+}
+
 @keyframes slideInFromLeft {
   0% {
     width: 0px !important;

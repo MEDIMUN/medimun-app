@@ -1,23 +1,47 @@
 "use server";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import prisma from "@/prisma/client";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { authorize, s } from "@/lib/authorize";
-import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import "server-only";
+import { redirect } from "next/dist/server/api-utils";
 
-function error ( e ) {
-   return { ok: false, error: "Error", title: "An error occurred while deleting the announcement", variant: "destructive" };
-}
+export async function deleteAnnouncement ( announcementId ) {
+	if ( !announcementId ) return { ok: false, error: "Invalid input", title: "Invalid input", description: "Invalid input", variant: "destructive" };
+	const session = await getServerSession( authOptions );
+	const { currentRoles } = session;
 
-export async function deleteAnnouncement ( announcementId, params ) {
-   const session = await getServerSession( authOptions );
-   if ( !session || session.isDisabled ) redirect( "/medibook/signout" );
-   if ( !authorize( session, [ s.management ] ) ) return { ok: false, error: "You are not authorized to delete announcements.", title: "Unauthorized", variant: "destructive" };
-   await prisma.announcement.delete( {
-      where: {
-         id: announcementId,
-      },
-   } ).catch( e => error( e ) );
-   return redirect( `/medibook/sessions/${ params.sessionNumber }/committees/${ params.committeeId }/announcements/` );
+	const committeeExists = await prisma.committee
+		.findMany( {
+			where: {
+				announcement: {
+					some: {
+						id: announcementId,
+					},
+				},
+			},
+			select: {
+				id: true,
+			},
+		} )
+		.catch( ( e ) => {
+			return { ok: false, error: "Internal server error", title: "Internal server error", description: "An error occurred while creating the announcement", variant: "destructive" };
+		} );
+
+	if ( !committeeExists.length ) return { ok: false, error: "Invalid input", title: "Invalid input", description: "Invalid input", variant: "destructive" };
+	const currentChairRoles = currentRoles.filter( ( role ) => role.committeeId === committeeExists[ 0 ].id && role.name === "chair" );
+	const isChair = currentChairRoles.length > 0;
+	if ( !authorize( session, [ s.management ] ) && !isChair ) return { ok: false, error: "Unauthorized", title: "Unauthorized", description: "You are not authorized to perform this action", variant: "destructive" };
+
+	try {
+		await prisma.committeeAnnouncement.delete( {
+			where: {
+				id: announcementId,
+			},
+		} );
+	} catch ( e ) {
+		return { ok: false, error: "Internal server error", title: "Internal server error", description: "An error occurred while creating the announcement", variant: "destructive" };
+	}
+	return { ok: true, title: "Announcement Deleted", description: "Announcement deleted successfully", variant: "default" };
 }

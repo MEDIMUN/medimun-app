@@ -3,6 +3,7 @@ import { getOrdinal } from "@lib/get-ordinal";
 import { Button } from "@/components/ui/button";
 import Drawer from "./Drawer";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { TitleBar, e as s } from "@/components/medibook/TitleBar";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Check } from "lucide-react";
@@ -22,17 +23,17 @@ export default async function Page({ params, searchParams }) {
 			<TitleBar title={`${selectedSession + ordinal} Annual Session Days`} button1roles={[s.sd, s.director, s.admins]} button1text="Add Day" button1href="?add" button1style="text-black bg-white" />
 			<div className="mx-auto mt-5 flex max-w-[1248px] flex-col p-6 font-[montserrat] text-3xl font-extralight">
 				<h2 className="pl-4  text-[18px] font-[700]  uppercase">COnference Days</h2>
-				<div className="grid">
-					{conferenceDays.map((day) => {
+				<div className="grid gap-2">
+					{conferenceDays.map((day, index) => {
 						return (
 							<Link key={Math.random()} href={`/medibook/sessions/${selectedSession}/days/${day.id}`}>
-								<Card className="flex flex-row bg-gradient-to-r from-medired  to-red-500 duration-300 md:shadow-xl md:hover:shadow-md">
+								<Card className="flex flex-row  duration-300 md:shadow-xl md:hover:shadow-md">
 									<CardHeader>
-										<CardTitle className="truncate text-white">{day.date.toDateString()}</CardTitle>
-										{day.name && <CardDescription className="truncate text-slate-100">{day.name}</CardDescription>}
+										<CardTitle className="truncate">{day.date.toDateString()}</CardTitle>
+										<CardDescription className="truncate">Day {index + 1}</CardDescription>
 									</CardHeader>
 									<CardFooter className="my-auto ml-auto flex h-full py-0">
-										<Button className="bg-white text-black hover:text-white">
+										<Button className="">
 											Explore <ArrowRight className="ml-2 h-4 w-4" />
 										</Button>
 									</CardFooter>
@@ -42,17 +43,14 @@ export default async function Page({ params, searchParams }) {
 					})}
 				</div>
 				<h2 className="pl-4 pt-4 font-[montserrat] text-[18px] font-[700]  uppercase">Workshop Days</h2>
-				<div className="grid gap-5">
+				<div className="grid gap-2 md:grid-cols-2">
 					{workshopDays.map((day, index) => {
 						return (
 							<Link key={Math.random()} href={`/medibook/sessions/${selectedSession}/days/${day.id}`}>
 								<Card className="flex flex-row duration-300 md:shadow-xl md:hover:shadow-md">
 									<CardHeader>
 										<CardTitle className="truncate">{day.date.toDateString()}</CardTitle>
-										<CardDescription className="truncate">
-											Conference Day {index + 1}
-											{day.name && " • " + day.name}
-										</CardDescription>
+										<CardDescription className="truncate">Workshop Day {index + 1}</CardDescription>
 									</CardHeader>
 									<CardFooter className="my-auto ml-auto flex h-full py-0">
 										<Button>
@@ -71,6 +69,12 @@ export default async function Page({ params, searchParams }) {
 
 async function getData(params) {
 	prisma.$connect();
+	console.log(params);
+	await prisma.session
+		.findFirstOrThrow({
+			where: { number: params },
+		})
+		.catch(() => notFound());
 	let conferenceDays, workshopDays;
 	try {
 		conferenceDays = await prisma.conferenceDay.findMany({
@@ -81,7 +85,9 @@ async function getData(params) {
 			where: { session: { number: params } },
 			orderBy: [{ date: "asc" }],
 		});
-	} catch (e) {}
+	} catch (e) {
+		notFound();
+	}
 
 	return {
 		conferenceDays,

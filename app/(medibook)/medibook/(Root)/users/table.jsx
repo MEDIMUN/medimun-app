@@ -1,246 +1,236 @@
 "use client";
 
-import { NextUIProvider } from "@nextui-org/react";
-import React from "react";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem, Chip, User, Pagination } from "@nextui-org/react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PlusIcon } from "lucide-react";
-import { PlusIcon as VerticalDotsIcon } from "lucide-react";
-import { PlusIcon as SearchIcon } from "lucide-react";
-import { ChevronDownIcon } from "lucide-react";
-import { users } from "./data.js";
 import Link from "next/link";
+import { Button, Spacer, Avatar, TableModal, ModalContent, ModalHeader, ModalBody, Modal, ModalFooter, Table, TableHeader, Input, TableBody, TableColumn, TableRow, TableCell, User, ButtonGroup, Chip, Tooltip, Pagination, useDisclosure } from "@nextui-org/react";
+import prisma from "@/prisma/client";
+import * as SolarIconSet from "solar-icon-set";
+import { prune, toggleDisableUser } from "./user.server.js";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import React from "react";
+import { updateSearchParams, removeSearchParams } from "@/lib/searchParams";
+import { flushSync } from "react-dom";
+import { useDebouncedValue } from "@mantine/hooks";
+import TopBar from "@/components/medibook/TopBar.jsx";
 
-const statusColorMap = {
-	active: "success",
-	paused: "danger",
-	vacation: "warning",
-};
-export function capitalize(str) {
-	return str.charAt(0).toUpperCase() + str.slice(1);
-}
+export default function UsersTable({ users, numberOfUsers, numberOfPages, session }) {
+	const { toast } = useToast();
+	const searchParams = useSearchParams();
+	const router = useRouter();
+	const [query, setQuery] = useState(searchParams.get("query") || "");
+	const [debounced] = useDebouncedValue(query, 500);
+	const [isLoading, setIsLoading] = useState(false);
+	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-const statusOptions = [
-	{ name: "Active", uid: "active" },
-	{ name: "Paused", uid: "paused" },
-	{ name: "Vacation", uid: "vacation" },
-];
-
-const columns = [
-	{ name: "USER ID", uid: "id", sortable: true },
-	{ name: "NAME", uid: "name", sortable: true },
-	{ name: "ROLE", uid: "role", sortable: true },
-	{ name: "TEAM", uid: "team" },
-	{ name: "EMAIL", uid: "email" },
-	{ name: "STATUS", uid: "status", sortable: true },
-	{ name: "ACTIONS", uid: "actions" },
-];
-
-const INITIAL_VISIBLE_COLUMNS = ["id", "name", "role", "status", "actions"];
-
-export function UsersTable() {
-	const [filterValue, setFilterValue] = React.useState("");
-	const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
-	const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
-	const [statusFilter, setStatusFilter] = React.useState("all");
-	const [rowsPerPage, setRowsPerPage] = React.useState(15);
-	const [sortDescriptor, setSortDescriptor] = React.useState({
-		column: "age",
-		direction: "ascending",
-	});
-	const [page, setPage] = React.useState(1);
-
-	const hasSearchFilter = Boolean(filterValue);
-
-	const headerColumns = React.useMemo(() => {
-		if (visibleColumns === "all") return columns;
-
-		return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
-	}, [visibleColumns]);
-
-	const filteredItems = React.useMemo(() => {
-		let filteredUsers = [...users];
-
-		if (hasSearchFilter) {
-			filteredUsers = filteredUsers.filter((user) => user.name.toLowerCase().includes(filterValue.toLowerCase()));
-		}
-		if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-			filteredUsers = filteredUsers.filter((user) => Array.from(statusFilter).includes(user.status));
-		}
-
-		return filteredUsers;
-	}, [users, filterValue, statusFilter]);
-
-	const pages = Math.ceil(filteredItems.length / rowsPerPage);
-
-	const items = React.useMemo(() => {
-		const start = (page - 1) * rowsPerPage;
-		const end = start + rowsPerPage;
-
-		return filteredItems.slice(start, end);
-	}, [page, filteredItems, rowsPerPage]);
-
-	const sortedItems = React.useMemo(() => {
-		return [...items].sort((a, b) => {
-			const first = a[sortDescriptor.column];
-			const second = b[sortDescriptor.column];
-			const cmp = first < second ? -1 : first > second ? 1 : 0;
-
-			return sortDescriptor.direction === "descending" ? -cmp : cmp;
+	async function toggleDisableUserHandler(userId) {
+		flushSync(() => {
+			setIsLoading(true);
 		});
-	}, [sortDescriptor, items]);
+		const res = await toggleDisableUser(userId);
+		if (res) toast(res);
+		if (res?.ok) router.refresh();
+		setIsLoading(false);
+	}
 
-	const renderCell = React.useCallback((user, columnKey) => {
-		const cellValue = user[columnKey];
+	async function pruneHandler() {
+		flushSync(() => {
+			setIsLoading(true);
+		});
+		const res = await prune(searchParams.get("selected").split(","));
+		if (res) toast(res);
+		if (res?.ok) router.refresh();
+		setIsLoading(false);
+		onClose();
+	}
 
-		switch (columnKey) {
-			case "name":
-				return (
-					<User avatarProps={{ radius: "xl", src: user.avatar }} description={user.email} name={cellValue}>
-						{user.email}
-					</User>
-				);
-			case "role":
-				return (
-					<div className="flex flex-col">
-						<p className="text-bold text-small capitalize">{cellValue}</p>
-						<p className="text-bold text-tiny capitalize text-default-400">{user.team}</p>
-					</div>
-				);
-			case "status":
-				return (
-					<Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
-						{cellValue}
-					</Chip>
-				);
-			case "actions":
-				return (
-					<div className="relative flex items-center justify-end gap-2">
-						<Dropdown>
-							<DropdownTrigger>
-								<Button size="sm" variant="light">
-									<ChevronDownIcon className="text-default-300" />
-								</Button>
-							</DropdownTrigger>
-							<DropdownMenu>
-								<DropdownItem>View</DropdownItem>
-								<DropdownItem>Edit</DropdownItem>
-								<DropdownItem>Delete</DropdownItem>
-							</DropdownMenu>
-						</Dropdown>
-					</div>
-				);
-			default:
-				return cellValue;
-		}
-	}, []);
-
-	const onNextPage = React.useCallback(() => {
-		if (page < pages) setPage(page + 1);
-	}, [page, pages]);
-
-	const onPreviousPage = React.useCallback(() => {
-		if (page > 1) setPage(page - 1);
-	}, [page]);
-
-	const onRowsPerPageChange = React.useCallback((e) => {
-		setRowsPerPage(Number(e.target.value));
-		setPage(1);
-	}, []);
-
-	const onSearchChange = React.useCallback((e) => {
-		if (e.target.value) {
-			setFilterValue(e.target.value);
-			setPage(1);
+	useEffect(() => {
+		if (debounced) {
+			updateSearchParams(router, { query: debounced, page: 1 });
 		} else {
-			setFilterValue("");
+			removeSearchParams(router, { query: "" });
 		}
-	}, []);
+	}, [debounced]);
 
-	const TopContent = React.useMemo(() => {
-		return (
-			<div className="mb-2 flex flex-col gap-4">
-				<div className="flex items-end justify-between gap-3 p-2">
-					<Input className="w-full selection:outline-none" placeholder="Search by name..." value={filterValue} onChange={(e) => onSearchChange(e)} />
-					<div className="flex gap-3">
-						<Dropdown>
-							<DropdownTrigger className="hidden sm:flex">
-								<Button>Status</Button>
-							</DropdownTrigger>
-							<DropdownMenu disallowEmptySelection aria-label="Table Columns" closeOnSelect={false} selectedKeys={statusFilter} selectionMode="multiple" onSelectionChange={setStatusFilter}>
-								{statusOptions.map((status) => (
-									<DropdownItem key={status.uid} className="capitalize">
-										{capitalize(status.name)}
-									</DropdownItem>
-								))}
-							</DropdownMenu>
-						</Dropdown>
-						<Dropdown>
-							<DropdownTrigger className="hidden sm:flex">
-								<Button>Columns</Button>
-							</DropdownTrigger>
-							<DropdownMenu disallowEmptySelection aria-label="Table Columns" closeOnSelect={false} selectedKeys={visibleColumns} selectionMode="multiple" onSelectionChange={setVisibleColumns}>
-								{columns.map((column) => (
-									<DropdownItem key={column.uid} className="capitalize">
-										{capitalize(column.name)}
-									</DropdownItem>
-								))}
-							</DropdownMenu>
-						</Dropdown>
-						<Link href="/medibook/users?add">
-							<Button color="primary">Add New</Button>
-						</Link>
-					</div>
-				</div>
-				<div className="flex items-center justify-between">
-					<span className="text-small text-default-400">Total {users.length} users</span>
-					<label className="flex items-center text-small text-default-400">
-						Rows per page:
-						<select className="bg-transparent text-small text-default-400 outline-none" onChange={onRowsPerPageChange}>
-							<option value="10">10</option>
-							<option value="15">25</option>
-							<option value="50">50</option>
-							<option value="50">100</option>
-						</select>
-					</label>
-				</div>
-			</div>
-		);
-	}, [filterValue, statusFilter, visibleColumns, onSearchChange, onRowsPerPageChange, users.length, hasSearchFilter]);
-
-	const BottomContent = () => {
-		return (
-			<div className="flex items-center justify-between px-2 py-2 font-[montserrat]">
-				<span className="w-[30%] text-small text-default-400">{selectedKeys === "all" ? "All items selected" : `${selectedKeys.size} of ${filteredItems.length} selected`}</span>
-				<Pagination isCompact showControls showShadow color="primary" page={page} total={pages} onChange={setPage} />
-				<div className="hidden w-[30%] justify-end gap-2 sm:flex">
-					<Button disabled={pages === 1} onClick={onPreviousPage}>
-						Previous
-					</Button>
-					<Button disabled={pages === 1} onClick={onNextPage}>
-						Next
-					</Button>
-				</div>
-			</div>
-		);
-	};
-
+	const selectedLength = searchParams.get("selected") ? searchParams.get("selected").split(",").length : 0;
 	return (
-		<NextUIProvider>
-			<Table topContent={TopContent} isCompact removeWrapper className="h-auto overflow-x-scroll" aria-label="Example table with custom cells, pagination and sorting" isHeaderSticky selectedKeys={selectedKeys} selectionMode="multiple" sortDescriptor={sortDescriptor} topContentPlacement="outside" onSelectionChange={setSelectedKeys} onSortChange={setSortDescriptor}>
-				<TableHeader columns={headerColumns}>
-					{(column) => (
-						<TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"} allowsSorting={column.sortable}>
-							{column.name}
+		<>
+			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+				<ModalContent>
+					<ModalHeader className="flex flex-col gap-1">Are you sure you want to prune users</ModalHeader>
+					<ModalBody>
+						<p className="text-black">This action will remove all roles and awards of a user. This action is irreversible.</p>
+					</ModalBody>
+					<ModalFooter>
+						<Button onPress={onClose}>Cancel</Button>
+						<Button color="danger" onPress={pruneHandler} isLoading={isLoading}>
+							Prune
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
+			<TopBar title="Users">
+				<Button as={Link} href="?add" className="my-auto ml-auto">
+					Add User
+				</Button>
+			</TopBar>
+			<div id="show-scrollbar" className="flex h-[calc(100%-101px)] flex-col overflow-x-auto rounded-2xl border-1 border-gray-200 p-4">
+				<Table
+					removeWrapper
+					isStriped
+					selectedKeys={searchParams.get("selected") ? searchParams.get("selected").split(",") : []}
+					onSelectionChange={(keys) => {
+						const keysArray = [...keys];
+						if (keysArray.includes(session.user.id)) return;
+						if (keys === "all" || keysArray.length == numberOfUsers || keysArray.length == 0) {
+							removeSearchParams(router, { selected: "all" });
+							return;
+						}
+						updateSearchParams(router, { selected: keysArray });
+						router.refresh();
+					}}
+					topContent={
+						<div className="flex gap-2">
+							<Button
+								onPress={() => {
+									updateSearchParams(router, { assign: "" });
+								}}
+								isDisabled={!(selectedLength != 0 && selectedLength < 21)}>
+								Assign Roles
+							</Button>
+							<Button onPress={onOpen} isDisabled={!(selectedLength != 0 && selectedLength < 6)}>
+								Remove All Roles
+							</Button>
+							<Input
+								className="w-full rounded-2xl border-1 border-gray-200"
+								placeholder="Search by name, email, school, id or username"
+								label=""
+								isClearable
+								onClear={() => {
+									removeSearchParams(router, { query: "" });
+									setQuery("");
+								}}
+								labelPlacement="outside"
+								value={query}
+								onChange={(e) => {
+									setQuery(e.target.value);
+								}}
+							/>
+						</div>
+					}
+					sortDescriptor={{ column: searchParams.get("orderBy") || "officialName", direction: searchParams.get("direction") == "desc" ? "descending" : "ascending" }}
+					onSortChange={(descriptor) => {
+						removeSearchParams(router, { remove: "" });
+						updateSearchParams(router, { orderBy: descriptor.column, direction: descriptor.direction.toLowerCase() == "descending" ? "desc" : "asc" });
+					}}
+					selectionMode="multiple"
+					className="static z-0 mb-auto min-w-max">
+					<TableHeader>
+						<TableColumn key="officialName" allowsSorting>
+							NAMES
 						</TableColumn>
-					)}
-				</TableHeader>
-				<TableBody emptyContent={"No users found"} items={sortedItems}>
-					{(item) => <TableRow key={item.id}>{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}</TableRow>}
-				</TableBody>
-			</Table>
-			<BottomContent />
-		</NextUIProvider>
+						<TableColumn allowsSorting key="id">
+							ID
+						</TableColumn>
+						<TableColumn allowsSorting key="username">
+							USERNAME
+						</TableColumn>
+						<TableColumn key="email" allowsSorting>
+							EMAIL
+						</TableColumn>
+						<TableColumn>SCHOOL</TableColumn>
+						<TableColumn>CURRENT ROLE</TableColumn>
+						<TableColumn>ACCOUNT STATUS</TableColumn>
+						<TableColumn>ACTIONS</TableColumn>
+					</TableHeader>
+					<TableBody emptyContent={"No Users Found"}>
+						{users.map((user, index) => {
+							return (
+								<TableRow key={user.id}>
+									<TableCell>
+										<Tooltip className="rounded-2xl p-0 shadow-2xl" isDisabled={!user.profilePicture} closeDelay={0} content={<Avatar className="h-48 w-48 rounded-2xl shadow-2xl" showFallback color="gradient" name={user.officialName[0] + user.officialSurname[0]} src={`/api/users/${user.id}/avatar`} />}>
+											<User
+												name={user.officialName + " " + user.officialSurname}
+												description={user.displayName}
+												avatarProps={{
+													showFallback: true,
+													color: "gradient",
+													name: user.officialName[0] + user.officialSurname[0],
+													isBordered: true,
+													src: `/api/users/${user.id}/avatar`,
+												}}
+											/>
+										</Tooltip>
+									</TableCell>
+									<TableCell>{user.id}</TableCell>
+									<TableCell>
+										<p className="text-black">
+											{user.username && "@"}
+											{user.username || ""}
+										</p>
+									</TableCell>
+									<TableCell>{user.email}</TableCell>
+									<TableCell>
+										{user.student[0] ? (
+											<Link className="text-blue-500" href={`/medibook/schools?view=${user.student ? user.student[0].school.id : ""}&return=/medibook/users`}>
+												{user.student[0].school.name} ↗
+											</Link>
+										) : (
+											"No School Selected"
+										)}
+									</TableCell>
+									<TableCell>{}</TableCell>
+									<TableCell className="gap-1">
+										{user.account && !user.isDisabled ? (
+											<Tooltip content={`Last Login: ${user.account.lastLogin.toDateString()}`}>
+												<Chip color="success">Active</Chip>
+											</Tooltip>
+										) : (
+											<Tooltip content="This user does not have an account hence they can't login. If they use the current email on record when creating an account the new account will be automatically connected to this user.">
+												<Chip color="warning">Standalone</Chip>
+											</Tooltip>
+										)}
+									</TableCell>
+									<TableCell>
+										{session.user.id !== user.id ? (
+											<div className="flex gap-2">
+												<Tooltip content={user.isDisabled ? "Enable User" : "Disable User"}>
+													<Button color={user.isDisabled ? "danger" : "success"} onPress={() => toggleDisableUserHandler(user.id)} isDisabled={isLoading} isLoading={isLoading} isIconOnly>
+														<SolarIconSet.UserCrossRounded iconStyle="Outline" size={24} />
+													</Button>
+												</Tooltip>
+												<Tooltip content="Edit user roles">
+													<Button onPress={() => updateSearchParams(router, { remove: user.id })} isDisabled={isLoading} isLoading={isLoading} isIconOnly>
+														<SolarIconSet.HamburgerMenu iconStyle="Outline" size={24} />
+													</Button>
+												</Tooltip>
+												<Tooltip content="Edit user data">
+													<Button onPress={() => updateSearchParams(router, { edit: user.id })} isDisabled={isLoading} isLoading={isLoading} isIconOnly>
+														<SolarIconSet.PenNewSquare iconStyle="Outline" size={24} />
+													</Button>
+												</Tooltip>
+												<Tooltip content="View user data">
+													<Button onPress={() => updateSearchParams(router, { view: user.id })} isDisabled={isLoading} isLoading={isLoading} isIconOnly>
+														<SolarIconSet.Eye iconStyle="Outline" size={24} />
+													</Button>
+												</Tooltip>
+											</div>
+										) : (
+											<Button as={Link} href="/medibook/account" className="w-min px-5" startContent={<SolarIconSet.User iconStyle="Outline" size={24} />}>
+												Account Settings
+											</Button>
+										)}
+									</TableCell>
+								</TableRow>
+							);
+						})}
+					</TableBody>
+				</Table>
+				<Spacer y={4} />
+				<div className="flex w-full justify-center">
+					<Pagination className="absolute bottom-12" isCompact showControls showShadow color="secondary" page={searchParams.get("page") || 1} total={numberOfPages} onChange={(page) => updateSearchParams(router, { page: page })} />
+				</div>
+			</div>
+		</>
 	);
 }

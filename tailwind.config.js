@@ -105,5 +105,6 @@ module.exports = {
       },
     },
   },
-  plugins: [ nextui() ],
+  plugins: [ nextui( {
+  } ) ],
 };

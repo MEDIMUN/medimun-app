@@ -36,7 +36,6 @@ export async function currentSession ( formData ) {
    catch ( e ) {
       return {
          ok: false,
-         error: "Could not check if user exists",
          title: "An error occured, please try again later",
          variant: "destructive",
       };
@@ -54,7 +53,6 @@ export async function currentSession ( formData ) {
    } catch ( e ) {
       return {
          ok: false,
-         error: "Could not check if session exists",
          title: "An error occured, please try again later",
          variant: "destructive",
       };
@@ -85,11 +83,9 @@ export async function currentSession ( formData ) {
    } catch ( e ) {
       return {
          ok: false,
-         error: "Could not update session",
          title: "An error occured, please try again later",
          variant: "destructive",
       };
    }
    return { ok: true, title: "Updated Current Session", variant: "destructive" };
-   redirect( `/medibook/sessions/${ sessionNumber }` );
 }

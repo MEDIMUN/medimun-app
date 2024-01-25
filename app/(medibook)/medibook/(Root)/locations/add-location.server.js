@@ -22,12 +22,14 @@ export async function addLocation ( formData ) {
       state: formData.get( "state" ),
       zipCode: formData.get( "zipCode" ),
       country: formData.get( "country" ),
-      phoneCode: formData.get( "phoneCode" ),
+      phoneCode: formData.get( "phoneCode" ) == undefined ? null : formData.get( "phoneCode" ),
       phoneNumber: formData.get( "phoneNumber" ),
-      email: formData.get( "phoneNumber" ),
+      email: formData.get( "email" ),
       website: formData.get( "website" ),
       mapUrl: formData.get( "mapUrl" )
    };
+
+   console.log( location );
 
    //validation
    if ( !location.name || typeof location.name !== "string" ) return { ok: false, title: "Name is required", variant: "destructive" };
@@ -78,6 +80,10 @@ export async function addLocation ( formData ) {
       }
    }
 
+   //check if there is a phone code there needs to be a number and vice versa if one is empty the other needs to be empty
+   if ( location.phoneCode && !location.phoneNumber ) return { ok: false, title: "Phone number is required", variant: "destructive" };
+   if ( !location.phoneCode && location.phoneNumber ) return { ok: false, title: "Phone code is required", variant: "destructive" };
+
    if ( location.email ) {
       if ( typeof location.email !== "string" ) return { ok: false, title: "Email must be a string", variant: "destructive" };
       if ( location.email.length < 5 || location.email.length > 100 ) return { ok: false, title: "Email must be 5-100 characters long", variant: "destructive" };
@@ -93,18 +99,32 @@ export async function addLocation ( formData ) {
       if ( location.mapUrl.length < 5 || location.mapUrl.length > 200 ) return { ok: false, title: "Map URL must be 5-200 characters long", variant: "destructive" };
    }
 
-   // Continue with other validations as needed...
-
-   let res;
+   const editId = formData.get( "editId" );
+   if ( editId ) {
+      console.log( editId );
+      try {
+         await prisma.location.update( {
+            where: {
+               id: editId
+            },
+            data: {
+               ...location
+            },
+         } );
+      } catch ( e ) {
+         console.log( e );
+         return { ok: false, title: "Something went wrong", variant: "destructive" };
+      }
+      return { ok: true, title: "Location updated", variant: "default" };
+   }
    try {
-      res = await prisma.location.create( {
+      await prisma.location.create( {
          data: {
             ...location
          },
       } );
    } catch ( e ) {
-      console.log( e );
       return { ok: false, title: "Something went wrong", variant: "destructive" };
    }
-   return { ok: true, title: "Location created", variant: "success" };
+   return { ok: true, title: "Location created", variant: "default" };
 }

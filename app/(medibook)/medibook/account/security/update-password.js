@@ -13,6 +13,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function updatePassword ( formData ) {
    const { currentPassword, newPassword, confirmNewPassword } = formData;
+   await new Promise( resolve => setTimeout( resolve, 2000 ) );
    if ( newPassword !== confirmNewPassword ) return { ok: false, title: "New passwords do not match" };
    if (
       !(

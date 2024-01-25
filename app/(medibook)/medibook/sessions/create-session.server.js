@@ -3,7 +3,6 @@
 import "server-only";
 
 import prisma from "@/prisma/client";
-//import { getServerSession } from "next-auth";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { s, authorize } from "@/lib/authorize";
@@ -12,29 +11,29 @@ import { redirect } from "next/navigation";
 export async function createSession ( formData ) {
 	const session = await getServerSession( authOptions );
 	if ( !authorize( session, [ s.admin, s.sd ] ) ) redirect( "/medibook/sessions" );
+
 	const sessionNumber = formData.get( "sessionNumber" );
 	const theme = formData.get( "theme" );
 	const phrase2 = formData.get( "phrase2" );
+
 	let latestSession, currentSession;
 	try {
-		prisma.$connect();
 		latestSession = ( await prisma.session.findFirst( {
 			orderBy: {
 				numberInteger: "desc",
 			},
 		} ) )?.numberInteger || 0;
 	} catch ( e ) {
-		redirect( "/medibook/sessions" );
+		return { ok: false, error: "Could not create session", title: "Could not create session", description: "An unknown error occured", variant: "destructive" };
 	}
 	try {
-		prisma.$connect();
 		currentSession = ( await prisma.session.findFirst( {
 			where: {
 				isCurrent: true,
 			},
 		} ) )?.numberInteger || 0;
 	} catch ( e ) {
-		redirect( "/medibook/sessions" );
+		return { ok: false, error: "Could not create session", title: "Could not create session", description: "An unknown error occured", variant: "destructive" };
 	}
 	if ( latestSession == 0 && parseInt( sessionNumber ) !== 1 ) return { ok: false, error: "First session must be number 1", title: "First session must be number 1", variant: "destructive" };
 	if ( latestSession >= parseInt( sessionNumber ) ) return { ok: false, error: "Session number must be greater than the latest session", title: "Session number must be greater than the latest session", variant: "destructive" };
@@ -48,7 +47,6 @@ export async function createSession ( formData ) {
 	if ( phrase2 && phrase2.length > 40 ) return { ok: false, error: "Phrase 2 must be at most 40 characters", title: "Phrase 2 must be at most 40 characters", variant: "destructive" };
 
 	try {
-		prisma.$connect();
 		await prisma.session.create( {
 			data: {
 				number: sessionNumber,
@@ -60,7 +58,5 @@ export async function createSession ( formData ) {
 	} catch ( e ) {
 		return { ok: false, error: "Could not create session", title: "Could not create session", description: "An unknown error occured", variant: "destructive" };
 	}
-
-	redirect( "/medibook/sessions" );
 	return { ok: true, message: "Session created", title: "Session created", description: "A new session has been created ", variant: "default" };
 }

@@ -1,156 +1,148 @@
 import prisma from "@/prisma/client";
-import { TitleBar, e as s } from "@/components/medibook/TitleBar";
+import { TitleBar } from "@/components/medibook/TitleBar";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import Drawer from "./Drawer";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
+import { Card, CardHeader, CardBody, CardFooter, Button, Divider, Chip, User } from "@nextui-org/react";
+import { authorize, s } from "@/lib/authorize";
+import PinButton from "./PinButton";
 const announcementsPerPage = 10;
+import Paginator from "./Paginator";
 
 export default async function Page({ params, searchParams }) {
 	const session = await getServerSession(authOptions);
-
-	const committee = await getData(params);
-
-	if (!session || session.isDisabled) redirect("/medibook/signout");
-	if (!committee) notFound();
-
-	const showButton1 = session.currentRoles.some((role) => role.name === "Manager" && role.committeeId === committee.id);
-
-	let skip = searchParams.page ? (searchParams.page - 1) * announcementsPerPage : 0;
-	skip = skip < 0 ? 0 : skip;
-	const announcements = await prisma.announcement.findMany({
-		orderBy: [{ isPinned: "desc" }, { time: "desc" }],
-		where: {
-			CommitteeAnnouncement: {
-				some: {
-					committee: {
-						id: committee.id,
-					},
-				},
-			},
-		},
-		include: {
-			CommitteeAnnouncement: { select: { id: true } },
-			user: { select: { officialName: true, displayName: true, officialSurname: true } },
-		},
-		take: announcementsPerPage,
-		skip: skip,
-	});
-	const doesIncludesPinned = announcements.some((announcement) => announcement.isPinned);
-	const currentPage = parseInt(searchParams.page || "1");
-
+	const { announcements, committee, announcementsCount } = await getData({ params, searchParams });
+	const pinnedAnnouncements = announcements.filter((a) => a.isPinned);
+	const normalAnnouncements = announcements.filter((a) => !a.isPinned);
 	return (
 		<>
-			<Drawer props={{ committeeId: committee.id, sessionNumber: params.sessionNumber, committeeSlug: committee.slug }} />
-			<TitleBar
-				title="Committee Announcements"
-				button1text="Create Announcement"
-				button1roles={[s.management]}
-				button1show={showButton1}
-				button1href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || params.committeeId}/announcements?create`}></TitleBar>
-			<div className="p-5">
-				<div className="mx-auto mt-5 max-w-[1200px] gap-[24px]">
-					<div className="mt-5">
-						{doesIncludesPinned && (
-							<div>
-								<h2 className="font-md ml-5 text-xl font-bold tracking-tight">{announcements.length > 0 ? "Pinned Announcements" : "No Announcements Found"}</h2>
-								<ul className="my-2 mb-7 grid grid-rows-3 gap-2 md:grid-cols-2 lg:grid-cols-3">
-									{announcements
-										.filter((announcement) => announcement.isPinned)
-										.map((announcement) => {
-											return (
-												<li className="list-none" key={announcement.id}>
-													<Link href={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/announcements/${announcement.id}`}>
-														<Card className="shadow-xl duration-300 hover:shadow-md">
-															<CardHeader>
-																<CardTitle className="truncate">
-																	{"📌 "}
-																	{announcement.title}
-																</CardTitle>
-																<CardDescription className="truncate">{announcement.description}</CardDescription>
-															</CardHeader>
-														</Card>
-													</Link>
-												</li>
-											);
-										})}
-								</ul>
-							</div>
-						)}
-						<h2 className="font-md ml-5 text-xl font-bold tracking-tight">
-							{announcements.filter((announcement) => {
-								!announcement.isPinned;
-							}).length > 0
-								? "Latest Announcements"
-								: ""}
-						</h2>
-						<ul>
-							{announcements
-								.filter((announcement) => !announcement.isPinned)
-								.map((announcement) => {
-									return (
-										<li className="my-2 list-none" key={announcement.id}>
-											<Link href={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/announcements/${announcement.id}`}>
-												<Card className={`duration-300 hover:shadow-md ${announcement.isPinned && "border-red-500 shadow-xl"}`}>
-													<CardHeader>
-														<CardTitle className="truncate">{announcement.title}</CardTitle>
-														<CardDescription className="truncate">{announcement.description}</CardDescription>
-													</CardHeader>
-												</Card>
-											</Link>
-										</li>
-									);
-								})}
+			{<Drawer props={{ committeeId: committee.id, sessionNumber: params.sessionNumber, committeeSlug: committee.slug }} />}
+			<TitleBar title="Committee Announcements" button1text="Create Announcement" button1roles={[s.management]} button1href="?create"></TitleBar>
+			<div className="mx-auto flex max-w-[1248px] flex-col gap-6 p-6">
+				{!!pinnedAnnouncements.length && (
+					<>
+						<p>Pinned Announcements</p>
+						<ul className="grid w-full gap-4 md:grid-cols-2">
+							{pinnedAnnouncements.map((announcement, index) => {
+								const isEdited = announcement.editTime.toString() !== announcement.time.toString();
+								const isBoard = announcement.privacy === "BOARD";
+								const isSecretariat = announcement.privacy === "SECRETARIAT";
+								const isAnonymous = announcement.privacy === "ANONYMOUS";
+
+								return (
+									<Card key={announcement.id} className={`h-[200px] ${announcement.isPinned && "shadow-md shadow-slate-400"}`}>
+										<CardHeader as={Link} href={"announcements/" + announcement.id} className="flex flex-col text-ellipsis">
+											<p className="mr-auto line-clamp-1 text-ellipsis text-xl">
+												{announcement.isPinned && "📌 "}
+												{announcement.title}
+											</p>
+											<p className="mr-auto line-clamp-2 text-ellipsis text-sm">{announcement.description}</p>
+											<div className="mr-auto mt-2 flex flex-row gap-2 text-xs text-slate-500">
+												{isEdited && <p>Edited</p>}
+												{announcement.editTime.toLocaleString().replace(", ", " • ")}
+												{isBoard && <p>Announcement by the Board</p>}
+												{isSecretariat && <p>Announcement by the Secretariat</p>}
+												{isAnonymous && <p>Anonymous</p>}
+											</div>
+										</CardHeader>
+										<CardBody as={Link} href={"announcements/" + announcement.id} />
+										<CardFooter className="flex flex-row gap-2 bg-gray-100">
+											{announcement.privacy !== "ANONYMOUS" && <User name={announcement.user.displayName || announcement.user.officialName + " " + announcement.user.officialSurname} avatarProps={{ src: `/api/user/${announcement.user.id}/profilePicture`, size: "sm", isBordered: true, name: announcement.user.officialName[0] + announcement.user.officialSurname[0], showFallback: true, color: "primary", className: "min-w-max" }} />}
+											<div className="ml-auto flex gap-2">
+												{authorize(session, [s.management]) && (
+													<>
+														<PinButton isPinned={announcement.isPinned} announcementId={announcement.id} />
+														<Button as={Link} href={"announcements/" + announcement.id + "?edit&saveurl=./"} className="ml-auto">
+															Edit
+														</Button>
+													</>
+												)}
+												<Button as={Link} href={"announcements/" + announcement.id} className="bgn ml-auto">
+													View
+												</Button>
+											</div>
+										</CardFooter>
+									</Card>
+								);
+							})}
 						</ul>
-						<div className="mx-auto my-10 flex w-auto flex-col justify-center gap-1.5 p-3 md:flex-row">
-							{!announcements.length < 10 && currentPage > 1 && (
-								<Link href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || params.committeeId}/announcements?page=1`}>
-									<Button className="bg-gray-100 text-black shadow-md hover:text-white md:w-[64px]">0</Button>
-								</Link>
-							)}
-							{currentPage > 1 && announcements.length > 0 && (
-								<Link href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || params.committeeId}/announcements?page=${currentPage - 1}`}>
-									<Button className="shadow-md md:w-[128px]">← Previous</Button>
-								</Link>
-							)}
-							{!(announcements.length < announcementsPerPage) && (
-								<Link href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || params.committeeId}/announcements?page=${currentPage + 1}`}>
-									<Button className="shadow-md md:w-[128px]">Next →</Button>
-								</Link>
-							)}
-						</div>
-					</div>
-				</div>
+					</>
+				)}
+				{!!pinnedAnnouncements.length && <p>Normal Announcements</p>}
+				<ul className="mb-[150px] grid w-full gap-4 md:grid-cols-2">
+					{normalAnnouncements.map((announcement, index) => {
+						const isEdited = announcement.editTime.toString() !== announcement.time.toString();
+						const isBoard = announcement.privacy === "BOARD";
+						const isSecretariat = announcement.privacy === "SECRETARIAT";
+						const isAnonymous = announcement.privacy === "ANONYMOUS";
+
+						return (
+							<Card key={announcement.id} className={`h-[200px] ${announcement.isPinned && "shadow-md shadow-slate-400"}`}>
+								<CardHeader as={Link} href={"announcements/" + announcement.id} className="flex flex-col text-ellipsis">
+									<p className="mr-auto line-clamp-1 text-ellipsis text-xl">
+										{announcement.isPinned && "📌 "}
+										{announcement.title}
+									</p>
+									<p className="mr-auto line-clamp-2 text-ellipsis text-sm">{announcement.description}</p>
+									<div className="mr-auto mt-2 flex flex-row gap-2 text-xs text-slate-500">
+										{isEdited && <p>Edited</p>}
+										{announcement.editTime.toLocaleString().replace(", ", " • ")}
+										{isBoard && <p>Announcement by the Board</p>}
+										{isSecretariat && <p>Announcement by the Secretariat</p>}
+										{isAnonymous && <p>Anonymous</p>}
+									</div>
+								</CardHeader>
+								<CardBody as={Link} href={"announcements/" + announcement.id} />
+								<CardFooter className="flex flex-row gap-2 bg-gray-100">
+									{announcement.privacy !== "ANONYMOUS" && <User name={announcement.user.displayName || announcement.user.officialName + " " + announcement.user.officialSurname} avatarProps={{ src: `/api/user/${announcement.user.id}/profilePicture`, size: "sm", isBordered: true, name: announcement.user.officialName[0] + announcement.user.officialSurname[0], showFallback: true, color: "primary", className: "min-w-max" }} />}
+									<div className="ml-auto flex gap-2">
+										{authorize(session, [s.management]) && (
+											<>
+												<PinButton isPinned={announcement.isPinned} announcementId={announcement.id} />
+												<Button as={Link} href={"announcements/" + announcement.id + "?edit&saveurl=./"} className="ml-auto">
+													Edit
+												</Button>
+											</>
+										)}
+										<Button as={Link} href={"announcements/" + announcement.id} className="bgn ml-auto">
+											View
+										</Button>
+									</div>
+								</CardFooter>
+							</Card>
+						);
+					})}
+				</ul>
+				{announcementsCount > announcementsPerPage && <Paginator total={Math.ceil(announcementsCount / announcementsPerPage)} />}
 			</div>
 		</>
 	);
 }
 
-async function getData(params) {
-	let committee;
-	try {
-		committee = await prisma.committee.findFirst({
-			where: {
-				OR: [{ slug: params.committeeId }, { id: params.committeeId }],
-				session: {
-					number: params.sessionNumber,
-				},
-			},
-			select: {
-				id: true,
-				name: true,
-				slug: true,
-				session: {
-					select: {
-						number: true,
+async function getData({ params, searchParams }) {
+	let announcements = prisma.committeeAnnouncement
+			.findMany({
+				where: { OR: [{ committeeId: params.committeeId }, { committee: { slug: params.committeeId } }] },
+				orderBy: [{ isPinned: "desc" }, { editTime: "desc" }],
+				skip: parseInt(announcementsPerPage) * (searchParams.page - 1) || 0,
+				take: parseInt(announcementsPerPage) || 10,
+				include: { user: { select: { officialName: true, officialSurname: true, displayName: true, id: true } } },
+			})
+			.catch(),
+		committee = prisma.committee
+			.findFirst({
+				where: {
+					OR: [{ slug: params.committeeId }, { id: params.committeeId }],
+					session: {
+						number: params.sessionNumber,
 					},
 				},
-			},
-		});
-	} catch (e) {}
-	return committee;
+			})
+			.catch(),
+		announcementsCount = prisma.committeeAnnouncement.count({ where: { OR: [{ committeeId: params.committeeId }, { committee: { slug: params.committeeId } }] } });
+	[announcements, committee, announcementsCount] = await Promise.all([announcements, committee, announcementsCount]);
+	if (!committee) return notFound();
+	return { announcements, committee, announcementsCount };
 }
