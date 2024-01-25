@@ -264,7 +264,7 @@ export default function SignUp() {
 				{currentPage == 0 && (
 					<>
 						<div className="flex flex-col gap-2">
-							<Button onClick={nextPage} disabled={0 || isLoading} className="my-3 bg-[var(--medired)]">
+							<Button onClick={nextPage} disabled={true || isLoading} className="my-3 bg-[var(--medired)]">
 								{isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
 								CURRENTLY UNAVAILABLE{" "}
 								{
