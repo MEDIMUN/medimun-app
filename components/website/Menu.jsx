@@ -18,6 +18,7 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 const links = [
 	{ pathname: "/about", src: image1, alt: "About" },
 	{ pathname: "/programme", src: image1, alt: "Programme" },
+	{ pathname: "https://shop.medimun.org", src: image1, alt: "Merch Shop" },
 	{ pathname: "/news", src: image7, alt: "News", hidden: true },
 	{ pathname: "/register", src: image3, alt: "Register", hidden: true },
 	{ pathname: "/sessions", src: image4, alt: "Sessions", hidden: true },
