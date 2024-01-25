@@ -14,7 +14,6 @@ export async function addSchool ( formData ) {
    const session = await getServerSession( authOptions );
    if ( !authorize( session, [ s.management ] ) ) redirect( "/" );
    if ( !session ) redirect( "/" );
-   console.log( formData.get( "locationId" ) );
    const school = {
       name: formData.get( "name" ),
       slug: formData.get( "slug" ) || null,
@@ -54,7 +53,6 @@ export async function addSchool ( formData ) {
 
    //adapt for school
    const editId = formData.get( "editId" );
-   console.log( school );
    if ( editId ) {
       try {
          await prisma.school.update( {
@@ -77,7 +75,6 @@ export async function addSchool ( formData ) {
          },
       } );
    } catch ( e ) {
-      console.log( e );
       return { ok: false, title: "Something went wrong", variant: "destructive" };
    }
    return { ok: true, title: "Location created", variant: "default" };

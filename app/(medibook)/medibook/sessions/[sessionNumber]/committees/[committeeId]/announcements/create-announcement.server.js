@@ -75,7 +75,6 @@ export async function createAnnouncement ( formData ) {
          data: newAnnouncement,
       } );
    } catch ( e ) {
-      console.log( e );
       return { ok: false, error: "Internal server error", title: "Internal server error", description: "An error occurred while creating the announcement", variant: "destructive" };
    }
    return { ok: true, title: "Announcement created", description: "Announcement created successfully", variant: "default" };

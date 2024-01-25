@@ -89,7 +89,6 @@ export const authorize = (userdata: any, scope: s[], status: any) => {
 };
 
 export const authorizeByCommittee = (currentChairRoles: any, currentDelegateRoles: any) => {
-	console.log(currentChairRoles, currentDelegateRoles);
 	const updatingUserCommitteeIds = currentChairRoles.filter((role: any) => role.name === "Chair").map((role: any) => role.committeeId);
 	const userToBeUpdatedCommitteeIds = currentDelegateRoles.filter((role: any) => role.name === "Delegate").map((role: any) => role.committeeId);
 	return updatingUserCommitteeIds.some((committeeId: any) => userToBeUpdatedCommitteeIds.includes(committeeId));

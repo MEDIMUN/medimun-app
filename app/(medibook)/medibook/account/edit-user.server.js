@@ -126,7 +126,6 @@ export async function editUser ( formData ) {
          },
       } );
    } catch ( e ) {
-      console.log( e );
       if ( e.meta?.target[ 0 ] == "username" ) return { ok: false, title: "Username already in use", variant: "destructive" };
       return { ok: false, title: "Error updating user", variant: "destructive" };
    }

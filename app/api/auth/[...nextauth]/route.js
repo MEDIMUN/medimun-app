@@ -44,7 +44,6 @@ export const authOptions = {
 					delete user.user.phoneNumber;
 					delete user.user.nationality;
 					delete user.user.dateOfBirth;
-					console.log( "u", user );
 					return user;
 				} else {
 					throw new Error( "Incorrect Password" );

@@ -7,7 +7,7 @@ import { notFound, useSearchParams } from "next/navigation";
 import prisma from "@/prisma/client";
 import { userData } from "@/lib/user-data";
 
-function error ( e ) { console.log( e );; }
+function error ( e ) { }
 
 export async function toggleDisableUser ( userId ) {
 	const session = await getServerSession( authOptions );

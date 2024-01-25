@@ -201,7 +201,6 @@ export default function SignUp() {
 							variant: "destructive",
 						});
 					}
-					console.log(response);
 					if (response && response.ok) {
 						setCurrentPage(currentPage + 1);
 					} else {

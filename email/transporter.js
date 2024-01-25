@@ -21,5 +21,4 @@ export default async function sendEmail ( emailFrom, emailTo, emailSubject, emai
 		reply
 	};
 	const res = await transporter.sendMail( mailOptions );
-	console.log( res );
 }

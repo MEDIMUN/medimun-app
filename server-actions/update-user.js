@@ -94,7 +94,6 @@ export async function updateUser ( newUserForm, userIdToBeUpdated ) {
    };
 
    if ( newUserForm.email && userIdToBeUpdated ) {
-      console.log( "email" );
       const proposedEmail = newUserForm.email.trim().toLowerCase();
       const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
       if ( !emailRegex.test( proposedEmail ) ) return { ok: false, title: "Email is invalid", variant: "destructive" };

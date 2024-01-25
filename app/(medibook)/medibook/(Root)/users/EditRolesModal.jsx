@@ -27,7 +27,6 @@ export default function EditRolesModal({ user }) {
 	const AllRoles = [...currentRoles, ...pastRoles];
 
 	async function removeRoleHandler(role, user) {
-		console.log(role);
 		const res = await removeRole(role, user);
 		if (res)
 			toast({

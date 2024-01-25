@@ -45,7 +45,6 @@ export default function Addresses({ schools }) {
 				</TableHeader>
 				<TableBody emptyContent={"No Schools Found"}>
 					{schools.map((school, index) => {
-						console.log(school);
 						return (
 							<TableRow key={school.id}>
 								<TableCell>{school.name}</TableCell>

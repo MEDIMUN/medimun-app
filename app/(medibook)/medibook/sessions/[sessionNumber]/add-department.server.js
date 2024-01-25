@@ -50,7 +50,6 @@ export async function addDepartment ( formData ) {
          }
       } );
    } catch ( e ) {
-      console.log( e );
       return { ok: false, error: "Internal server error", title: "Internal server error", description: "An error occurred while adding the department", variant: "destructive" };
    }
    return { ok: true, title: "Department added", description: "The department was successfully added", variant: "default" };

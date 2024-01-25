@@ -30,7 +30,6 @@ export async function addUser ( formData ) {
 	if ( !authorize( session, [ s.management ] ) ) redirect( "/" );
 	if ( !session ) redirect( "/" );
 	const id = ( await generateRandom12DigitNumber() ).toString();
-	console.log( formData.get( "officialName" ) );
 	const user = {
 		id: formData.get( "id" ) || id,
 		officialName: formData.get( "officialName" ).trim(),
@@ -51,7 +50,6 @@ export async function addUser ( formData ) {
 		isProfilePrivate: formData.get( "isProfilePrivate" ) ? formData.get( "isProfilePrivate" ) == "true" ? true : false : false,
 	};
 	const schoolId = formData.get( "schoolId" ) == 'null' ? "" : formData.get( "schoolId" );
-	console.log( schoolId );
 	if ( !formData.get( "id" ) ) {
 		const student = schoolId ? {
 			student: {
@@ -87,7 +85,6 @@ export async function addUser ( formData ) {
 				},
 			} );
 		} catch ( e ) {
-			console.log( e );
 			return { ok: false, title: "Error updating user", variant: "destructive" };
 		}
 

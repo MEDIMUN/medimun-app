@@ -68,8 +68,6 @@ export default async function Page({ params, searchParams }) {
 }
 
 async function getData(params) {
-	prisma.$connect();
-	console.log(params);
 	await prisma.session
 		.findFirstOrThrow({
 			where: { number: params },

@@ -12,7 +12,6 @@ export default function DelegatesTable({ delegates, chairs, params }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const { toast } = useToast();
-	console.log(params);
 
 	const [assignedCountries, setAssignedCountries] = useState(
 		delegates.map((delegate) => ({

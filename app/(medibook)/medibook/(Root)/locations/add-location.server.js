@@ -29,8 +29,6 @@ export async function addLocation ( formData ) {
       mapUrl: formData.get( "mapUrl" )
    };
 
-   console.log( location );
-
    //validation
    if ( !location.name || typeof location.name !== "string" ) return { ok: false, title: "Name is required", variant: "destructive" };
    if ( location.name.length < 2 || location.name.length > 64 ) return { ok: false, title: "Name must be 2-64 characters long", variant: "destructive" };
@@ -101,7 +99,6 @@ export async function addLocation ( formData ) {
 
    const editId = formData.get( "editId" );
    if ( editId ) {
-      console.log( editId );
       try {
          await prisma.location.update( {
             where: {
@@ -112,7 +109,6 @@ export async function addLocation ( formData ) {
             },
          } );
       } catch ( e ) {
-         console.log( e );
          return { ok: false, title: "Something went wrong", variant: "destructive" };
       }
       return { ok: true, title: "Location updated", variant: "default" };
