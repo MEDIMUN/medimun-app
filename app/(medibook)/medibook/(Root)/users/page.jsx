@@ -1,6 +1,6 @@
 import AddUserModal from "./Drawer";
 import prisma from "@/prisma/client";
-import Table from "./Table";
+import Table from "./UsersTable";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
