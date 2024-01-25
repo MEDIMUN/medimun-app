@@ -69,7 +69,10 @@
 		"app/(medibook)/medibook/sessions/[sessionNumber]/committees/[committeeId]/chairs-delegates/page.jsx",
 		"app/(medibook)/medibook/sessions/[sessionNumber]/committees/[committeeId]/announcements/delete-announcement.server.js",
 		"app/(medibook)/medibook/sessions/[sessionNumber]/committees/[committeeId]/announcements/delete-announcement.server.js",
-		"app/(medibook)/medibook/(Root)/users/user.server.js"
-, "app/(medibook)/medibook/(Root)/users/profile-picture.js"	],
+		"app/(medibook)/medibook/(Root)/users/user.server.js",
+		"app/(medibook)/medibook/(Root)/users/profile-picture.js",
+		"app/(medibook)/medibook/(Root)/page.jsx",
+		"app/(medibook)/medibook/(Root)/page.jsx"
+	],
 	"exclude": ["node_modules"]
 }

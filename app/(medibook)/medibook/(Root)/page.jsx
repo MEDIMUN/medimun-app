@@ -51,7 +51,7 @@ export default async function Page() {
 			return Math.ceil(difference / (1000 * 3600 * 24));
 		}
 	};
-	const announcements = await prisma.announcement
+	const announcements = await prisma.globalAnnouncement
 		.findMany({
 			where: {
 				isPinned: true,
@@ -115,7 +115,7 @@ export default async function Page() {
 						</CardContent>
 					</Card>
 				</div>
-				<h2 className="font-md ml-4 mt-6 text-xl font-bold tracking-tight">{announcements.length > 0 ? "Latest Pinned Announcements" : "No Recent Pinned Announcements"}</h2>
+				<h2 className="font-md ml-4 mt-6 text-xl font-bold tracking-tight">{announcements?.length > 0 ? "Latest Pinned Announcements" : "No Recent Pinned Announcements"}</h2>
 				{announcements && (
 					<ul className="mb-7 mt-2 grid gap-4 md:grid-cols-2">
 						{announcements
