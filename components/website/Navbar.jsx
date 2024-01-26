@@ -25,7 +25,6 @@ const pageColors = {
 	"/privacy": "red",
 	"/terms": "red",
 	"/conduct": "red",
-	"/programme": "red",
 	"/resources": "red",
 	"/medinews": "red",
 };

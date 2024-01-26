@@ -11,10 +11,9 @@ export const metadata = {
 export default async function Page() {
 	const elId = Math.random().toString(36);
 	return (
-		<>
-			<Background id={elId} />
-			<div id={elId} className="mx-auto h-auto max-w-[1248px] p-5 pt-24 font-[montserrat] text-white">
-				<h1 className="select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-white">Conference Programme</h1>
+		<div className="bg-gray-100">
+			<div className="mx-auto h-auto max-w-[1248px] p-5 pt-24 font-[montserrat] text-white">
+				<h1 className="select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-black">Conference Programme</h1>
 				<Spacer y={4} />
 				<div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-3">
 					<Card>
@@ -37,13 +36,13 @@ export default async function Page() {
 								<p className="ml-3 mt-2 font-medium">Breaks</p>
 								<div className="my-1 rounded-2xl bg-gray-200 p-3">
 									<div className="flex gap-2">
-										<p className="font-bold">10:00 - 10:30</p>
-										GA1, GA2, & SC Break
+										<p className="mr-auto font-bold">10:00 - 10:30</p>
+										GA1, GA2, & SC
 									</div>
 									<Divider className="my-1" />
 									<div className="flex gap-2">
-										<p className="font-bold">10:30 - 11:00</p>
-										GA3, GA4, CSW & HSC Break
+										<p className="mr-auto font-bold">10:30 - 11:00</p>
+										GA3, GA4, CSW & HSC
 									</div>
 								</div>
 							</div>
@@ -76,7 +75,7 @@ export default async function Page() {
 								<p className="ml-3 mt-2 font-medium">Expert Speakers Q&A</p>
 								<div className="my-1 rounded-2xl bg-gray-200 p-3">
 									<div className="flex gap-2">
-										<p className="mr-auto font-bold">15:00- 15:30</p>
+										<p className="mr-auto font-bold">15:00 - 15:30</p>
 										Group 1
 									</div>
 									<Divider className="my-1" />
@@ -193,6 +192,6 @@ export default async function Page() {
 					<p className="ml-3 text-white">The programme is subject to change.</p>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
