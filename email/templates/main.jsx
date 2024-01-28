@@ -1,15 +1,4 @@
-import { Container } from "@react-email/container";
-import { Head } from "@react-email/head";
-import { Hr } from "@react-email/hr";
-import { Html } from "@react-email/html";
-import { Img } from "@react-email/img";
-import { Link } from "@react-email/link";
-import { Preview } from "@react-email/preview";
-import { Section } from "@react-email/section";
-import { Text } from "@react-email/text";
-import { Row } from "@react-email/row";
-import { Column } from "@react-email/column";
-import { Tailwind } from "@react-email/tailwind";
+import { Head, Hr, Html, Img, Link, Preview, Section, Text, Row, Column, Tailwind, Container } from "@react-email/components";
 
 export default function MainTemplate(props) {
 	const baseUrl = "https://www.medimun.org";
@@ -26,8 +15,8 @@ export default function MainTemplate(props) {
 					},
 				},
 			}}>
+			<Head></Head>
 			<Html>
-				<Head></Head>
 				<Preview>Verify Your Email - MEDIMUN</Preview>
 				<Section className="mx-auto my-0 bg-gray-400 font-[Helvetica] font-[700] md:my-[30px]">
 					<Container style={container}>

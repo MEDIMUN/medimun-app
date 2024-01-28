@@ -8,21 +8,24 @@
    cursor: pointer;
 }
 
-.animate::after {
-   content: '';
-   position: absolute;
-   width: 100%;
-   transform: scaleX(0);
-   height: 4px;
-   bottom: 0;
-   left: 0;
-   background-color: #FFF;
-   transform-origin: bottom left;
-   transition: transform 0.50s ease-out;
-}
+/* query for this to not work on mobile */
+@media (min-width: 768px) {
+   .animate::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      transform: scaleX(0);
+      height: 4px;
+      bottom: 0;
+      left: 0;
+      background-color: #FFF;
+      transform-origin: bottom left;
+      transition: transform 0.50s ease-out;
+   }
 
-.animate:hover::after {
-   transform: scaleX(1);
-   transform-origin: bottom left;
-   transition: transform 0.5s ease-out;
+   .animate:hover::after {
+      transform: scaleX(1);
+      transform-origin: bottom left;
+      transition: transform 0.5s ease-out;
+   }
 }

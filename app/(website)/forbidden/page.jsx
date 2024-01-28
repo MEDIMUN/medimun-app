@@ -19,15 +19,11 @@ ANYTHING BLUE HOODIE\n
 `;
 
 export default async function Page() {
-	const elId = Math.random().toString(36);
 	return (
-		<>
-			<Background id={elId} />
-			<div id={elId} className="mx-auto max-w-[1248px] p-5 pt-20 font-[montserrat] text-white">
-				<h1 className="select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-white">Forbidden Words</h1>
-				<MDXRemote components={{ h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={policy} />
-			</div>
-		</>
+		<div className="mx-auto max-w-[1248px] p-5 pt-20 font-[montserrat] text-black">
+			<h1 className="select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-black">Forbidden Words</h1>
+			<MDXRemote components={{ h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={policy} />
+		</div>
 	);
 }
 

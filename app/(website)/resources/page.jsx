@@ -16,9 +16,8 @@ export default async function Page() {
 	const resources = [];
 	return (
 		<>
-			<Background id={elId} />
-			<div id={elId} className="mx-auto max-w-[1248px] p-5 pt-24 font-[montserrat] text-white">
-				<h1 className="select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-white">Resources</h1>
+			<div id={elId} className="mx-auto max-w-[1248px] p-5 pt-24 font-[montserrat] text-black">
+				<h1 className="select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-black">Resources</h1>
 				<h2 className="mt-2 text-lg">Research Booklets</h2>
 				<ul className="flex flex-col gap-2">
 					{researchBooklets.map((link) => {

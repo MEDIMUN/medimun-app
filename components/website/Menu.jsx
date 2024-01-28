@@ -9,6 +9,7 @@ import image1 from "@/public/placeholders/delegates-2.jpg";
 import image2 from "@/public/assets/delegates-indoors-2.jpg";
 import image3 from "@/public/assets/delegates-indoors.jpg";
 import image4 from "@/public/placeholders/the-english-school-1.jpg";
+import image8 from "@/public/placeholders/shop.png";
 import image5 from "@/public/placeholders/the-english-school-2.jpg";
 import image6 from "@/public/placeholders/delegates-2.jpg";
 import image7 from "@/public/placeholders/delegates-2.jpg";
@@ -18,7 +19,7 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 const links = [
 	{ pathname: "/about", src: image1, alt: "About" },
 	{ pathname: "/programme", src: image1, alt: "Programme" },
-	{ pathname: "https://shop.medimun.org", src: image1, alt: "Merch Shop" },
+	{ pathname: "https://shop.medimun.org", src: image8, alt: "Merch Shop" },
 	{ pathname: "/news", src: image7, alt: "News", hidden: true },
 	{ pathname: "/register", src: image3, alt: "Register", hidden: true },
 	{ pathname: "/sessions", src: image4, alt: "Sessions", hidden: true },
@@ -56,7 +57,12 @@ const MenuLink = React.memo((props) => {
 
 	return (
 		<Fragment key={props?.children}>
-			<li onMouseEnter={handleMouseEnter} className="z-[11] h-min w-fit">
+			<li onMouseEnter={handleMouseEnter} className="z-[11] hidden h-min w-fit md:block">
+				<Link href={props?.href || "#"}>
+					<p className={style.animate + ` ${props?.href === props?.pathname && " !text-[var(--medired)]"}`}>{props?.children}</p>
+				</Link>
+			</li>
+			<li className="z-[11] block h-min w-fit md:hidden">
 				<Link href={props?.href || "#"}>
 					<p className={style.animate + ` ${props?.href === props?.pathname && " !text-[var(--medired)]"}`}>{props?.children}</p>
 				</Link>
@@ -112,7 +118,7 @@ export default function Menu({ props }) {
 					</div>
 				</div>
 				<MenuItems pathname={pathname} links={links} setIsBlack={setIsBlackOptimized} isHovered={isHovered} setIsHovered={setIsHoveredOptimized} />
-				<Image alt={hoveredLink.alt} src={hoveredLink.src} className="-z-10 h-[calc(100%)] w-full -translate-y-[82px] object-cover object-left duration-300 md:ml-[0px]" />
+				<Image alt={hoveredLink.alt} src={hoveredLink.src} className="object-middle -z-10 h-[calc(100%)] w-full -translate-y-[82px] object-cover duration-300 md:ml-[0px]" />
 				<div className={`absolute left-0 top-0 z-10 h-[calc(100%-80px)] w-full duration-300 md:ml-[0px] ${isBlack && "!bg-black"}` + " " + style.vignette}></div>
 				<div className="absolute bottom-0 z-[300] h-[80px] w-full min-w-full overflow-x-auto border-t-[1px] border-[rgb(122,122,122)] px-4 md:gap-10 md:px-10 ">
 					<ul className="flex h-full w-fit min-w-fit flex-row gap-10 overflow-x-auto">

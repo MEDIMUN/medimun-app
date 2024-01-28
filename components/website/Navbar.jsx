@@ -22,12 +22,6 @@ const pageColors = {
 	"/about": "red",
 	"/announcements": "red",
 	"/sessions": "red",
-	"/privacy": "red",
-	"/terms": "red",
-	"/conduct": "red",
-	"/resources": "red",
-	"/medinews": "red",
-	"/forbidden": "red",
 };
 
 const hideMenu = ["/loginhelp", "/signup"];

@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
 						<Landscape />
 						<Navbar />
 						<CommandMenu className="z-[500]" />
-						<main className="min-h-[100svh] w-full overflow-y-hidden">{children}</main>
+						<main className="min-h-[100svh] w-full overflow-y-hidden bg-gray-100">{children}</main>
 						<Toaster />
 						<Footer />
 					</NextUIProvider>

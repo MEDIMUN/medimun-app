@@ -43,15 +43,11 @@ By using MediBook, you acknowledge and agree to the terms outlined in this Priva
 `;
 
 export default async function Page() {
-	const elId = Math.random().toString(36);
 	return (
-		<>
-			<Background id={elId} />
-			<div id={elId} className="mx-auto max-w-[1248px] p-5 pt-20 font-[montserrat] text-white">
-				<h1 className="select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-white">MEDIMUN & MediBook Privacy Policy</h1>
-				<MDXRemote components={{ h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={policy} />
-			</div>
-		</>
+		<div className="mx-auto max-w-[1248px] p-5 pt-20 font-[montserrat] text-black">
+			<h1 className="select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-black">MEDIMUN & MediBook Privacy Policy</h1>
+			<MDXRemote components={{ h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={policy} />
+		</div>
 	);
 }
 
@@ -89,21 +85,9 @@ const a = (props) => {
 		truncated += "...";
 	}
 	if (props.href.includes("http")) {
-		return (
-			<a
-				truncated={truncated}
-				target="_blank"
-				className="font-md text-md mb-5 max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-blue-700 hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_('attr(truncated)')_↗']"
-				{...props}></a>
-		);
+		return <a truncated={truncated} target="_blank" className="font-md text-md mb-5 max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-blue-700 hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_('attr(truncated)')_↗']" {...props}></a>;
 	}
-	return (
-		<Link
-			truncated={truncated}
-			className="font-md text-md mb-5 max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-[var(--medired)] hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_(Internal_Navigation:'attr(truncated)')_↗']"
-			{...props}
-		/>
-	);
+	return <Link truncated={truncated} className="font-md text-md mb-5 max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-[var(--medired)] hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_(Internal_Navigation:'attr(truncated)')_↗']" {...props} />;
 };
 
 const hr = (props) => {

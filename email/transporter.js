@@ -1,4 +1,4 @@
-export default async function sendEmail ( emailFrom, emailTo, emailSubject, emailHtml ) {
+export default async function sendEmail ( from, to, subject, html, text, replyTo ) {
 	const nodemailer = require( "nodemailer" );
 	let transporter = nodemailer.createTransport( {
 		host: process.env.NODEMAILER_HOST,
@@ -14,11 +14,11 @@ export default async function sendEmail ( emailFrom, emailTo, emailSubject, emai
 	} );
 
 	const mailOptions = {
-		from: emailFrom,
-		to: emailTo,
-		subject: emailSubject,
-		html: emailHtml,
-		reply
+		from, to, subject, html, text, replyTo
 	};
-	const res = await transporter.sendMail( mailOptions );
+
+	const response = await transporter.sendMail( mailOptions ).catch( err => {
+		console.log( err );
+	} );
+	console.log( { response } );
 }
