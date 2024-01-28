@@ -2,7 +2,7 @@ import Background from "@/components/website/Background";
 import { MDXRemote } from "next-mdx-remote/rsc";
 
 export const metadata = {
-	title: "Code of Conduct",
+	title: "Forbidden Words",
 };
 
 const policy = `
@@ -14,6 +14,7 @@ BLUE HOODIES\n
 BLUE SWEATER\n
 BLUE SWEATERS\n
 ANYTHING BLUE\n
+ANYTHING BLUE HOODIE\n
 
 `;
 
