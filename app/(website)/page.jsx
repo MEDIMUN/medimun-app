@@ -19,8 +19,8 @@ export async function HomePage() {
 		<>
 			<section className={"min-h-[100vh] bg-gradient-to-r from-medired to-red-500 md:min-h-screen"}>
 				<div className="flex h-[45svh] w-full flex-col justify-end gap-3 px-5 align-middle duration-300 md:h-[50vh] md:text-center">
-					<h1 className="-[text-shadow:_4px_4px_#000000] font-[canela] text-[50px] font-[750] leading-[50px] tracking-tight text-white md:text-[90px] md:leading-[83px]">Strengtening Sustainability</h1>
-					<h2 className="-[text-shadow:_2px_2px_#777]  font-[SequelBold] text-[40px] font-[300] leading-[35px] tracking-tight text-gray-100">Enchancing Global Partnerships</h2>
+					<h1 className="-[text-shadow:_4px_4px_#000000] font-[canela] text-[50px] font-[750] leading-[50px] tracking-tight text-white md:text-[90px] md:leading-[83px]">Strengthening Sustainability</h1>
+					<h2 className="-[text-shadow:_2px_2px_#777]  font-[SequelBold] text-[40px] font-[300] leading-[35px] tracking-tight text-gray-100">Enhancing Global Partnerships</h2>
 				</div>
 				<HeroImage />
 				<div className="absolute right-[calc(50%-.5px)] top-0 z-[0] h-[25vh] w-[1px] bg-gradient-to-b from-white to-transparent"></div>
