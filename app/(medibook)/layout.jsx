@@ -21,7 +21,7 @@ export const revalidate = 0;
 
 export default function RootLayout({ children }) {
 	return (
-		<html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+		<html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} font-[montserrat]`}>
 			<ClientProvider>
 				<AuthRedirect unauthenticated="/login" />
 				<body>

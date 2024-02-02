@@ -88,6 +88,18 @@ export default async function Page() {
 							<Divider className="my-1" />
 							<p className="ml-3 font-bold">16:00 - 18:00</p>
 							<p className="ml-3">Debate</p>
+							<p className="ml-3 mt-2 font-medium">Breaks</p>
+							<div className="my-1 rounded-2xl bg-gray-200 p-3">
+								<div className="flex gap-2">
+									<p className="mr-auto font-bold">16:00 - 16:30</p>
+									GA1, GA2, & SC
+								</div>
+								<Divider className="my-1" />
+								<div className="flex gap-2">
+									<p className="mr-auto font-bold">16:30 - 17:00</p>
+									GA3, GA4, CSW & HSC
+								</div>
+							</div>
 							<Divider className="my-1" />
 							<p className="ml-3 font-bold">18:00 - 18:30</p>
 							<p className="ml-3">Departures</p>
@@ -122,17 +134,7 @@ export default async function Page() {
 										GA3, GA4, HSC & CSW
 									</div>
 								</div>
-								<div className="my-1 rounded-2xl bg-gray-200 p-3">
-									<div className="flex gap-2">
-										<p className="mr-auto font-bold">16:00 - 16:30</p>
-										GA1, GA2, & SC
-									</div>
-									<Divider className="my-1" />
-									<div className="flex gap-2">
-										<p className="mr-auto font-bold">16:30 - 17:00</p>
-										GA3, GA4, HSC & CSW
-									</div>
-								</div>
+
 								<p className="ml-3 mt-2 font-medium">Lunch</p>
 								<div className="my-1 rounded-2xl bg-gray-200 p-3">
 									<div className="flex gap-2">
@@ -147,6 +149,18 @@ export default async function Page() {
 									<Divider className="my-1" />
 									<div className="flex gap-2">
 										<p className="mr-auto font-bold">14:00 - 14:30</p>
+										GA3, GA4, HSC & CSW
+									</div>
+								</div>
+								<p className="ml-3 mt-2 font-medium">Breaks</p>
+								<div className="my-1 rounded-2xl bg-gray-200 p-3">
+									<div className="flex gap-2">
+										<p className="mr-auto font-bold">16:00 - 16:30</p>
+										GA1, GA2, & SC
+									</div>
+									<Divider className="my-1" />
+									<div className="flex gap-2">
+										<p className="mr-auto font-bold">16:30 - 17:00</p>
 										GA3, GA4, HSC & CSW
 									</div>
 								</div>

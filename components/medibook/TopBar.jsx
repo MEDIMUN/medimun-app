@@ -12,7 +12,7 @@ import * as SolarIconSet from "solar-icon-set";
 import Image from "next/image";
 import { SidebarContext } from "@/app/(medibook)/providers";
 
-export default function TopBar(props) {
+export function TopBar(props) {
 	let { isHidden, setIsHidden } = useContext(SidebarContext);
 	return (
 		<>
@@ -24,7 +24,6 @@ export default function TopBar(props) {
 					{isHidden && (
 						<>
 							<Image alt="MediBook Logo" className="ml-4 hidden fill-black hover:filter-none md:block" src={MediBookBadge} height={16} />
-							<Image alt="MediBook Badge" className="min-w-[33px] max-w-[35px] grayscale hover:filter-none md:hidden" src={MediBookLogo} />
 						</>
 					)}
 					<p className="text-md my-auto ml-4 text-lg">{props.title}</p>
@@ -33,5 +32,19 @@ export default function TopBar(props) {
 			</div>
 			<Spacer y={4} />
 		</>
+	);
+}
+
+export function Frame(props) {
+	return (
+		<div className={`h-[calc(100%-91px)] overflow-y-auto rounded-2xl border-1 border-gray-200 font-[montserrat] ${!props.noPadding && "p-4"}`}>
+			{props.isGrid && <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">{props.children}</div>}
+			{!props.isGrid && props.children}
+			{props.isEmpty && (
+				<div className="flex h-full justify-center align-middle">
+					<p className="m-auto my-auto w-full text-center">{props.emptyContent}</p>
+				</div>
+			)}
+		</div>
 	);
 }

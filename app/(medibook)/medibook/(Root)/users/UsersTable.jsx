@@ -12,7 +12,7 @@ import React from "react";
 import { updateSearchParams, removeSearchParams } from "@/lib/searchParams";
 import { flushSync } from "react-dom";
 import { useDebouncedValue } from "@mantine/hooks";
-import TopBar from "@/components/medibook/TopBar.jsx";
+import { TopBar } from "@/components/medibook/TopBar.jsx";
 
 export default function UsersTable({ users, numberOfUsers, numberOfPages, session }) {
 	const { toast } = useToast();

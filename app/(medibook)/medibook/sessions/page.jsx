@@ -3,7 +3,7 @@ import SearchBar from "./SearchBar";
 import Link from "next/link";
 import SubMenu from "@/components/medibook/SubMenu";
 import Modal from "./Modal";
-import TopBar from "@/components/medibook/TopBar";
+import { TopBar } from "@/components/medibook/TopBar";
 import { authorize, s } from "@/lib/authorize";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
@@ -33,13 +33,13 @@ export default async function Page({ searchParams }) {
 				<SearchBar />
 				<ul className="mx-auto mt-4 grid h-auto max-w-[1200px] grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
 					{data.map((session) => (
-						<Card key={session.number} className="h-40">
+						<Card key={session.number}>
 							<CardHeader>
-								<div className="flex flex-row align-middle">
-									<h2 className={`${session.isCurrent ? "bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%" : "bg-black"} my-auto mr-3 flex h-[40px] w-[40px] justify-center rounded-3xl px-3 align-middle text-[24px] text-white shadow-xl`}>
+								<div className="flex flex-col align-middle">
+									<h2 className={`${session.isCurrent ? "bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%" : "bg-black"} my-auto mr-3 flex h-[40px] w-[40px] justify-center rounded-xl px-3 align-middle text-[24px] text-white shadow-xl`}>
 										<span className="my-auto font-thin">{session.number}</span>
 									</h2>
-									<div className="leading-[20px]">
+									<div className="mt-[6px] leading-[20px]">
 										<div>
 											<p className="text-large font-medium text-black">{session.theme || "Session " + session.number}</p>
 											<h4 className="text-tiny font-bold uppercase text-black/60">{session.phrase2 || "Session " + session.roman}</h4>
@@ -47,12 +47,8 @@ export default async function Page({ searchParams }) {
 									</div>
 								</div>
 							</CardHeader>
-							<CardFooter className="absolute bottom-0 z-10 justify-between border-t-1 border-zinc-100/50 bg-white/30">
-								<div>
-									<p className="text-tiny text-black">Available soon.</p>
-									<p className="text-tiny text-black">Get notified.</p>
-								</div>
-								<Button as={Link} href={`/medibook/sessions/${session.number}`} className="text-tiny" color="primary" radius="full" size="sm">
+							<CardFooter className="mt-0">
+								<Button className="w-full" as={Link} href={`/medibook/sessions/${session.number}`}>
 									Explore
 								</Button>
 							</CardFooter>

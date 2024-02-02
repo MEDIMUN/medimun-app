@@ -7,95 +7,129 @@ import { getServerSession } from "next-auth";
 import { s, authorize } from "@/lib/authorize";
 import { redirect } from "next/navigation";
 import prisma from "@/prisma/client";
+import { v4 as uuidv4 } from "uuid";
 
 export async function addDay ( formData ) {
    const session = await getServerSession( authOptions );
+   if ( !session || !authorize( session, [ s.sd, s.admins ] ) ) {
+      return { ok: false, title: "Not authorized", variant: "destructive" };
+   }
 
    const sessionNumber = formData.get( "sessionNumber" );
-   const dayType = formData.get( "type" );
-   const dayDate = formData.get( "date" );
-   const dayName = formData.get( "name" );
-   const dayDescription = formData.get( "description" );
+   const editId = formData.get( "editId" );
+   const locationId = formData.get( "locationId" ) || null;
+   const date = new Date( formData.get( "date" ) ).toISOString();
+   const name = formData.get( "name" );
+   const description = formData.get( "description" );
+   const type = formData.get( "type" );
 
-   if ( !authorize( session, [ s.admin, s.sd ] ) ) redirect( `/medibook/sessions/${ sessionNumber }/days` );
-   if ( typeof dayType !== "string" || typeof dayDate !== "string" || typeof dayName !== "string" || typeof dayDescription !== "string" ) return { ok: false, error: "Invalid input", title: "Invalid input", description: "Invalid input", variant: "destructive" };
-   if ( !dayType || !dayDate ) return { ok: false, error: "Invalid input", title: "Invalid input", description: "Invalid input", variant: "destructive" };
-   if ( dayName && dayName.length > 32 ) return { ok: false, error: "Day name must be at most 32 characters", title: "Day name must be at most 32 characters", variant: "destructive" };
-   if ( dayDescription && dayDescription.length > 128 ) return { ok: false, error: "Day description must be at most 128 characters", title: "Day description must be at most 128 characters", variant: "destructive" };
-   if ( dayType != "workshop" && dayType != "conference" ) return { ok: false, error: "Day type must be workshop or conference", title: "Day type must be workshop or conference", variant: "destructive" };
 
    let sessionExists;
    try {
-      prisma.$connect();
-      sessionExists = await prisma.session.findUnique( {
+      sessionExists = await prisma.session.findUniqueOrThrow( {
          where: {
             number: sessionNumber,
          },
       } );
-   } catch ( e ) {
-      return {
-         ok: false,
-         error: "Could not check if session exists",
-         title: "An error occured, please try again later",
-         variant: "destructive",
+   } catch ( editId ) {
+      return { ok: false, title: "Session does not exist", variant: "destructive" };
+   }
+   //delete location data of day
+   if ( editId ) {
+      try {
+         await prisma.day.update( {
+            where: {
+               id: editId,
+            },
+            data: {
+               locationId: null,
+            },
+         } );
+      } catch ( e ) {
+      }
+   }
+   const uuid = uuidv4();
+   let connect;
+   if ( locationId == "undefined" ? null : locationId ) {
+      connect = {
+         connect: {
+            id: locationId,
+         }
       };
+   } else {
+      connect = {};
    }
-   if ( !sessionExists ) return { ok: false, error: "Session does not exist", title: "Session does not exist", variant: "destructive" };
-
-   if ( dayType == "workshop" ) {
-      let res;
-      try {
-         prisma.$connect();
-         res = await prisma.workshopDay.create( {
-            data: {
-               name: dayName,
-               description: dayDescription,
-               date: new Date( dayDate ),
-               session: {
-                  connect: {
-                     number: sessionNumber,
-                  },
+   try {
+      await prisma.day.upsert( {
+         where: {
+            id: editId || uuid,
+         },
+         create: {
+            name: name,
+            description: description,
+            date: date,
+            type: type,
+            session: {
+               connect: {
+                  number: sessionNumber,
                },
             },
-         } );
-      } catch ( e ) {
-         return {
-            ok: false,
-            error: "Could not create workshop day",
-            title: "An error occured, please try again later",
-            variant: "destructive",
-         };
-      }
-
-      if ( !res ) return { ok: false, error: "Could not create workshop day", title: "An error occured, please try again later", variant: "destructive" };
-   }
-
-   if ( dayType == "conference" ) {
-      let res;
-      try {
-         prisma.$connect();
-         res = await prisma.conferenceDay.create( {
-            data: {
-               name: dayName,
-               description: dayDescription,
-               date: new Date( dayDate ),
-               session: {
-                  connect: {
-                     number: sessionNumber,
-                  },
+            location: connect,
+         },
+         update: {
+            name: name,
+            description: description,
+            date: date,
+            type: type,
+            session: {
+               connect: {
+                  number: sessionNumber,
                },
             },
-         } );
-      } catch ( e ) {
-         return {
-            ok: false,
-            error: "Could not create conference day",
-            title: "An error occured, please try again later",
-            variant: "destructive",
-         };
+         }
+      } );
+      if ( locationId != "undefined" && editId ) {
+         try {
+            await prisma.day.update( {
+               where: {
+                  id: editId || uuid,
+               },
+               data: {
+                  location: {
+                     connect: {
+                        id: locationId,
+                     },
+                  },
+               },
+            } );
+         } catch ( e ) {
+            return { ok: false, error: "Error connecting location", title: "Error connecting location", variant: "destructive" };
+         }
       }
-
-      if ( !res ) return { ok: false, error: "Could not create conference day", title: "An error occured, please try again later", variant: "destructive" };
+   } catch ( e ) {
+      console.log( e );
+      return { ok: false, error: "Error creating day", title: "Error creating day", variant: "destructive" };
    }
-   redirect( `/medibook/sessions/${ sessionNumber }/days` );
+   return { ok: true, title: "Day created", variant: "default" };
+}
+
+export async function deleteDay ( dayId ) {
+   const session = await getServerSession( authOptions );
+   if ( !session || !authorize( session, [ s.sd, s.admins ] ) ) {
+      return { ok: false, title: "Not authorized", variant: "destructive" };
+   }
+
+   try {
+      await prisma.day.delete( {
+         where: {
+            id: dayId,
+         },
+      } );
+   } catch ( e ) {
+      return { ok: false, title: "Error deleting day", variant: "destructive" };
+   }
+
+
+
+   return { ok: true, title: "Day deleted", variant: "default" };
 }

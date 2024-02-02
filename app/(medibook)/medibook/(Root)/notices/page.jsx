@@ -1,136 +1,96 @@
-import SearchBar from "./SearchBar";
-import Drawer from "./Drawer";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
-import { getServerSession } from "next-auth/next";
-import prisma from "@/prisma/client";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Button } from "@/components/ui/button";
-import { redirect } from "next/navigation";
-import { TitleBar, e as s } from "@/components/medibook/TitleBar";
-import TopBar from "@/components/medibook/TopBar";
-
-export const metadata = {
-	title: "Announcements - MediBook",
-	description: "View all the latest announcements from MEDIMUN.",
-};
-
-const announcementsPerPage = 10;
+import { TopBar } from "@/components/medibook/TopBar";
+import { Frame } from "@/components/medibook/Frame";
+import { authorize, s } from "@/lib/authorize";
+import { getServerSession } from "next-auth";
+import { Button } from "@nextui-org/react";
+import prisma from "@/prisma/client";
+import { Card, CardHeader, CardBody, Avatar, Divider, CardFooter, ButtonGroup, Link, Chip, User } from "@nextui-org/react";
+import Modal, { DeleteModal } from "./Modal";
+import PinButton from "./pinButton";
+import * as SolarIconSet from "solar-icon-set";
+import Paginator from "./Paginator";
+import SearchBar from "./SearchBar";
 
 export default async function Page({ params, searchParams }) {
+	const announcementsPerPage = 9;
+	const page = searchParams.page || 1;
 	const session = await getServerSession(authOptions);
-
-	const createQueryString = (name, value) => {
-		const params = new URLSearchParams(searchParams);
-		params.set(name, value);
-		return params.toString();
-	};
-
-	function error(e) {
-		return;
-	}
-
-	let skip = searchParams.page ? (searchParams.page - 1) * announcementsPerPage : 0;
-	skip = skip < 0 ? 0 : skip;
-	const isAlumni = session.pastRoleNames.length > 0 ? { some: {} } : { some: {} };
-	const announcements = await prisma.announcement
-		.findMany({
-			orderBy: [{ isPinned: "desc" }, { time: "desc" }],
-			where: {
-				OR: [
-					{ title: { contains: searchParams.search, mode: "insensitive" }, MediBookAnnouncement: { ...isAlumni } },
-					{ title: { contains: searchParams.search, mode: "insensitive" }, GlobalAnnouncement: { some: {} } },
-				],
-			},
-			include: {
-				MediBookAnnouncement: { select: { id: true } },
-				user: { select: { officialName: true, displayName: true, officialSurname: true } },
-			},
-			take: announcementsPerPage,
-			skip: skip,
-		})
-		.catch((e) => error(e));
-	const doesIncludesPinned = announcements.some((announcement) => announcement.isPinned);
-	const currentPage = parseInt(searchParams.page || "1");
+	const query = searchParams.query || "";
+	const globalAnnouncements = await prisma.globalAnnouncement.findMany({
+		orderBy: [{ isPinned: "desc" }, { time: "asc" }],
+		where: { OR: [{ title: { contains: query, mode: "insensitive" } }, { markdown: { contains: query, mode: "insensitive" } }, { description: { contains: query, mode: "insensitive" } }] },
+		include: { user: { select: { officialName: true, id: true, displayName: true, officialSurname: true } } },
+		skip: (page - 1) * announcementsPerPage,
+		take: announcementsPerPage,
+	});
+	const total = await prisma.globalAnnouncement.count({});
+	let edit = {};
+	if (searchParams.edit)
+		edit = await prisma.globalAnnouncement.findUnique({
+			where: { id: searchParams.edit },
+		});
 	return (
 		<>
-			<Drawer />
-			<TopBar />
-			<div className="p-5">
-				<SearchBar />
-				<div className="mx-auto mt-5 max-w-[1200px] gap-[24px]">
-					<div className="mt-5">
-						{doesIncludesPinned && (
-							<div>
-								<h2 className="font-md ml-5 text-xl font-bold tracking-tight">{announcements.length > 0 ? "Pinned Announcements" : "No Announcements Found"}</h2>
-								<ul className="my-2 mb-7 grid grid-rows-3 gap-2 md:grid-cols-2 lg:grid-cols-3">
-									{announcements
-										.filter((announcement) => announcement.isPinned)
-										.map((announcement) => {
-											return (
-												<li className="list-none" key={announcement.id}>
-													<Link href={`/medibook/announcements/${announcement.id}`}>
-														<Card className="shadow-xl duration-300 hover:shadow-md">
-															<CardHeader>
-																<CardTitle className="truncate">
-																	{"📌 "}
-																	{announcement.title}
-																</CardTitle>
-																<CardDescription className="truncate">{announcement.description}</CardDescription>
-															</CardHeader>
-														</Card>
-													</Link>
-												</li>
-											);
-										})}
-								</ul>
-							</div>
-						)}
-						<h2 className="font-md ml-5 text-xl font-bold tracking-tight">
-							{announcements.filter((announcement) => {
-								!announcement.isPinned;
-							}).length > 0
-								? "Latest Announcements"
-								: ""}
-						</h2>
-						<ul>
-							{announcements
-								.filter((announcement) => !announcement.isPinned)
-								.map((announcement) => {
-									return (
-										<li className="my-2 list-none" key={announcement.id}>
-											<Link href={`/medibook/announcements/${announcement.id}`}>
-												<Card className={`duration-300 hover:shadow-md ${announcement.isPinned && "border-red-500 shadow-xl"}`}>
-													<CardHeader>
-														<CardTitle className="truncate">{announcement.title}</CardTitle>
-														<CardDescription className="truncate">{announcement.description}</CardDescription>
-													</CardHeader>
-												</Card>
-											</Link>
-										</li>
-									);
-								})}
-						</ul>
-						<div className="mx-auto my-10 flex w-auto flex-col justify-center gap-1.5 p-3 md:flex-row">
-							{!announcements.length < 10 && currentPage > 1 && (
-								<Link href={`/medibook/announcements?${createQueryString("page", 1)}`}>
-									<Button className="bg-gray-100 text-black shadow-md hover:text-white md:w-[64px]">0</Button>
-								</Link>
-							)}
-							{currentPage > 1 && announcements.length > 0 && (
-								<Link href={`/medibook/announcements?${createQueryString("page", currentPage - 1)}`}>
-									<Button className="shadow-md md:w-[128px]">← Previous</Button>
-								</Link>
-							)}
-							{!(announcements.length < announcementsPerPage) && (
-								<Link href={`/medibook/announcements?${createQueryString("page", currentPage + 1)}`}>
-									<Button className="shadow-md md:w-[128px]">Next →</Button>
-								</Link>
-							)}
-						</div>
-					</div>
-				</div>
-			</div>
+			<DeleteModal />
+			<Modal edit={edit} />
+			<TopBar title="Global Notices">
+				{authorize(session, [s.management]) && (
+					<Button as={Link} href="?add">
+						Announce
+					</Button>
+				)}
+			</TopBar>
+			<Frame emptyContent="No Notices Found" isGrid isEmpty={!total}>
+				<SearchBar className="col-span-3" />
+				{globalAnnouncements.map((announcement) => {
+					const isEdited = announcement.editTime.toString() !== announcement.time.toString();
+					const isBoard = announcement.privacy === "BOARD";
+					const isSecretariat = announcement.privacy === "SECRETARIAT";
+					const isAnonymous = announcement.privacy === "ANONYMOUS";
+					return (
+						<Card key={announcement.id} className={`h-[200px] ${announcement.isPinned && "shadow-md shadow-slate-400"}`}>
+							<CardHeader as={Link} href={"announcements/" + announcement.id} className="flex flex-col text-ellipsis">
+								<p className="mr-auto line-clamp-1 text-ellipsis text-xl">
+									{announcement.isPinned && "📌 "}
+									{announcement.title}
+								</p>
+								<p className="mr-auto line-clamp-2 max-w-full text-ellipsis text-sm">{announcement.description}</p>
+								<div className="mr-auto mt-2 flex flex-row gap-2 text-xs text-slate-500">
+									{isEdited && <p>Edited</p>}
+									{announcement.editTime.toLocaleString().replace(", ", " • ")}
+									{isBoard && <p>• by the Board</p>}
+									{isSecretariat && <p>• by the Secretariat</p>}
+									{isAnonymous && <p>• Anonymous</p>}
+								</div>
+							</CardHeader>
+							<CardBody as={Link} href={"announcements/" + announcement.id} />
+							<CardFooter className="flex flex-row gap-2 bg-gray-100">
+								{announcement.privacy !== "ANONYMOUS" && <User name={announcement.user.displayName || announcement.user.officialName + " " + announcement.user.officialSurname} avatarProps={{ src: `/api/users/${announcement.user.id}/avatar`, size: "sm", isBordered: true, name: announcement.user.officialName[0] + announcement.user.officialSurname[0], showFallback: true, color: "primary", className: "min-w-max" }} />}
+								<div className="ml-auto flex gap-2">
+									<ButtonGroup>
+										{authorize(session, [s.management]) && (
+											<>
+												<Button color="danger" as={Link} isIconOnly href={"?delete=" + announcement.id} className="bgn ml-auto">
+													<SolarIconSet.TrashBinMinimalistic iconStyle="Outline" size={24} />
+												</Button>
+												<Button isIconOnly as={Link} href={"?edit=" + announcement.id} className="ml-auto">
+													<SolarIconSet.GalleryEdit iconStyle="Outline" size={24} />
+												</Button>
+												<PinButton isPinned={announcement.isPinned} announcementId={announcement.id} />
+											</>
+										)}
+										<Button as={Link} isIconOnly href={"announcements/" + announcement.id} className="bgn ml-auto">
+											<SolarIconSet.Eye iconStyle="Outline" size={24} />
+										</Button>
+									</ButtonGroup>
+								</div>
+							</CardFooter>
+						</Card>
+					);
+				})}
+				{!!total && <Paginator total={Math.ceil(total / announcementsPerPage)} />}
+			</Frame>
 		</>
 	);
 }

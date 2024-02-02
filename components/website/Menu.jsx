@@ -21,6 +21,7 @@ const links = [
 	{ pathname: "/programme", src: image1, alt: "Programme" },
 	{ pathname: "https://shop.medimun.org", src: image8, alt: "Merch Shop" },
 	{ pathname: "/news", src: image7, alt: "News", hidden: true },
+	{ pathname: "/resolutions", src: image7, alt: "Resolutions" },
 	{ pathname: "/register", src: image3, alt: "Register", hidden: true },
 	{ pathname: "/sessions", src: image4, alt: "Sessions", hidden: true },
 	{ pathname: "/resources", src: image5, alt: "Resources" },

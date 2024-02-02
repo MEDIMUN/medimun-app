@@ -1,4 +1,6 @@
-export default async function sendEmail ( from, to, subject, html, text, replyTo ) {
+export default async function sendEmail ( options ) {
+	const { to, subject, html, text, replyTo = "info@medimun.org" } = options;
+
 	const nodemailer = require( "nodemailer" );
 	let transporter = nodemailer.createTransport( {
 		host: process.env.NODEMAILER_HOST,
@@ -14,11 +16,11 @@ export default async function sendEmail ( from, to, subject, html, text, replyTo
 	} );
 
 	const mailOptions = {
-		from, to, subject, html, text, replyTo
+		from: `Mediterranean Model United Nations <${ process.env.NODEMAILER_USER }>`, to, subject, html, text, replyTo
 	};
 
 	const response = await transporter.sendMail( mailOptions ).catch( err => {
 		console.log( err );
 	} );
-	console.log( { response } );
+	console.log( response?.response );
 }

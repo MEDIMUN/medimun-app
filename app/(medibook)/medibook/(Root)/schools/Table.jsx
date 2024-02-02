@@ -8,7 +8,7 @@ import { deleteSchool } from "./school.server.js";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import TopBar from "@/components/medibook/TopBar.jsx";
+import { TopBar } from "@/components/medibook/TopBar.jsx";
 
 export default function Addresses({ schools }) {
 	const { toast } = useToast();

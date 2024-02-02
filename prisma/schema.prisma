@@ -37,7 +37,7 @@ model Account {
 model SecurityCouncilCountry {
   id          String    @id @default(uuid())
   countryCode String
-  committee   Committee @relation(fields: [committeeId], references: [id])
+  committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
   committeeId String
 }
 
@@ -96,6 +96,7 @@ model User {
   SessionAnnouncement                 SessionAnnouncement[]
   DepartmentAnnouncement              DepartmentAnnouncement[]
   ApplicantAnnouncement               ApplicantAnnouncement[]
+  SessionResource                     SessionResource[]
 }
 
 model Session {
@@ -115,8 +116,7 @@ model Session {
   //
   committee                           Committee[]
   schoolDirector                      SchoolDirector[]
-  workshopDay                         WorkshopDay[]
-  conferenceDay                       ConferenceDay[]
+  Day                                 Day[]
   secretaryGeneral                    SecretaryGeneral[]
   presidentOfTheGeneralAssembly       PresidentOfTheGeneralAssembly[]
   deputySecretaryGeneral              DeputySecretaryGeneral[]
@@ -127,6 +127,7 @@ model Session {
   organiser                           Organiser[]
   SessionAnnouncement                 SessionAnnouncement[]
   CommitteeAnnouncement               CommitteeAnnouncement[]
+  SessionResource                     SessionResource[]
 }
 
 model GlobalAdmin {
@@ -199,27 +200,18 @@ model Organiser {
   @@unique([userId, sessionId])
 }
 
-model ConferenceDay {
-  id              Int               @id @default(autoincrement())
+model Day {
+  id              String            @id @default(uuid())
+  type            DayType
   name            String?
   description     String?
-  date            DateTime?
+  date            DateTime?         @unique
   location        Location?         @relation(fields: [locationId], references: [id])
   locationId      String?
   session         Session           @relation(fields: [sessionId], references: [id])
   sessionId       String
   DraftResolution DraftResolution[]
-}
-
-model WorkshopDay {
-  id          Int       @id @default(autoincrement())
-  name        String?
-  description String?
-  date        DateTime?
-  location    Location? @relation(fields: [locationId], references: [id])
-  locationId  String?
-  session     Session   @relation(fields: [sessionId], references: [id])
-  sessionId   String
+  RollCall        RollCall[]
 }
 
 model School {
@@ -276,6 +268,10 @@ model Committee {
   channel                Channel[]
   announcement           CommitteeAnnouncement[]
   SecurityCouncilCountry SecurityCouncilCountry[]
+
+  @@unique([sessionId, name])
+  @@unique([sessionId, shortName])
+  @@unique([sessionId, slug])
 }
 
 model Delegate {
@@ -283,7 +279,7 @@ model Delegate {
   country         String?
   user            User              @relation(fields: [userId], references: [id])
   userId          String
-  committee       Committee         @relation(fields: [committeeId], references: [id])
+  committee       Committee         @relation(fields: [committeeId], references: [id], onDelete: Cascade)
   committeeId     String
   DraftResolution DraftResolution[]
 
@@ -294,7 +290,7 @@ model Chair {
   id          Int       @id @default(autoincrement())
   user        User      @relation(fields: [userId], references: [id])
   userId      String
-  committee   Committee @relation(fields: [committeeId], references: [id])
+  committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
   committeeId String
 
   @@unique([userId, committeeId])
@@ -337,23 +333,22 @@ model Manager {
 }
 
 model Location {
-  id            String          @id @default(uuid())
-  name          String
-  slug          String?
-  description   String?
-  street        String?
-  city          String?
-  state         String?
-  zipCode       String?
-  country       String?
-  phoneNumber   String?
-  phoneCode     String?
-  email         String?
-  website       String?
-  mapUrl        String?
-  school        School[]
-  conferenceDay ConferenceDay[]
-  workshopDay   WorkshopDay[]
+  id          String   @id @default(uuid())
+  name        String
+  slug        String?
+  description String?
+  street      String?
+  city        String?
+  state       String?
+  zipCode     String?
+  country     String?
+  phoneNumber String?
+  phoneCode   String?
+  email       String?
+  website     String?
+  mapUrl      String?
+  school      School[]
+  Day         Day[]
 }
 
 // CHAT GROUPS ///////////////////////////////////////////////////////////
@@ -402,6 +397,13 @@ model Channel {
   message      Message[]
 }
 
+model RollCall {
+  id    String  @id @default(uuid())
+  name  String?
+  day   Day     @relation(fields: [dayId], references: [id])
+  dayId String
+}
+
 // MESSAGE ///////////////////////////////////////////////////////////
 
 model Message {
@@ -448,8 +450,8 @@ model GlobalAnnouncement {
   markdown    String?
   time        DateTime            @default(now())
   editTime    DateTime?           @default(now())
-  user        User                @relation(fields: [userId], references: [id])
-  userId      String
+  user        User?               @relation(fields: [userId], references: [id])
+  userId      String?
 }
 
 model MediBookAnnouncement {
@@ -461,8 +463,8 @@ model MediBookAnnouncement {
   markdown    String?
   time        DateTime            @default(now())
   editTime    DateTime?           @default(now())
-  user        User                @relation(fields: [userId], references: [id])
-  userId      String
+  user        User?               @relation(fields: [userId], references: [id])
+  userId      String?
 }
 
 model WebsiteAnnouncement {
@@ -474,12 +476,12 @@ model WebsiteAnnouncement {
   markdown    String?
   time        DateTime            @default(now())
   editTime    DateTime?           @default(now())
-  user        User                @relation(fields: [userId], references: [id])
-  userId      String
+  user        User?               @relation(fields: [userId], references: [id])
+  userId      String?
 }
 
 model SessionAnnouncement {
-  id          String              @id @default(uuid())
+  id          String              @id @unique @default(uuid())
   isPinned    Boolean             @default(false)
   privacy     AnnouncementPrivacy @default(NORMAL)
   title       String
@@ -487,8 +489,8 @@ model SessionAnnouncement {
   markdown    String?
   time        DateTime            @default(now())
   editTime    DateTime?           @default(now())
-  user        User                @relation(fields: [userId], references: [id])
-  userId      String
+  user        User?               @relation(fields: [userId], references: [id])
+  userId      String?
   //
   session     Session             @relation(fields: [sessionId], references: [id])
   sessionId   String
@@ -503,8 +505,8 @@ model DepartmentAnnouncement {
   markdown     String?
   time         DateTime            @default(now())
   editTime     DateTime?           @default(now())
-  user         User                @relation(fields: [userId], references: [id])
-  userId       String
+  user         User?               @relation(fields: [userId], references: [id])
+  userId       String?
   //
   department   Department          @relation(fields: [departmentId], references: [id])
   departmentId String
@@ -519,10 +521,10 @@ model CommitteeAnnouncement {
   markdown    String?
   time        DateTime            @default(now())
   editTime    DateTime?           @default(now())
-  user        User                @relation(fields: [userId], references: [id])
-  userId      String
+  user        User?               @relation(fields: [userId], references: [id])
+  userId      String?
   //
-  committee   Committee?          @relation(fields: [committeeId], references: [id])
+  committee   Committee?          @relation(fields: [committeeId], references: [id], onDelete: Cascade)
   committeeId String?
   session     Session?            @relation(fields: [sessionId], references: [id])
   sessionId   String?
@@ -537,25 +539,29 @@ model ApplicantAnnouncement {
   markdown    String?
   time        DateTime            @default(now())
   editTime    DateTime?           @default(now())
-  user        User                @relation(fields: [userId], references: [id])
-  userId      String
+  user        User?               @relation(fields: [userId], references: [id])
+  userId      String?
 }
 
-model File {
+model SessionResource {
   id          String   @id @default(uuid())
   name        String?
   description String?
   uuid        String
   time        DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  session     Session  @relation(fields: [sessionId], references: [id])
+  sessionId   String
 }
 
 model DraftResolution {
-  id          String        @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String?
-  submitter   Delegate      @relation(fields: [submitterId], references: [id])
+  submitter   Delegate @relation(fields: [submitterId], references: [id])
   submitterId String
-  day         ConferenceDay @relation(fields: [dayId], references: [id])
-  dayId       Int
+  day         Day      @relation(fields: [dayId], references: [id])
+  dayId       String
 }
 
 // TERMS, CONDITIONS AND PRIVACY ///////////////////////////////////////////////////////////
@@ -592,15 +598,26 @@ enum CommitteeType {
   SPECIALCOMMITTEE
 }
 
-enum DepartmentType {
-  IT
-  MEDINEWS
-  SALES
-}
-
 enum AnnouncementPrivacy {
   ANONYMOUS
   BOARD
   SECRETARIAT
   NORMAL
+}
+
+enum DayType {
+  CONFERENCE
+  WORKSHOP
+  EVENT
+}
+
+enum DepartmentType {
+  IT
+  MEDINEWS
+  APPROVALPANEL
+  SALES
+  FOODANDCATERING
+  PREP
+  ADMINSTAFF
+  OTHER
 }

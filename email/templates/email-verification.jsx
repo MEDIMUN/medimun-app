@@ -7,7 +7,8 @@ function EmailVerification(props) {
 	const baseUrl = "https://www.medimun.org";
 
 	return (
-		<MainTemplate title="VERIFY YOUR EMAIL">
+		<MainTemplate title="VERIFY YOUR EMAIL" preview={props.preview}>
+			<Preview>{`Dear ${props.name}, Please use the code ${props.code} to complete sign up.`}</Preview>
 			<Row className="p-0">
 				<Column style={rightStyle}></Column>
 				<Column>
@@ -55,12 +56,12 @@ const container = {
 };
 
 export default async function sendVerificationEmail(name, email, code) {
-	await sendEmail(
-		"MEDIMUN <notifications@medimun.org>",
-		email,
-		"Verify your email",
-		render(<EmailVerification name={name} code={code} />, {
+	await sendEmail({
+		to: email,
+		subject: "Verify Your Email Address",
+		html: render(<EmailVerification name={name} code={code} preview={`Dear ${name}, please use the code ${code} to complete sign up.`} />, {
 			pretty: true,
-		})
-	);
+		}),
+		text: `Dear ${name}, please use the code ${code} to complete sign up.`,
+	});
 }

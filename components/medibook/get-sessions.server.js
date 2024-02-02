@@ -6,16 +6,16 @@ import { s, authorize } from "@/lib/authorize";
 import { notFound } from "next/navigation";
 import prisma from "@/prisma/client";
 
-export async function getAllSessions() {
-	const session = await getServerSession(authOptions);
-	if (!session) notFound();
+export async function getAllSessions () {
+	const session = await getServerSession( authOptions );
+	if ( !session ) notFound();
 	return await prisma.session
-		.findMany({
+		.findMany( {
 			orderBy: {
-				number: "desc",
+				numberInteger: "desc",
 			},
-		})
-		.catch((e) => {
+		} )
+		.catch( ( e ) => {
 			return notFound();
-		});
+		} );
 }

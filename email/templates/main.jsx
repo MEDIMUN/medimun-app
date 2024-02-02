@@ -15,9 +15,9 @@ export default function MainTemplate(props) {
 					},
 				},
 			}}>
-			<Head></Head>
+			<Head />
+			<Preview>{props.preview}</Preview>
 			<Html>
-				<Preview>Verify Your Email - MEDIMUN</Preview>
 				<Section className="mx-auto my-0 bg-gray-400 font-[Helvetica] font-[700] md:my-[30px]">
 					<Container style={container}>
 						<Section className="bg-brand">

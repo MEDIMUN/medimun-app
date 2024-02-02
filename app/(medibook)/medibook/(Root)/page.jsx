@@ -24,8 +24,8 @@ export default async function Page() {
 
 	const isAlumni = session.pastRoleNames.length > 0 ? { some: {} } : { some: {} };
 	const confDays = async () => {
-		const response = await prisma.conferenceDay.findFirst({
-			where: { session: { isCurrent: true } },
+		const response = await prisma.day.findFirst({
+			where: { session: { isCurrent: true }, type: "CONFERENCE" },
 			orderBy: { date: "desc" },
 			select: { date: true },
 			take: 1,
@@ -38,8 +38,8 @@ export default async function Page() {
 		}
 	};
 	const workshopDays = async () => {
-		const response = await prisma.workshopDay.findFirst({
-			where: { session: { isCurrent: true } },
+		const response = await prisma.day.findFirst({
+			where: { session: { isCurrent: true }, type: "WORKSHOP" },
 			orderBy: { date: "desc" },
 			select: { date: true },
 			take: 1,

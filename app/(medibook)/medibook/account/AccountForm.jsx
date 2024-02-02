@@ -10,7 +10,7 @@ import * as SolarIconSet from "solar-icon-set";
 import { editUser } from "./edit-user.server";
 import { flushSync } from "react-dom";
 import ProfileUploader from "./ProfilePictureFrame";
-import TopBar from "@/components/medibook/TopBar";
+import { TopBar } from "@/components/medibook/TopBar";
 
 export default function AccountForm({ session, user, schools }) {
 	const [schoolId, setSchoolId] = useState(user.student[0]?.school.id);
