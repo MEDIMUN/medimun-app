@@ -35,14 +35,16 @@ export default async function Page({ params, searchParams }) {
 			<DeleteModal />
 			<Modal edit={edit} />
 			<TopBar title="Global Notices">
-				{authorize(session, [s.management]) && (
-					<Button as={Link} href="?add">
-						Announce
-					</Button>
-				)}
+				<div className="flex gap-2">
+					{authorize(session, [s.management]) && (
+						<Button as={Link} href="?add">
+							Announce
+						</Button>
+					)}
+					<SearchBar className="col-span-3" />
+				</div>
 			</TopBar>
 			<Frame emptyContent="No Notices Found" isGrid isEmpty={!total}>
-				<SearchBar className="col-span-3" />
 				{globalAnnouncements.map((announcement) => {
 					const isEdited = announcement.editTime.toString() !== announcement.time.toString();
 					const isBoard = announcement.privacy === "BOARD";

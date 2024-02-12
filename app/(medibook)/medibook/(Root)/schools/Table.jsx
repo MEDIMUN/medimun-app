@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { TopBar } from "@/components/medibook/TopBar.jsx";
+import { Frame } from "@/components/medibook/Frame.jsx";
 
 export default function Addresses({ schools }) {
 	const { toast } = useToast();
@@ -35,47 +36,48 @@ export default function Addresses({ schools }) {
 					Add School
 				</Button>
 			</TopBar>
-			<Spacer y={5} />
-			<Table isCompact className="static z-0">
-				<TableHeader>
-					<TableColumn>NAME</TableColumn>
-					<TableColumn>SCHOOL DIRECTOR</TableColumn>
-					<TableColumn>LINKED LOCATION</TableColumn>
-					<TableColumn>ACTIONS</TableColumn>
-				</TableHeader>
-				<TableBody emptyContent={"No Schools Found"}>
-					{schools.map((school, index) => {
-						return (
-							<TableRow key={school.id}>
-								<TableCell>{school.name}</TableCell>
-								<TableCell>{}</TableCell>
-								<TableCell>
-									{school.location ? (
-										<Link className="text-blue-500" href={`/medibook/locations?view=${school.location ? school.location.id : ""}&return=/medibook/schools`}>
-											{school.location.name} ↗
-										</Link>
-									) : (
-										"No Linked Location"
-									)}
-								</TableCell>
-								<TableCell>
-									<div className="flex gap-2">
-										<Button isDisabled={isLoading} isLoading={isLoading} type="submit" onPress={() => deleteSchoolHandler(school.id)} color="danger" isIconOnly>
-											<SolarIconSet.TrashBinMinimalistic iconStyle="Outline" size={24} />
-										</Button>
-										<Button as={Link} href={`schools?edit=${school.id}`} isDisabled={isLoading} isLoading={isLoading} isIconOnly>
-											<SolarIconSet.PenNewSquare iconStyle="Outline" size={24} />
-										</Button>
-										<Button as={Link} href={`schools?view=${school.id}`} isDisabled={isLoading} isLoading={isLoading} isIconOnly>
-											<SolarIconSet.Eye iconStyle="Outline" size={24} />
-										</Button>
-									</div>
-								</TableCell>
-							</TableRow>
-						);
-					})}
-				</TableBody>
-			</Table>
+			<Frame>
+				<Table removeWrapper isStriped isCompact className="static z-0">
+					<TableHeader>
+						<TableColumn>NAME</TableColumn>
+						<TableColumn>SCHOOL DIRECTOR</TableColumn>
+						<TableColumn>LINKED LOCATION</TableColumn>
+						<TableColumn>ACTIONS</TableColumn>
+					</TableHeader>
+					<TableBody emptyContent={"No Schools Found"}>
+						{schools.map((school, index) => {
+							return (
+								<TableRow key={school.id}>
+									<TableCell>{school.name}</TableCell>
+									<TableCell>{}</TableCell>
+									<TableCell>
+										{school.location ? (
+											<Link className="text-blue-500" href={`/medibook/locations?view=${school.location ? school.location.id : ""}&return=/medibook/schools`}>
+												{school.location.name} ↗
+											</Link>
+										) : (
+											"No Linked Location"
+										)}
+									</TableCell>
+									<TableCell>
+										<div className="flex gap-2">
+											<Button isDisabled={isLoading} isLoading={isLoading} type="submit" onPress={() => deleteSchoolHandler(school.id)} color="danger" isIconOnly>
+												<SolarIconSet.TrashBinMinimalistic iconStyle="Outline" size={24} />
+											</Button>
+											<Button as={Link} href={`schools?edit=${school.id}`} isDisabled={isLoading} isLoading={isLoading} isIconOnly>
+												<SolarIconSet.PenNewSquare iconStyle="Outline" size={24} />
+											</Button>
+											<Button as={Link} href={`schools?view=${school.id}`} isDisabled={isLoading} isLoading={isLoading} isIconOnly>
+												<SolarIconSet.Eye iconStyle="Outline" size={24} />
+											</Button>
+										</div>
+									</TableCell>
+								</TableRow>
+							);
+						})}
+					</TableBody>
+				</Table>
+			</Frame>
 		</>
 	);
 }

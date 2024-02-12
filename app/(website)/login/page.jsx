@@ -23,11 +23,5 @@ export default async function Page() {
 		})
 		.catch(() => notFound());
 
-	return (
-		<div className="flex h-screen flex-row bg-[#18181B] bg-[url(/assets/delegates-indoors-2.jpg)] bg-cover">
-			<div className="flex h-full w-full justify-center bg-white bg-opacity-80 align-middle duration-1000 md:w-[50%] md:bg-opacity-95">
-				<Login currentSession={currentSession} />
-			</div>
-		</div>
-	);
+	return <Login currentSession={currentSession} />;
 }

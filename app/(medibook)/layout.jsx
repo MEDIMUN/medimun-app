@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import "tailwindcss/tailwind.css";
 import Landscape from "@/components/website/Landscape";
-import Navbar from "@/components/medibook/Navbar";
+import Navbar from "@/nextuipro/navigation-header-with-heading-cta";
 import { ClientProvider } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 import AuthRedirect from "@/components/website/AuthRedirect";
@@ -10,6 +10,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { NextUIProvider } from "./next-ui-provider";
 import Sidebar from "@/components/medibook/Sidebar";
+import DarkModeProvider from "./dark-mode-provider";
 
 export const metadata = {
 	title: "MediBook",
@@ -21,7 +22,7 @@ export const revalidate = 0;
 
 export default function RootLayout({ children }) {
 	return (
-		<html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} font-[montserrat]`}>
+		<DarkModeProvider>
 			<ClientProvider>
 				<AuthRedirect unauthenticated="/login" />
 				<body>
@@ -29,12 +30,15 @@ export default function RootLayout({ children }) {
 						<Landscape />
 						<div className="flex min-w-full flex-row ">
 							<Sidebar />
-							<div className="h-[calc(100svh)] w-full overflow-y-scroll p-4">{children}</div>
+							<div className="h-[calc(100svh)] w-full overflow-y-scroll">
+								<Navbar />
+								{children}
+							</div>
 						</div>
 						<Toaster />
 					</NextUIProvider>
 				</body>
 			</ClientProvider>
-		</html>
+		</DarkModeProvider>
 	);
 }

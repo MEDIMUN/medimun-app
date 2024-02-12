@@ -23,7 +23,7 @@ export default function SearchBar({ className }) {
 
 	return (
 		<Input
-			className={cn("w-full rounded-2xl border-1 border-gray-200 md:col-span-1 lg:col-span-2 xl:col-span-3" + className)}
+			className="w-auto"
 			placeholder="Search"
 			label=""
 			isClearable

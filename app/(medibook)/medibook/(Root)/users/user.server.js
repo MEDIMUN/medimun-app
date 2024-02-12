@@ -217,8 +217,3 @@ export async function removeRole ( role, user ) {
 	}
 	return { ok: true, title: "Role removed", variant: "default" };
 }
-
-export async function prune ( users ) {
-
-	return { ok: true, title: "Pruned", variant: "default" };
-}

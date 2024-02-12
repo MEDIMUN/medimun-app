@@ -1,18 +1,15 @@
 "use client";
 
-import { signIn, getSession, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 import { useEffect, useState, useRef } from "react";
-import { Icons } from "@/components/icons";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button, Input, Checkbox, Link, Divider } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import Image from "next/image";
 import { resetPassword } from "./reset-password.server";
+import { Icon } from "@iconify/react";
+import Logo from "@/components/website/Logo";
 
 export default function Login(props) {
 	const { toast } = useToast();
@@ -20,43 +17,22 @@ export default function Login(props) {
 	const searchParams = useSearchParams();
 	const { currentSession } = props;
 
-	const [isHelp, setIsHelp] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [currentEmail, setCurrentEmail] = useState("");
+	const [isVisible, setIsVisible] = useState(false);
+
+	const toggleVisibility = () => setIsVisible(!isVisible);
 
 	let enteredEmail;
 	let enteredPassword;
-	const credentials = useRef();
-
-	function Divider() {
-		return (
-			<>
-				<div className="relative">
-					<div className="absolute inset-0 flex items-center">
-						<span className="w-full border-t" />
-					</div>
-					<div className="relative flex justify-center text-xs uppercase">
-						<span className="rounded-lg bg-background px-2 text-muted-foreground">TROUBLE LOGGING IN?</span>
-					</div>
-				</div>
-			</>
-		);
-	}
 
 	async function submitHandler(e) {
-		e.preventDefault();
-		const formData = new FormData(credentials.current);
-		enteredEmail = formData.get("username");
-		enteredPassword = formData.get("password");
+		enteredEmail = e.get("username");
+		enteredPassword = e.get("password");
 		if (enteredEmail.trim() === "" || enteredPassword.trim() === "") {
-			setIsLoading(true);
 			toast({
 				title: "Invalid input",
 				description: "Please enter a valid email and password.",
 				variant: "destructive",
 			});
-			await new Promise((resolve) => setTimeout(resolve, 1500));
-			setIsLoading(false);
 			return;
 		}
 		refetch();
@@ -95,114 +71,63 @@ export default function Login(props) {
 		retry: false,
 	});
 
-	let email;
-	useEffect(() => {
-		setIsHelp(searchParams.get("help") == "");
-		setCurrentEmail(searchParams.get("email"));
-	}, [searchParams]);
+	useEffect(() => {}, [searchParams]);
 
 	return (
-		<div className="py-auto flex h-[100%] w-[350px] flex-col justify-center px-[10px] align-middle">
-			<div className="mb-5 flex flex-col space-y-2 text-center">
-				{email}
-				<div className="mx-auto flex flex-row">
-					{!isHelp ? (
-						<h1 className="p-3 text-2xl font-semibold tracking-tight">
-							Log In to<span className="sr-only">MediBook</span>
-						</h1>
-					) : (
-						<h1 className="p-3 text-2xl font-semibold tracking-tight">Reset Your Password</h1>
-					)}
-					{!isHelp && <Image alt="MediBook Logo" className="my-auto" src="/assets/branding/logos/medibook-logo-white-1.svg" width={128} height={30} />}
+		<div
+			className="flex h-screen w-screen items-center justify-center overflow-hidden bg-content1 p-2 sm:p-4 md:justify-end lg:p-8"
+			style={{
+				backgroundImage: "url(/assets/delegates-indoors-2.jpg)",
+				backgroundSize: "cover",
+				backgroundPosition: "center",
+			}}>
+			{/* Brand Logo */}
+			<div className="absolute top-10 mx-auto md:left-10">
+				<div className="flex items-center">
+					<div className="w-52">
+						<Logo size={40} color="red" />
+					</div>
 				</div>
-				<p className="text-sm duration-500 md:text-muted-foreground">
-					{isHelp ? "Please provide your email. If it's linked to your account, you'll receive a password reset email." : "Enter your email, username or user id below"}
+			</div>
+			{/* Login Form */}
+			<div className="flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 pb-10 pt-6 shadow-small">
+				<p className="pb-2 text-xl font-medium">Log In</p>
+				<form className="flex flex-col gap-3" action={submitHandler}>
+					<Input size="lg" label="Username" name="username" placeholder="Email, UserID or Username" type="text" variant="bordered" />
+
+					<Input
+						endContent={
+							<button type="button" onClick={toggleVisibility}>
+								{isVisible ? <Icon className="pointer-events-none text-2xl text-default-400" icon="solar:eye-closed-linear" /> : <Icon className="pointer-events-none text-2xl text-default-400" icon="solar:eye-bold" />}
+							</button>
+						}
+						size="lg"
+						label="Password"
+						name="password"
+						placeholder="Enter your password"
+						type={isVisible ? "text" : "password"}
+						variant="bordered"
+					/>
+
+					<div className="flex items-center justify-between px-1 py-2">
+						<Checkbox name="remember" size="sm">
+							Remember me
+						</Checkbox>
+						<Link className="text-default-500" href="#" size="sm">
+							Forgot password?
+						</Link>
+					</div>
+					<Button isLoading={isFetching} color="primary" type="submit">
+						Log In
+					</Button>
+				</form>
+				<p className="text-center text-small">
+					Need to create an account?&nbsp;
+					<Link href="#" size="sm">
+						Sign Up
+					</Link>
 				</p>
 			</div>
-			{isHelp ? (
-				<form action={resetPassword}>
-					<div className="flex flex-col gap-2">
-						<Label className="sr-only" htmlFor="email">
-							Email
-						</Label>
-						<Input
-							className="text-center text-lg"
-							id="email"
-							name="email"
-							placeholder="Enter Your Email"
-							type="email"
-							autoCapitalize="none"
-							autoCorrect="off"
-							disabled={isFetching}
-						/>
-						<Button disabled={isFetching || isLoading} className="my-3 bg-[var(--medired)]">
-							{(isFetching || isLoading) && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
-							RESET PASSWORD
-						</Button>
-					</div>
-				</form>
-			) : (
-				<form ref={credentials} onSubmit={submitHandler}>
-					<div className="flex flex-col gap-2">
-						<Label className="sr-only" htmlFor="username">
-							Username
-						</Label>
-						<Input
-							defaultValue={currentEmail}
-							onChange={(e) => {
-								setCurrentEmail(e.target.value.toLowerCase().trim());
-							}}
-							className="text-center text-lg md:text-sm"
-							id="username"
-							name="username"
-							placeholder="Email, Username or User-ID"
-							type="username"
-							autoCapitalize="none"
-							autoCorrect="off"
-							disabled={isFetching || isLoading}
-						/>
-						<Label className="sr-only" htmlFor="password">
-							Password
-						</Label>
-						<Input
-							className="text-center text-lg md:text-sm"
-							id="password"
-							name="password"
-							placeholder="Password"
-							type="password"
-							autoCapitalize="none"
-							autoComplete="password"
-							autoCorrect="off"
-							disabled={isFetching || isLoading}
-						/>
-						<Button disabled={isFetching || isLoading} className="my-3 bg-[var(--medired)]">
-							{(isFetching || isLoading) && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
-							LOG IN
-						</Button>
-					</div>
-				</form>
-			)}
-			<Divider />
-			<div className="mt-3 flex flex-row gap-2">
-				<Button disabled={isFetching || isLoading} onClick={() => router.push(`${isHelp ? "/login" : "/login?help"}`)} className="w-full" href="/loginhelp">
-					{isHelp ? "LOG IN" : "RESET PASSWORD"}
-				</Button>
-				<Button disabled={isFetching || isLoading} onClick={() => router.push("/signup")} className="w-full" href="/signup">
-					SIGN UP
-				</Button>
-			</div>
-			<p className="my-3 text-center text-sm text-muted-foreground">
-				By clicking continue, you agree to our
-				<br />
-				<Link href="/terms" className="underline underline-offset-4 hover:text-primary">
-					Terms of Service
-				</Link>{" "}
-				and{" "}
-				<Link href="/privacy" className="underline underline-offset-4 hover:text-primary">
-					Privacy Policy
-				</Link>
-				.
-			</p>
 		</div>
 	);
 }

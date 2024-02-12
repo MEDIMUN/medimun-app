@@ -9,6 +9,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { Button, Spacer, Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
 import { notFound } from "next/navigation";
+import { Frame } from "@/components/medibook/Frame";
 
 export const metadata = {
 	title: "Sessions - MediBook",
@@ -22,15 +23,17 @@ export default async function Page({ searchParams }) {
 	return (
 		<>
 			<Modal />
-			<TopBar title="All Sessions">
-				{authorize(session, [s.admins, s.director, s.sd]) && (
-					<Button as={Link} href="/medibook/sessions?add">
-						Add Session
-					</Button>
-				)}
+			<TopBar title="Sessions">
+				<div className="flex gap-2">
+					{authorize(session, [s.admins, s.director, s.sd]) && (
+						<Button as={Link} href="/medibook/sessions?add">
+							Add Session
+						</Button>
+					)}
+					<SearchBar />
+				</div>
 			</TopBar>
-			<div className="h-[calc(100%-90px)] overflow-y-auto rounded-2xl border-1 border-gray-200 p-4">
-				<SearchBar />
+			<Frame>
 				<ul className="mx-auto mt-4 grid h-auto max-w-[1200px] grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
 					{data.map((session) => (
 						<Card key={session.number}>
@@ -55,7 +58,7 @@ export default async function Page({ searchParams }) {
 						</Card>
 					))}
 				</ul>
-			</div>
+			</Frame>
 		</>
 	);
 }

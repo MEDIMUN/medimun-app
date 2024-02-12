@@ -24,8 +24,8 @@ const pageColors = {
 	"/sessions": "red",
 };
 
-const hideMenu = ["/loginhelp", "/signup"];
-const hideLogo = ["/loginhelp"];
+const hideMenu = ["/loginhelp", "/signup", "/login"];
+const hideLogo = ["/loginhelp", "/login"];
 const hideNotification = ["/login", "/signup", "/register"];
 
 export default function Navbar({ children }) {
@@ -61,8 +61,6 @@ export default function Navbar({ children }) {
 		setIsVisable(!isVisable);
 	};
 
-	if (hideMenu.includes(pathname) && hideLogo.includes(pathname)) return null;
-
 	const notification = {
 		t0ext: "Website is being tested. You may encounter issues. Some links may temporarily not work.",
 		linkText: "Report",
@@ -82,6 +80,8 @@ export default function Navbar({ children }) {
 			document.body.style.overflow = "unset";
 		};
 	}, [isVisable]);
+
+	if (hideMenu.includes(pathname) && hideLogo.includes(pathname)) return null;
 
 	return (
 		<>

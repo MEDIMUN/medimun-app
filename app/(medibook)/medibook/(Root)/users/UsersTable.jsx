@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button, Spacer, Avatar, TableModal, ModalContent, ModalHeader, ModalBody, Modal, ModalFooter, Table, TableHeader, Input, TableBody, TableColumn, TableRow, TableCell, User, ButtonGroup, Chip, Tooltip, Pagination, useDisclosure } from "@nextui-org/react";
 import prisma from "@/prisma/client";
 import * as SolarIconSet from "solar-icon-set";
-import { prune, toggleDisableUser } from "./user.server.js";
+import { toggleDisableUser } from "./user.server.js";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,6 +13,7 @@ import { updateSearchParams, removeSearchParams } from "@/lib/searchParams";
 import { flushSync } from "react-dom";
 import { useDebouncedValue } from "@mantine/hooks";
 import { TopBar } from "@/components/medibook/TopBar.jsx";
+import { Frame } from "@/components/medibook/Frame.jsx";
 
 export default function UsersTable({ users, numberOfUsers, numberOfPages, session }) {
 	const { toast } = useToast();
@@ -21,7 +22,6 @@ export default function UsersTable({ users, numberOfUsers, numberOfPages, sessio
 	const [query, setQuery] = useState(searchParams.get("query") || "");
 	const [debounced] = useDebouncedValue(query, 500);
 	const [isLoading, setIsLoading] = useState(false);
-	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
 	async function toggleDisableUserHandler(userId) {
 		flushSync(() => {
@@ -31,17 +31,6 @@ export default function UsersTable({ users, numberOfUsers, numberOfPages, sessio
 		if (res) toast(res);
 		if (res?.ok) router.refresh();
 		setIsLoading(false);
-	}
-
-	async function pruneHandler() {
-		flushSync(() => {
-			setIsLoading(true);
-		});
-		const res = await prune(searchParams.get("selected").split(","));
-		if (res) toast(res);
-		if (res?.ok) router.refresh();
-		setIsLoading(false);
-		onClose();
 	}
 
 	useEffect(() => {
@@ -55,29 +44,42 @@ export default function UsersTable({ users, numberOfUsers, numberOfPages, sessio
 	const selectedLength = searchParams.get("selected") ? searchParams.get("selected").split(",").length : 0;
 	return (
 		<>
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-				<ModalContent>
-					<ModalHeader className="flex flex-col gap-1">Are you sure you want to prune users</ModalHeader>
-					<ModalBody>
-						<p className="text-black">This action will remove all roles and awards of a user. This action is irreversible.</p>
-					</ModalBody>
-					<ModalFooter>
-						<Button onPress={onClose}>Cancel</Button>
-						<Button color="danger" onPress={pruneHandler} isLoading={isLoading}>
-							Prune
-						</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
 			<TopBar title="Users">
-				<Button as={Link} href="?add" className="my-auto ml-auto">
-					Add User
-				</Button>
+				<div className="flex gap-2">
+					<ButtonGroup>
+						<Button as={Link} href="?add" className="my-auto ml-auto">
+							Add User
+						</Button>
+						<Button
+							onPress={() => {
+								updateSearchParams(router, { assign: "" });
+							}}
+							isDisabled={!(selectedLength != 0 && selectedLength < 21)}>
+							Assign Roles
+						</Button>
+					</ButtonGroup>
+					<Input
+						className="w-auto"
+						placeholder="Search"
+						label=""
+						isClearable
+						onClear={() => {
+							removeSearchParams(router, { query: "" });
+							setQuery("");
+						}}
+						labelPlacement="outside"
+						value={query}
+						onChange={(e) => {
+							setQuery(e.target.value);
+						}}
+					/>
+				</div>
 			</TopBar>
-			<div id="show-scrollbar" className="flex h-[calc(100%-101px)] flex-col overflow-x-auto rounded-2xl border-1 border-gray-200 p-4">
+			<Frame>
 				<Table
 					removeWrapper
 					isStriped
+					isCompact
 					selectedKeys={searchParams.get("selected") ? searchParams.get("selected").split(",") : []}
 					onSelectionChange={(keys) => {
 						const keysArray = [...keys];
@@ -89,35 +91,7 @@ export default function UsersTable({ users, numberOfUsers, numberOfPages, sessio
 						updateSearchParams(router, { selected: keysArray });
 						router.refresh();
 					}}
-					topContent={
-						<div className="flex gap-2">
-							<Button
-								onPress={() => {
-									updateSearchParams(router, { assign: "" });
-								}}
-								isDisabled={!(selectedLength != 0 && selectedLength < 21)}>
-								Assign Roles
-							</Button>
-							<Button onPress={onOpen} isDisabled={!(selectedLength != 0 && selectedLength < 6)}>
-								Remove All Roles
-							</Button>
-							<Input
-								className="w-full rounded-2xl border-1 border-gray-200"
-								placeholder="Search by name, email, school, id or username"
-								label=""
-								isClearable
-								onClear={() => {
-									removeSearchParams(router, { query: "" });
-									setQuery("");
-								}}
-								labelPlacement="outside"
-								value={query}
-								onChange={(e) => {
-									setQuery(e.target.value);
-								}}
-							/>
-						</div>
-					}
+					topContent={<div className="flex gap-2"></div>}
 					sortDescriptor={{ column: searchParams.get("orderBy") || "officialName", direction: searchParams.get("direction") == "desc" ? "descending" : "ascending" }}
 					onSortChange={(descriptor) => {
 						removeSearchParams(router, { remove: "" });
@@ -153,6 +127,7 @@ export default function UsersTable({ users, numberOfUsers, numberOfPages, sessio
 												name={user.officialName + " " + user.officialSurname}
 												description={user.displayName}
 												avatarProps={{
+													size: "sm",
 													showFallback: true,
 													color: "gradient",
 													name: user.officialName[0] + user.officialSurname[0],
@@ -230,7 +205,7 @@ export default function UsersTable({ users, numberOfUsers, numberOfPages, sessio
 				<div className="flex w-full justify-center">
 					<Pagination className="absolute bottom-12" isCompact showControls showShadow color="secondary" page={searchParams.get("page") || 1} total={numberOfPages} onChange={(page) => updateSearchParams(router, { page: page })} />
 				</div>
-			</div>
+			</Frame>
 		</>
 	);
 }

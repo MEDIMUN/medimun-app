@@ -37,7 +37,7 @@ export const authOptions = {
 				if ( userDetails.isDisabled ) {
 					throw new Error( "This account has been disabled, please contact us for more information" );
 				}
-				if ( !( await verifyPassword( userDetails.account.password, password ) ) ) {
+				if ( await verifyPassword( password, userDetails.account.password ) ) {
 					const user = await userData( userDetails.id );
 					delete user.user.bio;
 					delete user.user.phoneCode;

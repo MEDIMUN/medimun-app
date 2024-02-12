@@ -74,7 +74,8 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    /* --background: 222.2 84% 4.9%; */
+    --background: black;
     --foreground: 210 40% 98%;
 
     --card: 222.2 84% 4.9%;
@@ -149,15 +150,13 @@ html {
 }
 
 #show-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(to right, rgb(239, 68, 68), rgb(153, 27, 27));
-  border-radius: 200px;
-  width: 10px;
+  background: #e5e5e5;
+  border-radius: 3px;
+  width: 8px;
 }
 
 #show-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--medired);
-  border-radius: 200px;
-  width: 10px;
+  background: #e6e6e6;
 }
 
 @keyframes slideInFromLeft {

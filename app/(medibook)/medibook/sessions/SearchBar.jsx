@@ -19,5 +19,5 @@ export default function SearchBar(props) {
 		}
 	}, [debounced]);
 
-	return <Input value={query} onValueChange={setQuery} type="search" className="max-h-min" placeholder="Search for other sessions" />;
+	return <Input isClearable value={query} onValueChange={setQuery} label="" labelPlacement="outside" className="w-auto" placeholder="Search" />;
 }

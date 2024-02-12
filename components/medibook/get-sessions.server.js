@@ -14,6 +14,10 @@ export async function getAllSessions () {
 			orderBy: {
 				numberInteger: "desc",
 			},
+			include: {
+				committee: true,
+				department: true,
+			}
 		} )
 		.catch( ( e ) => {
 			return notFound();
