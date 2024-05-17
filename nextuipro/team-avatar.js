@@ -2,8 +2,7 @@
 
 
 import React from "react";
-import { Avatar } from "@nextui-org/react";
-
+import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/avatar";
 import { cn } from "@/lib/cn";
 
 const TeamAvatar = React.forwardRef(

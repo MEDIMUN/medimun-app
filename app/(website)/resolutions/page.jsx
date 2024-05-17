@@ -23,7 +23,7 @@ export default function Page({ searchParams }) {
 
 	return (
 		<>
-			<Modal onOpenChange={() => updateSearchParams(router, { view: searchParams.view })} scrollBehavior="inside" size="2xl" isOpen={searchParams.view?.length > 1} className="my-10 h-[90vh]">
+			<Modal onOpenChange={() => updateSearchParams({ view: searchParams.view })} scrollBehavior="inside" size="2xl" isOpen={searchParams.view?.length > 1} className="my-10 h-[90vh]">
 				<ModalContent>
 					<ModalHeader>Resolutions of {searchParams.view}</ModalHeader>
 					<ModalBody className="flex flex-col gap-2">
@@ -38,7 +38,7 @@ export default function Page({ searchParams }) {
 						)}
 					</ModalBody>
 					<ModalFooter>
-						<Button onClick={() => removeSearchParams(router, { view: "" })}>Close</Button>
+						<Button onClick={() => removeSearchParams({ view: "" }, router)}>Close</Button>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
@@ -49,7 +49,7 @@ export default function Page({ searchParams }) {
 						return (
 							<li key={link.name} className="flex w-full rounded-sm bg-white p-5 text-black">
 								<h2 className="md:text-md my-auto text-sm lg:text-xl">{link.name}</h2>
-								<Button className="ml-auto" onPress={() => updateSearchParams(router, { view: link.slug })}>
+								<Button className="ml-auto" onPress={() => updateSearchParams({ view: link.slug }, router)}>
 									View
 								</Button>
 							</li>

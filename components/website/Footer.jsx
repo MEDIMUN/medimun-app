@@ -10,10 +10,10 @@ export default function Footer() {
 	return (
 		<footer className="relative z-[40] bg-black">
 			<div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-				<div className="flex flex-col items-center gap-4 rounded-lg bg-[var(--medired)] p-6 shadow-lg sm:flex-row sm:justify-between">
+				<div className="flex flex-col items-center gap-4 rounded-lg bg-[var(--primary)] p-6 shadow-lg sm:flex-row sm:justify-between">
 					<strong className="text-xl text-white sm:text-xl">Ready to join?</strong>
 
-					<Link className="inline-flex items-center gap-2 rounded-full border border-white bg-white px-8 py-3 text-[var(--medired)] duration-200 hover:bg-transparent hover:text-white focus:outline-none focus:ring active:bg-white/90" href="/signup">
+					<Link className="inline-flex items-center gap-2 rounded-full border border-white bg-white px-8 py-3 text-[var(--primary)] duration-200 hover:bg-transparent hover:text-white focus:outline-none focus:ring active:bg-white/90" href="/signup">
 						<span className="text-sm font-medium"> Let's Get Started </span>
 
 						<svg className="h-5 w-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -122,7 +122,7 @@ export default function Footer() {
 				<div className="mt-16">
 					<ul className="flex justify-center gap-6 sm:justify-end">
 						<li>
-							<Link href="https://fb.me/medimun" rel="noreferrer" target="_blank" className="text-white transition hover:text-[var(--medired)]">
+							<Link href="https://fb.me/medimun" rel="noreferrer" target="_blank" className="text-white transition hover:text-[var(--primary)]">
 								<span className="sr-only">Facebook</span>
 								<svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 									<path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
@@ -131,7 +131,7 @@ export default function Footer() {
 						</li>
 
 						<li>
-							<Link href="https://instagram.com/medimun.cy" rel="noreferrer" target="_blank" className="text-white transition hover:text-[var(--medired)]">
+							<Link href="https://instagram.com/medimun.cy" rel="noreferrer" target="_blank" className="text-white transition hover:text-[var(--primary)]">
 								<span className="sr-only">Instagram</span>
 								<svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 									<path
@@ -156,7 +156,7 @@ export default function Footer() {
 							</div>
 						</div>
 						<p className="mt-4 text-center text-sm font-light text-gray-500 sm:mt-0 sm:text-right">
-							<Link href="http://foundation.thimun.org/affiliation-programme/affiliated-conferences/#february" target="_blank" className="duration-200 hover:mb-2 hover:rounded-full hover:bg-white hover:px-4 hover:text-[var(--medired)] hover:after:content-['_↗']">
+							<Link href="http://foundation.thimun.org/affiliation-programme/affiliated-conferences/#february" target="_blank" className="duration-200 hover:mb-2 hover:rounded-full hover:bg-white hover:px-4 hover:text-[var(--primary)] hover:after:content-['_↗']">
 								<strong>MEDIMUN</strong> is affiliated with the <strong>THIMUN Foundation</strong>
 							</Link>
 							<br />

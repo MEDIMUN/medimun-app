@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { AiOutlineLogin } from "react-icons/ai";
-import { Skeleton } from "@components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 import style from "./styles/LoginButton.module.css";

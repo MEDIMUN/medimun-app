@@ -18,12 +18,10 @@ export default async function Page({ params }) {
 				<div className="mx-auto flex w-full max-w-[1200px] flex-col gap-10 pt-[96px] md:p-4 md:pt-[96px]">
 					<div>
 						<Link href="/announcements">
-							<Button className="mb-4 ml-4 h-[20px]  rounded-[50px] bg-white text-[10px] text-black duration-500 hover:bg-medired hover:text-white">← ALL ANNOUNCEMENTS</Button>
+							<Button className="mb-4 ml-4 h-[20px]  rounded-[50px] bg-white text-[10px] text-black duration-500 hover:bg-primary hover:text-white">← ALL ANNOUNCEMENTS</Button>
 						</Link>
 						<h1 className="ml-4 rounded-3xl font-[Montserrat] text-[35px] font-[700] leading-8 ">{announcement.title}</h1>
-						<h2 className="ml-4 mt-2 rounded-3xl font-[Montserrat] text-[20px] font-[300] ">{`${publishedDate}${" · " + fullName}${
-							announcement.isBoard ? "· (The MEDIMUN Board)" : ""
-						}${announcement.isSecretariat ? "· (The Secretariat)" : ""}`}</h2>
+						<h2 className="ml-4 mt-2 rounded-3xl font-[Montserrat] text-[20px] font-[300] ">{`${publishedDate}${" · " + fullName}${announcement.isBoard ? "· (The MEDIMUN Board)" : ""}${announcement.isSecretariat ? "· (The Secretariat)" : ""}`}</h2>
 					</div>
 					<div className="mx-4">
 						<MDXRemote components={{ img: ResponsiveImage, h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={announcement.markdown} />
@@ -104,21 +102,9 @@ const a = (props) => {
 		truncated += "...";
 	}
 	if (props.href.includes("http")) {
-		return (
-			<a
-				truncated={truncated}
-				target="_blank"
-				className="max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-blue-700 hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_('attr(truncated)')_↗']"
-				{...props}></a>
-		);
+		return <a truncated={truncated} target="_blank" className="max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-blue-700 hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_('attr(truncated)')_↗']" {...props}></a>;
 	}
-	return (
-		<Link
-			truncated={truncated}
-			className="max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-[var(--medired)] hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_(Internal_Navigation:'attr(truncated)')_↗']"
-			{...props}
-		/>
-	);
+	return <Link truncated={truncated} className="max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-[var(--primary)] hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_(Internal_Navigation:'attr(truncated)')_↗']" {...props} />;
 };
 
 const hr = (props) => {

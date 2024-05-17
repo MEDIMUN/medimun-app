@@ -51,31 +51,24 @@ export default function Page() {
 			<div className="absolute h-full bg-black"></div>
 			<div style={vignette} className="absolute h-full w-full ">
 				<div className="h-full w-full pt-[48px] md:p-4 md:pt-[96px]">
-					<div className="h-full w-full p-8 shadow-lg md:w-[380px] md:rounded-3xl md:border-[1px] md:border-[var(--medired)] md:bg-black">
+					<div className="h-full w-full p-8 shadow-lg md:w-[380px] md:rounded-3xl md:border-[1px] md:border-[var(--primary)] md:bg-black">
 						<h1 className="select-none rounded-3xl font-[Montserrat] text-[35px] font-[700] text-white">Contact Us</h1>
 						<h2 className="rounded-3xl font-[Montserrat] text-[25px] font-[700] text-white"></h2>
 						<form id="main" action={contactUsWrapper} className="flex flex-col gap-4 py-4 font-[Montserrat] font-[700] uppercase">
 							<Label htmlFor="name" className="select-none text-white">
 								Name
 							</Label>
-							<Input className="text-md border-[var(--medired)] bg-black text-white md:text-sm" type="text" required id="name" name="name" placeholder="Name" />
+							<Input className="text-md border-[var(--primary)] bg-black text-white md:text-sm" type="text" required id="name" name="name" placeholder="Name" />
 							<Label htmlFor="email" className="select-none text-white">
 								Email
 							</Label>
-							<Input className="text-md border-[var(--medired)] bg-black text-white md:text-sm" type="email" required id="email" name="email" placeholder="Email" />
+							<Input className="text-md border-[var(--primary)] bg-black text-white md:text-sm" type="email" required id="email" name="email" placeholder="Email" />
 							<Label htmlFor="message" className=" select-none text-white">
 								Message
 							</Label>
-							<Textarea
-								className="text-md max-h-[300px] min-h-[300px] border-[var(--medired)] bg-black text-white md:text-sm"
-								type="message"
-								required
-								id="message"
-								name="message"
-								placeholder="Message"
-							/>
+							<Textarea className="text-md max-h-[300px] min-h-[300px] border-[var(--primary)] bg-black text-white md:text-sm" type="message" required id="message" name="message" placeholder="Message" />
 							<ReCAPTCHA size="invisible" className="my-auto" sitekey="6Lft5AEoAAAAAKq2x2L-8qgGVISfV0JlH9aFCHVi" ref={recaptchaRef} />
-							<Button type="submit" className="bottom-0 mt-auto w-full bg-white text-black hover:bg-[var(--medired)] hover:text-white">
+							<Button type="submit" className="bottom-0 mt-auto w-full bg-white text-black hover:bg-[var(--primary)] hover:text-white">
 								SEND
 							</Button>
 							<p className="text-white">

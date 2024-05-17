@@ -22,11 +22,11 @@ export default async function Page() {
 								{announcements.map((announcement, index) => (
 									<Link href={`/announcements/${announcement.id}`}>
 										<li key={announcement.id} className="h-auto bg-opacity-50 px-4 py-2 leading-normal">
-											<div className="flex h-min cursor-pointer gap-2 rounded-md bg-gray-300 p-2 duration-300 hover:bg-medired md:flex-row md:hover:shadow-lg">
+											<div className="flex h-min cursor-pointer gap-2 rounded-md bg-gray-300 p-2 duration-300 hover:bg-primary md:flex-row md:hover:shadow-lg">
 												<div className="align-center flex h-[68px] w-[68px] justify-center rounded-sm bg-gray-200 text-center text-[40px] text-black shadow-md">
 													<span className="my-auto w-[68px]">{index + 1}</span>
 												</div>
-												<div className="flex max-w-full flex-col truncate text-[var(--medired)] duration-1000">
+												<div className="flex max-w-full flex-col truncate text-[var(--primary)] duration-1000">
 													<h2 className="mb-2 mt-0 h-min w-min max-w-full truncate rounded-sm bg-gray-200 px-2 text-[25px] shadow-md">{announcement.title}</h2>
 													<h3 className="w-max max-w-full truncate rounded-sm bg-gray-200 px-2 text-[15px] shadow-md">{announcement.description}</h3>
 												</div>

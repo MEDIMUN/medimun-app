@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Input, Button, ButtonGroup, Avatar } from "@nextui-org/react";
 import { flushSync } from "react-dom";
 import Image from "next/image";
-import { removeSearchParams } from "@/lib/searchParams.js";
+import { removeSearchParams } from "@/lib/searchParams";
 
 export default function ProfileUploader({ user }) {
 	const router = useRouter();
@@ -31,7 +31,7 @@ export default function ProfileUploader({ user }) {
 		if (res.ok) {
 			router.push("/medibook/account");
 		}
-		removeSearchParams(router, { edit: "" });
+		removeSearchParams({ edit: "" }, router);
 		window.location.reload();
 		setLoading(false);
 	}
@@ -47,7 +47,7 @@ export default function ProfileUploader({ user }) {
 			});
 		if (res.ok) {
 			setLoading(false);
-			removeSearchParams(router, { edit: "" });
+			removeSearchParams({ edit: "" }, router);
 			window.location.reload();
 		}
 		setLoading(false);
@@ -93,7 +93,7 @@ export default function ProfileUploader({ user }) {
       file:my-1 file:mr-4 file:rounded-full
       file:border-0 file:bg-violet-50
       file:px-4 file:py-2 file:text-sm
-      file:font-semibold file:text-medired
+      file:font-semibold file:text-primary
       hover:file:bg-violet-100"
 							accept=".jpg,.jpeg,.gif,.png"
 							placeholder=" "
@@ -109,9 +109,9 @@ export default function ProfileUploader({ user }) {
 								{!loading ? "Remove" : "Loading"}
 							</Button>
 						)}
-							<Button isLoading={loading} form="pfpUpdater" disabled={loading} isDisabled={loading || !profilePictureInput} className="w-full" type="submit">
-								{!loading ? "Upload" : "Uploading"}
-							</Button>
+						<Button isLoading={loading} form="pfpUpdater" disabled={loading} isDisabled={loading || !profilePictureInput} className="w-full" type="submit">
+							{!loading ? "Upload" : "Uploading"}
+						</Button>
 					</div>
 				</div>
 			</div>

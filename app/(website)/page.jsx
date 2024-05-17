@@ -1,7 +1,7 @@
 import Link from "next/link";
 import AuthRedirect from "@/components/website/AuthRedirect";
 
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 
 import HeroImage from "./HeroImage";
 import Section2 from "./Section2";
@@ -17,7 +17,7 @@ export const metadata = {
 export async function HomePage() {
 	return (
 		<>
-			<section className={"min-h-[100vh] bg-gradient-to-r from-medired to-red-500 md:min-h-screen"}>
+			<section className={"min-h-[100vh] bg-gradient-to-r from-primary to-red-500 md:min-h-screen"}>
 				<div className="flex h-[45svh] w-full flex-col justify-end gap-3 px-5 align-middle duration-300 md:h-[50vh] md:text-center">
 					<h1 className="-[text-shadow:_4px_4px_#000000] font-[canela] text-[50px] font-[750] leading-[50px] tracking-tight text-white md:text-[90px] md:leading-[83px]">Strengthening Sustainability</h1>
 					<h2 className="-[text-shadow:_2px_2px_#777]  font-[SequelBold] text-[40px] font-[300] leading-[35px] tracking-tight text-gray-100">Enhancing Global Partnerships</h2>
@@ -33,7 +33,7 @@ export async function HomePage() {
 				<div className="mx-auto flex max-w-[1280px] flex-col md:flex-row">
 					<div className="mr-auto flex h-full w-full flex-col gap-5 p-5 md:w-[50%]">
 						<p className="mt-auto p-5 text-[25px] leading-[30px] md:text-[30px] md:leading-[30px] lg:text-[33px] lg:leading-[42px]">
-							<span className="text-medired">Thinking of joining?</span>
+							<span className="text-primary">Thinking of joining?</span>
 							<br />
 							Here are some answers to the most frequently asked questions.
 						</p>

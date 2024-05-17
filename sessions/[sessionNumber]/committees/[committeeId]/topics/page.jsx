@@ -1,5 +1,4 @@
 import prisma from "@/prisma/client";
-import { TitleBar, e as s } from "@/components/medibook/TitleBar";
 import { getOrdinal } from "@/lib/get-ordinal";
 import Drawer from "./Drawer";
 import { notFound } from "next/navigation";
@@ -16,13 +15,6 @@ export default async function Page({ params }) {
 	return (
 		<>
 			<Drawer committee={committee} params={params} />
-			<TitleBar
-				title="Topic Details"
-				button1text="Edit Topics"
-				button1roles={[s.management]}
-				button1show={session?.user?.roles?.some((role) => role.name === "Manager" && role.committeeId === committee.id)}
-				button1href={"/medibook/sessions/" + params.sessionNumber + "/committees/" + (committee.slug || committee.id) + "/topics" + "?edit"}
-			/>
 			<div className="mx-auto grid w-full max-w-[1200px] gap-2 p-4 md:flex-row">
 				<Accordion type="multiple" className="w-full">
 					{committee.topic1 && (

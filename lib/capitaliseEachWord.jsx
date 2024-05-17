@@ -1,3 +1,6 @@
-export function capitaliseEachWord(string) {
-	return string.replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()));
+export function capitaliseEachWord(str) {
+	return str
+		.split(" ")
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+		.join(" ");
 }

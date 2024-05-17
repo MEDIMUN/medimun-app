@@ -1,5 +1,5 @@
 import Background from "@/components/website/Background";
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import Link from "next/link";
 
 export default async function Page() {

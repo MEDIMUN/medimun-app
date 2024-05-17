@@ -5,15 +5,15 @@ import { useQuery } from "@tanstack/react-query";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Skeleton } from "@components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { Badge } from "@/components/ui/badge";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import MediBookLogo from "@public/assets/branding/logos/medibook-logo-white-2.svg";
-import MediBookBadge from "@public/assets/branding/badges/medibook-badge-white-1.svg";
+import MediBookLogo from "@/public/assets/branding/logos/medibook-logo-white-2.svg";
+import MediBookBadge from "@/public/assets/branding/badges/medibook-badge-white-1.svg";
 
 export default function Breadcrumb() {
 	const { data: session, status, update } = useSession();
@@ -24,16 +24,7 @@ export default function Breadcrumb() {
 	const Separator = (props) => {
 		return (
 			<div className={`pl-[3px] pr-[3px] ${props.className}`}>
-				<svg
-					style={{ height: "32px", width: "32px", color: "#EAEAEA" }}
-					fill="none"
-					height="32"
-					stroke="currentColor"
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					strokeWidth="1"
-					viewBox="0 0 24 24"
-					width="32">
+				<svg style={{ height: "32px", width: "32px", color: "#EAEAEA" }} fill="none" height="32" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" viewBox="0 0 24 24" width="32">
 					<path d="M16.88 3.549L7.12 20.451"></path>
 				</svg>
 			</div>
@@ -82,9 +73,7 @@ export default function Breadcrumb() {
 				<>
 					<Separator />
 					<Link href={`/medibook/${currentPath[0]}`}>
-						<div
-							before={"←" + " "}
-							className="flex flex-row rounded-2xl from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% duration-500 hover:bg-gradient-to-r hover:px-4 hover:py-1 hover:text-white hover:shadow-2xl hover:before:content-[attr(before)]">
+						<div before={"←" + " "} className="flex flex-row rounded-2xl from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% duration-500 hover:bg-gradient-to-r hover:px-4 hover:py-1 hover:text-white hover:shadow-2xl hover:before:content-[attr(before)]">
 							<p className="font-thin ">{layerOneMap[currentPath[0]]} </p>
 						</div>
 					</Link>
@@ -94,9 +83,7 @@ export default function Breadcrumb() {
 				<>
 					<Separator />
 					<Link href={`/medibook/sessions/${currentPath[1]}`}>
-						<div
-							before={"←" + " "}
-							className="flex flex-row rounded-2xl from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% duration-500 hover:bg-gradient-to-r hover:px-4 hover:py-1 hover:text-white hover:shadow-2xl hover:before:content-[attr(before)]">
+						<div before={"←" + " "} className="flex flex-row rounded-2xl from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% duration-500 hover:bg-gradient-to-r hover:px-4 hover:py-1 hover:text-white hover:shadow-2xl hover:before:content-[attr(before)]">
 							<p className="font-thin ">Session {currentPath[1]}</p>
 						</div>
 					</Link>

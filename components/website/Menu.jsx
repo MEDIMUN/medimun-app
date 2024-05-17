@@ -15,6 +15,7 @@ import image6 from "@/public/placeholders/delegates-2.jpg";
 import image7 from "@/public/placeholders/delegates-2.jpg";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarImage } from "../ui/avatar";
+import { ScrollShadow } from "@nextui-org/scroll-shadow";
 
 const links = [
 	{ pathname: "/about", src: image1, alt: "About" },
@@ -60,12 +61,12 @@ const MenuLink = React.memo((props) => {
 		<Fragment key={props?.children}>
 			<li onMouseEnter={handleMouseEnter} className="z-[11] hidden h-min w-fit md:block">
 				<Link href={props?.href || "#"}>
-					<p className={style.animate + ` ${props?.href === props?.pathname && " !text-[var(--medired)]"}`}>{props?.children}</p>
+					<p className={style.animate + ` ${props?.href === props?.pathname && " !text-[var(--primary)]"}`}>{props?.children}</p>
 				</Link>
 			</li>
 			<li className="z-[11] block h-min w-fit md:hidden">
 				<Link href={props?.href || "#"}>
-					<p className={style.animate + ` ${props?.href === props?.pathname && " !text-[var(--medired)]"}`}>{props?.children}</p>
+					<p className={style.animate + ` ${props?.href === props?.pathname && " !text-[var(--primary)]"}`}>{props?.children}</p>
 				</Link>
 			</li>
 		</Fragment>
@@ -80,7 +81,7 @@ const MenuItems = (props) => {
 			</MenuLink>
 		));
 	}, [props.pathname]);
-	return <div className="absolute ml-4 flex h-[100dvh] flex-col justify-center gap-2 text-[35px]  font-[40] md:ml-10 md:text-[48px]">{menuItems}</div>;
+	return <ScrollShadow className="!absolute top-[138px] !z-[120] ml-4 flex h-[calc(100dvh-225px)] flex-col justify-center overflow-y-scroll text-[35px] font-[40] md:ml-10 md:justify-start md:text-[48px]">{menuItems}</ScrollShadow>;
 };
 
 export default function Menu({ props }) {
@@ -127,12 +128,12 @@ export default function Menu({ props }) {
 							<>
 								<li className="my-auto px-3">
 									<Link href="/login">
-										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">Login</p>
+										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--primary)]">Login</p>
 									</Link>
 								</li>
 								<li className="my-auto px-3">
 									<Link href="/signup">
-										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">Sign Up</p>
+										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--primary)]">Sign Up</p>
 									</Link>
 								</li>
 							</>
@@ -140,18 +141,18 @@ export default function Menu({ props }) {
 							<>
 								<li className="my-auto px-3">
 									<Link href="/medibook">
-										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">MediBook</p>
+										<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--primary)]">MediBook</p>
 									</Link>
 								</li>
 								<li onClick={signOut} className="my-auto flex cursor-pointer px-3">
-									<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">Log Out of {session.user.officialName || session.user.displayName}</p>
+									<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--primary)]">Log Out of {session.user.officialName || session.user.displayName}</p>
 								</li>
 							</>
 						)}
 						{quickActions.map((action) => (
 							<li key={action.href + Math.random()} className="my-auto px-3">
 								<Link href={action.href}>
-									<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--medired)]">{action.alt}</p>
+									<p className="w-max min-w-fit rounded-3xl text-center text-[20px] font-[40] duration-200 md:text-[24px] md:hover:bg-white md:hover:px-6 md:hover:text-[var(--primary)]">{action.alt}</p>
 								</Link>
 							</li>
 						))}

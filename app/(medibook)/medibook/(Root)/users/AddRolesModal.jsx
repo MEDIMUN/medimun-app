@@ -38,7 +38,7 @@ export default function AddRolesModal({ schools, committees, departments, select
 				variant: res?.variant,
 			});
 		if (res?.ok) {
-			removeSearchParams(router, { assign: "", selected: "", remove: "" });
+			removeSearchParams({ assign: "", selected: "", remove: "" }, router);
 			router.refresh();
 		}
 	}
@@ -48,7 +48,7 @@ export default function AddRolesModal({ schools, committees, departments, select
 	}, [searchParams, status, session]);
 
 	return (
-		<Modal scrollBehavior="inside" isOpen={isOpen} onOpenChange={() => removeSearchParams(router, { assign: "" })}>
+		<Modal scrollBehavior="inside" isOpen={isOpen} onOpenChange={() => removeSearchParams({ assign: "" }, router)}>
 			<ModalContent>
 				<ModalHeader className="flex flex-col gap-1">Assign Roles</ModalHeader>
 				<ModalBody>
@@ -92,7 +92,7 @@ export default function AddRolesModal({ schools, committees, departments, select
 								isRequired
 								name="sessionId"
 								onSelectionChange={(e) => {
-									updateSearchParams(router, { assign: [...e] });
+									updateSearchParams({ assign: [...e] }, router);
 								}}
 								items={sessions}
 								label="Session">
@@ -132,7 +132,7 @@ export default function AddRolesModal({ schools, committees, departments, select
 					</form>
 				</ModalBody>
 				<ModalFooter>
-					<Button onPress={() => removeSearchParams(router, { assign: "" })} color="danger" variant="light">
+					<Button onPress={() => removeSearchParams({ assign: "" }, router)} color="danger" variant="light">
 						Close
 					</Button>
 					<Button form="main" type="submit" color="primary">

@@ -6,15 +6,14 @@ import { redirect } from "next/navigation";
 import prisma from "@/prisma/client";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { TitleBar } from "@/components/medibook/TitleBar";
 import { Console } from "console";
 
 function error(e) {}
 
 export default async function Page() {
 	const session = await getServerSession(authOptions);
-	if (!session || session.isDisabled) redirect("/medibook/signout");
-
+	/* 	if (!session || session.isDisabled) redirect("/medibook/signout");
+	 */
 	const timeGreeting = () => {
 		const date = new Date();
 		const hours = date.getHours();
@@ -51,16 +50,13 @@ export default async function Page() {
 			return Math.ceil(difference / (1000 * 3600 * 24));
 		}
 	};
-	const announcements = await prisma.globalAnnouncement
+	const announcements = await prisma.announcement
 		.findMany({
 			where: {
 				isPinned: true,
 			},
 			orderBy: { time: "desc" },
-			include: {
-				MediBookAnnouncement: { select: { id: true } },
-				user: { select: { officialName: true, displayName: true, officialSurname: true } },
-			},
+
 			take: 9,
 		})
 		.catch((e) => error(e));
@@ -68,7 +64,6 @@ export default async function Page() {
 	const daysUntilWorkshop = await workshopDays();
 	return (
 		<>
-			<TitleBar titleStyle="!normal-case" title={greeting + " 👋"} bgColor="bg-gradient-to-br from-gray-200 via-gray-400 to-gray-600" />
 			<div className="-none mx-auto max-w-[1200px] p-5">
 				<h1 className="font-md ml-4 mt-5 text-xl font-bold tracking-tight">Today's Briefing</h1>
 				<div className="mt-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3">

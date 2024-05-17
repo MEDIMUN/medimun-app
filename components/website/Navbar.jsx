@@ -90,7 +90,7 @@ export default function Navbar({ children }) {
 					<span className="my-auto inline-block text-center">
 						{notification.text.trim().toLowerCase() + " "}
 						{notification.linkText && (
-							<Link className="rounded-2xl bg-medired px-2 py-[2px] capitalize text-white duration-200 hover:bg-white hover:text-medired" target="_blank" href={notification.link}>
+							<Link className="rounded-2xl bg-primary px-2 py-[2px] capitalize text-white duration-200 hover:bg-white hover:text-primary" target="_blank" href={notification.link}>
 								{notification.linkText.trim().toLowerCase() + " →"}
 							</Link>
 						)}

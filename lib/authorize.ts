@@ -20,7 +20,7 @@ export enum s {
 	all = "Everyone",
 }
 
-export const authorize = (userdata: any, scope: s[], status: any) => {
+export const authorize = (userdata: any, scope: s[], status: any = "") => {
 	const user = userdata.currentRoleNames;
 	if (userdata.isDisabled) return false;
 	if (!userdata) return false;

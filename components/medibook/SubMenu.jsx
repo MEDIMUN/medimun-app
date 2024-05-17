@@ -3,7 +3,7 @@
 import { NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import { useState, useEffect, Fragment } from "react";
-import MediBookBadge from "@public/assets/branding/badges/medibook-badge-white-1.svg";
+import MediBookBadge from "@/public/assets/branding/badges/medibook-badge-white-1.svg";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ScrollShadow } from "@nextui-org/react";

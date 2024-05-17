@@ -1,14 +1,9 @@
 import prisma from "@/prisma/client";
-import { TitleBar } from "@/components/medibook/TitleBar";
 import { getOrdinal } from "@/lib/get-ordinal";
 
 export default async function Page({ params }) {
 	const department = await getData(params);
-	return (
-		<>
-			<TitleBar title={department.name + " Department"} description={department.session.number + getOrdinal(parseInt(department.session.number)) + " Annual Session"}></TitleBar>
-		</>
-	);
+	return <></>;
 }
 
 async function getData(params) {

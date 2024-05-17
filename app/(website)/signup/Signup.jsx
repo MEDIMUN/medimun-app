@@ -16,9 +16,9 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { countries } from "@/data/countries.js";
-import useWindowDimensions from "@/lib/window-size";
+import useWindowDimensions from "@/hooks/useWindowDimensions";
 import Confetti from "react-confetti";
-import { titleCase } from "@/lib/title-case";
+import { nameCase } from "@/lib/text";
 
 export default function SignUp() {
 	//STATES
@@ -90,7 +90,7 @@ export default function SignUp() {
 	function NextButton() {
 		return (
 			<div className="flex flex-col gap-2">
-				<Button disabled={isLoading} className="my-3 bg-[var(--medired)]">
+				<Button disabled={isLoading} className="my-3 bg-[var(--primary)]">
 					{isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
 					CONTINUE
 				</Button>
@@ -263,7 +263,7 @@ export default function SignUp() {
 				{currentPage == 0 && (
 					<>
 						<div className="flex flex-col gap-2">
-							<Button onClick={nextPage} disabled={true || isLoading} className="my-3 bg-[var(--medired)]">
+							<Button onClick={nextPage} disabled={true || isLoading} className="my-3 bg-[var(--primary)]">
 								{isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
 								CURRENTLY UNAVAILABLE{" "}
 								{
@@ -309,7 +309,7 @@ export default function SignUp() {
 							<Input
 								value={officialNameInput}
 								onChange={(e) => {
-									setOfficialNameInput(titleCase(titleCase(titleCase(e.target.value.replace("  ", "").toLowerCase(), " "), "-"), "'"));
+									setOfficialNameInput(nameCase(e.target.value));
 								}}
 								className="text-center text-lg md:text-sm"
 								id="officialName"
@@ -325,7 +325,7 @@ export default function SignUp() {
 							<Input
 								value={officialSurnameInput}
 								onChange={(e) => {
-									setOfficialSurnameInput(titleCase(titleCase(titleCase(e.target.value.replace("  ", "").toLowerCase(), " "), "-"), "'"));
+									setOfficialSurnameInput(nameCase(e.target.value));
 								}}
 								className="text-center text-lg md:text-sm"
 								id="officialSurname"

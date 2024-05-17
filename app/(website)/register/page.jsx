@@ -3,7 +3,7 @@ export default function Page() {
 		<div className="h-auto w-screen bg-black pt-16">
 			<div className="mx-auto h-auto min-h-screen max-w-[1248px] p-5 font-[montserrat] font-[800] text-white">
 				<h1 className="mb-5 text-[40px] font-bold leading-[40px]">This page is temporary as we work on a new and improved application procedure for future years.</h1>
-				<h2 className="rounded-xl bg-medired p-5 text-[20px] font-semibold leading-[25px]">
+				<h2 className="rounded-xl bg-primary p-5 text-[20px] font-semibold leading-[25px]">
 					<strong>Delegate Applications are now open!</strong>
 					<br />
 					<br />
@@ -30,7 +30,7 @@ export default function Page() {
 					<br />
 					Please note that we do not accept individual delegate applications. All applications must be submitted by a school or a registered organization.
 				</h2>
-				<h2 className="mt-5 rounded-xl bg-medired p-5 text-[20px] font-semibold leading-[25px]">
+				<h2 className="mt-5 rounded-xl bg-primary p-5 text-[20px] font-semibold leading-[25px]">
 					<strong>Mark your calendars</strong>
 					<br />
 					The 19<sup>th</sup> Annual Session is scheduled for 2<sup>nd</sup> to 4<sup>th</sup> of February 2024.
@@ -40,7 +40,7 @@ export default function Page() {
 				</h2>
 				<h2 className="py-5 text-[20px] font-semibold leading-[25px]">
 					For inquiries, please contact us at{" "}
-					<a className="text-medired" href="mailto:medimun.cyprus@gmail.com">
+					<a className="text-primary" href="mailto:medimun.cyprus@gmail.com">
 						medimun.cyprus@gmail.com
 					</a>
 					. Stay tuned to our social media for crucial dates and further details.

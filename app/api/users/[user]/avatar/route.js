@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { minio } from '@/minio/client.js';
+import { minio } from '@/minio/client';
 import { notFound } from 'next/navigation';
 import prisma from '@/prisma/client';
 

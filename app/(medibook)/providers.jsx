@@ -3,13 +3,11 @@
 import React, { useEffect, createContext, useState, useContext } from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
-import { DarkModeContext } from "./dark-mode-provider";
 
 export const SidebarContext = createContext();
 
 export const ClientProvider = ({ children }) => {
 	const queryClient = new QueryClient();
-	let { setIsDark, isDark } = useContext(DarkModeContext);
 
 	useEffect(() => {
 		return;
@@ -23,11 +21,12 @@ export const ClientProvider = ({ children }) => {
 			"background: #AE2D29; color: #FFFFFF"
 		);
 	}, []);
+
 	const [isHidden, setIsHidden] = useState(false);
 
 	return (
-		<SidebarContext.Provider value={{ isHidden, setIsHidden, isDark, setIsDark }}>
-			<SessionProvider>
+		<SidebarContext.Provider value={{ isHidden, setIsHidden }}>
+			<SessionProvider basePath="">
 				<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 			</SessionProvider>
 		</SidebarContext.Provider>

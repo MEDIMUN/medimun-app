@@ -1,5 +1,40 @@
 "use client";
-import { Input, Button, Textarea, Autocomplete, AutocompleteItem, Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, ScrollShadow, ButtonGroup } from "@nextui-org/react";
+import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/avatar";
+import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import { Autocomplete, AutocompleteSection, AutocompleteItem } from "@nextui-org/autocomplete";
+import { Badge } from "@nextui-org/badge";
+import { Button, ButtonGroup } from "@nextui-org/button";
+import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
+import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
+import { CheckboxGroup, Checkbox } from "@nextui-org/checkbox";
+import { Chip } from "@nextui-org/chip";
+import { CircularProgress } from "@nextui-org/progress";
+import { Code } from "@nextui-org/code";
+import { Divider } from "@nextui-org/divider";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownSection, DropdownItem } from "@nextui-org/dropdown";
+import { Input } from "@nextui-org/input";
+import { Kbd } from "@nextui-org/kbd";
+import { Link } from "@nextui-org/link";
+import { Listbox, ListboxSection, ListboxItem } from "@nextui-org/listbox";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/modal";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@nextui-org/navbar";
+import { Pagination, PaginationItem, PaginationCursor } from "@nextui-org/pagination";
+import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
+import { Progress } from "@nextui-org/progress";
+import { RadioGroup, Radio } from "@nextui-org/radio";
+import { Select, SelectSection, SelectItem } from "@nextui-org/select";
+import { Skeleton } from "@nextui-org/skeleton";
+import { Snippet } from "@nextui-org/snippet";
+import { ScrollShadow } from "@nextui-org/scroll-shadow";
+import { Spacer } from "@nextui-org/spacer";
+import { Spinner } from "@nextui-org/spinner";
+import { Switch } from "@nextui-org/switch";
+import { Slider } from "@nextui-org/slider";
+import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@nextui-org/table";
+import { Tabs, Tab } from "@nextui-org/tabs";
+import { Textarea } from "@nextui-org/input";
+import { Tooltip } from "@nextui-org/tooltip";
+import { User } from "@nextui-org/user";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
@@ -8,12 +43,16 @@ import { useSession } from "next-auth/react";
 import { addSchool } from "./add-school.server";
 import { countries } from "@/data/countries";
 import { flushSync } from "react-dom";
-import Link from "next/link";
+import { SlugInput } from "@/components/slugInput";
+import { useForm } from "react-hook-form";
 
 export default function EditUserModal({ schools, locations }) {
 	const { data: session, status } = useSession();
 	const [isOpen, setIsOpen] = useState(false);
-
+	const router = useRouter();
+	const { toast } = useToast();
+	const { register, handleSubmit } = useForm();
+	const registerWrapper = (name) => register(name, { size: "lg" });
 	const searchParams = useSearchParams();
 	const edit = schools.find((school) => school.id == searchParams.get("edit"));
 	const view = schools.find((school) => school.id == searchParams.get("view"));
@@ -21,9 +60,6 @@ export default function EditUserModal({ schools, locations }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [location, setLocation] = useState(edit?.location || "");
 	const [phoneCode, setPhoneCode] = useState(edit?.phoneCode || "");
-	const [slug, setSlug] = useState("");
-	const router = useRouter();
-	const { toast } = useToast();
 
 	async function createSchoolHandler(formData) {
 		flushSync(() => {
@@ -35,7 +71,6 @@ export default function EditUserModal({ schools, locations }) {
 		const res = await addSchool(formData);
 		if (res) toast(res);
 		if (res.ok) {
-			setSlug("");
 			setPhoneCode("");
 			router.push(`/medibook/schools`);
 			router.refresh();
@@ -49,37 +84,17 @@ export default function EditUserModal({ schools, locations }) {
 
 	if (searchParams.get("add") == "" || searchParams.has("edit")) {
 		return (
-			<Modal scrollBehavior="inside" isOpen={isOpen} onOpenChange={() => router.push(searchParams.get("return") || "/medibook/schools")}>
-				<ModalContent className="overflow-y-auto" position="right" size="content">
-					<ModalHeader className="flex flex-col gap-1">Add a School</ModalHeader>
-					<ModalBody>
-						<form action={createSchoolHandler} id="main" name="main" className="flex flex-col gap-4 py-4">
-							<Input size="lg" defaultValue={edit?.name} label="School Name" placeholder=" " isRequired labelPlacement="outside" type="text" minLength={2} maxLength={64} name="name" />
-							<Input
-								size="lg"
-								defaultValue={edit?.slug}
-								label="Link Slug"
-								value={slug}
-								onChange={(e) =>
-									setSlug(
-										e.target.value
-											.replace(" ", "-")
-											.replace(/[^a-zA-Z0-9-]/g, "")
-											.toLowerCase()
-									)
-								}
-								minLength={2}
-								maxLength={32}
-								name="slug"
-								labelPlacement="outside"
-								placeholder=" "
-							/>
-							<Input size="lg" defaultValue={edit?.joinYear} label="Year Joined" placeholder=" " labelPlacement="outside" type="number" minLength={4} maxLength={4} name="joinYear" />
-							<Textarea size="lg" defaultValue={edit?.description} label="Description" minLength={10} maxLength={500} name="description" labelPlacement="outside" placeholder=" " />
-							<Autocomplete size="lg" defaultSelectedKey={edit?.location?.id || ""} onSelectionChange={setLocation} placeholder=" " labelPlacement="outside" defaultItems={locations} label="Location">
-								{(location) => <AutocompleteItem key={location?.id}>{location.name}</AutocompleteItem>}
-							</Autocomplete>
-						</form>
+			<Modal scrollBehavior="inside" placement="middle" isOpen={isOpen} onOpenChange={() => router.push(searchParams.get("return") || "/medibook/schools")}>
+				<ModalContent>
+					<ModalHeader>{searchParams.has("add") ? "Add a school" : "Edit School"}</ModalHeader>
+					<ModalBody as="form" id="main" name="main" action={createSchoolHandler}>
+						<Input size="lg" defaultValue={edit?.name} label="School Name" isRequired type="text" minLength={2} maxLength={64} name="name" />
+						<SlugInput defaultValue={edit?.slug} label="Link Slug" name="slug" />
+						<Input size="lg" defaultValue={edit?.joinYear} label="Year Joined" type="number" minLength={4} maxLength={4} name="joinYear" />
+						<Textarea size="lg" defaultValue={edit?.description} label="Description" minLength={10} maxLength={500} name="description" />
+						<Autocomplete size="lg" defaultSelectedKey={edit?.location?.id || ""} onSelectionChange={setLocation} defaultItems={locations} label="Location">
+							{(location) => <AutocompleteItem key={location?.id}>{location.name}</AutocompleteItem>}
+						</Autocomplete>
 					</ModalBody>
 					<ModalFooter>
 						<Button isDisabled={isLoading} isLoading={isLoading} form="main" type="submit">
@@ -93,77 +108,71 @@ export default function EditUserModal({ schools, locations }) {
 	if (searchParams.get("view"))
 		return (
 			<Modal scrollBehavior="inside" isOpen={isOpen} onOpenChange={() => router.push(searchParams.get("return") || "/medibook/schools")}>
-				<ModalContent className="overflow-y-auto" position="right" size="content">
-					<ModalHeader className="flex flex-col gap-1">Details of {view?.name}</ModalHeader>
+				<ModalContent>
+					<ModalHeader>Details of {view?.name}</ModalHeader>
 					<ModalBody>
-						<div>
-							<p>Name</p>
-							<strong>{view?.name}</strong>
-						</div>
-						{view?.slug && (
-							<div>
-								<p>Slug</p>
-								<strong>{view?.slug}</strong>
-							</div>
-						)}
-						{view?.description && (
-							<div>
-								<p>Description</p>
-								<strong>{view?.location.description}</strong>
-							</div>
-						)}
-						{view?.location?.street && (
-							<div>
-								<p>Street Address</p>
-								<strong>{view?.location?.street}</strong>
-							</div>
-						)}
-						{view?.location?.state && (
-							<div>
-								<p>State / City</p>
-								<strong>{view?.location?.state}</strong>
-							</div>
-						)}
-						{view?.location?.zipCode && (
-							<div>
-								<p>Zip Code</p>
-								<strong>{view?.location?.zipCode}</strong>
-							</div>
-						)}
-						{view?.location?.country && (
-							<div>
-								<p>Country</p>
-								<strong>{countries.find((country) => country.countryCode == view?.location.country)?.countryNameEn}</strong>
-							</div>
-						)}
-						{view?.location?.phoneCode && (
-							<div>
-								<p>Phone Number</p>
-								<Link href={`tel:+${view?.location.phoneCode + view?.location.phoneNumber}`}>
-									<strong className="text-blue-500">+{view?.location.phoneCode + " " + view?.location.phoneNumber}</strong>
-								</Link>
-							</div>
-						)}
-						{view?.location?.email && (
-							<div>
-								<p>Email</p>
-								<Link href={`mailto:${view?.location.email}`}>
-									<strong>{view?.location.email}</strong>
-								</Link>
-							</div>
-						)}
-						{view?.location?.website && (
-							<div>
-								<p>Website</p>
-								<strong>{view?.location.website}</strong>
-							</div>
-						)}
-						{view?.location?.mapUrl && (
-							<div>
-								<p>Map URL</p>
-								<strong>{view?.location.mapUrl}</strong>
-							</div>
-						)}
+						<Table removeWrapper hideHeader isStriped className="static z-0">
+							<TableHeader>
+								<TableColumn>KEY</TableColumn>
+								<TableColumn>VALUE</TableColumn>
+							</TableHeader>
+							<TableBody>
+								<TableRow>
+									<TableCell>NAME</TableCell>
+									<TableCell>{view?.name}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell>LOCATION</TableCell>
+									<TableCell>{view?.location?.name}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell>SLUG</TableCell>
+									<TableCell>{view?.slug}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell>DESCRIPTION</TableCell>
+									<TableCell>{view?.description}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell>YEAR JOINED</TableCell>
+									<TableCell>{view?.joinYear}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell>PHONE CODE</TableCell>
+									<TableCell>{view?.phoneCode}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell>PHONE NUMBER</TableCell>
+									<TableCell>{view?.phoneNumber}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell>EMAIL</TableCell>
+									<TableCell>{view?.email}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell>WEBSITE</TableCell>
+									<TableCell>{view?.website}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell>ZIP CODE</TableCell>
+									<TableCell>{view?.location?.zipCode}</TableCell>
+								</TableRow>
+								//state
+								<TableRow>
+									<TableCell>STATE</TableCell>
+									<TableCell>{view?.location?.state}</TableCell>
+								</TableRow>
+								//street
+								<TableRow>
+									<TableCell>STREET</TableCell>
+									<TableCell>{view?.location?.street}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell>MAP URL</TableCell>
+									<TableCell>{view?.mapUrl}</TableCell>
+								</TableRow>
+							</TableBody>
+						</Table>
 					</ModalBody>
 					<ModalFooter>
 						<Button href={`/medibook/schools?edit=${view.id}`} as={Link}>

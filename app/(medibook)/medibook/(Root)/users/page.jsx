@@ -1,4 +1,4 @@
-import AddUserModal from "./Drawer";
+import AddUserModal from "./EditUserModal";
 import prisma from "@/prisma/client";
 import Table from "./UsersTable";
 import { notFound } from "next/navigation";
@@ -8,6 +8,7 @@ import AddRolesModal from "./AddRolesModal";
 import { userData } from "@/lib/user-data";
 import EditRolesModal from "./EditRolesModal";
 import { authorize, s } from "@/lib/authorize";
+import ViewUserModal from "./ViewModal";
 
 export const metadata = {
 	title: "Users",
@@ -16,10 +17,9 @@ export const metadata = {
 
 export default async function Page({ params, searchParams }) {
 	const session = await getServerSession(authOptions);
-	if (!session || !authorize(session, [s.management])) return notFound();
 	const usersPerPage = 10;
 	const currentPage = Number(searchParams.page) || 1;
-	let users, numberOfUsers, userForRolesToBeRemoved;
+	let users, numberOfUsers, userForRolesToBeRemoved, view;
 
 	let schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(() => notFound());
 	let sessions = prisma.session.findMany();
@@ -37,18 +37,19 @@ export default async function Page({ params, searchParams }) {
 			if (user) selectedUsers.push(user);
 		}
 	}
+	view = await userData(searchParams.view);
 
 	//if orderBy is one of the following, then it is a valid orderBy: officialName, id, email, officialSurname, displayName, username
 	if (!["officialName", "id", "email", "officialSurname", "displayName", "username"].includes(orderBy)) orderBy = "officialName";
 	if (!searchParams.query) {
-		users = prisma.user.findMany({ orderBy: { [orderBy]: searchParams.direction }, include: { account: { select: { id: true, timeCreated: true, lastLogin: true } }, student: { select: { school: true } } }, skip: (currentPage - 1) * usersPerPage, take: usersPerPage }).catch(notFound);
+		users = prisma.user.findMany({ orderBy: { [orderBy]: searchParams.direction }, include: { account: { select: { id: true, timeCreated: true, lastLogin: true } } }, skip: (currentPage - 1) * usersPerPage, take: usersPerPage }).catch(notFound);
 		numberOfUsers = prisma.user.count({ where: { NOT: { id: session.user.id } } }).catch(notFound);
 	} else {
 		users = prisma.user
 			.findMany({
 				where: { OR: [{ officialName: { contains: query, mode: "insensitive" } }, { username: { contains: query, mode: "insensitive" } }, { student: { some: { school: { name: { contains: query, mode: "insensitive" } } } } }, { id: { contains: query, mode: "insensitive" } }, { officialSurname: { contains: query, mode: "insensitive" } }, { displayName: { contains: query, mode: "insensitive" } }, { email: { contains: query, mode: "insensitive" } }] },
 				orderBy: { [orderBy]: searchParams.direction },
-				include: { account: { select: { id: true, timeCreated: true, lastLogin: true } }, student: { select: { school: true } } },
+				include: { account: { select: { id: true, timeCreated: true, lastLogin: true } } },
 				skip: (currentPage - 1) * usersPerPage,
 				take: usersPerPage,
 			})
@@ -71,6 +72,7 @@ export default async function Page({ params, searchParams }) {
 			<AddRolesModal committees={committees} departments={departments} schools={schools} sessions={sessions} selectedUsers={usersWithLowerRoles} />
 			<AddUserModal users={users} schools={schools} />
 			<Table session={session} numberOfPages={numberOfPages} users={users} />
+			<ViewUserModal view={view?.user} />
 		</>
 	);
 }

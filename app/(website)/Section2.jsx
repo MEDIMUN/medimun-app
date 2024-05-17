@@ -32,7 +32,7 @@ export default function Section2() {
 				<div className="absolute right-[calc(50%-.5px)] top-[175vh] z-[0] h-[25vh] w-[1px] bg-gradient-to-t from-black to-transparent" />
 				<div className="mx-auto flex h-full w-[50vw] flex-col gap-5 p-5">
 					<p className="p-5 text-[25px] leading-[30px] md:text-[30px] md:leading-[30px] lg:text-[33px] lg:leading-[42px]">
-						<span className="text-medired">MEDIMUN is a simulation of the United Nations for teens aged 15-19</span>, where students represent assigned UN countries. They research their nation's policies to draft and debate resolutions on global issues, fostering diverse and in-depth discussions.
+						<span className="text-primary">MEDIMUN is a simulation of the United Nations for teens aged 15-19</span>, where students represent assigned UN countries. They research their nation's policies to draft and debate resolutions on global issues, fostering diverse and in-depth discussions.
 						<br />
 					</p>
 					<div className="relative m-5 mt-auto flex flex-col gap-5 bg-gray-300 p-5 text-[25px] text-sm md:w-[35vw]">

@@ -1,9 +1,9 @@
-import img1 from "@public/pages/index/section3images/1.jpeg";
-import img2 from "@public/pages/index/section3images/2.jpeg";
-import img3 from "@public/pages/index/section3images/3.jpeg";
-import img4 from "@public/pages/index/section3images/4.jpeg";
-import img5 from "@public/pages/index/section3images/5.jpeg";
-import img6 from "@public/pages/index/section3images/6.jpeg";
+import img1 from "@/public/pages/index/section3images/1.jpeg";
+import img2 from "@/public/pages/index/section3images/2.jpeg";
+import img3 from "@/public/pages/index/section3images/3.jpeg";
+import img4 from "@/public/pages/index/section3images/4.jpeg";
+import img5 from "@/public/pages/index/section3images/5.jpeg";
+import img6 from "@/public/pages/index/section3images/6.jpeg";
 
 import Image from "next/image";
 

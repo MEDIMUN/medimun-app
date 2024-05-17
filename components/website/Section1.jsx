@@ -16,7 +16,7 @@ export default function Section1({ children }) {
 		const heightPx = 10 - position / 20;
 		const heightPx2 = (section - 0.5) * 65 + 1;
 
-		section > 0.5 ? setColor("var(--medired)") : setColor("#000");
+		section > 0.5 ? setColor("var(--primary)") : setColor("#000");
 
 		section < 0.5 ? setHeight(heightPx) : setHeight(heightPx2);
 

@@ -1,6 +1,7 @@
 import EditUserModal from "./EditUserModal";
 import prisma from "@/prisma/client";
 import Table from "./Table";
+import { notFound } from "next/navigation";
 
 export default async function Page() {
 	let schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(() => notFound());

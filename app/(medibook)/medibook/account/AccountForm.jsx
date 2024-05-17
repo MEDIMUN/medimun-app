@@ -10,7 +10,6 @@ import * as SolarIconSet from "solar-icon-set";
 import { editUser } from "./edit-user.server";
 import { flushSync } from "react-dom";
 import ProfileUploader from "./ProfilePictureFrame";
-import { TopBar } from "@/components/medibook/TopBar";
 
 export default function AccountForm({ session, user, schools }) {
 	const [schoolId, setSchoolId] = useState(user.student[0]?.school.id);
@@ -56,11 +55,6 @@ export default function AccountForm({ session, user, schools }) {
 
 	return (
 		<>
-			<TopBar title="Account Settings">
-				<Button as={Link} href={`/medibook/users/${user?.username ? `@${user.username}` : user?.id}`} className="my-auto ml-auto">
-					View Profile
-				</Button>
-			</TopBar>
 			<div className="flex h-[calc(100%-101px)] flex-col gap-4 overflow-y-auto rounded-2xl border-1 border-gray-200 p-4">
 				<ScrollShadow>
 					<ProfileUploader user={user} />

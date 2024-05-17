@@ -28,11 +28,7 @@ export default function SearchBar({ props }) {
 	const [debounced] = useDebouncedValue(markdown, 1000);
 
 	useEffect(() => {
-		setIsOpen(
-			searchParams.get("create") == "" &&
-				status === "authenticated" &&
-				(authorize(session, [s.management]) || session.currentRoles.some((role) => role.name === "Manager" && role.committeeId == props.committeeId))
-		);
+		setIsOpen(searchParams.get("create") == "" && status === "authenticated" && (authorize(session, [s.management]) || session.currentRoles.some((role) => role.name === "Manager" && role.committeeId == props.committeeId)));
 	}, [searchParams, status, session]);
 
 	async function createAnnouncementWrapper(formData) {
@@ -104,15 +100,7 @@ export default function SearchBar({ props }) {
 							</TabsList>
 							<TabsContent value="content">
 								<div className="grid w-full gap-2">
-									<Textarea
-										required
-										maxLength={10000}
-										minLength={10}
-										onChange={(event) => setMarkdown(event.target.value)}
-										name="markdown"
-										className="col-span-3 min-h-[500px]"
-										value={markdown}
-									/>
+									<Textarea required maxLength={10000} minLength={10} onChange={(event) => setMarkdown(event.target.value)} name="markdown" className="col-span-3 min-h-[500px]" value={markdown} />
 								</div>
 							</TabsContent>
 							<TabsContent value="preview">

@@ -1,5 +1,5 @@
 import Logo from "@/components/website/Logo";
-import MediBookLogo from "@public/assets/branding/logos/medibook-logo-white-2.svg";
+import MediBookLogo from "@/public/assets/branding/logos/medibook-logo-white-2.svg";
 
 export default async function Footer() {
 	return (

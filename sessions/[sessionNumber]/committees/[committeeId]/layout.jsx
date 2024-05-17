@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import SubMenu from "@components/medibook/SubMenu";
+import SubMenu from "@/components/medibook/SubMenu";
 
 export default function Layout(props) {
 	const pathname = usePathname();

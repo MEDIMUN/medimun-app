@@ -3064,7 +3064,7 @@ export const countries = [
 		flag: "🇹🇴",
 	},
 	{
-		countryNameEn: "Türkiye (prev. Turkey)",
+		countryNameEn: "Türkiye",
 		countryNameLocal: "Türkiye",
 		countryCode: "TR",
 		currencyCode: "TRY",

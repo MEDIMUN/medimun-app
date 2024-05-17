@@ -95,7 +95,7 @@ export default function ProfileUploader({ user }) {
       file:my-1 file:mr-4 file:rounded-full
       file:border-0 file:bg-violet-50
       file:px-4 file:py-2 file:text-sm
-      file:font-semibold file:text-medired
+      file:font-semibold file:text-primary
       hover:file:bg-violet-100"
 								accept=".jpg,.jpeg,.gif,.png"
 								placeholder=" "

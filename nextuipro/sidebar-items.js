@@ -1,4 +1,4 @@
-import { Chip } from "@nextui-org/react";
+import { Chip } from "@nextui-org/chip";
 import { Icon } from "@iconify/react";
 
 import TeamAvatar from "./team-avatar";

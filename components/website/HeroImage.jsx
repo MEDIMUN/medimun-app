@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import delegatesColored from "@public/assets/delegates-colored.png";
-import paper from "@public/assets/paper.png";
+import delegatesColored from "@/public/assets/delegates-colored.png";
+import paper from "@/public/assets/paper.png";
 import Image from "next/image";
 
 export function Hero() {

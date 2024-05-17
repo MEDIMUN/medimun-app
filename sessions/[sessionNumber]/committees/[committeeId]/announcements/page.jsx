@@ -1,5 +1,4 @@
 import prisma from "@/prisma/client";
-import { TitleBar, e as s } from "@/components/medibook/TitleBar";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
@@ -46,12 +45,6 @@ export default async function Page({ params, searchParams }) {
 	return (
 		<>
 			<Drawer props={{ committeeId: committee.id, sessionNumber: params.sessionNumber, committeeSlug: committee.slug }} />
-			<TitleBar
-				title="Committee Announcements"
-				button1text="Create Announcement"
-				button1roles={[s.management]}
-				button1show={showButton1}
-				button1href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || params.committeeId}/announcements?create`}></TitleBar>
 			<div className="p-5">
 				<div className="mx-auto mt-5 max-w-[1200px] gap-[24px]">
 					<div className="mt-5">

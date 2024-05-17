@@ -60,11 +60,11 @@ model User {
   gender                              String?
   //
   bio                                 String?
-  pronoun1                            String?
-  pronoun2                            String?
+  pronouns                            String?
   //
-  allowProfilePictureUpdate           Boolean                               @default(true)
-  allowBioUpdate                      Boolean                               @default(false)
+  Student                             School?                               @relation(fields: [schoolId], references: [id])
+  schoolId                            String?
+  //
   isProfilePrivate                    Boolean                               @default(true)
   //ACCOUNT
   account                             Account?                              @relation(fields: [accountId], references: [id])
@@ -83,25 +83,19 @@ model User {
   admin                               Admin[]
   message                             Message[]
   reaction                            Reaction[]
-  student                             Student[]
   chatMemeber                         ChatMemeber[]
   groupChatMemeber                    GroupChatMemeber[]
   deputyPresidentOfTheGeneralAssembly DeputyPresidentOfTheGeneralAssembly[]
   organiser                           Organiser[]
   Director                            Director[]
-  CommitteeAnnouncement               CommitteeAnnouncement[]
-  GlobalAnnouncement                  GlobalAnnouncement[]
-  MediBookAnnouncement                MediBookAnnouncement[]
-  WebsiteAnnouncement                 WebsiteAnnouncement[]
-  SessionAnnouncement                 SessionAnnouncement[]
-  DepartmentAnnouncement              DepartmentAnnouncement[]
-  ApplicantAnnouncement               ApplicantAnnouncement[]
   SessionResource                     SessionResource[]
+  Announcement                        Announcement[]
 }
 
 model Session {
   id                                  String                                @id @default(uuid())
   //
+  isVisible                           Boolean                               @default(false)
   isCurrent                           Boolean                               @default(false)
   number                              String                                @unique
   numberInteger                       Int                                   @unique
@@ -125,9 +119,8 @@ model Session {
   groupChat                           GroupChat[]
   deputyPresidentOfTheGeneralAssembly DeputyPresidentOfTheGeneralAssembly[]
   organiser                           Organiser[]
-  SessionAnnouncement                 SessionAnnouncement[]
-  CommitteeAnnouncement               CommitteeAnnouncement[]
   SessionResource                     SessionResource[]
+  Announcement                        Announcement[]
 }
 
 model GlobalAdmin {
@@ -201,7 +194,7 @@ model Organiser {
 }
 
 model Day {
-  id              String            @id @default(uuid())
+  id              String            @id @default(nanoid())
   type            DayType
   name            String?
   description     String?
@@ -223,17 +216,7 @@ model School {
   location    Location?        @relation(fields: [locationId], references: [id])
   locationId  String?
   director    SchoolDirector[]
-  student     Student[]
-}
-
-model Student {
-  id       String @id @default(uuid())
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   String @unique
-  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  schoolId String
-
-  @@unique([userId, schoolId])
+  User        User[]
 }
 
 model SchoolDirector {
@@ -266,8 +249,8 @@ model Committee {
   delegate               Delegate[]
   chair                  Chair[]
   channel                Channel[]
-  announcement           CommitteeAnnouncement[]
   SecurityCouncilCountry SecurityCouncilCountry[]
+  Announcement           Announcement[]
 
   @@unique([sessionId, name])
   @@unique([sessionId, shortName])
@@ -297,18 +280,17 @@ model Chair {
 }
 
 model Department {
-  id           String                   @id @default(uuid())
-  name         String
-  shortName    String?
-  slug         String?
-  description  String?
-  type         DepartmentType?
-  session      Session                  @relation(fields: [sessionId], references: [id])
-  sessionId    String
-  member       Member[]
-  manager      Manager[]
-  channel      Channel[]
-  announcement DepartmentAnnouncement[]
+  id          String          @id @default(uuid())
+  name        String
+  shortName   String?
+  slug        String?
+  description String?
+  type        DepartmentType?
+  session     Session         @relation(fields: [sessionId], references: [id])
+  sessionId   String
+  member      Member[]
+  manager     Manager[]
+  channel     Channel[]
 }
 
 model Member {
@@ -441,107 +423,30 @@ model Reaction {
 
 // ANNOUNCEMENT ///////////////////////////////////////////////////////////
 
-model GlobalAnnouncement {
-  id          String              @id @default(uuid())
+model Announcement {
+  id          String              @id @default(cuid())
   isPinned    Boolean             @default(false)
   privacy     AnnouncementPrivacy @default(NORMAL)
-  title       String
-  description String?
-  markdown    String?
-  time        DateTime            @default(now())
-  editTime    DateTime?           @default(now())
-  user        User?               @relation(fields: [userId], references: [id])
-  userId      String?
-}
-
-model MediBookAnnouncement {
-  id          String              @id @default(uuid())
-  isPinned    Boolean             @default(false)
-  privacy     AnnouncementPrivacy @default(NORMAL)
-  title       String
-  description String?
-  markdown    String?
-  time        DateTime            @default(now())
-  editTime    DateTime?           @default(now())
-  user        User?               @relation(fields: [userId], references: [id])
-  userId      String?
-}
-
-model WebsiteAnnouncement {
-  id          String              @id @default(uuid())
-  isPinned    Boolean             @default(false)
-  privacy     AnnouncementPrivacy @default(NORMAL)
-  title       String
-  description String?
-  markdown    String?
-  time        DateTime            @default(now())
-  editTime    DateTime?           @default(now())
-  user        User?               @relation(fields: [userId], references: [id])
-  userId      String?
-}
-
-model SessionAnnouncement {
-  id          String              @id @unique @default(uuid())
-  isPinned    Boolean             @default(false)
-  privacy     AnnouncementPrivacy @default(NORMAL)
-  title       String
-  description String?
-  markdown    String?
-  time        DateTime            @default(now())
-  editTime    DateTime?           @default(now())
-  user        User?               @relation(fields: [userId], references: [id])
-  userId      String?
   //
-  session     Session             @relation(fields: [sessionId], references: [id])
-  sessionId   String
-}
-
-model DepartmentAnnouncement {
-  id           String              @id @default(uuid())
-  isPinned     Boolean             @default(false)
-  privacy      AnnouncementPrivacy @default(NORMAL)
-  title        String
-  description  String?
-  markdown     String?
-  time         DateTime            @default(now())
-  editTime     DateTime?           @default(now())
-  user         User?               @relation(fields: [userId], references: [id])
-  userId       String?
+  type        AnnouncementType
   //
-  department   Department          @relation(fields: [departmentId], references: [id])
-  departmentId String
-}
-
-model CommitteeAnnouncement {
-  id          String              @id @default(uuid())
-  isPinned    Boolean             @default(false)
-  privacy     AnnouncementPrivacy @default(NORMAL)
   title       String
   description String?
   markdown    String?
+  //
   time        DateTime            @default(now())
   editTime    DateTime?           @default(now())
-  user        User?               @relation(fields: [userId], references: [id])
-  userId      String?
   //
-  committee   Committee?          @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+  Committee   Committee?          @relation(fields: [committeeId], references: [id])
   committeeId String?
-  session     Session?            @relation(fields: [sessionId], references: [id])
+  Session     Session?            @relation(fields: [sessionId], references: [id])
   sessionId   String?
-}
-
-model ApplicantAnnouncement {
-  id          String              @id @default(uuid())
-  isPinned    Boolean             @default(false)
-  privacy     AnnouncementPrivacy @default(NORMAL)
-  title       String
-  description String?
-  markdown    String?
-  time        DateTime            @default(now())
-  editTime    DateTime?           @default(now())
-  user        User?               @relation(fields: [userId], references: [id])
+  //
+  User        User?               @relation(fields: [userId], references: [id])
   userId      String?
 }
+
+// SESSION RESOURCES ///////////////////////////////////////////////////////////
 
 model SessionResource {
   id          String   @id @default(uuid())
@@ -596,6 +501,24 @@ enum CommitteeType {
   GENERALASSEMBLY
   SECURITYCOUNCIL
   SPECIALCOMMITTEE
+}
+
+enum AnnouncementType {
+  GENERAL
+  MEDIBOOK
+  WEBSITE
+  SESSION
+  SESSIONUSER
+  COMMITTEE
+  COMMITTEESESSION
+  DEPARTMENT
+  DEPARTMENTSESSION
+  USER
+  CHAIR
+  DELEGATE
+  MEMBER
+  MANAGER
+  APPLICANT
 }
 
 enum AnnouncementPrivacy {

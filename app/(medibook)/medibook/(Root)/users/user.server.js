@@ -3,11 +3,14 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { s, authorize } from "@/lib/authorize";
-import { notFound, useSearchParams } from "next/navigation";
+import { notFound } from "next/navigation";
 import prisma from "@/prisma/client";
 import { userData } from "@/lib/user-data";
 
-function error ( e ) { }
+function error ( e ) {
+	console.error( e );
+	return { ok: false, title: "Error", variant: "error" };
+}
 
 export async function toggleDisableUser ( userId ) {
 	const session = await getServerSession( authOptions );

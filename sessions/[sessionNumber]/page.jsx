@@ -1,8 +1,7 @@
 import prisma from "@/prisma/client";
-import { getOrdinal } from "@lib/get-ordinal";
+import { getOrdinal } from "@/lib/get-ordinal";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { TitleBar, e as s } from "@/components/medibook/TitleBar";
 export async function generateMetadata({ params }) {
 	const ordinal = getOrdinal(params.selectedSession);
 
@@ -18,14 +17,6 @@ export default async function Page({ params, searchParams }) {
 	const staffCount = chairCount + memberCount + managerCount;
 	return (
 		<>
-			<TitleBar
-				title={`${selectedSession.number + ordinal} Annual Session`}
-				button1roles={[s.sd, s.director, s.admins, s.secretariat]}
-				button1text="Edit"
-				button1href={`/medibook/sessions/${selectedSession.number}?edit`}
-				button1style="text-black bg-white"
-			/>
-
 			<div className="mx-auto mt-5 flex max-w-[1200px] flex-col text-3xl font-extralight">
 				<h2>{selectedSession.theme}</h2>
 				{selectedSession.phrase2}
@@ -63,14 +54,7 @@ async function getData(params) {
 			where: { isCurrent: true },
 			select: { number: true },
 		});
-		[selectedSession, delegateCount, chairCount, memberCount, managerCount, currentSession] = await Promise.all([
-			selectedSession,
-			delegateCount,
-			chairCount,
-			memberCount,
-			managerCount,
-			currentSession,
-		]);
+		[selectedSession, delegateCount, chairCount, memberCount, managerCount, currentSession] = await Promise.all([selectedSession, delegateCount, chairCount, memberCount, managerCount, currentSession]);
 	} catch (e) {}
 
 	return { selectedSession, delegateCount, chairCount, memberCount, managerCount, currentSession };

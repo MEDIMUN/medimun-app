@@ -1,6 +1,6 @@
-import RedLogo from "@public/assets/branding/logos/logo-medired.svg";
-import BlackLogo from "@public/assets/branding/logos/logo-black.svg";
-import WhiteLogo from "@public/assets/branding/logos/logo-white.svg";
+import RedLogo from "@/public/assets/branding/logos/logo-medired.svg";
+import BlackLogo from "@/public/assets/branding/logos/logo-black.svg";
+import WhiteLogo from "@/public/assets/branding/logos/logo-white.svg";
 
 import Image from "next/image";
 
