@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { updateDelegateCountry } from "./update-country.server";
 import { useToast } from "@/components/ui/use-toast";
-import Link from "next/link";
+import { Link } from "@nextui-org/link";
 
 export default function DelegatesTable({ delegates, chairs, params }) {
 	const [isLoading, setIsLoading] = useState(false);

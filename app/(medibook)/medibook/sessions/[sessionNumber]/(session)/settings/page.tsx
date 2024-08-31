@@ -1,21 +1,43 @@
-import { SettingsForm } from "./SettingsForm";
+import { notFound } from "next/navigation";
 import prisma from "@/prisma/client";
+import { SettingsForm } from "./client-components";
+import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { romanize } from "@/lib/romanize";
+import { auth } from "@/auth";
+import { authorize, authorizePerSession, s } from "@/lib/authorize";
+import { Badge } from "@/components/badge";
 
 export default async function Page({ params }) {
-	const selectedSession = await prisma.session.findUniqueOrThrow({
-		where: {
-			number: params.sessionNumber,
-		},
-	});
-	const days = await prisma.day.findMany({
-		where: {
-			session: {
+	const authSession = await auth();
+
+	const selectedSession = await prisma.session
+		.findUniqueOrThrow({
+			where: {
 				number: params.sessionNumber,
 			},
-		},
-		orderBy: {
-			date: "asc",
-		},
-	});
-	return <SettingsForm days={days} selectedSession={selectedSession} />;
+		})
+		.catch(notFound);
+
+	const isManagement = authorizePerSession(authSession, [s.management], [selectedSession.number]) && authorize(authSession, [s.management]);
+
+	if (!authSession || !isManagement) return notFound();
+
+	return (
+		<>
+			<TopBar
+				buttonText={`Session ${romanize(selectedSession.numberInteger)}`}
+				buttonHref={`/medibook/sessions/${selectedSession.number}/`}
+				hideSearchBar
+				title={
+					<>
+						Session Settings
+						<Badge color="red" className="ml-2 -translate-y-[2px]">
+							Management Only
+						</Badge>
+					</>
+				}
+			/>
+			<SettingsForm selectedSession={selectedSession} />
+		</>
+	);
 }

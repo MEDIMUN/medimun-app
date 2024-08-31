@@ -3,10 +3,10 @@
 import { useSession } from "next-auth/react";
 import { AiOutlineLogin } from "react-icons/ai";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 
 import style from "./styles/LoginButton.module.css";
-import Link from "next/link";
+import { Link } from "@nextui-org/link";
 import { redirect } from "next/navigation";
 
 export default function LoginButton() {

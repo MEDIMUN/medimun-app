@@ -1,6 +1,61 @@
 export function nameCase(name: string): string {
+	// First, remove characters not allowed, while keeping spaces, hyphens, apostrophes, and ampersands
+	name = name.replace(/[^a-zA-Z0-9\-\s']/g, "");
+
+	// Capitalize the first letter of each part of the name and handle special characters
+	return name
+		.split(/\s+/)
+		.map((word) =>
+			word
+				.split(/(-|')/)
+				.map((part) => {
+					// Return delimiters (- and ') as is
+					if (part === "-" || part === "'") {
+						return part;
+					}
+					// Capitalize the first letter of each part and make the rest lowercase
+					return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+				})
+				.join("")
+		)
+		.join(" ");
+}
+
+export function entityCase(name: string): string {
+	name = name.replace(/[^a-zA-Z0-9\-\s'.&]/g, "");
+	name = name.replace(/\s+/g, " ");
+	name = name
+		.split(/\s+/)
+		.map((word) =>
+			word
+				.split(/(-|')/)
+				.map((part) => {
+					if (part === "-" || part === "'") {
+						return part;
+					}
+					return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+				})
+				.join("")
+		)
+		.join(" ");
+	const lowerCaseWords = ["of", "the", "and", "in", "at", "on", "to", "for", "with", "as", "by", "from", "a"];
+	const words = name.split(" ");
+	for (let i = 0; i < words.length; i++) {
+		if (lowerCaseWords.includes(words[i].toLowerCase())) {
+			words[i] = words[i].toLowerCase();
+		}
+	}
+	name = words.join(" ");
+	//make first letter capital
+	name = name.charAt(0).toUpperCase() + name.slice(1);
+	//lowercase letters after hyphens, apostrophes, and ampersands
+	name = name.replace(/(-|'|&)\w/g, (match) => match.toLowerCase());
+	return name;
+}
+
+export function capitalize(name: string): string {
 	// First, remove characters not allowed, while keeping spaces, hyphens, and apostrophes
-	name = name.replace(/[^a-zA-Z\-\s']/g, "");
+	name = name.replace(/[^a-zA-Z0-9\-\s']/g, "");
 
 	// Capitalize the first letter of each part of the name and handle special characters
 	return name
@@ -22,6 +77,7 @@ export function nameCase(name: string): string {
 }
 
 export function postProcessUsername(username: string): string {
+	if (!username) return null;
 	// Remove all spaces
 	username = username.replace(/\s+/g, "");
 
@@ -55,4 +111,11 @@ export function processPronouns(pronouns: string): string {
 	}
 
 	return pronounsArray.join("/");
+}
+
+export function capitaliseEachWord(str: String): String {
+	return str
+		.split(" ")
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+		.join(" ");
 }

@@ -1,11 +1,5 @@
-import { HomePage } from "../page";
-import AuthRedirect from "@/components/website/AuthRedirect";
+import Page from "../page";
 
-export default function Page() {
-	return (
-		<>
-			<AuthRedirect unauthenticated="/" />
-			<HomePage />
-		</>
-	);
+export default function LoggedInPage() {
+	return <Page />;
 }

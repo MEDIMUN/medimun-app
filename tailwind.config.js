@@ -17,6 +17,9 @@ const config = {
          },
       },
       extend: {
+         fontFamily: {
+            sans: [ 'Inter, sans-serif', { fontFeatureSettings: '"cv11"' } ],
+         },
          screens: {
             pwa: { raw: "(display-mode: standalone)" },
          },
@@ -96,8 +99,10 @@ const config = {
          },
       },
    },
+   darkMode: "class",
    plugins: [
       nextui(),
+      require( 'tailwind-scrollbar-hide' ),
       require( "tailwindcss-animate" ),
       function ( { matchUtilities, theme } ) {
          matchUtilities(

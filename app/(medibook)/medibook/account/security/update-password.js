@@ -1,13 +1,10 @@
 "use server";
 
-import "server-only";
-
 const fs = require( 'fs' );
 
-import { getServerSession } from "next-auth";
 import prisma from "@/prisma/client";
-import { hashPassword, verifyPassword } from "@/lib/auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { hashPassword, verifyPassword } from "@/lib/password";
+import { auth } from "@/auth";
 
 
 
@@ -26,7 +23,7 @@ export async function updatePassword ( formData ) {
          newPassword
       )
    ) return { ok: false, title: "New password does not meet requirements" };
-   const userId = ( await getServerSession( authOptions ) ).user.id;
+   const userId = ( await auth() ).user.id;
    let dbPassword;
    try {
       dbPassword = ( await prisma.user.findUnique( {

@@ -1,3 +1,5 @@
+import { RoleObject } from "@/auth";
+
 export enum s {
 	globalAdmin = "Global Admin",
 	admin = "Admin",
@@ -20,84 +22,189 @@ export enum s {
 	all = "Everyone",
 }
 
-export const authorize = (userdata: any, scope: s[], status: any = "") => {
-	const user = userdata.currentRoleNames;
-	if (userdata.isDisabled) return false;
+export const authorize = (userdata: object, scope: s[]): boolean => {
 	if (!userdata) return false;
+	const { currentRoleNames } = userdata;
+	if (userdata?.isDisabled) return false;
+	if (!currentRoleNames) return false;
 	if (!scope[0]) return true;
-	//if (user.includes("Global Admin") || user.includes("Everyone")) return true;
-	const isTrueArray: any = [];
 
-	scope.forEach((scope) => {
-		if (user.includes("Global Admin")) return isTrueArray.push(true);
-		if (user.includes("Admin")) {
-			if (scope === s.admin) return isTrueArray.push(true);
+	for (const sc of scope) {
+		if (currentRoleNames.includes("Global Admin")) return true;
+		if (currentRoleNames.includes("Admin")) if (sc === s.admin) return true;
+		if (currentRoleNames.includes("Admin") || currentRoleNames.includes("Global Admin")) if (sc === s.admins) return true;
+		if (currentRoleNames.includes("Senior Director")) if (sc === s.sd) return true;
+		if (currentRoleNames.includes("Director")) if (sc === s.director) return true;
+		if (currentRoleNames.includes("Senior Director") || currentRoleNames.includes("Director")) if (sc === s.board) return true;
+		if (currentRoleNames.includes("Secretary-General")) if (sc === s.sg) return true;
+		if (currentRoleNames.includes("Deputy Secretary-General")) if (sc === s.dsg) return true;
+		if (currentRoleNames.includes("President of the General Assembly")) if (sc === s.pga) return true;
+		if (currentRoleNames.includes("Deputy President of the General Assembly")) if (sc === s.dpga) return true;
+		if (
+			currentRoleNames.includes("Secretary-General") ||
+			currentRoleNames.includes("Deputy Secretary-General") ||
+			currentRoleNames.includes("President of the General Assembly") ||
+			currentRoleNames.includes("Deputy President of the General Assembly")
+		) {
+			if (sc === s.sec) return true;
 		}
-		if (user.includes("Admin") || user.includes("Global Admin")) {
-			if (scope === s.admins) return isTrueArray.push(true);
+		if (currentRoleNames.includes("Secretary-General") || currentRoleNames.includes("President of the General Assembly")) {
+			if (sc === s.highsec) return true;
 		}
-		if (user.includes("Senior Director")) {
-			if (scope === s.sd) return isTrueArray.push(true);
+		if (
+			currentRoleNames.includes("Global Admin") ||
+			currentRoleNames.includes("Admin") ||
+			currentRoleNames.includes("Senior Director") ||
+			currentRoleNames.includes("Director") ||
+			currentRoleNames.includes("Secretary-General") ||
+			currentRoleNames.includes("Deputy Secretary-General") ||
+			currentRoleNames.includes("President of the General Assembly") ||
+			currentRoleNames.includes("Deputy President of the General Assembly")
+		) {
+			if (sc === s.management) return true;
 		}
-		if (user.includes("Director")) {
-			if (scope === s.director) return isTrueArray.push(true);
+		if (currentRoleNames.includes("Chair")) {
+			if (sc === s.chair) return true;
 		}
-		if (user.includes("Senior Director") || user.includes("Director")) {
-			if (scope === s.board) return isTrueArray.push(true);
+		if (currentRoleNames.includes("Delegate")) {
+			if (sc === s.delegate) return true;
 		}
-		if (user.includes("Secretary-General")) {
-			if (scope === s.sg) return isTrueArray.push(true);
+		if (currentRoleNames.includes("Manager")) {
+			if (sc === s.manager) return true;
 		}
-		if (user.includes("Deputy Secretary-General")) {
-			if (scope === s.dsg) return isTrueArray.push(true);
+		if (currentRoleNames.includes("Member")) {
+			if (sc === s.member) return true;
 		}
-		if (user.includes("President of the General Assembly")) {
-			if (scope === s.pga) return isTrueArray.push(true);
+		if (currentRoleNames.includes("School Director")) {
+			if (sc === s.schooldirector) return true;
 		}
-		if (user.includes("Deputy President of the General Assembly")) {
-			if (scope === s.dpga) return isTrueArray.push(true);
-		}
-		if (user.includes("Secretary-General") || user.includes("Deputy Secretary-General") || user.includes("President of the General Assembly") || user.includes("Deputy President of the General Assembly")) {
-			if (scope === s.sec) return isTrueArray.push(true);
-		}
-		if (user.includes("Secretary-General") || user.includes("President of the General Assembly")) {
-			if (scope === s.highsec) return isTrueArray.push(true);
-		}
-		if (user.includes("Global Admin") || user.includes("Admin") || user.includes("Senior Director") || user.includes("Director") || user.includes("Secretary-General") || user.includes("Deputy Secretary-General") || user.includes("President of the General Assembly") || user.includes("Deputy President of the General Assembly")) {
-			if (scope === s.management) return isTrueArray.push(true);
-		}
-		if (user.includes("Chair")) {
-			if (scope === s.chair) return isTrueArray.push(true);
-		}
-		if (user.includes("Delegate")) {
-			if (scope === s.delegate) return isTrueArray.push(true);
-		}
-		if (user.includes("Manager")) {
-			if (scope === s.manager) return isTrueArray.push(true);
-		}
-		if (user.includes("Member")) {
-			if (scope === s.member) return isTrueArray.push(true);
-		}
-		if (user.includes("School Director")) {
-			if (scope === s.schooldirector) return isTrueArray.push(true);
-		}
+	}
 
-		return isTrueArray.push(false);
-	});
-	if (isTrueArray.includes(true)) return true;
 	return false;
 };
 
-export const authorizeByCommittee = (currentChairRoles: any, currentDelegateRoles: any) => {
-	const updatingUserCommitteeIds = currentChairRoles.filter((role: any) => role.name === "Chair").map((role: any) => role.committeeId);
-	const userToBeUpdatedCommitteeIds = currentDelegateRoles.filter((role: any) => role.name === "Delegate").map((role: any) => role.committeeId);
-	return updatingUserCommitteeIds.some((committeeId: any) => userToBeUpdatedCommitteeIds.includes(committeeId));
+export function authorizePerSession(userdata: object, scope: s[], conferenceSessions: string[]): boolean {
+	const allRoles = userdata?.currentRoles.concat(userdata?.pastRoles);
+	//filter based on conferenceSessions array
+	const allRoleIdentifiers = allRoles.map((role) => role.roleIdentifier);
+	if (
+		allRoleIdentifiers.includes("globalAdmin") ||
+		allRoleIdentifiers.includes("admin") ||
+		allRoleIdentifiers.includes("seniorDirector") ||
+		allRoleIdentifiers.includes("director")
+	)
+		return true;
+	const rolesFilteredPerSessionObjects = allRoles.filter((role) => conferenceSessions.includes(role.session));
+
+	const rolesFilteredPerSession = rolesFilteredPerSessionObjects.map((role) => role.name);
+
+	for (const sc of scope) {
+		if (rolesFilteredPerSession.includes("Global Admin")) return true;
+		if (rolesFilteredPerSession.includes("Admin")) if (sc === s.admin) return true;
+		if (rolesFilteredPerSession.includes("Admin") || rolesFilteredPerSession.includes("Global Admin")) if (sc === s.admins) return true;
+		if (rolesFilteredPerSession.includes("Senior Director")) if (sc === s.sd) return true;
+		if (rolesFilteredPerSession.includes("Director")) if (sc === s.director) return true;
+		if (rolesFilteredPerSession.includes("Senior Director") || rolesFilteredPerSession.includes("Director")) if (sc === s.board) return true;
+		if (rolesFilteredPerSession.includes("Secretary-General")) if (sc === s.sg) return true;
+		if (rolesFilteredPerSession.includes("Deputy Secretary-General")) if (sc === s.dsg) return true;
+		if (rolesFilteredPerSession.includes("President of the General Assembly")) if (sc === s.pga) return true;
+		if (rolesFilteredPerSession.includes("Deputy President of the General Assembly")) if (sc === s.dpga) return true;
+		if (
+			rolesFilteredPerSession.includes("Secretary-General") ||
+			rolesFilteredPerSession.includes("Deputy Secretary-General") ||
+			rolesFilteredPerSession.includes("President of the General Assembly") ||
+			rolesFilteredPerSession.includes("Deputy President of the General Assembly")
+		) {
+			if (sc === s.sec) return true;
+		}
+		if (rolesFilteredPerSession.includes("Secretary-General") || rolesFilteredPerSession.includes("President of the General Assembly")) {
+			if (sc === s.highsec) return true;
+		}
+		if (
+			rolesFilteredPerSession.includes("Global Admin") ||
+			rolesFilteredPerSession.includes("Admin") ||
+			rolesFilteredPerSession.includes("Senior Director") ||
+			rolesFilteredPerSession.includes("Director") ||
+			rolesFilteredPerSession.includes("Secretary-General") ||
+			rolesFilteredPerSession.includes("Deputy Secretary-General") ||
+			rolesFilteredPerSession.includes("President of the General Assembly") ||
+			rolesFilteredPerSession.includes("Deputy President of the General Assembly")
+		) {
+			if (sc === s.management) return true;
+		}
+		if (rolesFilteredPerSession.includes("Chair")) {
+			if (sc === s.chair) return true;
+		}
+		if (rolesFilteredPerSession.includes("Delegate")) {
+			if (sc === s.delegate) return true;
+		}
+		if (rolesFilteredPerSession.includes("Manager")) {
+			if (sc === s.manager) return true;
+		}
+		if (rolesFilteredPerSession.includes("Member")) {
+			if (sc === s.member) return true;
+		}
+		if (rolesFilteredPerSession.includes("School Director")) {
+			if (sc === s.schooldirector) return true;
+		}
+	}
+
+	return false;
+}
+
+export const authorizeChairDelegate = (chairsRoles: RoleObject[], delegatesRoles: RoleObject[]): boolean => {
+	if (!chairsRoles || !delegatesRoles) return false;
+	const chairRoles = chairsRoles.filter((role) => role.roleIdentifier === "chair");
+	const delegateRoles = delegatesRoles.filter((role) => role.roleIdentifier === "delegate");
+	return chairRoles.some((chairRole) => delegateRoles.some((delegateRole) => chairRole.committeeId === delegateRole.committeeId));
 };
 
-export const authorizeByDepartment = (currentManagerRoles: any, currentMemberRoles: any) => {
-	const updatingUserDepartmentIds = currentManagerRoles.filter((role: any) => role.name === "Manager").map((role: any) => role.departmentId);
-	const userToBeUpdatedDepartmentIds = currentMemberRoles.filter((role: any) => role.name === "Member").map((role: any) => role.departmentId);
-	return updatingUserDepartmentIds.some((departmentId: any) => userToBeUpdatedDepartmentIds.includes(departmentId));
+export const authorizeManagerMember = (managersRoles: RoleObject[], membersRoles: RoleObject[]): boolean => {
+	if (!managersRoles || !membersRoles) return false;
+	const managerRoles = managersRoles.filter((role) => role.roleIdentifier === "manager");
+	const memberRoles = membersRoles.filter((role) => role.roleIdentifier === "member");
+	return managerRoles.some((managerRole) => memberRoles.some((memberRole) => managerRole.departmentId === memberRole.departmentId));
 };
 
-export const authorizeBySchool = (currentSchoolDirectorRoles: any, delegateUser: any) => {};
+export const authorizeStudentSchool = (user: any, schoolId: string): boolean => {
+	if (!user) return false;
+	const userSchoolId = user?.schoolId;
+	if (userSchoolId === schoolId) return true;
+	return false;
+};
+export const authorizeSchoolDirectorStudent = (schoolDirectorsRoles: RoleObject[], studentUser: any): boolean => {
+	if (!schoolDirectorsRoles || !studentUser) return false;
+	const schoolDirectorRoles = schoolDirectorsRoles.filter((role) => role.roleIdentifier === "schoolDirector");
+	const studentSchoolId = studentUser?.schoolId;
+	return schoolDirectorRoles.some((role) => role.schoolId === studentSchoolId);
+};
+
+export const authorizeChairCommittee = (chairsRoles: RoleObject[], committeeId: string): boolean => {
+	if (!chairsRoles) return false;
+	const chairRoles = chairsRoles.filter((role) => role.roleIdentifier === "chair");
+	return chairRoles.some((role) => role.committeeId === committeeId);
+};
+
+export const authorizeDelegateCommittee = (delegatesRoles: RoleObject[], committeeId: string): boolean => {
+	if (!delegatesRoles) return false;
+	const delegateRoles = delegatesRoles.filter((role) => role.roleIdentifier === "delegate");
+	return delegateRoles.some((role) => role.committeeId === committeeId);
+};
+
+export const authorizeManagerDepartment = (managersRoles: RoleObject[], departmentId: string): boolean => {
+	if (!managersRoles) return false;
+	const managerRoles = managersRoles.filter((role) => role.roleIdentifier === "manager");
+	return managerRoles.some((role) => role.departmentId === departmentId);
+};
+
+export const authorizeMemberDepartment = (membersRoles: RoleObject[], departmentId: string): boolean => {
+	if (!membersRoles) return false;
+	const memberRoles = membersRoles.filter((role) => role.roleIdentifier === "member");
+	return memberRoles.some((role) => role.departmentId === departmentId);
+};
+
+export const authorizeSchoolDirectorSchool = (schoolDirectorsRoles: RoleObject[], schoolId: string): boolean => {
+	if (!schoolDirectorsRoles) return false;
+	const schoolDirectorRoles = schoolDirectorsRoles.filter((role) => role.roleIdentifier === "schoolDirector");
+	return schoolDirectorRoles.some((role) => role.schoolId === schoolId);
+};

@@ -1,6 +1,5 @@
-import Background from "@/components/website/Background";
 import { Button } from "@nextui-org/button";
-import Link from "next/link";
+import { Link } from "@nextui-org/link";
 
 export default async function Page() {
 	const elId = Math.random().toString(36);
@@ -21,7 +20,9 @@ export default async function Page() {
 				<h2 className="mt-2 text-lg">Research Booklets</h2>
 				<ul className="flex flex-col gap-2">
 					{researchBooklets.map((link) => {
-						const newLink = link.href.replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=sharing", "");
+						const newLink = link.href
+							.replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=")
+							.replace("/view?usp=sharing", "");
 						return (
 							<li key={link.name} className="flex w-full rounded-sm bg-white p-5 text-black">
 								<h2 className="md:text-md my-auto text-sm lg:text-xl">{link.name}</h2>
@@ -35,7 +36,9 @@ export default async function Page() {
 				{!!resources.length && <h2 className="mt-4 text-lg">Teacher Resources</h2>}
 				<ul className="flex flex-col gap-2">
 					{resources.map((link) => {
-						const newLink = link.href.replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=sharing", "");
+						const newLink = link.href
+							.replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=")
+							.replace("/view?usp=sharing", "");
 						return (
 							<li key={link.name} className="flex w-full rounded-sm bg-white p-5 text-black">
 								<h2 className="md:text-md my-auto text-sm lg:text-xl">{link.name}</h2>

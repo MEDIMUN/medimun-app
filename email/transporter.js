@@ -20,7 +20,5 @@ export default async function sendEmail ( options ) {
 	};
 
 	const response = await transporter.sendMail( mailOptions ).catch( err => {
-		console.log( err );
 	} );
-	console.log( response?.response );
 }

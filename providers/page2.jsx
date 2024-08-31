@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@nextui-org/link";
 import { Hero, Paper } from "@/components/website/HeroImage";
 import Section1 from "@/components/website/Section1";
 import Gallery from "@/components/website/Gallery";
@@ -44,7 +44,7 @@ async function getTheme() {
 export function LearnMoreButton(props) {
 	return (
 		<Link href={props.href}>
-			<button className="mb-3 w-[210px] cursor-pointer rounded-[100px] from-80% pl-[20px] font-['canela'] text-[15px] leading-[45px] text-gray-400 duration-200 [text-shadow:_2px_2px_#000000] hover:ml-[20px] hover:bg-white hover:text-[var(--primary)] hover:shadow-lg hover:[text-shadow:_none] md:text-[25px]">{props.children}</button>
+			<button className="mb-3 w-[210px] cursor-pointer rounded-[100px] from-80% pl-[20px] font-['canela'] text-[15px] leading-[45px] text-gray-400 duration-200 [text-shadow:_2px_2px_#000000] hover:ml-[20px] hover:bg-white hover:text-primary hover:shadow-lg hover:[text-shadow:_none] md:text-[25px]">{props.children}</button>
 		</Link>
 	);
 }
@@ -61,13 +61,13 @@ export async function HomePage() {
 				<Paper />
 				<Section1>
 					<div className="bottom-0 mb-[46vh] mt-auto w-full text-left ">
-						<h2 className="mb-3 select-none bg-gradient-to-t from-[var(--primary)] from-80% to-80% pl-[20px] font-['montserrat'] text-[52px] leading-[55px] text-white [text-shadow:_4px_4px_#000000] md:text-[100px] md:leading-[110px]">{theme}</h2>
-						<h2 className="ml-[20px] select-none stroke-white font-['Canela'] text-[35px] leading-[35px] text-[var(--primary)] [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[70px]">{phrase2}</h2>
+						<h2 className="mb-3 select-none bg-gradient-to-t from-primary from-80% to-80% pl-[20px] font-['montserrat'] text-[52px] leading-[55px] text-white [text-shadow:_4px_4px_#000000] md:text-[100px] md:leading-[110px]">{theme}</h2>
+						<h2 className="ml-[20px] select-none stroke-white font-['Canela'] text-[35px] leading-[35px] text-primary [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[70px]">{phrase2}</h2>
 					</div>
 				</Section1>
 				<div className="h-[100svh]"></div>
 				<div id="totalH">
-					<section className={outerStyle + "bg-gradient-to-t from-[var(--primary)]"}>
+					<section className={outerStyle + "bg-gradient-to-t from-primary"}>
 						<div className={sectionStyle}>
 							<div className="mx-auto max-w-[1400px]">
 								<h1 className="mb-4 from-80% pl-[20px] font-['Canela'] text-[30px] leading-[40px] text-transparent [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[55px]">{welcomeTitle}</h1>
@@ -76,7 +76,7 @@ export async function HomePage() {
 							</div>
 						</div>
 					</section>
-					<section className={outerStyle + "bg-[var(--primary)]"}>
+					<section className={outerStyle + "bg-primary"}>
 						<div className={sectionStyle}>
 							<div className="mx-auto max-w-[1400px]">
 								<h3 className="mb-4 from-80% pl-[20px] font-['Canela'] text-[30px] leading-[40px] text-transparent [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[55px]">More about the conference</h3>
@@ -85,7 +85,7 @@ export async function HomePage() {
 							</div>
 						</div>
 					</section>
-					<section className={outerStyle + "bg-[var(--primary)]"}>
+					<section className={outerStyle + "bg-primary"}>
 						<div className={sectionStyle}>
 							<div className="mx-auto max-w-[1400px]">
 								<h3 className="mb-4 from-80% pl-[20px] font-['Canela'] text-[30px] leading-[40px] text-transparent [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[55px]">How to apply</h3>
@@ -94,7 +94,7 @@ export async function HomePage() {
 							</div>
 						</div>
 					</section>
-					<section className={outerStyle + "bg-[var(--primary)]"}>
+					<section className={outerStyle + "bg-primary"}>
 						<div className={sectionStyle}>
 							<div className="mx-auto max-w-[1400px]">
 								<h3 className="mb-4 from-80% pl-[20px] font-['Canela'] text-[30px] leading-[40px] text-transparent [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[55px]">The MediBook App</h3>
@@ -103,7 +103,7 @@ export async function HomePage() {
 							</div>
 						</div>
 					</section>
-					<section className={outerStyle + "bg-gradient-to-b from-[var(--primary)]"}>
+					<section className={outerStyle + "bg-gradient-to-b from-primary"}>
 						<div className={sectionStyle}>
 							<div className="mx-auto max-w-[1400px]">
 								<h3 className="mb-4 from-80% pl-[20px] font-['Canela'] text-[30px] leading-[40px] text-transparent [-webkit-text-stroke-color:_rgb(255,255,255);] [-webkit-text-stroke-width:_1px;] md:text-[50px] md:leading-[55px]">Past Conferences</h3>
@@ -114,7 +114,7 @@ export async function HomePage() {
 					</section>
 				</div>
 				<section className="h-[300svh]"></section>
-				<section className="relative z-[6] grid min-h-[100svh] w-[100%] translate-y-12 select-none bg-[var(--primary)] p-10 text-center font-['canela'] text-white shadow-2xl sm:gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-0">
+				<section className="relative z-[6] grid min-h-[100svh] w-[100%] translate-y-12 select-none bg-primary p-10 text-center font-['canela'] text-white shadow-2xl sm:gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-0">
 					<div className="m-auto max-h-full w-full max-w-[400px] !overflow-hidden rounded-lg">
 						<Image alt="Image of The English School in Cyprus and the surrounding forest" className="globallogo min-h-full w-full overflow-hidden rounded-lg object-cover object-bottom shadow-xl duration-150 hover:scale-150" quality={50} src={es2} />
 					</div>

@@ -23,7 +23,7 @@ import { SidebarContext } from "@/app/(medibook)/providers";
  * ```
  */
 export default function Component() {
-	let { isHidden, setIsHidden } = useContext(SidebarContext);
+	let { setIsHidden } = useContext(SidebarContext);
 
 	return (
 		<Modal
@@ -77,10 +77,17 @@ export default function Component() {
 
 						<Spacer y={8} />
 						<div className="mt-auto flex flex-col">
-							<Button fullWidth className="justify-start text-default-500 data-[hover=true]:text-foreground" startContent={<Icon className="text-default-500" icon="solar:info-circle-line-duotone" width={24} />} variant="light">
+							<Button
+								fullWidth
+								className="justify-start text-default-500 data-[hover=true]:text-foreground"
+								startContent={<Icon className="text-default-500" icon="solar:info-circle-line-duotone" width={24} />}
+								variant="light">
 								Help & Information
 							</Button>
-							<Button className="justify-start text-default-500 data-[hover=true]:text-foreground" startContent={<Icon className="rotate-180 text-default-500" icon="solar:minus-circle-line-duotone" width={24} />} variant="light">
+							<Button
+								className="justify-start text-default-500 data-[hover=true]:text-foreground"
+								startContent={<Icon className="rotate-180 text-default-500" icon="solar:minus-circle-line-duotone" width={24} />}
+								variant="light">
 								Log Out
 							</Button>
 						</div>

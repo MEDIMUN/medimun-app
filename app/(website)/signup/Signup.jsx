@@ -1,7 +1,5 @@
 "use client";
 
-import { signIn, getSession, signOut } from "next-auth/react";
-
 import { useState } from "react";
 import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
@@ -9,14 +7,14 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
+import { Link } from "@nextui-org/link";
 import { checkEmail, signUp, createUser } from "./signup.server";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { countries } from "@/data/countries.js";
-import useWindowDimensions from "@/hooks/useWindowDimensions";
+import { useWindowDimensions } from "@/hooks/use-window-dimensions";
 import Confetti from "react-confetti";
 import { nameCase } from "@/lib/text";
 
@@ -48,7 +46,8 @@ export default function SignUp() {
 		},
 		{
 			title: "Email",
-			description: "Please enter your email address. We recommend using your school email. If we have records of your past participation you may be unable to create an account. This will be fixed in the future. For now you can contact us to get registered in that case.",
+			description:
+				"Please enter your email address. We recommend using your school email. If we have records of your past participation you may be unable to create an account. This will be fixed in the future. For now you can contact us to get registered in that case.",
 		},
 		{
 			title: "Official Name & Surname",
@@ -68,7 +67,9 @@ export default function SignUp() {
 		},
 		{
 			title: "Verify Your Email",
-			description: `We've sent a code to ${user?.email || "your email address"}. Please enter it below to verify your email address. It may take a few minutes for the email to arrive.`,
+			description: `We've sent a code to ${
+				user?.email || "your email address"
+			}. Please enter it below to verify your email address. It may take a few minutes for the email to arrive.`,
 		},
 		{
 			title: "Congratulations!",
@@ -90,7 +91,7 @@ export default function SignUp() {
 	function NextButton() {
 		return (
 			<div className="flex flex-col gap-2">
-				<Button disabled={isLoading} className="my-3 bg-[var(--primary)]">
+				<Button disabled={isLoading} className="my-3 bg-primary">
 					{isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
 					CONTINUE
 				</Button>
@@ -190,7 +191,15 @@ export default function SignUp() {
 				break;
 
 			case 5:
-				if (/[A-Z]/.test(primaryPasswordInput) && /[a-z]/.test(primaryPasswordInput) && /[0-9]/.test(primaryPasswordInput) && /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(primaryPasswordInput) && primaryPasswordInput.length > 7 && primaryPasswordInput === seconparyPasswordInput && primaryPasswordInput) {
+				if (
+					/[A-Z]/.test(primaryPasswordInput) &&
+					/[a-z]/.test(primaryPasswordInput) &&
+					/[0-9]/.test(primaryPasswordInput) &&
+					/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(primaryPasswordInput) &&
+					primaryPasswordInput.length > 7 &&
+					primaryPasswordInput === seconparyPasswordInput &&
+					primaryPasswordInput
+				) {
 					let response;
 					try {
 						response = await signUp({ ...user, password: primaryPasswordInput });
@@ -257,13 +266,14 @@ export default function SignUp() {
 	}
 
 	return (
-		<div className={`flex h-full w-full justify-center bg-white bg-opacity-80 align-middle duration-1000 md:w-[${modalWidth}%] md:bg-opacity-${modalOpacity}`}>
+		<div
+			className={`flex h-full w-full justify-center bg-white bg-opacity-80 align-middle duration-1000 md:w-[${modalWidth}%] md:bg-opacity-${modalOpacity}`}>
 			<div className="py-auto flex h-[100%] w-[350px] flex-col justify-center px-[10px] align-middle">
 				<Title />
 				{currentPage == 0 && (
 					<>
 						<div className="flex flex-col gap-2">
-							<Button onClick={nextPage} disabled={true || isLoading} className="my-3 bg-[var(--primary)]">
+							<Button onClick={nextPage} disabled={true || isLoading} className="my-3 bg-primary">
 								{isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
 								CURRENTLY UNAVAILABLE{" "}
 								{
@@ -438,11 +448,20 @@ export default function SignUp() {
 								/>
 								<div className="flex h-min w-full flex-col gap-2 rounded-md border-[1px] border-gray-200 bg-white p-2 text-center">
 									<div className={checklistClass + " " + `${/[A-Z]/.test(primaryPasswordInput) && "bg-green-500"}`}>At least one capital letter</div>
-									<div className={checklistClass + " " + `${/[a-z]/.test(primaryPasswordInput) && "bg-green-500"}`}>At least one lowercase letter</div>
+									<div className={checklistClass + " " + `${/[a-z]/.test(primaryPasswordInput) && "bg-green-500"}`}>
+										At least one lowercase letter
+									</div>
 									<div className={checklistClass + " " + `${/[0-9]/.test(primaryPasswordInput) && "bg-green-500"}`}>At least one number</div>
-									<div className={checklistClass + " " + `${/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(primaryPasswordInput) && "bg-green-500"}`}>At least one special character</div>
+									<div className={checklistClass + " " + `${/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(primaryPasswordInput) && "bg-green-500"}`}>
+										At least one special character
+									</div>
 									<div className={checklistClass + " " + `${primaryPasswordInput.length > 7 && "bg-green-500"}`}>At least 8 characters long</div>
-									<div className={checklistClass + " " + `${primaryPasswordInput === seconparyPasswordInput && primaryPasswordInput !== "" && "bg-green-500"}`}>Passwords must match</div>
+									<div
+										className={
+											checklistClass + " " + `${primaryPasswordInput === seconparyPasswordInput && primaryPasswordInput !== "" && "bg-green-500"}`
+										}>
+										Passwords must match
+									</div>
 								</div>
 							</div>
 							<NextButton />

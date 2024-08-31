@@ -4,7 +4,7 @@ import "server-only";
 
 import prisma from "@/prisma/client";
 import sendVerificationEmail from "@/email/templates/email-verification";
-import { hashPassword } from "@/lib/auth";
+import { hashPassword } from "@/lib/password";
 
 
 function titleCase ( str, separator ) {

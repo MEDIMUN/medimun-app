@@ -13,6 +13,16 @@
 }
 
 @font-face {
+  font-family: "GilroyLight";
+  src: url("/fonts/GilroyLight.ttf");
+}
+
+@font-face {
+  font-family: "TTNormsProRegular";
+  src: url("/fonts/TTNormsProRegular.otf");
+}
+
+@font-face {
   font-family: "GilroySemiBold";
   src: url("/fonts/GilroySemiBold.ttf");
 }
@@ -127,4 +137,72 @@ html {
 
 ::-webkit-scrollbar {
   display: none;
+  width: 5px !important;
+}
+
+/* For Firefox */
+.showscrollbar {
+  scrollbar-width: thin;
+  /* Firefox-specific property */
+  scrollbar-color: #71717a35 transparent;
+  /* Thumb and track colors */
+}
+
+/* For WebKit-based browsers (Chrome, Safari) */
+.showscrollbar::-webkit-scrollbar {
+  width: 5px;
+  /* Scrollbar width */
+}
+
+.showscrollbar::-webkit-scrollbar-thumb {
+  background-color: #71717a35;
+  /* Thumb color */
+  border-radius: 100px;
+  /* Rounded corners */
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  /* Shadow effect */
+}
+
+.showscrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  /* Track color */
+}
+
+/* Ensure specificity and important flag if necessary */
+.showscrollbar::-webkit-scrollbar,
+.showscrollbar::-webkit-scrollbar-thumb,
+.showscrollbar::-webkit-scrollbar-track {
+  width: 5px !important;
+  /* Force the width with !important if being overridden */
+}
+
+.showscrollbar::-webkit-scrollbar-thumb {
+  background-color: #71717a35 !important;
+  /* Force the thumb color */
+  border-radius: 100px !important;
+  /* Force the border radius */
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+  /* Force the shadow */
+}
+
+
+
+.mask {
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.mask-squircle {
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-image: url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M100 0C20 0 0 20 0 100s20 100 100 100 100-20 100-100S180 0 100 0Z'/%3e%3c/svg%3e");
+  mask-image: url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M100 0C20 0 0 20 0 100s20 100 100 100 100-20 100-100S180 0 100 0Z'/%3e%3c/svg%3e");
 }

@@ -6,7 +6,21 @@ import { useToast } from "@/components/ui/use-toast";
 import { s, authorize } from "@/lib/authorize";
 import { useSession } from "next-auth/react";
 import { addDay, deleteDay } from "./actions";
-import { Input, Textarea, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Select, SelectItem, DatePicker, Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import {
+	Input,
+	Textarea,
+	Button,
+	Modal,
+	ModalContent,
+	ModalHeader,
+	ModalBody,
+	ModalFooter,
+	Select,
+	SelectItem,
+	DatePicker,
+	Autocomplete,
+	AutocompleteItem,
+} from "@nextui-org/react";
 import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
 import formatDateForInput from "@/lib/formatDateForInput";
 import { useState } from "react";
@@ -49,7 +63,14 @@ export default function AddModal({ selectedSession, locations, edit }) {
 			<ModalContent>
 				<ModalHeader>Add Day to Session</ModalHeader>
 				<ModalBody as="form" action={addDayHandler} id="main">
-					<DatePicker name="date" showMonthAndYearPickers size="lg" defaultValue={edit?.date && parseDate(formatDateForInput(edit?.date))} isRequired label="Date" />
+					<DatePicker
+						name="date"
+						showMonthAndYearPickers
+						size="lg"
+						defaultValue={edit?.date && parseDate(formatDateForInput(edit?.date))}
+						isRequired
+						label="Date"
+					/>
 					<Select name="type" defaultSelectedKeys={[edit?.type]} isRequired size="lg" label="Day Type">
 						<SelectItem key="CONFERENCE">Conference Day</SelectItem>
 						<SelectItem key="WORKSHOP">Workshop Day</SelectItem>

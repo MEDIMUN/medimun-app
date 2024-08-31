@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect } from "react";
+import { NextUIProvider } from "@nextui-org/system";
 
 type Props = {
 	children?: React.ReactNode;
@@ -17,12 +18,14 @@ export const NextAuthProvider = ({ children }: Props) => {
 	}, []);
 
 	return (
-		<QueryClientProvider client={queryClient}>
-			<SessionProvider>
-				{children}
-				{/* 				<ReactQueryDevtools />
-				 */}
-			</SessionProvider>
-		</QueryClientProvider>
+		<NextUIProvider>
+			<QueryClientProvider client={queryClient}>
+				<SessionProvider>
+					{children}
+					{/* 				<ReactQueryDevtools />
+					 */}
+				</SessionProvider>
+			</QueryClientProvider>
+		</NextUIProvider>
 	);
 };

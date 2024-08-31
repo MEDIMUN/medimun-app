@@ -1,14 +1,11 @@
 "use server";
 
-import "server-only";
-
 import prisma from "@/prisma/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { s, authorize } from "@/lib/authorize";
+import { auth } from "@/auth";
 
 export async function editTopics ( formData ) {
-	const session = await getServerSession( authOptions );
+	const session = await auth();
 	const committeeId = formData.get( "committeeId" );
 	let committee = {};
 	committee.topic1 = formData.get( "topic1" ).trim();

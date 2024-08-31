@@ -15,7 +15,6 @@ import { RadioGroup, Radio } from "@nextui-org/react";
 
 export default function Drawer({ props }) {
 	const { data: session, status } = useSession();
-	if (!status == "loading" && (!session || session.isDisabled)) redirect("/medibook/signout");
 
 	const [slug, setSlug] = useState("");
 	const [isOpen, setIsOpen] = useState(false);

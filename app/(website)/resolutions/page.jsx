@@ -1,7 +1,6 @@
 "use client";
 
-import Background from "@/components/website/Background";
-import Link from "next/link";
+import { Link } from "@nextui-org/link";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
 import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -17,13 +16,26 @@ export default function Page({ searchParams }) {
 		{ slug: "GA3", name: "General Assembly 3", href: "https://drive.google.com/drive/folders/1Vvu1EPpx8ESmcA4CD_5wHrzUEVEhi1EW?usp=sharing" },
 		{ slug: "GA4", name: "General Assembly 4", href: "https://drive.google.com/drive/folders/1ClgF-w6xUonJoqqQjKvHJOAWIOxd8Vxp?usp=sharing" },
 		{ slug: "SC", name: "Security Council", href: "https://drive.google.com/drive/folders/1bImh1fnhTNzCVTu_lud7uqf6or1a8QOh?usp=sharing" },
-		{ slug: "HSC", name: "Historical Security Council", href: "https://drive.google.com/drive/folders/1gAFSXZblLYHMSE1MLrX9qkOKDiXus0cl?usp=sharing" },
-		{ slug: "CSW", name: "Commission on the Status of Women", href: "https://drive.google.com/drive/folders/1qnaajAatuUecslLGNgF5LdddMfGe0P6o?usp=sharing" },
+		{
+			slug: "HSC",
+			name: "Historical Security Council",
+			href: "https://drive.google.com/drive/folders/1gAFSXZblLYHMSE1MLrX9qkOKDiXus0cl?usp=sharing",
+		},
+		{
+			slug: "CSW",
+			name: "Commission on the Status of Women",
+			href: "https://drive.google.com/drive/folders/1qnaajAatuUecslLGNgF5LdddMfGe0P6o?usp=sharing",
+		},
 	];
 
 	return (
 		<>
-			<Modal onOpenChange={() => updateSearchParams({ view: searchParams.view })} scrollBehavior="inside" size="2xl" isOpen={searchParams.view?.length > 1} className="my-10 h-[90vh]">
+			<Modal
+				onOpenChange={() => updateSearchParams({ view: searchParams.view })}
+				scrollBehavior="inside"
+				size="2xl"
+				isOpen={searchParams.view?.length > 1}
+				className="my-10 h-[90vh]">
 				<ModalContent>
 					<ModalHeader>Resolutions of {searchParams.view}</ModalHeader>
 					<ModalBody className="flex flex-col gap-2">

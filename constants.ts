@@ -18,9 +18,10 @@ export const drawerProps = {
 		},
 	},
 	classNames: {
-		backdrop: "bg-content1/60 z-[1000] absolute",
-		base: "justify-start rounded-r-none right-0 absolute mx-0 mr-0 !m-0 sm:mx-0 md:mx-0 lg:mx-0 sm:my-0 my-0 p-0 h-dvh h-full",
-		wrapper: "items-start !m-0 mx-0 z-[1000] justify-start",
+		dialog: "",
+		backdrop: "bg-content1/60 scrollbar-hide z-[1000] ",
+		base: "justify-start  scrollbar-hide rounded-none scrollbar-default overflow-y-scroll right-0 absolute mx-0 mr-0 !m-0 sm:mx-0 md:mx-0 lg:mx-0 sm:my-0 my-0 p-0 max-h-0 h-dvh h-full",
+		wrapper: "items-start scrollbar-hide !m-0 mx-0 z-[1000] justify-start",
 		closeButton: "z-100",
 	},
 };
@@ -46,6 +47,8 @@ export const committeeTypeMap = {
 	SPECIALCOMMITTEE: "Special Committee",
 	SECURITYCOUNCIL: "Security Council",
 };
+
+export const usersPerPage = 10;
 
 export const roleRanks = {
 	Delegate: 9,

@@ -1,10 +1,9 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import prisma from "@/prisma/client";
+import { auth } from "@/auth";
 
 export default async function AuthRedirect(props) {
-	const session = await getServerSession(authOptions);
+	const session = await auth();
 
 	if (session && props.authenticated) {
 		const currentSession = await prisma.session

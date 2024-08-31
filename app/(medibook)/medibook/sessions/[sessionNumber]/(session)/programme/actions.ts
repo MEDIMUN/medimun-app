@@ -1,14 +1,11 @@
 "use server";
 
-import "server-only";
-
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
 import { s, authorize } from "@/lib/authorize";
 import prisma from "@/prisma/client";
+import { auth } from "@/auth";
 
 export async function addDay(formData) {
-	const session = await getServerSession(authOptions as any);
+	const session = await auth();
 	if (!session || !authorize(session, [s.management])) return { ok: false, title: "Not authorized" };
 
 	const rawData = Object.fromEntries(formData);
@@ -75,7 +72,7 @@ export async function addDay(formData) {
 }
 
 export async function deleteDay(dayId) {
-	const session = await getServerSession(authOptions as any);
+	const session = await auth();
 	if (!session || !authorize(session, [s.sd, s.admins])) return { ok: false, title: "Not authorized" };
 
 	try {

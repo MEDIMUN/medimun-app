@@ -1,0 +1,128 @@
+import { MDXRemote } from "next-mdx-remote/rsc";
+
+export const metadata = {
+	title: "Privacy Policy",
+};
+
+const policy = `
+### Introduction
+
+Welcome to MediBook, the official app of the Mediterranean Model United Nations (MEDIMUN). This Privacy Policy outlines how we collect, use, store, and protect your personal information. By creating an account on MediBook, you are agreeing to this policy and our integrated Code of Conduct.
+
+### User Consent
+By signing up for a MediBook account, all delegates, chairs, members, and managers explicitly agree to abide by this Privacy Policy and the MEDIMUN Code of Conduct.
+
+### Data Collection and Use
+
+We collect personal information such as names, contact details, and images to facilitate your participation in MEDIMUN activities. This information is used solely for the operation of MediBook and is not shared with third parties, except for "The English School" and current MEDIMUN management and student leaders.
+
+### GDPR Compliance
+
+In compliance with the General Data Protection Regulation (GDPR), you have the right to access your personal data, request its deletion, and inquire about its use. 
+
+### Data Storage and Security
+
+Your personal data is stored securely and is only accessible to authorized personnel. We employ robust security measures to protect against unauthorized access or data breaches.
+
+### Data Retention and Deletion
+
+Personal data is retained for the duration of your engagement with MEDIMUN. You may request the deletion of your data at any time. Note that deleting your data will result in the invalidation of any certificates verified through our /verify service. Partial data deletion occurs upon account closure.
+
+### Code of Conduct Integration
+
+Our Code of Conduct mandates respectful and responsible behavior during all MEDIMUN events. Accepting this Privacy Policy also constitutes acceptance of the Code of Conduct. Breaches of the Code may result in disciplinary actions, including suspension or expulsion from MEDIMUN events and the non-issuance of a certificate of attendance.
+
+### Reporting and Enforcement
+
+To report a violation of the Code of Conduct, please contact your chair/manager, a member of the Secretariat, your Director, or Senior Director. Reported incidents will be investigated promptly.
+
+### Updates to the Privacy Policy
+
+We may update this policy periodically. Users will be notified of any significant changes through MediBook or via email.
+
+### Contact Information
+
+For any questions or concerns regarding this policy or to report a conduct violation, please contact us at +357 22 799 300.
+
+### Acknowledgment and Agreement
+
+By using MediBook, you acknowledge and agree to the terms outlined in this Privacy Policy and the MEDIMUN Code of Conduct.
+`;
+
+export default async function Page() {
+	return (
+		<div className="mx-auto mb-96 max-w-[800px] bg-cover p-5 pt-20 font-[TTNormsProRegular]">
+			<div className="mb-20 mt-24">
+				<h1 className="rounded-3xl text-center font-[Montserrat] text-4xl font-[700] text-content1-foreground md:text-5xl">Privacy Policy</h1>
+				<p className="mx-auto mt-2 text-center text-sm">Last updated on November 2, 2023</p>
+			</div>
+			<MDXRemote components={{ h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={policy} />
+		</div>
+	);
+}
+
+const h1 = (props) => {
+	return <h1 className="font-md mb-3 select-none text-3xl tracking-tight text-red-700" {...props} />;
+};
+
+const h2 = (props) => {
+	return <h2 className="font-md mb-3 text-2xl tracking-tight" {...props} />;
+};
+
+const h3 = (props) => {
+	return <h3 className="font-md mb-3 text-xl font-bold tracking-tight" {...props} />;
+};
+
+const h4 = (props) => {
+	return <h4 className="font-md mb-3 text-lg tracking-tight" {...props} />;
+};
+
+const h5 = (props) => {
+	return <h5 className="font-md text-md mb-3 tracking-tight" {...props} />;
+};
+
+const h6 = (props) => {
+	return <h6 className="font-md mb-3 text-sm tracking-tight" {...props} />;
+};
+
+const p = (props) => {
+	return <p className="font-md text-md text mb-5 tracking-tight" {...props} />;
+};
+
+const a = (props) => {
+	let truncated = props.href.slice(0, 40);
+	if (props.href.length > 40) {
+		truncated += "...";
+	}
+	if (props.href.includes("http")) {
+		return (
+			<a
+				truncated={truncated}
+				target="_blank"
+				className="font-md text-md mb-5 max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-blue-700 hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_('attr(truncated)')_↗']"
+				{...props}></a>
+		);
+	}
+	return (
+		<Link
+			truncated={truncated}
+			className="font-md text-md mb-5 max-w-[300px] truncate tracking-tight text-blue-700 duration-300 after:content-['_↗'] hover:rounded-3xl hover:bg-primary hover:p-2 hover:px-4 hover:text-white hover:shadow-lg hover:after:content-['_(Internal_Navigation:'attr(truncated)')_↗']"
+			{...props}
+		/>
+	);
+};
+
+const hr = (props) => {
+	return <hr className="font-md text-md mb-5 tracking-tight" {...props} />;
+};
+const li = (props) => {
+	return <li className="font-md text-md mx-2 tracking-tight " {...props} />;
+};
+
+const ol = (props) => {
+	return <ol className="font-md text-md mb-5 bg-black tracking-tight" {...props} />;
+};
+
+const ul = (props) => {
+	return <ol className="font-md text-md mb-5 border-l-2 border-gray-300 pl-3 tracking-tight" {...props} />;
+};

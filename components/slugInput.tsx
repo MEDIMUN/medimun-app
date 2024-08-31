@@ -1,9 +1,21 @@
 "use client";
 
-import { Input } from "@nextui-org/input";
+import { Input } from "@/components/input";
 import { useEffect, useState } from "react";
+import { Field, Label } from "./fieldset";
 
-export function SlugInput({ value, separator = "-", ...props }: { value: string }) {
+export function SlugInput({
+	value,
+	separator = "-",
+	defaultValue,
+	name,
+	...props
+}: {
+	value?: string;
+	separator?: string;
+	defaultValue?: string;
+	name?: string;
+}) {
 	const [slug, setSlug] = useState(value);
 
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -23,5 +35,7 @@ export function SlugInput({ value, separator = "-", ...props }: { value: string 
 		setSlug(slug?.replace(trimRegex, ""));
 	}
 
-	return <Input minLength={2} maxLength={32} size="lg" {...props} value={slug} onChange={handleChange} onBlur={handleBlur} />;
+	return (
+		<Input minLength={2} maxLength={30} {...props} name={name} defaultValue={defaultValue} value={slug} onChange={handleChange} onBlur={handleBlur} />
+	);
 }
