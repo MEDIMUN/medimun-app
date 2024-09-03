@@ -1,10 +1,9 @@
 "use client";
 
 import Icon from "@/components/icon";
-import { ReactElement } from "react-markdown/lib/react-markdown";
 import { toast } from "sonner";
 
-export function UserIdDisplay({ userId }): ReactElement | string | null {
+export function UserIdDisplay({ userId }): string | null {
 	//userId has 12 characters
 	//needs to be displayed as 4-4-4
 

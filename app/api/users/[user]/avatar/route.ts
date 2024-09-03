@@ -5,7 +5,8 @@ import prisma from "@/prisma/client";
 import { NextURL } from "next/dist/server/web/next-url";
 
 export async function GET(request, { params }) {
-	notFound();
+	return NextResponse.json({ "Not Found": "True" });
+
 	let userExists;
 	try {
 		userExists = await prisma.user.findUnique({

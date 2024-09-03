@@ -6,16 +6,23 @@ const nextConfig = {
 		ignoreBuildErrors: true,
 	},
 	experimental: {
-		reactCompiler: true,
-		serverComponentsExternalPackages: [ "argon2" ],
+		turbo: {
+			resolveExtensions: [
+				'.mdx',
+				'.tsx',
+				'.ts',
+				'.jsx',
+				'.js',
+				'.mjs',
+				'.json',
+			],
+		}
 	},
-	transpilePackages: [ 'next-mdx-remote' ],
+	transpilePackages: [ 'next-mdx-remote-client' ],
 	reactStrictMode: true,
 
 };
 
-const withMDX = createMDX( {
-	// Add markdown plugins here, as desired
-} );
+const withMDX = createMDX( {} );
 
 export default withMDX( nextConfig );

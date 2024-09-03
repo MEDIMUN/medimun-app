@@ -18,7 +18,12 @@ export default async function Page(): Promise<JSX.Element> {
 
 export async function HomePage(): Promise<JSX.Element> {
 	const currentSession = await prisma.session.findFirst({
-		where: { isCurrent: true },
+		where: {
+			OR: [
+				{ isCurrent: true, isPartlyVisible: true },
+				{ isPreviousCurrent: true, isVisible: true },
+			],
+		},
 		select: { theme: true, subTheme: true },
 	});
 
@@ -50,8 +55,8 @@ export async function HomePage(): Promise<JSX.Element> {
 				<HeroImage />
 				<div className="absolute mx-auto mt-[20svh] flex w-full flex-col md:mt-[35vh]">
 					<div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 text-left text-primary md:gap-2 md:text-center">
-						{currentSession.theme && <h1 className="font-[canela] text-5xl !leading-[50px] md:text-6xl">{currentSession.theme}</h1>}
-						{currentSession.subTheme && <h2 className="font-[LondiniaMedium] text-4xl text-zinc-800">{currentSession.subTheme}</h2>}
+						{currentSession?.theme && <h1 className="font-[canela] text-5xl !leading-[50px] md:text-6xl">{currentSession.theme}</h1>}
+						{currentSession?.subTheme && <h2 className="font-[LondiniaMedium] text-4xl text-zinc-800">{currentSession.subTheme}</h2>}
 					</div>
 				</div>
 			</section>

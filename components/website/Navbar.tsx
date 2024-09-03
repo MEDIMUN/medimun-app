@@ -53,7 +53,7 @@ function classNames(...classes) {
 
 export function WebsiteNavbar() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-	const { data: session, status } = useSession();
+	const { data: authSession, status } = useSession();
 
 	return (
 		<header className="absolute isolate z-10 w-full ">
@@ -137,7 +137,7 @@ export function WebsiteNavbar() {
 					<Link
 						href={status === "authenticated" ? "/medibook" : "/signup"}
 						className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-						{status === "authenticated" ? "Go to MediBook" : "Sign up"}
+						{status === "authenticated" ? (authSession.user.isDisabled ? "Account Disabled" : "Go to MediBook") : "Sign up"}
 					</Link>
 				</div>
 			</nav>

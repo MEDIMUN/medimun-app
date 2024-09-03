@@ -24,7 +24,7 @@ export enum s {
 
 export const authorize = (userdata: object, scope: s[]): boolean => {
 	if (!userdata) return false;
-	const { currentRoleNames } = userdata;
+	const { currentRoleNames } = userdata.user;
 	if (userdata?.isDisabled) return false;
 	if (!currentRoleNames) return false;
 	if (!scope[0]) return true;
@@ -83,8 +83,70 @@ export const authorize = (userdata: object, scope: s[]): boolean => {
 	return false;
 };
 
+export function authorizePerRole(userdata: object, scope: s[]): boolean {
+	const allRoles = userdata?.user?.currentRoles?.concat(userdata?.user.pastRoles);
+	//filter based on conferenceSessions array
+	const allRoleIdentifiers = allRoles.map((role) => role.roleIdentifier);
+	if (allRoleIdentifiers.includes("globalAdmin") || allRoleIdentifiers.includes("admin")) return true;
+
+	const rolesFilteredPerSession = allRoles.map((role) => role.name);
+
+	for (const sc of scope) {
+		if (rolesFilteredPerSession.includes("Global Admin")) return true;
+		if (rolesFilteredPerSession.includes("Admin")) if (sc === s.admin) return true;
+		if (rolesFilteredPerSession.includes("Admin") || rolesFilteredPerSession.includes("Global Admin")) if (sc === s.admins) return true;
+		if (rolesFilteredPerSession.includes("Senior Director")) if (sc === s.sd) return true;
+		if (rolesFilteredPerSession.includes("Director")) if (sc === s.director) return true;
+		if (rolesFilteredPerSession.includes("Senior Director") || rolesFilteredPerSession.includes("Director")) if (sc === s.board) return true;
+		if (rolesFilteredPerSession.includes("Secretary-General")) if (sc === s.sg) return true;
+		if (rolesFilteredPerSession.includes("Deputy Secretary-General")) if (sc === s.dsg) return true;
+		if (rolesFilteredPerSession.includes("President of the General Assembly")) if (sc === s.pga) return true;
+		if (rolesFilteredPerSession.includes("Deputy President of the General Assembly")) if (sc === s.dpga) return true;
+		if (
+			rolesFilteredPerSession.includes("Secretary-General") ||
+			rolesFilteredPerSession.includes("Deputy Secretary-General") ||
+			rolesFilteredPerSession.includes("President of the General Assembly") ||
+			rolesFilteredPerSession.includes("Deputy President of the General Assembly")
+		) {
+			if (sc === s.sec) return true;
+		}
+		if (rolesFilteredPerSession.includes("Secretary-General") || rolesFilteredPerSession.includes("President of the General Assembly")) {
+			if (sc === s.highsec) return true;
+		}
+		if (
+			rolesFilteredPerSession.includes("Global Admin") ||
+			rolesFilteredPerSession.includes("Admin") ||
+			rolesFilteredPerSession.includes("Senior Director") ||
+			rolesFilteredPerSession.includes("Director") ||
+			rolesFilteredPerSession.includes("Secretary-General") ||
+			rolesFilteredPerSession.includes("Deputy Secretary-General") ||
+			rolesFilteredPerSession.includes("President of the General Assembly") ||
+			rolesFilteredPerSession.includes("Deputy President of the General Assembly")
+		) {
+			if (sc === s.management) return true;
+		}
+		if (rolesFilteredPerSession.includes("Chair")) {
+			if (sc === s.chair) return true;
+		}
+		if (rolesFilteredPerSession.includes("Delegate")) {
+			if (sc === s.delegate) return true;
+		}
+		if (rolesFilteredPerSession.includes("Manager")) {
+			if (sc === s.manager) return true;
+		}
+		if (rolesFilteredPerSession.includes("Member")) {
+			if (sc === s.member) return true;
+		}
+		if (rolesFilteredPerSession.includes("School Director")) {
+			if (sc === s.schooldirector) return true;
+		}
+	}
+
+	return false;
+}
+
 export function authorizePerSession(userdata: object, scope: s[], conferenceSessions: string[]): boolean {
-	const allRoles = userdata?.currentRoles.concat(userdata?.pastRoles);
+	const allRoles = userdata?.user?.currentRoles.concat(userdata?.user?.pastRoles);
 	//filter based on conferenceSessions array
 	const allRoleIdentifiers = allRoles.map((role) => role.roleIdentifier);
 	if (

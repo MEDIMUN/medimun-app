@@ -8,7 +8,7 @@ import { authorize, s } from "@/lib/authorize";
 
 export default async function UserModals({ searchParams }) {
 	const authSession = await auth();
-	const highestRoleRank = authSession?.highestRoleRank;
+	const highestRoleRank = authSession?.user.highestRoleRank;
 	let schools, sessions, committees, departments, editUserData, filteredAllowedEditUserData;
 
 	let editSelectedUser = null;

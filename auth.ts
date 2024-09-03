@@ -2,7 +2,7 @@ import NextAuth, { CredentialsSignin, type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "@/prisma/client";
 import { verifyPassword } from "@/lib/password";
-import { userData } from "./lib/user";
+import { generateUserData, generateUserDataObject, userData } from "./lib/user";
 import { JWT } from "next-auth/jwt";
 
 class InvalidPasswordError extends CredentialsSignin {
@@ -157,38 +157,31 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				let { username, password } = credentials;
 				username = username.trim().toLowerCase();
 				password = password.trim();
-
 				if (!credentials.username || !credentials.password) {
 					throw new NoCredentialsError();
 				}
-				let userDetails;
+				let prismaUser;
 				try {
-					await prisma.$connect();
-					userDetails = await prisma.user.findFirst({
+					prismaUser = await prisma.user.findFirstOrThrow({
 						where: { OR: [{ email: username }, { id: username }, { username: username }] },
-						include: { account: true },
+						include: { ...generateUserDataObject(), account: true },
 					});
 				} catch (error) {
-					throw new InternalServerError();
-				}
-				if (userDetails === null) {
 					throw new UserNotFoundError();
 				}
-				if (!userDetails.account) {
+				if (prismaUser === null) {
+					throw new UserNotFoundError();
+				}
+				if (!prismaUser.account) {
 					throw new AccountNotActivatedError();
 				}
-				if (userDetails.isDisabled) {
+				if (prismaUser.isDisabled) {
 					throw new AccountDisabledError();
 				}
-				const isPasswordValid = await verifyPassword(password, userDetails.account.password);
+				const isPasswordValid = await verifyPassword(password, prismaUser.account.password);
 				if (isPasswordValid) {
-					const user = await userData(userDetails.id);
-					delete user.user.bio;
-					delete user.user.phoneCode;
-					delete user.user.phoneNumber;
-					delete user.user.nationality;
-					delete user.user.dateOfBirth;
-					return user;
+					const userData = generateUserData(prismaUser);
+					return userData;
 				} else {
 					throw new InvalidPasswordError();
 				}
@@ -197,65 +190,23 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 	],
 	callbacks: {
 		async jwt({ token, user, trigger }) {
-			//const timeNow = Date.now();
 			if (user) {
-				//token.lastUpdated = timeNow;
-				token.user = user.user;
-				//
-				token.user.currentRoles = user.currentRoles;
-				token.user.currentRoleNames = user.currentRoleNames;
-				token.user.highestRoleRank = user.highestRoleRank;
-				token.user.pastRoles = user.pastRoles;
-				token.user.pastRoleNames = user.pastRoleNames;
-				//
-				token.currentRoles = user.currentRoles;
-				token.currentRoleNames = user.currentRoleNames;
-				token.highestRoleRank = user.highestRoleRank;
-				token.pastRoles = user.pastRoles;
-				token.pastRoleNames = user.pastRoleNames;
+				token.user = user;
 				return token;
 			} else {
-				/* 				const timeExpire = token.lastUpdated;
-				if (!(timeNow - timeExpire > 10 * 1000 || trigger == "update")) return token;
-            */
-				const data = await userData(token.user.id);
-				if (data.user.isDisabled) return token;
-				delete data.user.bio;
-				delete data.user.phoneCode;
-				delete data.user.phoneNumber;
-				delete data.user.nationality;
-				delete data.user.dateOfBirth;
-				token.user = data.user;
-				//
-				token.user.currentRoles = data.currentRoles;
-				token.user.currentRoleNames = data.currentRoleNames;
-				token.user.highestRoleRank = data.highestRoleRank;
-				token.user.pastRoles = data.pastRoles;
-				token.user.pastRoleNames = data.pastRoleNames;
-				//
-				token.currentRoles = data.currentRoles;
-				token.currentRoleNames = data.currentRoleNames;
-				token.highestRoleRank = data.highestRoleRank;
-				token.pastRoles = data.pastRoles;
-				token.pastRoleNames = data.pastRoleNames;
-				//token.lastUpdated = timeNow;
+				/* 				console.log("[DB UPDATED]");
+				 */ const prismaUser = await prisma.user.findFirstOrThrow({
+					where: { id: token.user.id },
+					include: { ...generateUserDataObject() },
+				});
+				const userData = generateUserData(prismaUser);
+				token.user = userData;
 			}
 			return token;
 		},
+
 		async session({ session, token }) {
 			session.user = token.user;
-			session.currentRoles = token.currentRoles;
-			session.currentRoleNames = token.currentRoleNames;
-			session.highestRoleRank = token.highestRoleRank;
-			session.pastRoles = token.pastRoles;
-			session.pastRoleNames = token.pastRoleNames;
-			//
-			session.user.currentRoles = token.user.currentRoles;
-			session.user.currentRoleNames = token.user.currentRoleNames;
-			session.user.highestRoleRank = token.user.highestRoleRank;
-			session.user.pastRoles = token.user.pastRoles;
-			session.user.pastRoleNames = token.user.pastRoleNames;
-			//
 			session.user.lastUpdated = token.lastUpdated;
 			return session;
 		},
@@ -268,3 +219,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 	},
 	pages: { signIn: "/login" },
 });
+
+//const timeNow = Date.now();
+//token.lastUpdated = timeNow;
+
+/* 				const timeExpire = token.lastUpdated;
+				if (!(timeNow - timeExpire > 10 * 1000 || trigger == "update")) return token;
+            */

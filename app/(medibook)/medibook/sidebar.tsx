@@ -31,13 +31,14 @@ import {
 	SparklesIcon,
 	UserCircleIcon,
 } from "@heroicons/react/16/solid";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { getMoreSessions } from "./actions";
 import MediBookLogo from "@/public/assets/branding/logos/medibook-logo-white-2.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { useSidebarContext } from "./providers";
 
 export function AccountDropdownMenu({ anchor }: { anchor: "top start" | "bottom end" }) {
 	return (
@@ -56,7 +57,7 @@ export function AccountDropdownMenu({ anchor }: { anchor: "top start" | "bottom 
 				<DropdownLabel>Share feedback</DropdownLabel>
 			</DropdownItem>
 			<DropdownDivider />
-			<DropdownItem>
+			<DropdownItem onClick={signOut}>
 				<ArrowRightStartOnRectangleIcon />
 				<DropdownLabel>Sign out</DropdownLabel>
 			</DropdownItem>
@@ -69,11 +70,23 @@ export function Sidebar({ sessions }) {
 	const pathname = usePathname();
 	const router = useRouter();
 
-	const [sessionsData, setSessionsData] = useState(sessions);
-	const [selectedSession, setSelectedSession] = useState(sessions[0]?.number);
-	const [selectedSessionData, setSelectedSessionData] = useState();
-	const [isLoading, setIsLoading] = useState(false);
-	const [schoolDirectorRole, setSchoolDirectorRole] = useState({});
+	const {
+		sessionsData,
+		setSessionsData,
+		selectedSession,
+		setSelectedSession,
+		selectedSessionData,
+		setSelectedSessionData,
+		isLoading,
+		setIsLoading,
+		schoolDirectorRole,
+		setSchoolDirectorRole,
+	} = useSidebarContext();
+
+	useEffect(() => {
+		setSessionsData(sessions);
+		setSelectedSession(sessions[0]?.number);
+	}, []);
 
 	const basePath = `/medibook/sessions/${selectedSession}`;
 	const pastRoles = authSession?.user.pastRoles;
@@ -126,14 +139,14 @@ export function Sidebar({ sessions }) {
 	const isManagement = authorize(authSession, [s.management]);
 
 	const committeeOptionsList = [
-		{ name: "Overview", href: ``, isVisible: true },
-		{ name: "Announcements", href: `/announcements`, isVisible: true },
-		{ name: "Topics", href: `/topics`, isVisible: true },
-		{ name: "Resolutions", href: `/resolutions`, isVisible: true },
-		{ name: "Participants", href: `/participants`, isVisible: true },
-		{ name: "Resources", href: `/resources`, isVisible: true },
-		{ name: "Roll Calls", href: `/roll-calls`, isVisible: isManagement },
-		{ name: "Settings", href: `/settings`, isVisible: isManagement },
+		{ name: "Overview", href: ``, isVisible: true, icon: "heroicons-solid:home" },
+		{ name: "Announcements", href: `/announcements`, isVisible: true, icon: "heroicons-solid:speakerphone" },
+		{ name: "Topics", href: `/topics`, isVisible: true, icon: "heroicons-solid:library" },
+		{ name: "Resolutions", href: `/resolutions`, isVisible: true, icon: "heroicons-solid:document-text" },
+		{ name: "Participants", href: `/participants`, isVisible: true, icon: "heroicons-solid:user-group" },
+		{ name: "Resources", href: `/resources`, isVisible: true, icon: "heroicons-solid:folder" },
+		{ name: "Roll Calls", href: `/roll-calls`, isVisible: isManagement, icon: "heroicons-solid:clipboard-list" },
+		{ name: "Settings", href: `/settings`, isVisible: isManagement, icon: "heroicons-solid:cog" },
 	];
 
 	const visibleCommitteeOptions = committeeOptionsList.filter((option) => option.isVisible);
@@ -141,6 +154,7 @@ export function Sidebar({ sessions }) {
 	function CommitteeOptions({ basePath }) {
 		return visibleCommitteeOptions.map((committee, index) => (
 			<SidebarItem
+				key={index}
 				className={cn("h-8", index + 1 == visibleCommitteeOptions.length && "mb-2")}
 				href={basePath + committee.href}
 				current={pathname == basePath + committee.href}>
@@ -153,6 +167,8 @@ export function Sidebar({ sessions }) {
 						)}
 					/>
 				</div>
+				{/* 				<Icon slot="icon" icon={committee.icon} height={20} />
+				 */}
 				<SidebarLabel>{committee.name}</SidebarLabel>
 			</SidebarItem>
 		));
@@ -177,7 +193,9 @@ export function Sidebar({ sessions }) {
 				<SidebarHeader>
 					<Link href="/medibook" className="hidden md:block">
 						<div className="mb-4 ml-[8px] mt-[4px] h-[16px] max-w-max drop-shadow hover:grayscale">
-							<Image src={MediBookLogo} alt="MediBook" fill className="!relative" />
+							{/* 							<Image src={MediBookLogo} alt="MediBook" fill className="!relative" />
+							 */}
+							<img src={`/assets/branding/logos/medibook-logo-white-2.svg`} className="h-[16px]" alt="MediBook" />
 						</div>
 					</Link>
 					<Dropdown>
@@ -187,22 +205,23 @@ export function Sidebar({ sessions }) {
 							<ChevronDownIcon />
 						</DropdownButton>
 						<DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
-							{sessionsData.map((session, index) => (
-								<Fragment key={session.id}>
-									<DropdownItem onClick={() => setSelectedSession(session.number)}>
-										<Avatar
-											slot="icon"
-											initials={session.number}
-											className={cn("bg-primary text-white", !index && "bg-[url(/gradients/1.jpg)] bg-cover")}
-										/>
-										<DropdownLabel className="flex">Session {romanize(session.number)}</DropdownLabel>
-										<DropdownDescription>{session.theme}</DropdownDescription>
-									</DropdownItem>
-									{!index && <DropdownDivider />}
-								</Fragment>
-							))}
+							{!!sessionsData?.length &&
+								sessionsData.map((session, index) => (
+									<Fragment key={session.id}>
+										<DropdownItem onClick={() => setSelectedSession(session.number)}>
+											<Avatar
+												slot="icon"
+												initials={session.number}
+												className={cn("bg-primary text-white", !index && "bg-[url(/gradients/1.jpg)] bg-cover")}
+											/>
+											<DropdownLabel className="flex">Session {romanize(session.number)}</DropdownLabel>
+											<DropdownDescription>{session.theme}</DropdownDescription>
+										</DropdownItem>
+										{!index && <DropdownDivider />}
+									</Fragment>
+								))}
 							<DropdownDivider />
-							{!(sessionsData.filter((session) => session.numberInteger == 1).length > 0) && (
+							{!(sessionsData?.filter((session) => session.numberInteger == 1).length > 0) && (
 								<DropdownItem onClick={loadMoreSessionsHandler}>
 									<PlusIcon />
 									<DropdownLabel>Load More Sessions</DropdownLabel>
@@ -256,6 +275,10 @@ export function Sidebar({ sessions }) {
 							<Icon slot="icon" icon="heroicons-solid:hashtag" height={20} />
 							<SidebarLabel>Sessions</SidebarLabel>
 						</SidebarItem>
+						<SidebarItem href="/medibook/announcements" current={pathname.startsWith("/medibook/announcements")}>
+							<Icon slot="icon" icon="heroicons-solid:speakerphone" height={19} />
+							<SidebarLabel>Announcements</SidebarLabel>
+						</SidebarItem>
 						<SidebarItem href="/medibook/resources" current={pathname.startsWith("/medibook/resources")}>
 							<Icon slot="icon" icon="heroicons-solid:folder" height={20} />
 							<SidebarLabel>Resources</SidebarLabel>
@@ -287,6 +310,10 @@ export function Sidebar({ sessions }) {
 						<SidebarItem href={`/medibook/sessions/${selectedSession}`} current={pathname == `/medibook/sessions/${selectedSession}`}>
 							<Icon slot="icon" icon="heroicons-solid:home" height={20} />
 							<SidebarLabel>Overview</SidebarLabel>
+						</SidebarItem>
+						<SidebarItem href={`${basePath}/announcements`} current={pathname == `${basePath}/announcements`}>
+							<Icon icon="heroicons-solid:speakerphone" height={19} />
+							<SidebarLabel>Announcements</SidebarLabel>
 						</SidebarItem>
 						<SidebarItem href={`${basePath}/committees`} current={pathname == `${basePath}/committees`}>
 							<Icon icon="heroicons-solid:library" height={20} />
@@ -354,7 +381,7 @@ export function Sidebar({ sessions }) {
 										className={`flex min-h-[23px] min-w-[23px] rounded-md !bg-cover text-center`}
 										slot="icon">
 										<p style={{ background: `url(/gradients/${(index % 6) + 1}.jpg)` }} className="m-auto !bg-cover !bg-clip-text text-[8px]">
-											{department.shortName.slice(0, 3).toUpperCase()}
+											{department.shortName ? department.shortName.slice(0, 3).toUpperCase() : ""}
 										</p>
 									</div>
 									<SidebarLabel>{department.name}</SidebarLabel>

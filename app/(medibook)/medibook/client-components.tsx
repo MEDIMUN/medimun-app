@@ -8,14 +8,14 @@ import { Input, InputGroup } from "@/components/input";
 import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/listbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Text } from "@/components/text";
-import { useUpdateEffect } from "@/hooks/use-update-effect";
+import { useUpdateEffect } from "@/hooks/useUpdateEffect";
 import { cn } from "@/lib/cn";
 import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
 import { EllipsisVerticalIcon, MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter as useNextRouter, useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter as useNextRouter, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "sonner";
 import { authorizedToEditResource } from "./@resourceModals/default";
@@ -81,6 +81,17 @@ export function TopBar({
 	subheading = "",
 	buttonText = "",
 	buttonHref = "",
+}: {
+	className?: string;
+	title: string;
+	sortOptions?: { value: string; order: string; label: string; description: string }[];
+	defaultSort?: string;
+	children: React.ReactNode;
+	searchText?: string;
+	hideSearchBar?: boolean;
+	subheading?: string;
+	buttonText?: string;
+	buttonHref?: string;
 }) {
 	sortOptions = sortOptions && sortOptions.map((option, index) => ({ ...option, key: index }));
 	return (
@@ -89,7 +100,12 @@ export function TopBar({
 				{buttonText && buttonHref && (
 					<Link href={buttonHref}>
 						<div className="-ml-2 flex max-w-min cursor-pointer rounded-full from-gray-100 to-gray-300 duration-300 hover:bg-gradient-to-r hover:shadow-sm">
-							<Icon icon="majesticons:chevron-left" height={18} className="my-auto ml-1 -translate-y-[0.5px] text-zinc-400" />
+							<Icon
+								icon="majesticons:chevron-left"
+								height={18}
+								width={18}
+								className="my-auto ml-1 min-h-5 min-w-5 -translate-y-[0.5px] text-zinc-400"
+							/>
 							<Text className="mr-[11px] min-w-max text-sm">{buttonText}</Text>
 						</div>
 					</Link>
@@ -98,7 +114,7 @@ export function TopBar({
 				<Subheading level={6} className="line-clamp-1 cursor-help !font-light duration-250 hover:line-clamp-none">
 					{subheading}
 				</Subheading>
-				<div className="mt-4 flex flex-col gap-4 md:flex-row">
+				<div className={cn("flex flex-col gap-4 md:flex-row", (!hideSearchBar || sortOptions) && "mt-4")}>
 					{!hideSearchBar && (
 						<div className="w-full flex-1">
 							<SearchBar placeholder={searchText} />
@@ -121,8 +137,11 @@ export function SearchParamsButton({ searchParams, useRouter = true, ...params }
 
 	function handleOnClick() {
 		updateSearchParams(searchParams, useRouter ? router : null);
+		router.refresh();
 	}
-	return <Button onClick={handleOnClick} {...params} />;
+
+	// @ts-ignore
+	return <Button onClick={() => handleOnClick()} {...params} />;
 }
 
 const FileDownloader = ({ resourceId, fileName }) => {
@@ -148,7 +167,6 @@ const FileDownloader = ({ resourceId, fileName }) => {
 			document.body.removeChild(anchor);
 			window.URL.revokeObjectURL(blobUrl);
 		} catch (error) {
-			console.error("Failed to download file:", error);
 			toast.error("Failed to download file", { id: "downloadingFile" });
 			return null;
 		}
@@ -210,4 +228,36 @@ export function SessionResourceDropdown({ selectedResource }) {
 			</DropdownMenu>
 		</Dropdown>
 	);
+}
+
+export function SearchParamsDropDropdownItem({
+	searchParams,
+	url,
+	useRouter = true,
+	...params
+}: {
+	searchParams: Object;
+	url?: string;
+	useRouter?: boolean;
+	children: React.ReactNode;
+}) {
+	const router = useNextRouter();
+
+	//if dev http://localhost, if prod https://www.medimun.org
+
+	function handleOnClick() {
+		const domain = process.env.NODE_ENV === "development" ? "http://localhost" : "https://www.medimun.org";
+		if (url) {
+			const baseUrl = new URL(url ? `${domain}/${url}` : window.location.href);
+			for (const [key, value] of Object.entries(searchParams)) {
+				baseUrl.searchParams.set(key, value);
+			}
+			router.push(baseUrl.toString(), { scroll: false });
+			router.refresh();
+		} else {
+			updateSearchParams(searchParams, useRouter ? router : null);
+			router.refresh();
+		}
+	}
+	return <DropdownItem onClick={handleOnClick} {...params} />;
 }

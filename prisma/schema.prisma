@@ -34,13 +34,6 @@ model Account {
   user        User[]
 }
 
-model SecurityCouncilCountry {
-  id          String    @id @default(uuid())
-  countryCode String
-  committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
-  committeeId String
-}
-
 model User {
   id                                  String                                @id @unique
   email                               String                                @unique
@@ -85,7 +78,6 @@ model User {
   chatMemeber                         ChatMemeber[]
   groupChatMemeber                    GroupChatMemeber[]
   deputyPresidentOfTheGeneralAssembly DeputyPresidentOfTheGeneralAssembly[]
-  organiser                           Organiser[]
   Director                            Director[]
   Announcement                        Announcement[]
   CommitteeRollCall                   CommitteeRollCall[]
@@ -94,73 +86,92 @@ model User {
 }
 
 model Session {
-  id                                   String                                @id @unique @default(nanoid())
-  isCurrent                            Boolean                               @default(false)
-  isPreviousCurrent                    Boolean                               @default(false)
+  id                                                              String                                @id @unique @default(nanoid())
+  isCurrent                                                       Boolean                               @default(false)
+  isPreviousCurrent                                               Boolean                               @default(false)
   //
-  isPartlyVisible                      Boolean                               @default(false)
-  isVisible                            Boolean                               @default(false)
+  isPartlyVisible                                                 Boolean                               @default(false)
+  isVisible                                                       Boolean                               @default(false)
   //
-  directorPrice                        Int                                   @default(0)
-  delegatePrice                        Int                                   @default(0)
-  isPriceLocked                        Boolean                               @default(false)
+  directorPrice                                                   Int                                   @default(0)
+  delegatePrice                                                   Int                                   @default(0)
+  isPriceLocked                                                   Boolean                               @default(false)
   //
-  isSecretariatApplicationsForceOpen   Boolean                               @default(false)
-  isSecretariatApplicationsAutoOpen    Boolean                               @default(false)
-  secretariatApplicationsAutoOpenTime  DateTime?
-  secretariatApplicationsAutoCloseTime DateTime?
+  isSecretariatApplicationsForceOpen                              Boolean                               @default(false)
+  isSecretariatApplicationsAutoOpen                               Boolean                               @default(false)
+  secretariatApplicationsAutoOpenTime                             DateTime?
+  secretariatApplicationsAutoCloseTime                            DateTime?
   //
-  isChairAplicationsForceOpen          Boolean                               @default(false)
-  isChairApplicationsAutoOpen          Boolean                               @default(false)
-  chairApplicationsAutoOpenTime        DateTime?
-  chairApplicationsAutoCloseTime       DateTime?
+  isChairAplicationsForceOpen                                     Boolean                               @default(false)
+  isChairApplicationsAutoOpen                                     Boolean                               @default(false)
+  chairApplicationsAutoOpenTime                                   DateTime?
+  chairApplicationsAutoCloseTime                                  DateTime?
   //
-  isDelegateApplicationsForceOpen      Boolean                               @default(false)
-  isDelegateApplicationsAutoOpen       Boolean                               @default(false)
-  delegateApplicationsAutoOpenTime     DateTime?
-  delegateApplicationsAutoCloseTime    DateTime?
+  isDelegateApplicationsForceOpen                                 Boolean                               @default(false)
+  isDelegateApplicationsAutoOpen                                  Boolean                               @default(false)
+  delegateApplicationsAutoOpenTime                                DateTime?
+  delegateApplicationsAutoCloseTime                               DateTime?
   //
-  isMemberApplicationsForceOpen        Boolean                               @default(false)
-  isMemberApplicationsAutoOpen         Boolean                               @default(false)
-  memberApplicationsAutoOpenTime       DateTime?
-  memberApplicationsAutoCloseTime      DateTime?
+  isMemberApplicationsForceOpen                                   Boolean                               @default(false)
+  isMemberApplicationsAutoOpen                                    Boolean                               @default(false)
+  memberApplicationsAutoOpenTime                                  DateTime?
+  memberApplicationsAutoCloseTime                                 DateTime?
   //
-  isManagerApplicationsForceOpen       Boolean                               @default(false)
-  isManagerApplicationsAutoOpen        Boolean                               @default(false)
-  managerApplicationsAutoOpenTime      DateTime?
-  managerApplicationsAutoCloseTime     DateTime?
+  isManagerApplicationsForceOpen                                  Boolean                               @default(false)
+  isManagerApplicationsAutoOpen                                   Boolean                               @default(false)
+  managerApplicationsAutoOpenTime                                 DateTime?
+  managerApplicationsAutoCloseTime                                DateTime?
   //
-  number                               String                                @unique
-  numberInteger                        Int                                   @unique
+  number                                                          String                                @unique
+  numberInteger                                                   Int                                   @unique
   //
-  theme                                String?
-  subTheme                             String?
+  theme                                                           String?
+  subTheme                                                        String?
   //
-  description                          String?
-  welcomeText                          String?
-  about                                String?
+  description                                                     String?
+  welcomeText                                                     String?
+  about                                                           String?
   //
-  cover                                String?
+  cover                                                           String?
   //
-  committee                            Committee[]
-  department                           Department[]
+  committee                                                       Committee[]
+  department                                                      Department[]
   //
-  schoolDirector                       SchoolDirector[]
-  Day                                  Day[]
+  schoolDirector                                                  SchoolDirector[]
+  Day                                                             Day[]
   //
-  secretaryGeneral                     SecretaryGeneral[]
-  presidentOfTheGeneralAssembly        PresidentOfTheGeneralAssembly[]
-  deputySecretaryGeneral               DeputySecretaryGeneral[]
-  deputyPresidentOfTheGeneralAssembly  DeputyPresidentOfTheGeneralAssembly[]
+  secretaryGeneral                                                SecretaryGeneral[]
+  presidentOfTheGeneralAssembly                                   PresidentOfTheGeneralAssembly[]
+  deputySecretaryGeneral                                          DeputySecretaryGeneral[]
+  deputyPresidentOfTheGeneralAssembly                             DeputyPresidentOfTheGeneralAssembly[]
   //
-  chat                                 Chat[]
-  groupChat                            GroupChat[]
-  organiser                            Organiser[]
-  Announcement                         Announcement[]
-  Role                                 Role[]
-  Resource                             Resource[]
+  chat                                                            Chat[]
+  groupChat                                                       GroupChat[]
+  Announcement                                                    Announcement[]
+  Role                                                            Role[]
+  Resource                                                        Resource[]
   //
-  data                                 String?
+  data                                                            String?
+  //
+  securityCouncilCountriesOfYear                                  String[]                              @default(["CN", "FR", "RU", "GB", "US"])
+  countriesOfSession                                              String[]                              @default(["CN", "FR", "RU", "GB", "US"])
+  maxNumberOfGeneralAssemblyDelegationsPerSchool                  Int?
+  maxNumberOfSecurityCouncilAndSpecialCommitteeDelegatesPerSchool Int?
+  minimumDelegateAgeOnFirstConferenceDay                          Int?
+}
+
+model Day {
+  id              String            @id @default(nanoid())
+  type            DayType
+  name            String?
+  description     String?
+  date            DateTime?         @unique
+  location        Location?         @relation(fields: [locationId], references: [id])
+  locationId      String?
+  session         Session           @relation(fields: [sessionId], references: [id])
+  sessionId       String
+  DraftResolution DraftResolution[]
+  RollCall        RollCall[]
 }
 
 model GlobalAdmin {
@@ -223,64 +234,24 @@ model DeputyPresidentOfTheGeneralAssembly {
   @@unique([userId, sessionId])
 }
 
-model Organiser {
-  id        String  @id @default(uuid())
-  user      User    @relation(fields: [userId], references: [id])
-  userId    String
-  session   Session @relation(fields: [sessionId], references: [id])
-  sessionId String
+model Chair {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+  committeeId String
 
-  @@unique([userId, sessionId])
+  @@unique([userId, committeeId])
 }
 
-model Day {
-  id              String            @id @default(nanoid())
-  type            DayType
-  name            String?
-  description     String?
-  date            DateTime?         @unique
-  location        Location?         @relation(fields: [locationId], references: [id])
-  locationId      String?
-  session         Session           @relation(fields: [sessionId], references: [id])
-  sessionId       String
-  DraftResolution DraftResolution[]
-  RollCall        RollCall[]
-}
+model Manager {
+  id           Int        @id @default(autoincrement())
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId String
 
-model SchoolDirector {
-  id        Int     @id @default(autoincrement())
-  user      User    @relation(fields: [userId], references: [id])
-  userId    String
-  school    School  @relation(fields: [schoolId], references: [id])
-  schoolId  String
-  session   Session @relation(fields: [sessionId], references: [id])
-  sessionId String
-
-  @@unique([userId, schoolId, sessionId])
-}
-
-model Committee {
-  id                     String                   @id @unique @default(uuid())
-  name                   String
-  description            String?
-  shortName              String?
-  slug                   String?
-  isVisible              Boolean                  @default(false)
-  type                   CommitteeType
-  session                Session                  @relation(fields: [sessionId], references: [id])
-  sessionId              String
-  delegate               Delegate[]
-  chair                  Chair[]
-  channel                Channel[]
-  SecurityCouncilCountry SecurityCouncilCountry[]
-  Announcement           Announcement[]
-  CommitteeRollCall      CommitteeRollCall[]
-  Role                   Role[]
-  Resource               Resource[]
-
-  @@unique([sessionId, name])
-  @@unique([sessionId, shortName])
-  @@unique([sessionId, slug])
+  @@unique([userId, departmentId])
 }
 
 model Delegate {
@@ -295,26 +266,144 @@ model Delegate {
   @@unique([userId, committeeId])
 }
 
+model Member {
+  id           Int        @id @default(autoincrement())
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId String
+
+  @@unique([userId, departmentId])
+}
+
+model SchoolDirector {
+  id        Int     @id @default(autoincrement())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  school    School  @relation(fields: [schoolId], references: [id])
+  schoolId  String
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId String
+
+  @@unique([userId, schoolId, sessionId])
+}
+
 model Role {
   id           String      @id @default(nanoid())
   type         RoleType
-  User         User        @relation(fields: [userId], references: [id])
+  //
+  User         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
-  School       School?     @relation(fields: [schoolId], references: [id])
+  //
+  //
+  School       School?     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   schoolId     String?
-  Session      Session?    @relation(fields: [sessionId], references: [id])
+  //
+  Session      Session?    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sessionId    String?
-  Committee    Committee?  @relation(fields: [committeeId], references: [id])
+  //
+  Committee    Committee?  @relation(fields: [committeeId], references: [id], onDelete: Cascade)
   committeeId  String?
-  Department   Department? @relation(fields: [departmentId], references: [id])
+  //
+  Department   Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId String?
+  //
+  country      String?
+
+  @@unique([userId, sessionId, type])
+  @@unique([userId, schoolId, sessionId])
+  @@unique([userId, country, committeeId])
+  @@unique([userId, type, departmentId])
+  @@unique([userId, type, committeeId])
+  @@unique([userId, committeeId])
+  @@unique([userId, departmentId])
+}
+
+model General {
+  id      Int      @id @default(autoincrement())
+  string1 String?
+  string2 String?
+  string3 String?
+  string4 String?
+  string5 String?
+  int1    Int?
+  int2    Int?
+  int3    Int?
+  int4    Int?
+  int5    Int?
+  bool1   Boolean?
+  bool2   Boolean?
+  bool3   Boolean?
+  bool4   Boolean?
+  bool5   Boolean?
+}
+
+model Committee {
+  id                String              @id @unique @default(uuid())
+  name              String
+  description       String?
+  shortName         String?
+  slug              String?
+  isVisible         Boolean             @default(false)
+  //
+  type              CommitteeType       @default(GENERALASSEMBLY)
+  //
+  session           Session             @relation(fields: [sessionId], references: [id])
+  sessionId         String
+  //
+  delegate          Delegate[]
+  chair             Chair[]
+  channel           Channel[]
+  Announcement      Announcement[]
+  CommitteeRollCall CommitteeRollCall[]
+  Role              Role[]
+  Resource          Resource[]
+  ExtraCountry      ExtraCountry[]
+
+  @@unique([sessionId, name])
+  @@unique([sessionId, shortName])
+  @@unique([sessionId, slug])
+}
+
+model ExtraCountry {
+  id            String    @id @default(nanoid())
+  code          String
+  //
+  name          String
+  //
+  isPowerToVeto Boolean   @default(false)
+  //
+  committee     Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+  committeeId   String
+
+  @@unique([committeeId, code])
+}
+
+model Department {
+  id           String           @id @default(uuid())
+  name         String
+  shortName    String?
+  slug         String?
+  isVisible    Boolean          @default(false)
+  //
+  type         DepartmentType[]
+  //
+  session      Session          @relation(fields: [sessionId], references: [id])
+  sessionId    String
+  //
+  member       Member[]
+  manager      Manager[]
+  channel      Channel[]
+  Role         Role[]
+  Resource     Resource[]
+  Announcement Announcement[]
 }
 
 enum RoleType {
   globalAdmin
   admin
   //
-  seniorDirecor
+  seniorDirector
   director
   //
   secretaryGeneral
@@ -328,54 +417,6 @@ enum RoleType {
   member
   manager
   schoolDirector
-}
-
-model Chair {
-  id          Int       @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String
-  committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
-  committeeId String
-
-  @@unique([userId, committeeId])
-}
-
-model Department {
-  id           String          @id @default(uuid())
-  name         String
-  shortName    String?
-  slug         String?
-  description  String?
-  type         DepartmentType?
-  session      Session         @relation(fields: [sessionId], references: [id])
-  sessionId    String
-  member       Member[]
-  manager      Manager[]
-  channel      Channel[]
-  Role         Role[]
-  Resource     Resource[]
-  Announcement Announcement[]
-}
-
-model Member {
-  id             Int        @id @default(autoincrement())
-  jobDescription String?
-  user           User       @relation(fields: [userId], references: [id])
-  userId         String
-  department     Department @relation(fields: [departmentId], references: [id])
-  departmentId   String
-
-  @@unique([userId, departmentId])
-}
-
-model Manager {
-  id           Int        @id @default(autoincrement())
-  user         User       @relation(fields: [userId], references: [id])
-  userId       String
-  department   Department @relation(fields: [departmentId], references: [id])
-  departmentId String
-
-  @@unique([userId, departmentId])
 }
 
 model Location {
@@ -556,6 +597,8 @@ model Announcement {
   time         DateTime                   @default(now())
   editTime     DateTime                   @default(now())
   //
+  slug         String?
+  //
   type         AnnouncementType[]         @default([WEBSITE])
   //
   scope        AnnouncementPrivacyTypes[]
@@ -619,11 +662,35 @@ enum DayType {
 }
 
 enum DepartmentType {
+  APPROVAL
+  CATERING
+  FUNDING
+  ADVERTISING
   IT
-  MEDINEWS
-  APPROVALPANEL
   SALES
-  FOODANDCATERING
+  GRAPHIC
+  SOCIAL
+  PHOTO
+  MEDINEWS
+  PI
+  PREP
+  ADMINSTAFF
+  DATA
+  OTHER
+}
+
+enum DepartmentType2 {
+  APPROVAL
+  CATERING
+  FUNDING
+  ADVERTISING
+  IT
+  SALES
+  GRAPHIC
+  SOCIAL
+  PHOTO
+  MEDINEWS
+  PI
   PREP
   ADMINSTAFF
   OTHER

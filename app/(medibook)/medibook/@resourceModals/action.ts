@@ -76,10 +76,11 @@ export async function uploadResource(formData: FormData, searchParams: any) {
 		uploadglobalresource: isManagement,
 		uploadsessionresource: isManagement && searchParams.uploadsessionresource,
 		uploadcommitteeresource:
-			(isManagement || authorizeChairCommittee(authSession?.currentRoles, searchParams.uploadcommitteeresource)) &&
+			(isManagement ||
+				authorizeChairCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], searchParams.uploadcommitteeresource)) &&
 			searchParams.uploadcommitteeresource,
 		uploaddepartmentresource:
-			(isManagement || authorizeManagerDepartment(authSession?.currentRoles, searchParams.uploaddepartmentresource)) &&
+			(isManagement || authorizeManagerDepartment(authSession.user.currentRoles, searchParams.uploaddepartmentresource)) &&
 			searchParams.uploaddepartmentresource,
 		uploadresource: true,
 		uploadsystemresource: authorize(authSession, [s.admins, s.sd]),
@@ -135,7 +136,6 @@ export async function uploadResource(formData: FormData, searchParams: any) {
 				data: { ...customizedData, driveUrl: data.resourceDriveUrl },
 			});
 		} catch (e) {
-			console.error(e);
 			return { ok: false, message: "Something went wrong. (2)" };
 		}
 	}
@@ -175,7 +175,6 @@ export async function uploadResource(formData: FormData, searchParams: any) {
 				{ maxWait: 5000, timeout: 900000 }
 			);
 		} catch (e) {
-			console.error(e);
 			return { ok: false, message: "Something went wrong. (3)" };
 		}
 	}
@@ -221,7 +220,6 @@ export async function editResourceDetails(formData: FormData, resourceId: string
 			data: updatedResource,
 		});
 	} catch (e) {
-		console.error(e);
 		return { ok: false, message: "Something went wrong." };
 	}
 
@@ -251,7 +249,6 @@ export async function deleteResourceAction(resourceId: string) {
 				{ maxWait: 5000, timeout: 900000 }
 			);
 		} catch (e) {
-			console.error(e);
 			return { ok: false, message: "Something went wrong." };
 		}
 	}
@@ -260,7 +257,6 @@ export async function deleteResourceAction(resourceId: string) {
 		try {
 			await prisma.resource.delete({ where: { id: resourceId } });
 		} catch (e) {
-			console.error(e);
 			return { ok: false, message: "Something went wrong." };
 		}
 	}

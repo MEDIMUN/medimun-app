@@ -1,5 +1,5 @@
 import { Link } from "@nextui-org/link";
-import Paginator from "../Paginator";
+import Paginator from "../pagination";
 import { Chip } from "@nextui-org/chip";
 import { ButtonGroup } from "@nextui-org/button";
 import { cn } from "@/lib/cn";

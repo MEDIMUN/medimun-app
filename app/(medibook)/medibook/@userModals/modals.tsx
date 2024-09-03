@@ -1,15 +1,14 @@
 "use client";
 
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { InformationCircleIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/16/solid";
-import { roleRanks } from "@/constants";
+import { roleRanks } from "@/data/constants";
 
 import { editUser, addRole, removeRole, unafilliateStudent } from "./actions";
-import { ProfileUploader } from "../(home)/users/components/ProfilePictureFrame";
 
 import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
 import formatDateForInput from "@/lib/formatDateForInput";
@@ -29,6 +28,7 @@ import { Listbox, ListboxLabel, ListboxOption } from "@/components/listbox";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { Avatar } from "@nextui-org/avatar";
 import { generateUserData } from "@/lib/user";
+import { ProfileUploader } from "../(global)/users/components/ProfilePictureFrame";
 
 export function AssignUserChip({ uid, officialName, displayName }) {
 	const searchParams = useSearchParams();
@@ -99,10 +99,12 @@ export function EditUserModal({ edit, schools }) {
 
 	const onClose = () => removeSearchParams({ edituser: "", viewuser: "", adduser: "" });
 
-	const isManagerOfMember = authorizeManagerMember(authSession?.currentRoles, edit?.currentRoles);
-	const isChairOfDelegate = authorizeChairDelegate(authSession?.currentRoles, edit?.currentRoles);
+	if (status !== "authenticated") return null;
+
+	const isManagerOfMember = authorizeManagerMember(authSession.user.currentRoles, edit?.currentRoles);
+	const isChairOfDelegate = authorizeChairDelegate(authSession.user.currentRoles, edit?.currentRoles);
 	const isManagement = authorize(authSession, [s.management]);
-	const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession?.currentRoles, edit);
+	const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession.user.currentRoles, edit);
 
 	const allUpdatableFields = [
 		"id",
@@ -302,6 +304,10 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 	function onClose() {
 		removeSearchParams({ assignroles: "", session: "" });
 	}
+
+	useEffect(() => {
+		router.refresh();
+	}, [searchParams.get("session"), searchParams.get("committee"), searchParams.get("department"), searchParams.get("role")]);
 
 	const onlyOneUser = selectedUsers?.length === 1;
 

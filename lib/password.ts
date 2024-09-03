@@ -6,6 +6,10 @@ export async function hashPassword(password: String): Promise<string> {
 }
 
 export async function verifyPassword(password: String, hashedPassword: String): Promise<Boolean> {
-	const isValid = await compare(password, hashedPassword);
-	return isValid;
+	try {
+		const isValid = await compare(password, hashedPassword);
+		return isValid;
+	} catch (error) {
+		return false;
+	}
 }

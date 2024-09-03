@@ -1,29 +1,27 @@
 import prisma from "@/prisma/client";
-import { ModalEditCommittee } from "./modalEditCommitte";
+import { ModalCreateCommittee, ModalDeleteCommittee, ModalEditCommittee } from "./modals";
 
 export default async function Modals({ searchParams }) {
-	let selectedCommittee = {};
+	let editCommittee = {};
 	if (searchParams["edit-committee"]) {
-		let prismaCommittee;
 		try {
-			prismaCommittee = await prisma.committee.findFirstOrThrow({
-				where: {
-					id: searchParams.editcommittee,
-				},
-			});
+			editCommittee = await prisma.committee.findFirstOrThrow({ where: { id: searchParams["edit-committee"] } });
 		} catch (e) {
-			return {
-				ok: false,
-				message: "Failed to find committee.",
-				response: null,
-			};
+			editCommittee = {};
 		}
-		selectedCommittee = prismaCommittee;
 	}
 
-	return (
-		<>
-			<ModalEditCommittee selectedCommittee={selectedCommittee} />
-		</>
-	);
+	if (searchParams["delete-committee"]) {
+		try {
+			editCommittee = await prisma.committee.findFirstOrThrow({ where: { id: searchParams["delete-committee"] } });
+		} catch (e) {
+			editCommittee = {};
+		}
+	}
+
+	return [
+		<ModalCreateCommittee />,
+		<ModalDeleteCommittee selectedCommittee={editCommittee} />,
+		<ModalEditCommittee selectedCommittee={editCommittee} />,
+	];
 }

@@ -6,16 +6,15 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { Input } from "@nextui-org/input";
 import { updateSearchParams, removeSearchParams } from "@/lib/searchParams";
 import { useEffect } from "react";
-import { Button } from "@nextui-org/react";
+import { Button } from "@/components/button";
 import { Icon } from "@iconify/react";
-import { Avatar, AvatarGroup } from "@nextui-org/avatar";
+import { Avatar } from "@nextui-org/avatar";
 import { ScrollShadow } from "@nextui-org/scroll-shadow";
 import { Tab, Tabs } from "@nextui-org/tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import { flushSync as flush } from "react-dom";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import useWindowDimensions from "@/hooks/use-window-dimensions";
 
 export function Navbar({
 	title = "" as any,
@@ -106,10 +105,8 @@ export function Navbar({
 					<div className="flex h-12 w-full overflow-hidden bg-content1/60 align-middle md:relative md:rounded-xl">
 						{!hideBackButton && (
 							<Button
-								isIconOnly
 								className="m-0 ml-auto h-auto rounded-none border-r border-divider px-4"
-								onPress={() => setIsSearchOpen(!isSearchOpen)}
-								startContent={<Icon className="flex-none text-current" icon="solar:alt-arrow-left-outline" width={24} />}></Button>
+								onClick={() => setIsSearchOpen(!isSearchOpen)}></Button>
 						)}
 						<div className="relative w-full">
 							<AnimatePresence mode="wait">

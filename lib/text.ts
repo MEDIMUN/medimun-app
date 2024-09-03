@@ -93,6 +93,24 @@ export function postProcessUsername(username: string): string {
 	return username;
 }
 
+export function processSlug(string: string): string {
+	if (!string) return null;
+	// Remove all double spaces
+	string = string.replace(/\s+/g, " ");
+
+	//replace all spaces with -
+
+	string = string.replace(/\s+/g, "-");
+
+	// Remove all characters except a-z 0-9 and -
+	string = string.replace(/[^a-z0-9-]/gi, "");
+
+	// Remove leading and trailing underscores
+	string = string.replace(/^-+|-+$/g, "");
+
+	return string;
+}
+
 export function processPronouns(pronouns: string): string {
 	if (!pronouns) return null;
 	pronouns = pronouns?.toLowerCase()?.trim()?.replace(" ", "");
@@ -118,4 +136,32 @@ export function capitaliseEachWord(str: String): String {
 		.split(" ")
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
 		.join(" ");
+}
+
+export function processMarkdownPreview(markdown: string): string {
+	if (!markdown) return null;
+	//get first 250 characters
+	markdown = markdown.trim().slice(0, 350);
+
+	markdown = markdown.replace(/\s+/g, " ");
+
+	//replace line breaks with spaces
+
+	markdown = markdown.replace(/\n/g, " ");
+
+	// Remove all characters except a-z 0-9 and -
+	markdown = markdown.replace(/[^a-zA-Z0-9 ]/gi, "᧢");
+
+	//replace all multiple @s with a single @
+
+	markdown = markdown.replace(/᧢+/g, "");
+
+	//replace all @ with spaces
+
+	markdown = markdown.replace(/᧢/g, " ");
+
+	// Remove leading and trailing underscores
+	markdown = markdown.replace(/^-+|-+$/g, "");
+
+	return markdown;
 }

@@ -146,33 +146,35 @@ export function authorizedToEditResource(authSession, editResourceData) {
 		SESSIONDIRECTORS: isManagement,
 		SESSIONSENIORDIRECTORS: isManagement,
 		COMMITTEEWEBSITE:
-			isManagement || authorizeChairCommittee([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.committeeId),
-		COMMITTEECHAIR: isManagement || authorizeChairCommittee([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.committeeId),
+			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
+		COMMITTEECHAIR:
+			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
 		COMMITTEEMANAGER:
-			isManagement || authorizeChairCommittee([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.committeeId),
+			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
 		COMMITTEEDELEGATE:
-			isManagement || authorizeChairCommittee([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.committeeId),
-		COMMITTEEMEMBER: isManagement || authorizeChairCommittee([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.committeeId),
+			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
+		COMMITTEEMEMBER:
+			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
 		COMMITTEESECRETARIAT:
-			isManagement || authorizeChairCommittee([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.committeeId),
+			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
 		COMMITTEESCHOOLDIRECTORS:
-			isManagement || authorizeChairCommittee([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.committeeId),
+			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
 		COMMITTEEDIRECTORS:
-			isManagement || authorizeChairCommittee([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.committeeId),
+			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
 		COMMITTEESENIORDIRECTORS:
-			isManagement || authorizeChairCommittee([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.committeeId),
+			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
 		DEPARTMENTWEBSITE:
-			isManagement || authorizeManagerDepartment([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.departmentId),
+			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
 		DEPARTMENTMANAGER:
-			isManagement || authorizeManagerDepartment([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.departmentId),
+			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
 		DEPARTMENTMEMBER:
-			isManagement || authorizeManagerDepartment([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.departmentId),
+			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
 		DEPARTMENTSECRETARIAT:
-			isManagement || authorizeManagerDepartment([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.departmentId),
+			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
 		DEPARTMENTDIRECTORS:
-			isManagement || authorizeManagerDepartment([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.departmentId),
+			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
 		DEPARTMENTSENIORDIRECTORS:
-			isManagement || authorizeManagerDepartment([...authSession?.currentRoles, ...authSession?.pastRoles], editResourceData.departmentId),
+			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
 		SYSTEM: authorize(authSession, [s.admins]),
 		PERSONAL: authSession?.user.id === editResourceData?.userId,
 	};

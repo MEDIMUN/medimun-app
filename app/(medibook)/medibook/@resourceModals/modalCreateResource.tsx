@@ -9,7 +9,7 @@ import { Input } from "@/components/input";
 import { Link } from "@/components/link";
 import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/listbox";
 import { Select } from "@/components/select";
-import { useFlushState } from "@/hooks/use-flush-state";
+import { useFlushState } from "@/hooks/useFlushState";
 import { authorize, authorizeChairCommittee, authorizeManagerDepartment, s } from "@/lib/authorize";
 import { cn } from "@/lib/cn";
 import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
@@ -23,7 +23,7 @@ import { greaterScopeList, innerScopeList, searchParamsGreaterScopeMap, useableS
 export function ModalUploadResource() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const { data: authSession } = useSession();
+	const { data: authSession, status } = useSession();
 	const isManagement = authorize(authSession, [s.management]);
 	const inputRef = useRef(null);
 	const [file, setFile] = useState(null);
@@ -67,27 +67,34 @@ export function ModalUploadResource() {
 		setUrl(initialValue);
 	};
 
-	const searchParamsGreaterScopeOpen = {
-		uploadsessionprospectus: isManagement,
-		uploadglobalresource: authorize(authSession, [s.admins, s.director, s.sd]),
-		uploadsessionresource: isManagement && searchParams.get("uploadsessionresource"),
-		uploadcommitteeresource:
-			(isManagement || authorizeChairCommittee(authSession?.currentRoles, searchParams.get("uploadcommitteeresource"))) &&
-			searchParams.get("uploadcommitteeresource"),
-		uploaddepartmentresource:
-			(isManagement || authorizeManagerDepartment(authSession?.currentRoles, searchParams.get("uploaddepartmentresource"))) &&
-			searchParams.get("uploaddepartmentresource"),
-		uploadresource: true,
-		uploadsystemresource: authorize(authSession, [s.admins, s.sd]),
-	};
+	const searchParamsGreaterScopeOpen =
+		status === "authenticated"
+			? {
+					uploadsessionprospectus: isManagement,
+					uploadglobalresource: authorize(authSession, [s.admins, s.director, s.sd]),
+					uploadsessionresource: isManagement && searchParams.get("uploadsessionresource"),
+					uploadcommitteeresource:
+						(isManagement ||
+							authorizeChairCommittee(
+								[...authSession.user.pastRoles, ...authSession.user.currentRoles],
+								searchParams.get("uploadcommitteeresource")
+							)) &&
+						searchParams.get("uploadcommitteeresource"),
+					uploaddepartmentresource:
+						(isManagement ||
+							authorizeManagerDepartment(
+								[...authSession.user.pastRoles, ...authSession.user.currentRoles],
+								searchParams.get("uploaddepartmentresource")
+							)) &&
+						searchParams.get("uploaddepartmentresource"),
+					uploadresource: true,
+					uploadsystemresource: authorize(authSession, [s.admins, s.sd]),
+			  }
+			: {};
 
-	const allSearchParams = Object.fromEntries(searchParams?.entries());
-	const allSearchParamsKeys = !!searchParams.size
-		? searchParams
-				?.keys()
-				?.toArray()
-				?.filter((key) => useableSearchParams?.includes(key))
-		: [];
+	const allSearchParams = Object.fromEntries(searchParams?.entries() || []);
+	const allSearchParamsKeys = [...(searchParams?.keys() || [])].filter((key) => useableSearchParams?.includes(key));
+
 	const currentGreaterScope = searchParamsGreaterScopeMap[allSearchParamsKeys[0]];
 	const filteredGreaterScopeList = greaterScopeList.filter((scope) => currentGreaterScope?.includes(scope.value));
 	const openConditionBasedOnSearchParams = searchParamsGreaterScopeOpen[allSearchParamsKeys[0]];

@@ -1,12 +1,11 @@
-const { nextui } = require( "@nextui-org/react" );
-
+const { nextui } = require( "@nextui-org/theme" );
 const svgToDataUri = require( "mini-svg-data-uri" );
 
 const { default: flattenColorPalette } = require( "tailwindcss/lib/util/flattenColorPalette" );
 
 const config = {
    darkMode: [ "class" ],
-   content: [ "./nextui/**/*.{ts,tsx,js,jsx}", "./nextuipro/**/*.{ts,tsx,js,jsx}", "./components/**/*.{js,jsx,ts,tsx}", "./app/**/*.{ts,tsx,js,jsx}", "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}" ],
+   content: [ "./components/**/*.{js,jsx,ts,tsx}", "./app/**/*.{ts,tsx,js,jsx}", "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}" ],
    prefix: "",
    theme: {
       container: {

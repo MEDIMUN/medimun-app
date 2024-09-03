@@ -213,8 +213,8 @@ export async function removeRole(role, userID) {
 }
 
 export async function addRole(formData, users) {
-	const session = await auth();
-	if (!session || !authorize(session, [s.management])) return { ok: false, message: "Not Authorized" };
+	const authSession = await auth();
+	if (!authSession || !authorize(authSession, [s.management])) return { ok: false, message: "Not Authorized" };
 
 	const userQuery = await prisma.user.findMany({
 		where: { id: { in: users } },
@@ -225,7 +225,7 @@ export async function addRole(formData, users) {
 
 	const usersToBeAssignedRoles = usersWithData
 		.filter((user) => {
-			return user.highestRoleRank > session.highestRoleRank;
+			return user.highestRoleRank > authSession.user.highestRoleRank;
 		})
 		.map((user) => {
 			return user.id;
@@ -266,7 +266,17 @@ export async function addRole(formData, users) {
 					})
 				)
 				.catch((e) => error(e));
-			break;
+			await prisma
+				.$transaction(
+					usersToBeAssignedRoles.map((userId) => {
+						return prisma.role.upsert({
+							where: { userId_committeeId: { userId, committeeId }, type: "delegate" },
+							update: { userId, country, committeeId, type: "delegate" },
+							create: { userId, country, committeeId, type: "delegate" },
+						});
+					})
+				)
+				.catch((e) => error(e));
 		case "chair":
 			await prisma
 				.$transaction(
@@ -279,6 +289,18 @@ export async function addRole(formData, users) {
 					})
 				)
 				.catch((e) => error(e));
+			await prisma
+				.$transaction(
+					usersToBeAssignedRoles.map((userId) => {
+						return prisma.role.upsert({
+							where: { userId_committeeId: { userId, committeeId }, type: "chair" },
+							update: { userId, committeeId, type: "chair" },
+							create: { userId, committeeId, type: "chair" },
+						});
+					})
+				)
+				.catch((e) => error(e));
+
 			break;
 		case "member":
 			await prisma
@@ -288,6 +310,17 @@ export async function addRole(formData, users) {
 							where: { userId_departmentId: { userId, departmentId } },
 							update: { userId, departmentId },
 							create: { userId, departmentId },
+						});
+					})
+				)
+				.catch((e) => error(e));
+			await prisma
+				.$transaction(
+					usersToBeAssignedRoles.map((userId) => {
+						return prisma.role.upsert({
+							where: { userId_departmentId: { userId, departmentId }, type: "member" },
+							update: { userId, departmentId, type: "member" },
+							create: { userId, departmentId, type: "member" },
 						});
 					})
 				)
@@ -305,6 +338,17 @@ export async function addRole(formData, users) {
 					})
 				)
 				.catch((e) => error(e));
+			await prisma
+				.$transaction(
+					usersToBeAssignedRoles.map((userId) => {
+						return prisma.role.upsert({
+							where: { userId_departmentId: { userId, departmentId }, type: "manager" },
+							update: { userId, departmentId, type: "manager" },
+							create: { userId, departmentId, type: "manager" },
+						});
+					})
+				)
+				.catch((e) => error(e));
 			break;
 		case "schoolDirector":
 			await prisma
@@ -314,6 +358,17 @@ export async function addRole(formData, users) {
 							where: { userId_schoolId_sessionId: { userId, schoolId, sessionId } },
 							update: { userId, schoolId, sessionId },
 							create: { userId, schoolId, sessionId },
+						});
+					})
+				)
+				.catch((e) => error(e));
+			await prisma
+				.$transaction(
+					usersToBeAssignedRoles.map((userId) => {
+						return prisma.role.upsert({
+							where: { userId_schoolId_sessionId: { userId, schoolId, sessionId }, type: "schoolDirector" },
+							update: { userId, schoolId, sessionId, type: "schoolDirector" },
+							create: { userId, schoolId, sessionId, type: "schoolDirector" },
 						});
 					})
 				)
@@ -331,6 +386,17 @@ export async function addRole(formData, users) {
 					})
 				)
 				.catch((e) => error(e));
+			await prisma
+				.$transaction(
+					usersToBeAssignedRoles.map((userId) => {
+						return prisma.role.upsert({
+							where: { userId_sessionId_type: { userId, sessionId, type: "deputyPresidentOfTheGeneralAssembly" } },
+							update: { userId, sessionId, type: "deputyPresidentOfTheGeneralAssembly" },
+							create: { userId, sessionId, type: "deputyPresidentOfTheGeneralAssembly" },
+						});
+					})
+				)
+				.catch((e) => error(e));
 			break;
 		case "deputySecretaryGeneral":
 			await prisma
@@ -344,6 +410,17 @@ export async function addRole(formData, users) {
 					})
 				)
 				.catch((e) => error(e));
+			await prisma
+				.$transaction(
+					usersToBeAssignedRoles.map((userId) => {
+						return prisma.role.upsert({
+							where: { userId_sessionId_type: { userId, sessionId, type: "deputySecretaryGeneral" } },
+							update: { userId, sessionId, type: "deputySecretaryGeneral" },
+							create: { userId, sessionId, type: "deputySecretaryGeneral" },
+						});
+					})
+				)
+				.catch((e) => error(e));
 		case "presidentOfTheGeneralAssembly":
 			await prisma
 				.$transaction(
@@ -352,6 +429,17 @@ export async function addRole(formData, users) {
 							where: { userId_sessionId: { userId, sessionId } },
 							update: { userId, sessionId },
 							create: { userId, sessionId },
+						});
+					})
+				)
+				.catch((e) => error(e));
+			await prisma
+				.$transaction(
+					usersToBeAssignedRoles.map((userId) => {
+						return prisma.role.upsert({
+							where: { userId_sessionId_type: { userId, sessionId, type: "presidentOfTheGeneralAssembly" } },
+							update: { userId, sessionId, type: "presidentOfTheGeneralAssembly" },
+							create: { userId, sessionId, type: "presidentOfTheGeneralAssembly" },
 						});
 					})
 				)
@@ -369,6 +457,17 @@ export async function addRole(formData, users) {
 					})
 				)
 				.catch((e) => error(e));
+			await prisma
+				.$transaction(
+					usersToBeAssignedRoles.map((userId) => {
+						return prisma.role.upsert({
+							where: { userId_sessionId_type: { userId, sessionId, type: "secretaryGeneral" } },
+							update: { userId, sessionId, type: "secretaryGeneral" },
+							create: { userId, sessionId, type: "secretaryGeneral" },
+						});
+					})
+				)
+				.catch((e) => error(e));
 			break;
 		case "director":
 			await prisma
@@ -378,6 +477,19 @@ export async function addRole(formData, users) {
 					})
 				)
 				.catch((e) => error(e));
+			usersToBeAssignedRoles.forEach(async (userId) => {
+				const director = await prisma.role.findFirst({ where: { userId: userId, type: "director" } }).catch((e) => error(e));
+				if (!director) {
+					await prisma.role
+						.create({
+							data: {
+								userId: userId,
+								type: "director",
+							},
+						})
+						.catch((e) => error(e));
+				}
+			});
 			break;
 		case "seniorDirector":
 			await prisma
@@ -387,6 +499,19 @@ export async function addRole(formData, users) {
 					})
 				)
 				.catch((e) => error(e));
+			usersToBeAssignedRoles.forEach(async (userId) => {
+				const seniorDirector = await prisma.role.findFirst({ where: { userId: userId, type: "seniorDirector" } }).catch((e) => error(e));
+				if (!seniorDirector) {
+					await prisma.role
+						.create({
+							data: {
+								userId: userId,
+								type: "seniorDirector",
+							},
+						})
+						.catch((e) => error(e));
+				}
+			});
 			break;
 		case "admin":
 			await prisma
@@ -396,6 +521,19 @@ export async function addRole(formData, users) {
 					})
 				)
 				.catch((e) => error(e));
+			usersToBeAssignedRoles.forEach(async (userId) => {
+				const admin = await prisma.role.findFirst({ where: { userId: userId, type: "admin" } }).catch((e) => error(e));
+				if (!admin) {
+					await prisma.role
+						.create({
+							data: {
+								userId: userId,
+								type: "admin",
+							},
+						})
+						.catch((e) => error(e));
+				}
+			});
 			break;
 		case "globalAdmin":
 			await prisma
@@ -405,20 +543,32 @@ export async function addRole(formData, users) {
 					})
 				)
 				.catch((e) => error(e));
+			usersToBeAssignedRoles.forEach(async (userId) => {
+				const globalAdmin = await prisma.role.findFirst({ where: { userId: userId, type: "globalAdmin" } }).catch((e) => error(e));
+				if (!globalAdmin) {
+					await prisma.role
+						.create({
+							data: {
+								userId: userId,
+								type: "globalAdmin",
+							},
+						})
+						.catch((e) => error(e));
+				}
+			});
 			break;
 	}
 	return { ok: true, message: "Roles added" };
 }
 
 function error(e) {
-	console.error(e);
 	return { ok: false, message: "Error" };
 }
 
 export async function toggleDisableOrEnableUsers(userIds, disable = true) {
-	const session = await auth();
-	const highestRoleRank = session.highestRoleRank;
-	if (!session || !authorize(session, [s.management])) return { ok: false, message: "Not authorized." };
+	const authSession = await auth();
+	const highestRoleRank = authSession.user.highestRoleRank;
+	if (!authSession || !authorize(authSession, [s.management])) return { ok: false, message: "Not authorized." };
 
 	let usersToBeDisabled = (await prisma.user.findMany({ where: { id: { in: userIds } }, include: { ...generateUserDataObject() } }).catch(() => {
 		return { ok: false, message: "Error while finding users." };
@@ -526,7 +676,8 @@ export async function editUser(formData) {
 
 	if (error) return { ok: false, message: "Invalid data." };
 
-	if (authSession.highestRoleRank >= userData.highestRoleRank) return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
+	if (authSession.user.highestRoleRank >= userData.highestRoleRank)
+		return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
 
 	//Check if the username already exists fo some other user
 	if (data.username) {
@@ -692,7 +843,8 @@ export async function unafilliateStudent(studentId: string) {
 	const authSchoolDirectorRoles = authSession?.user.currentRoles.filter((role) => role.roleIdentifier === "schoolDirector");
 	const studentSchoolId = userData?.schoolId;
 	const isDirectorOfStudent = authSchoolDirectorRoles?.some((role) => role.schoolId === studentSchoolId);
-	if (authSession.highestRoleRank > userData.highestRoleRank) return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
+	if (authSession.user.highestRoleRank > userData.highestRoleRank)
+		return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
 
 	if (!isDirectorOfStudent) return { ok: false, message: "Not authorized." };
 	try {

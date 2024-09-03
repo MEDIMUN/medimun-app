@@ -8,7 +8,7 @@ import { Button } from "@/components/button";
 import { Dialog, DialogActions, DialogBody, DialogTitle } from "@/components/dialog";
 import { Description, Field, Label } from "@/components/fieldset";
 import { Input } from "@/components/input";
-import { useFlushState } from "@/hooks/use-flush-state";
+import { useFlushState } from "@/hooks/useFlushState";
 import { Select } from "@/components/select";
 import { editResourceDetails } from "./action";
 import { toast } from "sonner";

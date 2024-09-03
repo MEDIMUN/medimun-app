@@ -9,7 +9,7 @@ import { addSchool, deleteCoverImage, deleteSchool, editSchool, updateCoverImage
 import { countries } from "@/data/countries";
 import { SlugInput } from "@/components/slugInput";
 import { toast } from "sonner";
-import { useFlushState } from "@/hooks/use-flush-state";
+import { useFlushState } from "@/hooks/useFlushState";
 import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { Description, Field, Label } from "@/components/fieldset";
@@ -246,7 +246,7 @@ export function DeleteSchoolModal({ school, total }) {
 			toast.success(res?.message);
 			if (isChange && pageInteger == Math.ceil(total / 10)) {
 				const page = pageInteger ? pageInteger - 1 : 1;
-				updateSearchParams({ deleteschool: "", page: page });
+				updateSearchParams({ "delete-school": "", page: page });
 			}
 			onClose(searchParams, router);
 		} else {

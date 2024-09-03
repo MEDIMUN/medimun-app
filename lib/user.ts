@@ -1,5 +1,5 @@
 import { RoleName, RoleObject } from "@/auth";
-import { roleRanks } from "@/constants";
+import { roleRanks } from "@/data/constants";
 import { countries } from "@/data/countries";
 import prisma from "@/prisma/client";
 
@@ -299,6 +299,7 @@ export function generateUserData(userObject) {
 		highestRoleRank: Math.min(...allCurrentRoleranks),
 		pastRoles: allFullPastRoles as RoleObject[],
 		pastRoleNames: allFilteredPastRoles as RoleName[],
+		isDisabled: userObject.isDisabled,
 	};
 }
 

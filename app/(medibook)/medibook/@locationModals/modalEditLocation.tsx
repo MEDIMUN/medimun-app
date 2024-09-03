@@ -9,7 +9,7 @@ import { deleteCoverImage, editLocation, updateCoverImage } from "./actions";
 import { countries } from "@/data/countries";
 import { SlugInput } from "@/components/slugInput";
 import { toast } from "sonner";
-import { useFlushState } from "@/hooks/use-flush-state";
+import { useFlushState } from "@/hooks/useFlushState";
 import { removeSearchParams } from "@/lib/searchParams";
 import { Dialog, DialogActions, DialogBody, DialogTitle } from "@/components/dialog";
 import { Description, Field, Label } from "@/components/fieldset";

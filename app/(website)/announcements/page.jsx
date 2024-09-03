@@ -9,7 +9,7 @@ export default async function Page() {
 	const announcements = await getData();
 	return (
 		<>
-			<div id={id} className="z-[40] h-auto w-full bg-transparent bg-cover font-[Montserrat] text-xl font-[700] text-white">
+			<div className="z-[40] h-auto w-full bg-transparent bg-cover font-[Montserrat] text-xl font-[700] text-white">
 				<div className="mx-auto flex h-auto w-full max-w-[1200px] flex-col gap-10 bg-transparent pt-[96px] md:p-4 md:pt-[96px]">
 					<div>
 						<h1 className="ml-4 rounded-3xl font-[Montserrat] text-[35px] font-[700] text-white">Announcements</h1>

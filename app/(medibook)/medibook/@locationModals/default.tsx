@@ -9,10 +9,10 @@ export default async function Modal({ searchParams }) {
 	const queryObject = { where: { name: { contains: query, mode: "insensitive" } } };
 
 	let edit, del, numberOfSchools;
-	if (searchParams?.edit) {
+	if (searchParams?.["edit-location"]) {
 		edit = await prisma.location.findUnique({ where: { id: searchParams["edit-location"] } }).catch();
 	}
-	if (searchParams?.delete) {
+	if (searchParams?.["delete-location"]) {
 		del = await prisma.location.findUnique({ where: { id: searchParams["delete-location"] }, include: { school: true } }).catch();
 		numberOfSchools = prisma.location.count(queryObject as any).catch(() => 0);
 	}

@@ -15,7 +15,6 @@ export async function GET(request, { params }) {
 			},
 		});
 	} catch (e) {
-		console.error(e);
 		notFound();
 	}
 
