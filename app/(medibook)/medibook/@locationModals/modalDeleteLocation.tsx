@@ -13,13 +13,14 @@ import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } fro
 import { Field, Label } from "@/components/fieldset";
 
 export function DeleteLocationModal({ location, total }) {
-	if (!location) return;
 	const { data: session, status } = useSession();
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const pageInteger = parseInt(searchParams.get("page"));
 
 	const [isLoading, setIsLoading] = useFlushState(false);
+
+	if (!location) return;
 
 	async function deleteLocationHandler(formData: FormData) {
 		formData.append("id", location.id);

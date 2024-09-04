@@ -69,6 +69,7 @@ export function Sidebar({ sessions }) {
 	const { data: authSession, status } = useSession();
 	const pathname = usePathname();
 	const router = useRouter();
+	const isManagement = authorize(authSession, [s.management]);
 
 	const {
 		sessionsData,
@@ -86,13 +87,15 @@ export function Sidebar({ sessions }) {
 	useEffect(() => {
 		setSessionsData(sessions);
 		setSelectedSession(sessions[0]?.number);
-	}, []);
+	}, [setSessionsData, setSelectedSession, sessions]);
 
 	const basePath = `/medibook/sessions/${selectedSession}`;
 	const pastRoles = authSession?.user.pastRoles;
 	const currentRoles = authSession?.user.currentRoles;
 
 	useEffect(() => {
+		let allCurrentAndPastRoles, schoolDirectorRoles;
+
 		const getSessionFromPath = () => {
 			const parts = pathname.split("/");
 			if (parts.length >= 3 && parts[1] === "medibook" && parts[2] === "sessions") {
@@ -100,12 +103,27 @@ export function Sidebar({ sessions }) {
 			}
 			return null;
 		};
+		/* FIX
+		 */ async function handleSessionChange() {
+			let sessionData = await getSessionData(selectedSession);
+			const sortedCommittees = sessionData?.committee.sort((a, b) => {
+				const committeeType = ["GENERALASSEMBLY", "SECURITYCOUNCIL", "SPECIALCOMMITTEE"];
+				return committeeType.indexOf(a.type) - committeeType.indexOf(b.type);
+			});
+
+			allCurrentAndPastRoles = [].concat(currentRoles).concat(pastRoles);
+			schoolDirectorRoles = allCurrentAndPastRoles.filter((role) => role?.roleIdentifier === "schoolDirector");
+			setSchoolDirectorRole(schoolDirectorRoles?.find((role) => role?.session === selectedSession));
+
+			if (!sessionData?.committee) return;
+			sessionData.committee = sortedCommittees;
+			setSelectedSessionData(sessionData);
+		}
 
 		const sessionFromPath = getSessionFromPath();
-		if (sessionFromPath) setSelectedSession(sessionFromPath);
-	}, [pathname]);
 
-	useEffect(() => {
+		if (sessionFromPath) setSelectedSession(sessionFromPath);
+
 		if (selectedSession) {
 			let baseUrl = `/medibook/sessions/${selectedSession}`;
 			const urlParts = pathname.split("/");
@@ -115,28 +133,9 @@ export function Sidebar({ sessions }) {
 			}
 			if (pathname !== baseUrl && pathname.includes("/medibook/sessions/")) router.push(baseUrl);
 		}
+
 		handleSessionChange();
-	}, [selectedSession]);
-
-	let allCurrentAndPastRoles, schoolDirectorRoles;
-
-	async function handleSessionChange() {
-		let sessionData = await getSessionData(selectedSession);
-		const sortedCommittees = sessionData?.committee.sort((a, b) => {
-			const committeeType = ["GENERALASSEMBLY", "SECURITYCOUNCIL", "SPECIALCOMMITTEE"];
-			return committeeType.indexOf(a.type) - committeeType.indexOf(b.type);
-		});
-
-		allCurrentAndPastRoles = [].concat(currentRoles).concat(pastRoles);
-		schoolDirectorRoles = allCurrentAndPastRoles.filter((role) => role?.roleIdentifier === "schoolDirector");
-		setSchoolDirectorRole(schoolDirectorRoles?.find((role) => role?.session === selectedSession));
-
-		if (!sessionData?.committee) return;
-		sessionData.committee = sortedCommittees;
-		setSelectedSessionData(sessionData);
-	}
-
-	const isManagement = authorize(authSession, [s.management]);
+	}, [selectedSession, status, router, setSchoolDirectorRole, setSelectedSessionData, currentRoles, pastRoles, pathname, setSelectedSession]);
 
 	const committeeOptionsList = [
 		{ name: "Overview", href: ``, isVisible: true, icon: "heroicons-solid:home" },
@@ -167,8 +166,6 @@ export function Sidebar({ sessions }) {
 						)}
 					/>
 				</div>
-				{/* 				<Icon slot="icon" icon={committee.icon} height={20} />
-				 */}
 				<SidebarLabel>{committee.name}</SidebarLabel>
 			</SidebarItem>
 		));
@@ -180,10 +177,6 @@ export function Sidebar({ sessions }) {
 		setSessionsData([...sessionsData, ...moreSessions]);
 		setIsLoading(false);
 	}
-
-	useEffect(() => {
-		handleSessionChange();
-	}, [status]);
 
 	const schoolDirectorBasePath = `/medibook/schools/${schoolDirectorRole?.schoolSlug || schoolDirectorRole?.schoolId}`;
 

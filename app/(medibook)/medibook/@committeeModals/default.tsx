@@ -19,9 +19,11 @@ export default async function Modals({ searchParams }) {
 		}
 	}
 
-	return [
-		<ModalCreateCommittee />,
-		<ModalDeleteCommittee selectedCommittee={editCommittee} />,
-		<ModalEditCommittee selectedCommittee={editCommittee} />,
-	];
+	return (
+		<>
+			<ModalCreateCommittee />
+			<ModalDeleteCommittee selectedCommittee={editCommittee} />
+			<ModalEditCommittee selectedCommittee={editCommittee} />
+		</>
+	);
 }

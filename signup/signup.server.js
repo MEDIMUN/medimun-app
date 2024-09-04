@@ -1,4 +1,4 @@
-"use server";
+/* "use server";
 
 import "server-only";
 
@@ -265,3 +265,4 @@ export async function createUser ( email, code ) {
 		message: "User created successfully",
 	};
 }
+ */

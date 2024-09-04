@@ -81,7 +81,8 @@ export default async function Page({ params, searchParams }) {
 			emptyHref={`/medibook/sessions`}
 			currentPage={currentPage}
 			total={Math.ceil((total as number) / daysPerPage)}
-			modals={[<Modal locations={locations} edit={edit} selectedSession={selectedSession} />, <DeleteModal />]}>
+			/* modals={[<Modal locations={locations} edit={edit} selectedSession={selectedSession} />, <DeleteModal />]} */
+		>
 			{allDays.map((day: any, index: number) => {
 				const date = new Date(day.date).toUTCString().slice(0, 16);
 				const today = new Date().toUTCString().slice(0, 16);

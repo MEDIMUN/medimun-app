@@ -20,8 +20,12 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
 const itemsPerPage = 10;
 
 const rows = [
-	<span className="sr-only">Actions</span>,
-	<span className="sr-only">Profile Picture</span>,
+	<span key="actions" className="sr-only">
+		Actions
+	</span>,
+	<span key="avatar" className="sr-only">
+		Profile Picture
+	</span>,
 	"Name",
 	"Surname",
 	"Display Name",

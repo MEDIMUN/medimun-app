@@ -60,7 +60,7 @@ export function SearchBar({ placeholder = "Search...", debounceDelay = 500, defa
 		} else {
 			removeSearchParams({ search: "" }, router);
 		}
-	}, [debouncedSearch]);
+	}, [debouncedSearch, router]);
 
 	return (
 		<InputGroup className="w-full">

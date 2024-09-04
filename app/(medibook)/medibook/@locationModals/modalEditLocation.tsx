@@ -82,7 +82,7 @@ export function EditLocationModal({ edit }) {
 		} else {
 			setUrl("/placeholders/cover.jpg");
 		}
-	}, [edit]);
+	}, [edit, setUrl]);
 
 	function onClose() {
 		if (searchParams.has("return")) {

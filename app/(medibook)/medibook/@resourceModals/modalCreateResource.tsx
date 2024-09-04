@@ -153,7 +153,7 @@ export function ModalUploadResource() {
 							<Description>
 								Changes which roles within the scope can see the resource.
 								<br />
-								Don't change this unless you know what you are doing.
+								Don&apos;t change this unless you know what you are doing.
 							</Description>
 							<Listbox disabled={isLoading} multiple value={innerScope} onChange={(val) => setInnerScope(val)}>
 								{innerScopeList[greaterScope]?.map((scope) => (
@@ -236,7 +236,7 @@ export function ModalUploadResource() {
 							<Field>
 								<Label>Share Anonymously</Label>
 								<Description>
-									Anonymously shared files will not show the uploader's name. Management members can still see the uploader's name.
+									Anonymously shared files will not show the uploader&apos;s name. Management members can still see the uploader&apos;s name.
 								</Description>
 								<Select disabled={isLoading} name="isAnonymous" defaultValue="false">
 									<option value="false">Not Anonymous</option>
@@ -248,7 +248,7 @@ export function ModalUploadResource() {
 				</form>
 				{file && (
 					<div className="mt-4 grid w-full grid-cols-1 gap-2 overflow-hidden rounded-xl border p-2">
-						{file?.type.includes("image") && <img className="w-full rounded-lg" src={fileUrl} />}
+						{file?.type.includes("image") && <img alt="Uploaded file image" className="w-full rounded-lg" src={fileUrl} />}
 						{file?.type.includes("pdf") && <iframe className="aspect-square h-auto w-full rounded-lg" src={`${fileUrl}#toolbar=0&navpanes=0`} />}
 						{!file?.type.includes("image") && !file?.type.includes("pdf") && <Subheading className="mb-[6px] ml-1">{file?.name}</Subheading>}
 						<Button disabled={isLoading} color="red" className="w-full" onClick={() => setFile(null)}>
@@ -258,7 +258,7 @@ export function ModalUploadResource() {
 				)}
 			</DialogBody>
 			<DialogDescription>
-				Don't close or refresh the page until the upload is complete. We don't guarantee the safety of files, more at our{" "}
+				Don&apos;t close or refresh the page until the upload is complete. We don&apos;t guarantee the safety of files, more at our{" "}
 				<Link className="underline hover:text-primary" href="/terms#files" target="_blank">
 					terms of service
 				</Link>

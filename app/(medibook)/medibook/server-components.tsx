@@ -30,7 +30,12 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 			<Table className="showscrollbar">
 				<TableHead>
 					<TableRow>
-						{[<span className="sr-only">Actions</span>, ...tableColumns].map((row, i) => (
+						{[
+							<span key="actions" className="sr-only">
+								Actions
+							</span>,
+							...tableColumns,
+						].map((row, i) => (
 							<TableHeader key={i}>{row}</TableHeader>
 						))}
 					</TableRow>
@@ -57,17 +62,17 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 								{tableColumns.includes("Scope") && (
 									<TableCell>
 										<div className="mr-auto flex flex-wrap gap-1">
-											{resource.scope.map((scope) => {
+											{resource.scope.map((scope, index) => {
 												if (scope.includes("SESSION")) {
 													return (
-														<Badge color="purple" className="max-w-min">
+														<Badge key={index} color="purple" className="max-w-min">
 															{capitaliseEachWord(scope.replace("SESSION", ""))} (Session {romanize(resource?.session?.number)})
 														</Badge>
 													);
 												}
 												if (scope.includes("COMMITTEE")) {
 													return (
-														<Badge color="purple" className="max-w-min">
+														<Badge key={index} color="purple" className="max-w-min">
 															{capitaliseEachWord(scope.replace("COMMITTEE", ""))} viewing{" "}
 															{resource?.committee?.shortName || resource?.committee?.name} in Session {romanize(resource?.committee?.session.number)}
 														</Badge>
@@ -75,7 +80,7 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 												}
 												if (scope.includes("DEPARTMENT")) {
 													return (
-														<Badge color="purple" className="max-w-min">
+														<Badge key={index} color="purple" className="max-w-min">
 															{capitaliseEachWord(scope.replace("DEPARTMENT", ""))} viewing{" "}
 															{resource?.department?.shortName || resource?.department?.name} in Session{" "}
 															{romanize(resource?.department?.session.number)}
@@ -84,13 +89,13 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 												}
 												if (scope.includes("PERSONAL")) {
 													return (
-														<Badge color="purple" className="max-w-min">
+														<Badge key={index} color="purple" className="max-w-min">
 															{capitaliseEachWord(scope)}
 														</Badge>
 													);
 												}
 												return (
-													<Badge color="purple" className="max-w-min">
+													<Badge key={index} color="purple" className="max-w-min">
 														{capitaliseEachWord(scope)}
 													</Badge>
 												);

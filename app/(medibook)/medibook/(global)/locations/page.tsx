@@ -12,7 +12,18 @@ import { parseOrderDirection } from "@/lib/orderDirection";
 
 const locationsPerPage = 10;
 
-const rows = [<span className="sr-only">Actions</span>, "Name", "Country", "Short Name", "Linked Schools", "Phone", "Email", "Website"];
+const rows = [
+	<span key="actions" className="sr-only">
+		Actions
+	</span>,
+	"Name",
+	"Country",
+	"Short Name",
+	"Linked Schools",
+	"Phone",
+	"Email",
+	"Website",
+];
 
 const sortOptions = [
 	{ value: "name", order: "asc", label: "Name", description: "Ascending" },

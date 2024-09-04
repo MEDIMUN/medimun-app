@@ -1,9 +1,9 @@
 import prisma from "@/prisma/client";
-import { MDXRemote } from "next-mdx-remote/rsc";
+import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Link } from "@nextui-org/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
 
 export default async function Page({ params }) {
 	const announcement = await getData(params.announcementId);

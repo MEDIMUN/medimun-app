@@ -121,7 +121,7 @@ export default async function Page({ params }) {
 				</div>
 			) : (
 				<div className="mt-8 rounded-lg border bg-zinc-100 p-4 text-center text-sm md:text-left">
-					The school page is not available yet as address details haven't been added.
+					The school page is not available yet as address details haven&apos;t been added.
 					<br />
 					The current full address is <span className="font-semibold">{fullAddress}</span>.
 					<Divider className="my-2" />
@@ -129,7 +129,8 @@ export default async function Page({ params }) {
 					{school.isPublic && (
 						<span className="text-xs">
 							<br />
-							This school's visibility is set to "Public", as soon as you add enough address details this page will be generated and made public.
+							This school&apos;s visibility is set to &quot;Public&quot;, as soon as you add enough address details this page will be generated and
+							made public.
 						</span>
 					)}
 				</div>

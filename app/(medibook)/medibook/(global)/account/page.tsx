@@ -81,8 +81,8 @@ export default async function Settings({ searchParams }) {
 					<div className="space-y-1">
 						<Subheading>Profile Picture</Subheading>
 						<Text>
-							Your profile picture will be visible to everyone. You <b>don't</b> need to click save below. You need to be currently affiliated to be
-							able to update your profile picture.
+							Your profile picture will be visible to everyone. You <b>don&apos;t</b> need to click save below. You need to be currently affiliated to
+							be able to update your profile picture.
 						</Text>
 					</div>
 					<div className="my-auto grid gap-6">

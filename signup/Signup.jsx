@@ -1,4 +1,4 @@
-"use client";
+/* "use client";
 
 import { useState } from "react";
 import { Icons } from "@/components/icons";
@@ -13,7 +13,7 @@ import { cn } from "@/lib/cn";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { countries } from "@/data/countries.js";
+import { countries } from "@/data/countries.ts";
 import { useWindowDimensions } from "@/hooks/use-window-dimensions";
 import Confetti from "react-confetti";
 import { nameCase } from "@/lib/text";
@@ -534,3 +534,4 @@ function FinePrint() {
 		</p>
 	);
 }
+ */

@@ -93,7 +93,7 @@ export function EditSchoolModal({ edit, locations }) {
 		} else {
 			setUrl("/placeholders/cover.jpg");
 		}
-	}, [edit]);
+	}, [edit, setUrl]);
 
 	return (
 		<Dialog onClose={() => onClose(searchParams, router)} open={isOpen as boolean}>

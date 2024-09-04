@@ -156,7 +156,7 @@ export default async function Page({ searchParams }) {
 											delay={0}
 											isDisabled={!user.hasPfp}
 											classNames={{ content: "p-0 select-none" }}
-											content={<Image src={`/api/users/${user.id}/avatar`} className="h-[13rem] w-[13rem] object-cover" />}>
+											content={<Image alt="User avatar" src={`/api/users/${user.id}/avatar`} className="h-[13rem] w-[13rem] object-cover" />}>
 											<Avatar
 												className="mask mask-squircle my-auto ml-1 mr-4 h-10 min-w-10"
 												showFallback
@@ -216,7 +216,7 @@ export default async function Page({ searchParams }) {
 											delay={0}
 											isDisabled={!user.hasPfp}
 											classNames={{ content: "p-0 select-none" }}
-											content={<Image src={`/api/users/${user.id}/avatar`} className="h-[13rem] w-[13rem] object-cover" />}>
+											content={<Image alt="User avatar" src={`/api/users/${user.id}/avatar`} className="h-[13rem] w-[13rem] object-cover" />}>
 											<Avatar
 												className="mask mask-squircle my-auto ml-1 mr-4 h-10 min-w-10"
 												showFallback

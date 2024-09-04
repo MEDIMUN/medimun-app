@@ -72,7 +72,7 @@ export default async function Page({ searchParams }) {
 					<>
 						<div className="mx-auto h-14 w-[210px] md:mx-0">
 							<Link href="/">
-								<Image src={EsLogo} fill className="!relative" />
+								<Image alt="The English School Logo" src={EsLogo} fill className="!relative" />
 							</Link>
 						</div>
 						<Spacer y={8} />
@@ -113,7 +113,7 @@ export default async function Page({ searchParams }) {
 								href="/login"
 								startContent={
 									<div className="h-6 -translate-x-12">
-										<Image src={LoginMediBookLogo} fill className="!relative object-cover" />
+										<Image alt="MediBook Logo" src={LoginMediBookLogo} fill className="!relative object-cover" />
 									</div>
 								}
 								className={cn("w-full bg-primary text-white")}
@@ -129,7 +129,7 @@ export default async function Page({ searchParams }) {
 					<>
 						<div className="mx-auto h-14 w-[180px] md:mx-0">
 							<Link href="/">
-								<Image src={Logo} fill className="!relative" />
+								<Image alt="MEDIMUN Logo" src={Logo} fill className="!relative" />
 							</Link>
 						</div>
 						<Spacer y={8} />
@@ -167,7 +167,7 @@ export default async function Page({ searchParams }) {
 								href="/login?type=englishschool"
 								startContent={
 									<div className="h-8 -translate-x-4">
-										<Image src={LoginESLogo} fill className="!relative object-cover" />
+										<Image alt="The English School Logo" src={LoginESLogo} fill className="!relative object-cover" />
 									</div>
 								}
 								className={cn("w-full bg-[#383f9a] text-white")}
@@ -179,7 +179,7 @@ export default async function Page({ searchParams }) {
 						</form>
 						<Spacer y={8} />
 						<div className="flex w-full animate-appearance-in justify-between rounded-small bg-content2 p-3">
-							<p className="text-xs">Don't have an account?</p>
+							<p className="text-xs">Don&apos;t have an account?</p>
 							<Link href="/signup" className="text-xs text-primary">
 								Sign Up
 							</Link>

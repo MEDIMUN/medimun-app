@@ -21,7 +21,7 @@ export function Paginator({ totalItems, itemsPerPage, itemsOnPage, ...props }: {
 		if (itemsOnPage === 0 && currentPage !== 1) {
 			updateSearchParams({ page: total }, router);
 		}
-	}, [currentPage, itemsOnPage]);
+	}, [currentPage, itemsOnPage, router, total]);
 
 	if (itemsOnPage == 0 && currentPage == 1)
 		return (
@@ -38,7 +38,7 @@ export function Paginator({ totalItems, itemsPerPage, itemsOnPage, ...props }: {
 				</div>
 				<div className="mt-3 flex flex-col overflow-hidden rounded-md bg-zinc-50 shadow-sm md:flex-row">
 					<p className="ml-6 mt-6 pr-12 text-xl md:text-2xl">
-						This isn't as big of a crisis as you might think, you are probably just looking at the wrong session...
+						This isn&apos;t as big of a crisis as you might think, you are probably just looking at the wrong session...
 						<br />
 						<span className="text-sm md:text-lg">You can change the session at the top of the sidebar on the left.</span>
 					</p>

@@ -23,16 +23,15 @@ export function UsernameField({ initialUsername }) {
 	const [isValid, setIsValid] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
 
-	async function handleCheckUsername() {
-		if (debouncedValue?.length < 7) return;
-		setIsLoading(true);
-		const { response } = await checkUsername(debouncedValue);
-		setIsValid(response);
-		setIsChecked(true);
-		setIsLoading(false);
-	}
-
 	useEffect(() => {
+		async function handleCheckUsername() {
+			if (debouncedValue?.length < 7) return;
+			setIsLoading(true);
+			const { response } = await checkUsername(debouncedValue);
+			setIsValid(response);
+			setIsChecked(true);
+			setIsLoading(false);
+		}
 		handleCheckUsername();
 	}, [debouncedValue]);
 

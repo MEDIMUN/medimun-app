@@ -1,4 +1,4 @@
-import SignUp from "./Signup";
+/* import SignUp from "./Signup";
 
 export const metadata = {
 	title: "Sign Up",
@@ -12,3 +12,4 @@ export default async function Page() {
 		</div>
 	);
 }
+ */

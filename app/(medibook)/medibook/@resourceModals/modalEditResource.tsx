@@ -71,7 +71,7 @@ export function ModalEditResource({ selectedResource }) {
 					<Field>
 						<Label>Share Anonymously</Label>
 						<Description>
-							Anonymously shared files will not show the uploader's name. Management members can still see the uploader's name.
+							Anonymously shared files will not show the uploader&apos;s name. Management members can still see the uploader&apos;s name.
 						</Description>
 						<Select disabled={isLoading} name="isAnonymous" defaultValue={selectedResource?.isAnonymous ? "true" : "false"}>
 							<option value="false">Not Anonymous</option>

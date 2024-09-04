@@ -55,10 +55,10 @@ export function Providers({ children }) {
 //	const [isLoading, setIsLoading] = useState(false);
 //	const [schoolDirectorRole, setSchoolDirectorRole] = useState({});
 
-export const useSidebarContext = () => {
+export function useSidebarContext(): any {
 	const context = useContext(SidebarContext);
 	if (!context) {
 		throw new Error("useSidebarContext must be used within a SidebarContextProvider");
 	}
 	return context;
-};
+}

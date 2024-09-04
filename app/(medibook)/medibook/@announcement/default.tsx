@@ -212,7 +212,7 @@ export const announcementWebsitecomponents = {
 	p: (props) => <p className="mb-4 mt-4 text-base">{props.children}</p>,
 	img: (props) => (
 		<div className="m-3">
-			<img className="my-4" {...props} />
+			<img alt={props.alt || "Announcement image alt"} className="my-4" {...props} />
 		</div>
 	),
 	a: (props) => {

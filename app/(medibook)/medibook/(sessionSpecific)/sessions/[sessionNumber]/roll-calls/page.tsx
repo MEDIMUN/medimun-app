@@ -78,7 +78,8 @@ export default async function Page({ params, searchParams }) {
 			emptyTitle="No Roll Calls Registered"
 			emptyDescription="Check out other sessions"
 			emptyHref="/medibook/sessions"
-			modals={[<RollCallModal edit={edit} conferenceDays={conferenceDays} workshopDays={workshopDays} />, <DeleteModal />]}>
+			/* modals={[<RollCallModal edit={edit} conferenceDays={conferenceDays} workshopDays={workshopDays} />, <DeleteModal />]} */
+		>
 			<TableCardHeader>
 				<div className="flex w-full flex-col gap-3 rounded-xl bg-content1/60 p-4 md:flex-row">
 					<div className="my-auto ml-1">Select Day</div>

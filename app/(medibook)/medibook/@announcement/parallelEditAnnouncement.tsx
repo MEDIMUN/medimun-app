@@ -56,19 +56,19 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 		setIsLoading(false);
 	}
 
-	const createPreview = async () => {
-		toast.loading("Creating Preview.", {
-			id: "preview",
-		});
-		const content = await serialize({ source: markDown });
-		setSerializedMarkDown(content);
-		toast.success("Preview Created.", {
-			id: "preview",
-		});
-	};
-
 	useEffect(() => {
-		if (markDown) createPreview();
+		const createPreview = async () => {
+			toast.loading("Creating Preview.", {
+				id: "preview",
+			});
+			const content = await serialize({ source: debouncedMarkDown });
+			setSerializedMarkDown(content);
+			toast.success("Preview Created.", {
+				id: "preview",
+			});
+		};
+
+		if (debouncedMarkDown) createPreview();
 	}, [debouncedMarkDown]);
 
 	useEffect(() => {
@@ -147,7 +147,8 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 				<div className="space-y-1">
 					<Subheading>Description</Subheading>
 					<Text>
-						The text which will appear below the announcement before it's opened or the text which will appear below the email before it's opened.
+						The text which will appear below the announcement before it&apos;s opened or the text which will appear below the email before it&apos;s
+						opened.
 						<br />
 						<em>Max 500 characters.</em>
 					</Text>

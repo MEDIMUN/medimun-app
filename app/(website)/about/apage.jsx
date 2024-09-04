@@ -89,7 +89,7 @@ const p = (props) => {
 const img = (props) => {
 	return (
 		<span className="block rounded-xl border bg-content2/60 p-4 shadow-sm duration-300 hover:rounded-2xl hover:p-2 hover:shadow-lg">
-			<img className="rounded-sm shadow-md duration-300 hover:rounded-lg" {...props} />
+			<img alt={props.alt || "Announcement uploaded image"} className="rounded-sm shadow-md duration-300 hover:rounded-lg" {...props} />
 		</span>
 	);
 };

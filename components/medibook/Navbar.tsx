@@ -43,13 +43,13 @@ export function Navbar({
 	const [isMounted, setIsMounted] = useState(true);
 
 	useEffect(() => {
-		if (query) {
+		if (debounced) {
 			updateSearchParams({ [queryParamWord]: debounced, page: 1 }, router);
 		} else {
 			removeSearchParams({ [queryParamWord]: "" }, router);
 		}
 		router.refresh();
-	}, [debounced]);
+	}, [debounced, queryParamWord, router]);
 
 	const visibleNavbarLinks = navbarLinks.filter((link) => link.isVisible);
 

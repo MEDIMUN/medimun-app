@@ -115,10 +115,10 @@ export default async function Example() {
 									<h1 className="-font-[canela] font-[canela] text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl md:!leading-[64px]">
 										{currentSession.theme}
 									</h1>
-									<h2 className="-font-[canela] mt-2 text-2xl font-light tracking-tight text-gray-700 sm:text-4xl">{currentSession.phrase2}</h2>
+									<h2 className="-font-[canela] mt-2 text-2xl font-light tracking-tight text-gray-700 sm:text-4xl">{currentSession.subTheme}</h2>
 									<p className="relative mt-6 text-lg italic leading-7 text-gray-500 sm:max-w-md md:block lg:max-w-none">
-										We are a UN Simulation for teens aged 15 to 19, where students represent assigned countries. They research their nation's policies
-										to draft and debate resolutions on global issues.
+										We are a UN Simulation for teens aged 15 to 19, where students represent assigned countries. They research their nation&apos;s
+										policies to draft and debate resolutions on global issues.
 									</p>
 								</div>
 								<div className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">

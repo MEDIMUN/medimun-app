@@ -265,8 +265,8 @@ export function SettingsForm({ selectedSession }) {
 					<div className="space-y-1">
 						<Subheading>Theme</Subheading>
 						<Text>
-							The theme will appear everywhere including the website and certificates. A theme is required for a session to be made current and can't
-							be removed after a theme is made current.
+							The theme will appear everywhere including the website and certificates. A theme is required for a session to be made current and
+							can&apos;t be removed after a theme is made current.
 							<br />
 							{theme !== selectedSession.theme && (
 								<>
@@ -358,8 +358,8 @@ export function SettingsForm({ selectedSession }) {
 					<div className="space-y-1">
 						<Subheading>Description</Subheading>
 						<Text>
-							The theme will appear everywhere including the website and certificates. A theme is required for a session to be made current and can't
-							be removed after a theme is made current.
+							The theme will appear everywhere including the website and certificates. A theme is required for a session to be made current and
+							can&apos;t be removed after a theme is made current.
 							<br />
 							<em>Max 500 characters</em>
 						</Text>
@@ -402,7 +402,7 @@ export function SettingsForm({ selectedSession }) {
 								<Subheading>School Director Price</Subheading>
 								<Text>
 									The price each school director has to pay to participate in the session. This price will be used to calculate the total price for
-									the school. Can't be changed after the session is made current or is made fully visible.
+									the school. Can&apos;t be changed after the session is made current or is made fully visible.
 									<br />
 									<em>Min 1€, Max 9999€</em>
 								</Text>
@@ -424,7 +424,7 @@ export function SettingsForm({ selectedSession }) {
 								<Subheading>Delegate Price</Subheading>
 								<Text>
 									The price each delegate has to pay to participate in the session. This price will be used to calculate the total price for the
-									school. Can't be changed after the session is made current or is made fully visible.
+									school. Can&apos;t be changed after the session is made current or is made fully visible.
 									<br />
 									<em>Min 1€, Max 9999€</em>
 								</Text>
@@ -576,8 +576,8 @@ export function SettingsForm({ selectedSession }) {
 						<Subheading>Security Council Countries of Year</Subheading>
 						<Text>
 							The countries that will be available for Security Council Delegations in the session. If you need to add options such as the USSR to the
-							Security Council or to the Special Committees you can do so in the respective Committees' settings. You can select countries from the
-							list or input the two-digit country codes as a comma or new-line separated list.
+							Security Council or to the Special Committees you can do so in the respective Committees&apos; settings. You can select countries from
+							the list or input the two-digit country codes as a comma or new-line separated list.
 							<br />
 							<em>Select 20 Values</em>
 						</Text>

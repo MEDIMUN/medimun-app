@@ -18,8 +18,8 @@ const nextConfig = {
 			],
 		}
 	},
-	transpilePackages: [ 'next-mdx-remote-client' ],
-	reactStrictMode: true,
+/* 	transpilePackages: [ 'next-mdx-remote-client' ],
+ */	reactStrictMode: true,
 
 };
 

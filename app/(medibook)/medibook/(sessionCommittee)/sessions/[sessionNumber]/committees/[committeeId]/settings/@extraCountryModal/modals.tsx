@@ -129,7 +129,9 @@ export function EditExtraCountryModal({ selectedCommittee, selectedExtraCountry 
 			<DialogTitle>
 				Edit {selectedExtraCountry?.code} ({selectedExtraCountry?.name}).
 			</DialogTitle>
-			<DialogDescription>You can't change the country/entity code. If you need to change it delete and re-add the country/entity.</DialogDescription>
+			<DialogDescription>
+				You can&apos;t change the country/entity code. If you need to change it delete and re-add the country/entity.
+			</DialogDescription>
 			<DialogBody className="flex flex-col gap-5">
 				<form id="edit-extra-country" action={editExtraCountryHandler} className="flex flex-col gap-5">
 					<Field>

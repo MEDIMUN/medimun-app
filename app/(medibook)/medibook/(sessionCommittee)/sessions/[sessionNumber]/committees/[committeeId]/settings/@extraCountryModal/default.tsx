@@ -27,5 +27,9 @@ export default async function Modals({ params, searchParams }) {
 		}
 	}
 
-	return [<AddExtraCountryModal />, <EditExtraCountryModal selectedCommittee={selectedCommittee} selectedExtraCountry={selectedExtraCountry} />];
+	return (
+		<>
+			<AddExtraCountryModal /> <EditExtraCountryModal selectedCommittee={selectedCommittee} selectedExtraCountry={selectedExtraCountry} />
+		</>
+	);
 }

@@ -69,23 +69,22 @@ export function PageCreateAnnouncement({
 		if (greaterScope) setInnerScope(innerAnnouncementScopeList[greaterScope].map((scope) => scope.value));
 	}, [greaterScope]);
 
-	const createPreview = async () => {
-		toast.loading("Creating Preview.", {
-			id: "preview",
-		});
-		const content = await serialize({ source: markDown });
-		setSerializedMarkDown(content);
-		toast.success("Preview Created.", {
-			id: "preview",
-		});
-	};
-
 	const authGreaterScope = typeGreaterScopeMapList[type]?.[0]?.value;
 	const authInnerScope = innerAnnouncementScopeList[authGreaterScope]?.map((scope) => scope?.value);
 	const authBooleanMap = authInnerScope.map((scope) => authorizedToEditAnnouncementMap(authSession, params.committeeId, params.departmentId)[scope]);
 
 	useEffect(() => {
-		if (markDown) createPreview();
+		const createPreview = async () => {
+			toast.loading("Creating Preview.", {
+				id: "preview",
+			});
+			const content = await serialize({ source: debouncedMarkDown });
+			setSerializedMarkDown(content);
+			toast.success("Preview Created.", {
+				id: "preview",
+			});
+		};
+		if (debouncedMarkDown) createPreview();
 	}, [debouncedMarkDown]);
 
 	if (status !== "authenticated") return null;
@@ -211,13 +210,14 @@ export function PageCreateAnnouncement({
 				<div className="space-y-1">
 					<Subheading>Description</Subheading>
 					<Text>
-						The text which will appear below the announcement before it's opened or the text which will appear below the email before it's opened.
+						The text which will appear below the announcement before it&apos;s opened or the text which will appear below the email before it&apos;s
+						opened.
 						<br />
 						<em>Max 500 characters.</em>
 					</Text>
 				</div>
 				<div className="my-auto flex flex-col gap-4 md:flex-row">
-					<Textarea type="text" maxLength={100} name="description" />
+					<Textarea maxLength={100} name="description" />
 				</div>
 			</section>
 			<Divider className="my-10" soft />

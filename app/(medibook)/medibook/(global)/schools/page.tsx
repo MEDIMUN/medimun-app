@@ -14,7 +14,9 @@ import { parseOrderDirection } from "@/lib/orderDirection";
 const itemsPerPage = 10;
 
 const rows = [
-	<span className="sr-only">Actions</span>,
+	<span key="actions" className="sr-only">
+		Actions
+	</span>,
 	"Name",
 	"Country",
 	"Short Name",

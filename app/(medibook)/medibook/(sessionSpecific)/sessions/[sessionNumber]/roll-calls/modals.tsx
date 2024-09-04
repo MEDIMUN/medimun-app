@@ -84,11 +84,7 @@ export function RollCallModal({ conferenceDays, edit, workshopDays, className, .
 					</Select>
 				</ModalBody>
 				<ModalFooter>
-					<Button
-						onPress={() => removeSearchParams({ [searchParams.has("add") ? "add" : "edit"]: "" }, router)}
-						color="primary"
-						variant="light"
-						onPress={() => {}}>
+					<Button onPress={() => removeSearchParams({ [searchParams.has("add") ? "add" : "edit"]: "" }, router)} color="primary" variant="light">
 						Cancel
 					</Button>
 					<Button isLoading={isLoading} type="submit" form="main" color="primary" onClick={() => {}}>
@@ -133,7 +129,7 @@ export function DeleteModal({ rcId, ...others }) {
 					<Input isRequired maxLength={35} name="password" size="lg" type="password" label="Password" />
 				</ModalBody>
 				<ModalFooter>
-					<Button onPress={() => removeSearchParams({ delete: "" }, router)} color="primary" variant="light" onPress={() => {}}>
+					<Button onPress={() => removeSearchParams({ delete: "" }, router)} color="primary" variant="light">
 						Cancel
 					</Button>
 					<Button isLoading={isLoading} type="submit" form="main" color="danger">

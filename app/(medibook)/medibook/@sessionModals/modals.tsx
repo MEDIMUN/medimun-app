@@ -60,8 +60,8 @@ export function ModalCreateSession() {
 			<DialogDescription>Are you sure you want to create a new session?</DialogDescription>
 			<DialogBody>
 				<Text>
-					The session will only be visible to the management until it's made current and visible. Creating a session will not have any impact on the
-					current session.
+					The session will only be visible to the management until it&apos;s made current and visible. Creating a session will not have any impact on
+					the current session.
 				</Text>
 			</DialogBody>
 			<DialogActions>

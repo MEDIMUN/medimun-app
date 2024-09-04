@@ -305,9 +305,14 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 		removeSearchParams({ assignroles: "", session: "" });
 	}
 
+	const session = searchParams.get("session");
+	const committee = searchParams.get("committee");
+	const department = searchParams.get("department");
+	const role = searchParams.get("role");
+
 	useEffect(() => {
 		router.refresh();
-	}, [searchParams.get("session"), searchParams.get("committee"), searchParams.get("department"), searchParams.get("role")]);
+	}, [session, committee, department, role, router]);
 
 	const onlyOneUser = selectedUsers?.length === 1;
 
@@ -333,7 +338,7 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 	return (
 		<Dialog open={isOpen} onClose={onClose}>
 			<DialogTitle>Assign Roles{onlyOneUser && ` to ${selectedUsers[0].displayName || selectedUsers[0].officialName}`}</DialogTitle>
-			<DialogDescription>Roles define what a user can or can't do.</DialogDescription>
+			<DialogDescription>Roles define what a user can or can&apos;t do.</DialogDescription>
 			<DialogBody>
 				{(selectedUsers?.length > 2 || selectedUsers?.length > 1) && (
 					<div className="mb-6 flex flex-col gap-2">
@@ -370,7 +375,7 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 					{!onlyOneUser && (
 						<div className="mb-1 flex flex-wrap gap-2">
 							{selectedUsers.map((user) => (
-								<AssignUserChip uid={user.id} officialName={user.officialName} displayName={user.displayName} />
+								<AssignUserChip key={user.id} uid={user.id} officialName={user.officialName} displayName={user.displayName} />
 							))}
 						</div>
 					)}
@@ -488,7 +493,7 @@ export function EditRolesModal({ selectedUser }) {
 		<Dialog open={isOpen} onClose={handleOnClose}>
 			<DialogTitle>Edit Roles</DialogTitle>
 			<DialogDescription>
-				Roles define what a user can do, have access to and what they can't do. Some changes may take a few minutes to take effect.
+				Roles define what a user can do, have access to and what they can&apos;t do. Some changes may take a few minutes to take effect.
 			</DialogDescription>
 			<DialogBody>
 				{!allRoles?.length && (

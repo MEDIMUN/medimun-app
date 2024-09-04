@@ -55,8 +55,8 @@ export function SelectedUsersWindow() {
 						)}
 						{!!selected.length && (
 							<div className="mt-2 flex flex-wrap gap-2 text-sm text-zinc-700">
-								{selected.map((user) => {
-									return <UserChip uid={user.id} officialName={user.officialName} displayName={user.displayName} />;
+								{selected.map((user, index) => {
+									return <UserChip key={index} uid={user.id} officialName={user.officialName} displayName={user.displayName} />;
 								})}
 							</div>
 						)}

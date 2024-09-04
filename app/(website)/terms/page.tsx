@@ -1,4 +1,5 @@
 import { MDXRemote } from "next-mdx-remote-client/rsc";
+import Link from "next/link";
 
 export const metadata = {
 	title: "Terms of Service",

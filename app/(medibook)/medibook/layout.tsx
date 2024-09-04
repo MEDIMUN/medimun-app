@@ -64,8 +64,8 @@ export default async function RootLayout({
 							<img src={`/assets/branding/logos/logo-medired.svg`} className="mx-auto mb-10 h-[60px] font-[montserrat]" alt="MediBook" />
 						</Link>
 						<p>
-							Your browser does not support JavaScript or it's turned off. The MediBook App and the MEDIMUN Website require JavaScript to function
-							properly. Please enable JavaScript in your browser settings.
+							Your browser does not support JavaScript or it&apos;s turned off. The MediBook App and the MEDIMUN Website require JavaScript to
+							function properly. Please enable JavaScript in your browser settings.
 						</p>
 						<br />
 						<p>If you believe this is an error, please contact us.</p>

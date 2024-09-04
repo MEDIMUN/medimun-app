@@ -102,7 +102,7 @@ export function CommitteeSettingsForm({ selectedCommittee }) {
 				<div className="space-y-1">
 					<Subheading>Description</Subheading>
 					<Text>
-						The description of the committee describing it's general topic.
+						The description of the committee describing it&apos;s general topic.
 						<br />
 						<em>Max 100 Characters</em>
 					</Text>
@@ -148,7 +148,7 @@ export function CommitteeSettingsForm({ selectedCommittee }) {
 				<div className="space-y-1">
 					<Subheading>Committee Type</Subheading>
 					<Text>
-						The type of the committee, this setting changes committee procedures and available countries and scjouldn't be changed mid-session.
+						The type of the committee, this setting changes committee procedures and available countries and scjouldn&apos;t be changed mid-session.
 					</Text>
 				</div>
 				<div className="flex space-y-4">
@@ -193,8 +193,8 @@ export function CommitteeSettingsForm({ selectedCommittee }) {
 					<div>
 						<Subheading>Extra Countries or Entities</Subheading>
 						<Text>
-							Extra countries that can be assigned to delegates within the committee. e.g. "European Union <em>(EU)</em>", "Soviet Union{" "}
-							<em>(USSR)</em>, "World Health Organization <em>(WHO)</em>".
+							Extra countries that can be assigned to delegates within the committee. e.g. &quot;European Union <em>(EU)</em>&quot;, &quot;Soviet
+							Union <em>(USSR)</em>, &quot;World Health Organization <em>(WHO)</em>&quot;.
 							<br />
 							<em>Max 20</em>
 						</Text>
