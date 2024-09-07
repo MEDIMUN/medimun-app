@@ -8,7 +8,6 @@ import Paginator from "@/components/pagination";
 import { usersPerPage } from "@/data/constants";
 import { Tooltip } from "@nextui-org/tooltip";
 import { Image } from "@nextui-org/image";
-import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { romanize } from "@/lib/romanize";
 import { SelectedContextProvider } from "./components/StateStateProvider";
 import { SelectedUsersWindow } from "./components/SelectedUsersWindow";
@@ -157,12 +156,7 @@ export default async function Page({ searchParams }) {
 											isDisabled={!user.hasPfp}
 											classNames={{ content: "p-0 select-none" }}
 											content={<Image alt="User avatar" src={`/api/users/${user.id}/avatar`} className="h-[13rem] w-[13rem] object-cover" />}>
-											<Avatar
-												className="mask mask-squircle my-auto ml-1 mr-4 h-10 min-w-10"
-												showFallback
-												radius="none"
-												src={`/api/users/${user.id}/avatar`}
-											/>
+											<Avatar className="my-auto ml-1 mr-4 h-10 min-w-10" showFallback src={`/api/users/${user.id}/avatar`} />
 										</Tooltip>
 									</TableCell>
 									<TableCell>{user.officialName}</TableCell>
@@ -217,12 +211,7 @@ export default async function Page({ searchParams }) {
 											isDisabled={!user.hasPfp}
 											classNames={{ content: "p-0 select-none" }}
 											content={<Image alt="User avatar" src={`/api/users/${user.id}/avatar`} className="h-[13rem] w-[13rem] object-cover" />}>
-											<Avatar
-												className="mask mask-squircle my-auto ml-1 mr-4 h-10 min-w-10"
-												showFallback
-												radius="none"
-												src={`/api/users/${user.id}/avatar`}
-											/>
+											<Avatar className=" my-auto ml-1 mr-4 h-10 min-w-10" showFallback src={`/api/users/${user.id}/avatar`} />
 										</Tooltip>
 									</TableCell>
 									<TableCell className="hidden md:table-cell">{user.officialName}</TableCell>

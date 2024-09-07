@@ -1,5 +1,5 @@
-export function parseOrderDirection(str: string): "asc" | "desc" | object {
-	if (!str) return "asc";
+export function parseOrderDirection(str: string, defaultDir?: "asc" | "desc"): "asc" | "desc" | object {
+	if (!str) return defaultDir || "asc";
 	try {
 		const decodedDirection = decodeURIComponent(str);
 		try {

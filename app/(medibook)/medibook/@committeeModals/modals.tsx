@@ -9,7 +9,6 @@ import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
 import { SlugInput } from "@/components/slugInput";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { Button } from "@/components/button";
-import { DialogHeader } from "@/components/ui/dialog";
 import { Select } from "@/components/select";
 import { Field, Label } from "@/components/fieldset";
 import { Input } from "@/components/input";

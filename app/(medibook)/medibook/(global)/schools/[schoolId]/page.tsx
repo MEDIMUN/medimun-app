@@ -11,6 +11,7 @@ import prisma from "@/prisma/client";
 import { ChevronLeftIcon } from "@heroicons/react/16/solid";
 import { notFound, redirect } from "next/navigation";
 import { EditDeleteSchoolButtons } from "../client-components";
+import { TopBar } from "../../../client-components";
 
 export default async function Page({ params }) {
 	const authSession = await auth();
@@ -55,37 +56,27 @@ export default async function Page({ params }) {
 		(location?.name && location?.street && location?.zipCode && location?.state && location?.country);
 
 	return (
-		<main>
-			{authorize(authSession, [s.management]) && (
-				<div className="max-lg:hidden -ml-1 mb-4">
-					<Link href="/medibook/schools" className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
-						<ChevronLeftIcon className="size-4 fill-zinc-400 dark:fill-zinc-500" />
-						Schools
-					</Link>
-				</div>
-			)}
+		<>
 			{isVisible && !school.isPublic && (
 				<div className="rounded-lg border bg-zinc-100 p-2 text-center text-sm md:text-left">This page is private.</div>
 			)}
-			<div className="mt-4 flex flex-wrap items-end justify-between gap-4">
-				<div className="flex flex-wrap items-center gap-6">
-					{school?.cover && (
-						<div className="aspect-[3/2] w-32 shrink-0 rounded-lg p-1 shadow">
-							<img className=" aspect-[3/2] rounded-md object-cover " src={`/api/schools/${school.id}/cover`} alt="" />
-						</div>
-					)}
-					<div>
-						<div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-							<Heading>{school?.name}</Heading>
-						</div>
-						<div className="mt-2 text-sm/6 text-zinc-500">
-							{location?.state || location?.city}
-							{`${location?.state || location?.city ? "," : ""}`} {countryNameEn || "Earth"}
-						</div>
-					</div>
-				</div>
-				<EditDeleteSchoolButtons isManagement={isManagement} isDirector={!!userSchoolDirectorRole} schoolId={school?.id} schoolSlug={school?.slug} />
-			</div>
+			<TopBar
+				hideSearchBar
+				title={school.name}
+				buttonText={authorize(authSession, [s.management]) ? "Schools" : undefined}
+				buttonHref="/medibook/schools"
+				subheading={`${location?.state || location?.city || ""}
+							${`${location?.state || location?.city ? "," : ""}`} ${countryNameEn || "Earth"}`}>
+				{isManagement && (
+					<EditDeleteSchoolButtons
+						isManagement={isManagement}
+						isDirector={!!userSchoolDirectorRole}
+						schoolId={school?.id}
+						schoolSlug={school?.slug}
+					/>
+				)}
+			</TopBar>
+
 			{isVisible ? (
 				<div className="mt-12">
 					<Subheading>Details</Subheading>
@@ -150,6 +141,6 @@ export default async function Page({ params }) {
 					/>
 				</div>
 			)}
-		</main>
+		</>
 	);
 }

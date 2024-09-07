@@ -5,7 +5,7 @@ import { Divider } from "@/components/divider";
 import { Description } from "@/components/fieldset";
 import { Subheading } from "@/components/heading";
 import { Input } from "@/components/input";
-import { Listbox, ListboxLabel, ListboxOption } from "@/components/listbox";
+import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/listbox";
 import { Text } from "@/components/text";
 import { Textarea } from "@/components/textarea";
 import { countries } from "@/data/countries";
@@ -557,8 +557,11 @@ export function SettingsForm({ selectedSession }) {
 							onChange={(e) => setSelectedGACountries(e.join(","))}>
 							{countries.map((country) => (
 								<ListboxOption key={country.countryCode} value={country.countryCode}>
-									<img className="w-5 sm:w-4" src={`https://flagcdn.com/40x30/${country.countryCode.toLowerCase()}.webp`} alt="" />
+									<p>{country.flag}</p>
 									<ListboxLabel>{country.countryNameEn}</ListboxLabel>
+									{selectedSession.securityCouncilCountriesOfYear.includes(country.countryCode) && (
+										<ListboxDescription>UNSC Member</ListboxDescription>
+									)}
 								</ListboxOption>
 							))}
 						</Listbox>

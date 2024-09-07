@@ -71,7 +71,6 @@ export const innerScopeList = {
 		{ value: "COMMITTEEDELEGATE", text: "Delegate", description: "in Committee", disabled: true },
 		{ value: "COMMITTEEMEMBER", text: "Member", description: "in Session with Access to Committee", disabled: true },
 		{ value: "COMMITTEESECRETARIAT", text: "Secretariat", description: "of Session of Committee", disabled: true },
-		{ value: "COMMITTEESCHOOLDIRECTORS", text: "School Directors", description: "in Session of Committee", disabled: true },
 		{ value: "COMMITTEEDIRECTORS", text: "Directors", description: "viewing Committee", disabled: true },
 		{ value: "COMMITTEESENIORDIRECTORS", text: "Senior Directors", description: "viewing Committee", disabled: true },
 	],
@@ -81,7 +80,6 @@ export const innerScopeList = {
 		{ value: "COMMITTEEDELEGATE", text: "Delegate", description: "in Committee", disabled: false },
 		{ value: "COMMITTEEMEMBER", text: "Member", description: "in Session with Access to Committee", disabled: false },
 		{ value: "COMMITTEESECRETARIAT", text: "Secretariat", description: "viewing Committee", disabled: false },
-		{ value: "COMMITTEESCHOOLDIRECTORS", text: "School Directors", description: "in Session of COmmittee", disabled: false },
 		{ value: "COMMITTEEDIRECTORS", text: "Directors", description: "viewing Committee", disabled: false },
 		{ value: "COMMITTEESENIORDIRECTORS", text: "Senior Directors", description: "viewing Committee", disabled: false },
 	],
@@ -156,8 +154,6 @@ export function authorizedToEditResource(authSession, editResourceData) {
 		COMMITTEEMEMBER:
 			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
 		COMMITTEESECRETARIAT:
-			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
-		COMMITTEESCHOOLDIRECTORS:
 			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
 		COMMITTEEDIRECTORS:
 			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),

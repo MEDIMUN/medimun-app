@@ -194,8 +194,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				token.user = user;
 				return token;
 			} else {
-				/* 				console.log("[DB UPDATED]");
-				 */ const prismaUser = await prisma.user.findFirstOrThrow({
+				const prismaUser = await prisma.user.findFirstOrThrow({
 					where: { id: token.user.id },
 					include: { ...generateUserDataObject() },
 				});
@@ -207,7 +206,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
 		async session({ session, token }) {
 			session.user = token.user;
-			session.user.lastUpdated = token.lastUpdated;
+			session.lastUpdated = token.lastUpdated;
 			return session;
 		},
 	},

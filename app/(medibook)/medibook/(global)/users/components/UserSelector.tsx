@@ -1,8 +1,6 @@
 "use client";
 
 import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
-import { Checkbox as CB } from "@nextui-org/checkbox";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelectedContext } from "./StateStateProvider";
 import { maxNoOfSelected } from "../page";

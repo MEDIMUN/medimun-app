@@ -32,7 +32,6 @@ export default async function Page({ params, searchParams }) {
 		authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], selectedDepartment.id) ? "DEPARTMENTMANAGER" : null,
 		authorizeMemberDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], selectedDepartment.id) ? "DEPARTMENTMEMBER" : null,
 		authorizePerSession(authSession, [s.sec, s.management], [params.sessionNumber]) ? "DEPARTMENTSECRETARIAT" : null,
-		authorizePerSession(authSession, [s.schooldirector, s.management], [params.sessionNumber]) ? "COMMITTEESCHOOLDIRECTORS" : null,
 		authorizePerSession(authSession, [s.director, s.sd], [params.sessionNumber]) ? "DEPARTMENTDIRECTORS" : null,
 		authorizePerSession(authSession, [s.sd], [params.sessionNumber]) ? "DEPARTMENTSENIORDIRECTORS" : null,
 	].filter((x) => x);

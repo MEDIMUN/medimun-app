@@ -9,7 +9,6 @@ import { SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { UserIdDisplay } from "@/lib/displayName";
 import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/displayRoles";
-import { ParticipantsDropdown } from "./components";
 import { parseOrderDirection } from "@/lib/orderDirection";
 import { romanize } from "@/lib/romanize";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
@@ -147,13 +146,7 @@ export default async function Page({ params, searchParams }) {
 										</Dropdown>
 									</TableCell>
 									<TableCell>
-										<Avatar
-											showFallback
-											radius="none"
-											className="mask mask-squircle bg-gradient-to-tr from-primary to-red-500 text-white"
-											src={`/api/users/${user.id}/avatar`}
-											alt={user.displayName}
-										/>
+										<Avatar showFallback className="bg-primary text-white" src={`/api/users/${user.id}/avatar`} alt={user.displayName} />
 									</TableCell>
 									<TableCell>{user.displayName || `${user.officialName} ${user.officialSurname}`}</TableCell>
 									<TableCell>{user.username || "-"}</TableCell>

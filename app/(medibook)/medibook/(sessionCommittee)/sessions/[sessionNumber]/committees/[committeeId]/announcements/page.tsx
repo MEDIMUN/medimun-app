@@ -30,7 +30,6 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		authorizePerSession(authSession, [s.manager, s.management], [selectedEntity.session.number]) ? "COMMITTEEMANAGER" : null,
 		authorizePerSession(authSession, [s.member, s.management], [selectedEntity.session.number]) ? "COMMITTEEMEMBER" : null,
 		authorizePerSession(authSession, [s.sec, s.management], [selectedEntity.session.number]) ? "COMMITTEESECRETARIAT" : null,
-		authorizePerSession(authSession, [s.schooldirector, s.management], [selectedEntity.session.number]) ? "COMMITTEESCHOOLDIRECTORS" : null,
 		authorizePerSession(authSession, [s.director, s.sd], [selectedEntity.session.number]) ? "COMMITTEEDIRECTORS" : null,
 		authorizePerSession(authSession, [s.sd], [selectedEntity.session.number]) ? "COMMITTEESENIORDIRECTORS" : null,
 	].filter((x) => x);

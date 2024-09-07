@@ -64,7 +64,7 @@ export function EditDeleteSchoolButtons({ schoolId, schoolSlug, isDirector, isMa
 		},
 	];
 
-	const visibleButtons = buttons.filter((button) => button.isVisible);
+	const visibleButtons = buttons.filter((button) => button.isVisible).map(({ isVisible, ...button }) => button);
 
 	return (
 		<>

@@ -4,7 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { DeleteModal, RollCallModal } from "./modals";
 import { DeleteButton, EditButton, MoveDownButton, MoveUpButton } from "./buttons";
 import { Chip } from "@nextui-org/chip";
-import { CardsTable, TableCard, TableCardBody, TableCardChip, TableCardFooter, TableCardHeader } from "@/components/medibook/table";
+import { CardsTable, TableCard, TableCardBody, TableCardChip, TableCardFooter, TableCardHeader } from "@/misc/medibook/table";
 
 export default async function Page({ params, searchParams }) {
 	const days = await prisma.day

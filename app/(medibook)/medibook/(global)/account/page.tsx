@@ -54,6 +54,7 @@ export default async function Settings({ searchParams }) {
 			nationality: z.string({ required_error: "Nationality is required." }),
 			pronouns: z.string().max(15).trim().transform(processPronouns).optional().nullable(),
 			bio: z.string().max(250).trim().optional().nullable(),
+			bestTimeToReach: z.string().max(50).trim().optional().nullable(),
 		});
 		const { data, error } = schema.safeParse(parseFormData(formData));
 		if (error) redirect(`?error=${error.errors[0].message}#notice`);
@@ -211,6 +212,16 @@ export default async function Settings({ searchParams }) {
 					</div>
 					<div className="my-auto">
 						<Input name="pronouns" maxLength={15} defaultValue={selectedUser?.pronouns} />
+					</div>
+				</section>
+				<Divider className="my-10" soft />
+				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+					<div className="space-y-1">
+						<Subheading>Best Time To Reach</Subheading>
+						<Text>Best time to reach you over the phone for for non-emergency situations.</Text>
+					</div>
+					<div className="my-auto">
+						<Input name="bestTimeToReach" type="text" defaultValue={selectedUser?.bestTimeToReach} />
 					</div>
 				</section>
 				<Divider className="my-10" soft />

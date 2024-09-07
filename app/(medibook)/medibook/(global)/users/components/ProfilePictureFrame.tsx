@@ -79,7 +79,7 @@ export function ProfileUploader({ user }) {
 							<Avatar
 								isDisabled={loading}
 								as={Button}
-								onPress={() => ref.current.click()}
+								onPress={ref.current.click}
 								isLoading={loading}
 								isIconOnly
 								className="h-16 w-16"

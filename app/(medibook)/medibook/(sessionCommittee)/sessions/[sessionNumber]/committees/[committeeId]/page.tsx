@@ -3,19 +3,23 @@ import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
+import { notFound } from "next/navigation";
 
 export default async function Page({ params, searchParams }) {
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
-	const selectedCommittee = await prisma.committee.findFirstOrThrow({
-		where: {
-			OR: [
-				{ id: params.committeeId, session: { number: params.sessionNumber } },
-				{ slug: params.committeeId, session: { number: params.sessionNumber } },
-			],
-		},
-		include: { session: true, chair: { select: { user: true } } },
-	});
+	const selectedCommittee = await prisma.committee
+		.findFirstOrThrow({
+			where: {
+				OR: [
+					{ id: params.committeeId, session: { number: params.sessionNumber } },
+					{ slug: { equals: params.committeeId, mode: "insensitive" }, session: { number: params.sessionNumber } },
+				],
+			},
+			include: { session: true, chair: { select: { user: true } } },
+		})
+		.catch(notFound);
+
 	return (
 		<>
 			<TopBar

@@ -86,7 +86,7 @@ export function TopBar({
 	title: string;
 	sortOptions?: { value: string; order: string; label: string; description: string }[];
 	defaultSort?: string;
-	children: React.ReactNode;
+	children?: React.ReactNode;
 	searchText?: string;
 	hideSearchBar?: boolean;
 	subheading?: string;
@@ -127,7 +127,7 @@ export function TopBar({
 					)}
 				</div>
 			</div>
-			<div className="grid w-full grid-cols-1 gap-4 md:block md:w-auto">{children}</div>
+			{children && <div className="grid w-full grid-cols-1 gap-4 bg-red-500 md:block md:w-auto">{children}</div>}
 		</div>
 	);
 }

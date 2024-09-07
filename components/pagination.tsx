@@ -32,11 +32,11 @@ export function Paginator({ totalItems, itemsPerPage, itemsOnPage, ...props }: {
 							<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 						</div>
 						<div className="ml-3 flex-1 md:flex md:justify-between">
-							<p className="text-sm text-zinc-700">No results found.</p>
+							<p className="text-sm text-zinc-700">No results {searchParams.get("search") ? "found" : "yet"}.</p>
 						</div>
 					</div>
 				</div>
-				<div className="mt-3 flex flex-col overflow-hidden rounded-md bg-zinc-50 shadow-sm md:flex-row">
+				{/* <div className="mt-3 flex flex-col overflow-hidden rounded-md bg-zinc-50 shadow-sm md:flex-row">
 					<p className="ml-6 mt-6 pr-12 text-xl md:text-2xl">
 						This isn&apos;t as big of a crisis as you might think, you are probably just looking at the wrong session...
 						<br />
@@ -47,7 +47,7 @@ export function Paginator({ totalItems, itemsPerPage, itemsOnPage, ...props }: {
 						alt="No results found"
 						className="ml-auto mr-2 mt-4 max-h-[400px] object-cover drop-shadow-lg duration-300 hover:translate-y-[550px] hover:scale-[500%]"
 					/>
-				</div>
+				</div> */}
 			</>
 		);
 

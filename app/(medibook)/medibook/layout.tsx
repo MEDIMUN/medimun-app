@@ -4,8 +4,6 @@ import { Avatar } from "@/components/avatar";
 import { Dropdown, DropdownButton } from "@/components/dropdown";
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "@/components/navbar";
 import { SidebarLayout } from "@/components/sidebar-layout";
-import Landscape from "@/components/website/Landscape";
-import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { Sidebar } from "./sidebar";
@@ -16,6 +14,7 @@ import { Toaster } from "sonner";
 
 import type { Metadata } from "next";
 import { cn } from "@/lib/cn";
+import TopFl from "./flprovider";
 
 export const metadata: Metadata = {
 	title: {
@@ -87,7 +86,6 @@ export default async function RootLayout({
 					{departmentModalDelete}
 					{departmentModalCreate}
 					{departmentModalEdit}
-					<Landscape />
 					<SidebarLayout
 						navbar={
 							<SidebarContextProvider>
@@ -96,7 +94,7 @@ export default async function RootLayout({
 										<img src={`/assets/branding/logos/medibook-logo-white-2.svg`} className="h-[18px]" alt="MediBook" />
 									</Link>
 									<NavbarSpacer />
-									<div className="rounded-full border bg-content1/80 px-6 py-1 text-sm font-light shadow-sm">Upcoming</div>
+									<div className="rounded-full border bg-content1/80 px-6 py-1 text-sm font-light shadow-md">Upcoming</div>
 									<NavbarSection>
 										<Dropdown>
 											<DropdownButton as={NavbarItem}>
@@ -114,6 +112,7 @@ export default async function RootLayout({
 							</SidebarContextProvider>
 						}>
 						{/*-*/}
+						<TopFl />
 						{announcement}
 						{children}
 					</SidebarLayout>

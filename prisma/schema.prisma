@@ -40,6 +40,8 @@ model User {
   phoneNumber                         String?
   profilePicture                      String?
   //
+  bestTimeToReach                     String?
+  //
   isDisabled                          Boolean                               @default(false)
   //
   officialName                        String
@@ -83,6 +85,7 @@ model User {
   CommitteeRollCall                   CommitteeRollCall[]
   Role                                Role[]
   Resource                            Resource[]
+  ApplicationSchoolDirector           ApplicationSchoolDirector[]
 }
 
 model Session {
@@ -96,6 +99,11 @@ model Session {
   directorPrice                                                   Int                                   @default(0)
   delegatePrice                                                   Int                                   @default(0)
   isPriceLocked                                                   Boolean                               @default(false)
+  //
+  isSchoolDirectorApplicationsForceOpen                           Boolean                               @default(false)
+  isSchoolDirectorApplicationsAutoOpen                            Boolean                               @default(false)
+  schoolDirectorApplicationsAutoOpenTime                          DateTime?
+  schoolDirectorApplicationsAutoCloseTime                         DateTime?
   //
   isSecretariatApplicationsForceOpen                              Boolean                               @default(false)
   isSecretariatApplicationsAutoOpen                               Boolean                               @default(false)
@@ -158,6 +166,7 @@ model Session {
   maxNumberOfGeneralAssemblyDelegationsPerSchool                  Int?
   maxNumberOfSecurityCouncilAndSpecialCommitteeDelegatesPerSchool Int?
   minimumDelegateAgeOnFirstConferenceDay                          Int?
+  ApplicationSchoolDirector                                       ApplicationSchoolDirector[]
 }
 
 model Day {
@@ -319,23 +328,24 @@ model Role {
   @@unique([userId, departmentId])
 }
 
-model General {
-  id      Int      @id @default(autoincrement())
-  string1 String?
-  string2 String?
-  string3 String?
-  string4 String?
-  string5 String?
-  int1    Int?
-  int2    Int?
-  int3    Int?
-  int4    Int?
-  int5    Int?
-  bool1   Boolean?
-  bool2   Boolean?
-  bool3   Boolean?
-  bool4   Boolean?
-  bool5   Boolean?
+enum RoleType {
+  globalAdmin
+  admin
+  //
+  seniorDirector
+  director
+  //
+  secretaryGeneral
+  deputySecretaryGeneral
+  //
+  presidentOfTheGeneralAssembly
+  deputyPresidentOfTheGeneralAssembly
+  //
+  chair
+  delegate
+  member
+  manager
+  schoolDirector
 }
 
 model Committee {
@@ -399,26 +409,6 @@ model Department {
   Announcement Announcement[]
 }
 
-enum RoleType {
-  globalAdmin
-  admin
-  //
-  seniorDirector
-  director
-  //
-  secretaryGeneral
-  deputySecretaryGeneral
-  //
-  presidentOfTheGeneralAssembly
-  deputyPresidentOfTheGeneralAssembly
-  //
-  chair
-  delegate
-  member
-  manager
-  schoolDirector
-}
-
 model Location {
   id       String   @id @default(nanoid())
   name     String
@@ -441,22 +431,23 @@ model Location {
 }
 
 model School {
-  id         String           @id @default(nanoid())
-  name       String           @unique
-  slug       String?          @unique
-  joinYear   Int?
-  isPublic   Boolean          @default(false)
+  id                        String                      @id @default(nanoid())
+  name                      String                      @unique
+  slug                      String?                     @unique
+  joinYear                  Int?
+  isPublic                  Boolean                     @default(false)
   //
-  cover      String?
+  cover                     String?
   //
-  phone      String?
-  email      String?
-  website    String?
-  location   Location?        @relation(fields: [locationId], references: [id])
-  locationId String?
-  director   SchoolDirector[]
-  User       User[]
-  Role       Role[]
+  phone                     String?
+  email                     String?
+  website                   String?
+  location                  Location?                   @relation(fields: [locationId], references: [id])
+  locationId                String?
+  director                  SchoolDirector[]
+  User                      User[]
+  Role                      Role[]
+  ApplicationSchoolDirector ApplicationSchoolDirector[]
 }
 
 // CHAT GROUPS ///////////////////////////////////////////////////////////
@@ -625,6 +616,25 @@ model DraftResolution {
   dayId       String
 }
 
+model General {
+  id      Int      @id @default(autoincrement())
+  string1 String?
+  string2 String?
+  string3 String?
+  string4 String?
+  string5 String?
+  int1    Int?
+  int2    Int?
+  int3    Int?
+  int4    Int?
+  int5    Int?
+  bool1   Boolean?
+  bool2   Boolean?
+  bool3   Boolean?
+  bool4   Boolean?
+  bool5   Boolean?
+}
+
 // ENUMS ///////////////////////////////////////////////////////////
 
 enum ReactionType {
@@ -722,7 +732,6 @@ enum AnnouncementPrivacyTypes {
   COMMITTEEDELEGATE
   COMMITTEEMEMBER
   COMMITTEESECRETARIAT
-  COMMITTEESCHOOLDIRECTORS
   COMMITTEEDIRECTORS
   COMMITTEESENIORDIRECTORS
   DEPARTMENTWEBSITE
@@ -759,7 +768,6 @@ enum ResourcePrivacyTypes {
   COMMITTEEDELEGATE
   COMMITTEEMEMBER
   COMMITTEESECRETARIAT
-  COMMITTEESCHOOLDIRECTORS
   COMMITTEEDIRECTORS
   COMMITTEESENIORDIRECTORS
   DEPARTMENTWEBSITE
@@ -770,4 +778,24 @@ enum ResourcePrivacyTypes {
   DEPARTMENTSENIORDIRECTORS
   SYSTEM
   PERSONAL
+}
+
+model ApplicationSchoolDirector {
+  id         String   @id @default(nanoid())
+  //
+  isApproved Boolean  @default(false)
+  //
+  //
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  //
+  school     School   @relation(fields: [schoolId], references: [id])
+  schoolId   String
+  //
+  session    Session  @relation(fields: [sessionId], references: [id])
+  sessionId  String
+  //
+  date       DateTime @default(now())
+
+  @@unique([userId, schoolId, sessionId])
 }

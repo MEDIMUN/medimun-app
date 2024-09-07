@@ -6,6 +6,7 @@ const nextConfig = {
 		ignoreBuildErrors: true,
 	},
 	experimental: {
+		serverComponentsExternalPackages: [ "undici" ],
 		turbo: {
 			resolveExtensions: [
 				'.mdx',

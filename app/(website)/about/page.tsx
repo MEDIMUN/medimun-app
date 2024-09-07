@@ -3,12 +3,6 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 
-const navigation = [
-	{ name: "Product", href: "#" },
-	{ name: "Features", href: "#" },
-	{ name: "Resources", href: "#" },
-	{ name: "Company", href: "#" },
-];
 const stats = [
 	{ label: "Transactions every 24 hours", value: "44 million" },
 	{ label: "Assets under holding", value: "$119 trillion" },
@@ -46,15 +40,6 @@ const values = [
 			"Ipsa in earum deserunt aut. Quos minus aut animi et soluta. Ipsum dicta ut quia eius. Possimus reprehenderit iste aspernatur ut est velit consequatur distinctio.",
 	},
 ];
-const team = [
-	{
-		name: "Michael Foster",
-		role: "Co-Founder / CTO",
-		imageUrl:
-			"https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80",
-	},
-	// More people...
-];
 const blogPosts = [
 	{
 		id: 1,
@@ -74,6 +59,10 @@ const blogPosts = [
 	},
 	// More posts...
 ];
+
+export const metadata = {
+	title: "About",
+};
 
 export default async function Example() {
 	const currentSession = await prisma.session.findFirst({

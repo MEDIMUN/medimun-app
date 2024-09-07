@@ -41,7 +41,6 @@ export default async function Page({ params, searchParams }) {
 		authorizePerSession(authSession, [s.manager, s.management], [params.sessionNumber]) ? "COMMITTEEMANAGER" : null,
 		authorizePerSession(authSession, [s.member, s.management], [params.sessionNumber]) ? "COMMITTEEMEMBER" : null,
 		authorizePerSession(authSession, [s.sec, s.management], [params.sessionNumber]) ? "COMMITTEESECRETARIAT" : null,
-		authorizePerSession(authSession, [s.schooldirector, s.management], [params.sessionNumber]) ? "COMMITTEESCHOOLDIRECTORS" : null,
 		authorizePerSession(authSession, [s.director, s.sd], [params.sessionNumber]) ? "COMMITTEEDIRECTORS" : null,
 		authorizePerSession(authSession, [s.sd], [params.sessionNumber]) ? "COMMITTEESENIORDIRECTORS" : null,
 	].filter((x) => x);

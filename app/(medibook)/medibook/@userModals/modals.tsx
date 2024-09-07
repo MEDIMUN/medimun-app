@@ -17,7 +17,7 @@ import { getOrdinal } from "@/lib/ordinal";
 import { romanize } from "@/lib/romanize";
 
 import { Field, Label } from "@/components/fieldset";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/input";
 import { Select } from "@/components/select";
 import { SlugInput } from "@/components/slugInput";
 import { countries } from "@/data/countries";
@@ -106,6 +106,8 @@ export function EditUserModal({ edit, schools }) {
 	const isManagement = authorize(authSession, [s.management]);
 	const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession.user.currentRoles, edit);
 
+	const generalEdit = isManagement || isChairOfDelegate || isManagerOfMember;
+
 	const allUpdatableFields = [
 		"id",
 		"officialName",
@@ -115,13 +117,13 @@ export function EditUserModal({ edit, schools }) {
 		isManagement && "email",
 		isManagement && "schoolId",
 		isManagement && "isDisabled",
-		(isManagement || isChairOfDelegate || isManagerOfMember) && "displayName",
-		(isManagement || isChairOfDelegate || isManagerOfMember) && "username",
-		(isManagement || isChairOfDelegate || isManagerOfMember) && "phoneNumber",
-		(isManagement || isChairOfDelegate || isManagerOfMember) && "gender",
-		(isManagement || isChairOfDelegate || isManagerOfMember) && "pronouns",
-		(isManagement || isChairOfDelegate || isManagerOfMember) && "bio",
-		(isManagement || isChairOfDelegate || isManagerOfMember) && "isProfilePrivate",
+		generalEdit && "displayName",
+		generalEdit && "username",
+		generalEdit && "phoneNumber",
+		generalEdit && "gender",
+		generalEdit && "pronouns",
+		generalEdit && "bio",
+		generalEdit && "isProfilePrivate",
 	];
 
 	const isOpen =

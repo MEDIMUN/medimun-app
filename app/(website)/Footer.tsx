@@ -91,7 +91,7 @@ const navigation = {
 export default function Example() {
 	const currentYear = new Date().getFullYear();
 	return (
-		<footer className="bg-gray-900" aria-labelledby="footer-heading">
+		<footer className="bg-zinc-900 font-thin" aria-labelledby="footer-heading">
 			<h2 id="footer-heading" className="sr-only">
 				Footer
 			</h2>
@@ -101,7 +101,7 @@ export default function Example() {
 						<Image className="w-44" src={WhiteLogo} alt="Company name" />
 						<div className="flex space-x-6">
 							{navigation.social.map((item) => (
-								<Link target="_blank" key={item.name} href={item.href} className="text-gray-500 hover:text-gray-400">
+								<Link target="_blank" key={item.name} href={item.href} className="text-zinc-500 hover:text-zinc-400">
 									<span className="sr-only">{item.name}</span>
 									<item.icon className="h-6 w-6" aria-hidden="true" />
 								</Link>
@@ -115,7 +115,7 @@ export default function Example() {
 								<ul role="list" className="mt-6 space-y-4">
 									{navigation.conference.map((item) => (
 										<li key={item.name}>
-											<Link href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
+											<Link href={item.href} className="text-sm leading-6 text-zinc-300 hover:text-white">
 												{item.name}
 											</Link>
 										</li>
@@ -127,7 +127,7 @@ export default function Example() {
 								<ul role="list" className="mt-6 space-y-4">
 									{navigation.organization.map((item) => (
 										<li key={item.name}>
-											<Link href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
+											<Link href={item.href} className="text-sm leading-6 text-zinc-300 hover:text-white">
 												{item.name}
 											</Link>
 										</li>
@@ -141,7 +141,7 @@ export default function Example() {
 								<ul role="list" className="mt-6 space-y-4">
 									{navigation.company.map((item) => (
 										<li key={item.name}>
-											<Link href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
+											<Link href={item.href} className="text-sm leading-6 text-zinc-300 hover:text-white">
 												{item.name}
 											</Link>
 										</li>
@@ -153,7 +153,7 @@ export default function Example() {
 								<ul role="list" className="mt-6 space-y-4">
 									{navigation.legal.map((item) => (
 										<li key={item.name}>
-											<Link href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
+											<Link href={item.href} className="text-sm leading-6 text-zinc-300 hover:text-white">
 												{item.name}
 											</Link>
 										</li>
@@ -164,7 +164,7 @@ export default function Example() {
 					</div>
 				</div>
 				<div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 lg:mt-24">
-					<p className="text-xs leading-5 text-gray-400">&copy; 2005 - {currentYear} Mediterranean Model United Nations. All rights reserved.</p>
+					<p className="text-xs leading-5 text-zinc-400">&copy; 2005 - {currentYear} Mediterranean Model United Nations. All rights reserved.</p>
 				</div>
 			</div>
 		</footer>

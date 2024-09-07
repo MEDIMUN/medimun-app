@@ -13,7 +13,7 @@ import Icon from "@/components/icon";
 import { EditCommitteeButton } from "./buttons";
 import { DayTypeMap } from "@/data/constants";
 import { auth } from "@/auth";
-import { CardsTable, TableCard, TableCardBody, TableCardChip, TableCardFooter } from "@/components/medibook/table";
+import { CardsTable, TableCard, TableCardBody, TableCardChip, TableCardFooter } from "@/misc/medibook/table";
 import { cn } from "@/lib/cn";
 
 export const metadata = {

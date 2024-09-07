@@ -1,5 +1,7 @@
 "use client";
 
+import { Badge } from "@/components/badge";
+import { Divider } from "@/components/divider";
 import { cn } from "@/lib/cn";
 import { useEffect, useState } from "react";
 
@@ -26,11 +28,26 @@ export function StatsCard({ title, value, className = "", ...others }) {
 	}, [value]);
 
 	return (
-		<div {...others} className={cn("flex animate-appearance-in flex-col bg-content1/50 p-4", className)}>
-			<h2 className="bg-gradient-to-br from-foreground-800 to-foreground-500 bg-clip-text text-5xl font-semibold tracking-tight text-transparent dark:to-foreground-200 lg:inline-block">
-				{count}
-			</h2>
-			<p className="mt-auto font-[200]">{title}</p>
+		<div>
+			<Divider />
+			<div className="mt-6 text-lg/6 font-medium sm:text-sm/6">{title}</div>
+			<div className="mt-3 text-3xl/8 font-semibold sm:text-2xl/8">{count}</div>
+			<div className="mt-3 text-sm/6 sm:text-xs/6">
+				<Badge color={"change".startsWith("+") ? "lime" : "pink"}>{"change"}</Badge> <span className="text-zinc-500">from last week</span>
+			</div>
+		</div>
+	);
+}
+
+export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
+	return (
+		<div>
+			<Divider />
+			<div className="mt-6 text-lg/6 font-medium sm:text-sm/6">{title}</div>
+			<div className="mt-3 text-3xl/8 font-semibold sm:text-2xl/8">{value}</div>
+			<div className="mt-3 text-sm/6 sm:text-xs/6">
+				<Badge color={change.startsWith("+") ? "lime" : "pink"}>{change}</Badge> <span className="text-zinc-500">from last week</span>
+			</div>
 		</div>
 	);
 }
