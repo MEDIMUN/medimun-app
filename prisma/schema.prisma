@@ -167,6 +167,30 @@ model Session {
   maxNumberOfSecurityCouncilAndSpecialCommitteeDelegatesPerSchool Int?
   minimumDelegateAgeOnFirstConferenceDay                          Int?
   ApplicationSchoolDirector                                       ApplicationSchoolDirector[]
+  DelegationDeclaration                                           DelegationDeclaration[]
+  GrantedDelegation                                               GrantedDelegation[]
+}
+
+model DelegationDeclaration {
+  id                  String   @id @default(nanoid())
+  date                DateTime @default(now())
+  //
+  numberOfGACountries Int
+  countyPreferences   String[]
+  school              School   @relation(fields: [schoolId], references: [id])
+  schoolId            String
+  session             Session  @relation(fields: [sessionId], references: [id])
+  sessionId           String
+}
+
+model GrantedDelegation {
+  id        String   @id @default(nanoid())
+  //
+  countries String[]
+  school    School   @relation(fields: [schoolId], references: [id])
+  schoolId  String
+  session   Session  @relation(fields: [sessionId], references: [id])
+  sessionId String
 }
 
 model Day {
@@ -448,6 +472,8 @@ model School {
   User                      User[]
   Role                      Role[]
   ApplicationSchoolDirector ApplicationSchoolDirector[]
+  DelegationDeclaration     DelegationDeclaration[]
+  GrantedDelegation         GrantedDelegation[]
 }
 
 // CHAT GROUPS ///////////////////////////////////////////////////////////

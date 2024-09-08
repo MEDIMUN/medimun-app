@@ -6,7 +6,18 @@ import { updateSearchParams } from "@/lib/searchParams";
 import { useEffect } from "react";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 
-export function Paginator({ totalItems, itemsPerPage, itemsOnPage, ...props }: { totalItems: number; itemsPerPage: number; itemsOnPage?: number }) {
+export function Paginator({
+	totalItems,
+	itemsPerPage,
+	itemsOnPage,
+	control,
+	...props
+}: {
+	totalItems: number;
+	itemsPerPage: number;
+	itemsOnPage?: number;
+	control;
+}) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const currentPage = parseInt(searchParams.get("page")) || 1;
@@ -60,9 +71,9 @@ export function Paginator({ totalItems, itemsPerPage, itemsOnPage, ...props }: {
 				className="mx-auto"
 				variant="light"
 				color="secondary"
-				total={total}
-				page={currentPage}
-				onChange={onChangeHandler}
+				total={control.total || total}
+				page={control.page || currentPage}
+				onChange={control.onChange || onChangeHandler}
 				{...props}
 			/>
 		</div>

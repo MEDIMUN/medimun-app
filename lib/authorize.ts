@@ -266,7 +266,10 @@ export const authorizeMemberDepartment = (membersRoles: RoleObject[], department
 };
 
 export const authorizeSchoolDirectorSchool = (schoolDirectorsRoles: RoleObject[], schoolId: string): boolean => {
+	console.log(schoolDirectorsRoles);
 	if (!schoolDirectorsRoles) return false;
 	const schoolDirectorRoles = schoolDirectorsRoles.filter((role) => role.roleIdentifier === "schoolDirector");
-	return schoolDirectorRoles.some((role) => role.schoolId === schoolId);
+	const isValid = schoolDirectorRoles.some((role) => role.schoolId === schoolId);
+	console.log(isValid);
+	return isValid;
 };
