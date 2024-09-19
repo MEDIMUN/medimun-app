@@ -2,6 +2,9 @@ import createMDX from '@next/mdx';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	generateBuildId: async () => {
+		return process.env.GIT_HASH;
+	},
 	typescript: {
 		ignoreBuildErrors: true,
 	},

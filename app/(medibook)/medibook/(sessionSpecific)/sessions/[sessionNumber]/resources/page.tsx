@@ -78,12 +78,11 @@ export default async function Page({ params, searchParams }) {
 				defaultSort="timedesc"
 				buttonHref={`/medibook/sessions/${params.sessionNumber}`}
 				buttonText={`Session ${romanize(params.sessionNumber)}`}
-				title="Session Resources"
-				className="mb-8">
+				title="Session Resources">
 				{isManagement && <SearchParamsButton searchParams={{ uploadsessionresource: params.sessionNumber }}>Upload Resource</SearchParamsButton>}
 			</TopBar>
 			<ResourcesTable resources={prismaResources} isManagement={isManagement} />
-			<Paginator totalItems={totalItems} itemsPerPage={itemsPerPage} />
+			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
 		</>
 	);
 }

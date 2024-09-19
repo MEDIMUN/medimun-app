@@ -83,6 +83,67 @@ export const authorize = (userdata: object, scope: s[]): boolean => {
 	return false;
 };
 
+export const authorizeDirect = (userdata: object, scope: s[]): boolean => {
+	if (!userdata) return false;
+	const { currentRoleNames } = userdata.user;
+	if (userdata?.isDisabled) return false;
+	if (!currentRoleNames) return false;
+	if (!scope[0]) return true;
+
+	for (const sc of scope) {
+		if (currentRoleNames.includes("Global Admin")) if (sc === s.globalAdmin) return true;
+		if (currentRoleNames.includes("Admin")) if (sc === s.admin) return true;
+		if (currentRoleNames.includes("Admin") || currentRoleNames.includes("Global Admin")) if (sc === s.admins) return true;
+		if (currentRoleNames.includes("Senior Director")) if (sc === s.sd) return true;
+		if (currentRoleNames.includes("Director")) if (sc === s.director) return true;
+		if (currentRoleNames.includes("Senior Director") || currentRoleNames.includes("Director")) if (sc === s.board) return true;
+		if (currentRoleNames.includes("Secretary-General")) if (sc === s.sg) return true;
+		if (currentRoleNames.includes("Deputy Secretary-General")) if (sc === s.dsg) return true;
+		if (currentRoleNames.includes("President of the General Assembly")) if (sc === s.pga) return true;
+		if (currentRoleNames.includes("Deputy President of the General Assembly")) if (sc === s.dpga) return true;
+		if (
+			currentRoleNames.includes("Secretary-General") ||
+			currentRoleNames.includes("Deputy Secretary-General") ||
+			currentRoleNames.includes("President of the General Assembly") ||
+			currentRoleNames.includes("Deputy President of the General Assembly")
+		) {
+			if (sc === s.sec) return true;
+		}
+		if (currentRoleNames.includes("Secretary-General") || currentRoleNames.includes("President of the General Assembly")) {
+			if (sc === s.highsec) return true;
+		}
+		if (
+			currentRoleNames.includes("Global Admin") ||
+			currentRoleNames.includes("Admin") ||
+			currentRoleNames.includes("Senior Director") ||
+			currentRoleNames.includes("Director") ||
+			currentRoleNames.includes("Secretary-General") ||
+			currentRoleNames.includes("Deputy Secretary-General") ||
+			currentRoleNames.includes("President of the General Assembly") ||
+			currentRoleNames.includes("Deputy President of the General Assembly")
+		) {
+			if (sc === s.management) return true;
+		}
+		if (currentRoleNames.includes("Chair")) {
+			if (sc === s.chair) return true;
+		}
+		if (currentRoleNames.includes("Delegate")) {
+			if (sc === s.delegate) return true;
+		}
+		if (currentRoleNames.includes("Manager")) {
+			if (sc === s.manager) return true;
+		}
+		if (currentRoleNames.includes("Member")) {
+			if (sc === s.member) return true;
+		}
+		if (currentRoleNames.includes("School Director")) {
+			if (sc === s.schooldirector) return true;
+		}
+	}
+
+	return false;
+};
+
 export function authorizePerRole(userdata: object, scope: s[]): boolean {
 	const allRoles = userdata?.user?.currentRoles?.concat(userdata?.user.pastRoles);
 	//filter based on conferenceSessions array
@@ -266,10 +327,8 @@ export const authorizeMemberDepartment = (membersRoles: RoleObject[], department
 };
 
 export const authorizeSchoolDirectorSchool = (schoolDirectorsRoles: RoleObject[], schoolId: string): boolean => {
-	console.log(schoolDirectorsRoles);
 	if (!schoolDirectorsRoles) return false;
 	const schoolDirectorRoles = schoolDirectorsRoles.filter((role) => role.roleIdentifier === "schoolDirector");
 	const isValid = schoolDirectorRoles.some((role) => role.schoolId === schoolId);
-	console.log(isValid);
 	return isValid;
 };

@@ -153,9 +153,7 @@ export async function sendEmail({
 			</MainTemplate>,
 			{ pretty: true }
 		);
-	} catch (error) {
-		console.error(error);
-	}
+	} catch (error) {}
 
 	await sendEmailTransport({
 		to,

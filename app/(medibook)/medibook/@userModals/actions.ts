@@ -250,13 +250,13 @@ export async function addRole(formData, users) {
 			"admin",
 			"globalAdmin",
 		].includes(roleName)
-	)
+	) {
 		return { ok: false, message: "Error" };
-
-	switch (roleName) {
-		case "delegate":
-			await prisma
-				.$transaction(
+	}
+	try {
+		switch (roleName) {
+			case "delegate":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.delegate.upsert({
 							where: { userId_committeeId: { userId, committeeId } },
@@ -264,22 +264,10 @@ export async function addRole(formData, users) {
 							create: { userId, country, committeeId },
 						});
 					})
-				)
-				.catch((e) => error(e));
-			await prisma
-				.$transaction(
-					usersToBeAssignedRoles.map((userId) => {
-						return prisma.role.upsert({
-							where: { userId_committeeId: { userId, committeeId }, type: "delegate" },
-							update: { userId, country, committeeId, type: "delegate" },
-							create: { userId, country, committeeId, type: "delegate" },
-						});
-					})
-				)
-				.catch((e) => error(e));
-		case "chair":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "chair":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.chair.upsert({
 							where: { userId_committeeId: { userId, committeeId } },
@@ -287,24 +275,10 @@ export async function addRole(formData, users) {
 							create: { userId, committeeId },
 						});
 					})
-				)
-				.catch((e) => error(e));
-			await prisma
-				.$transaction(
-					usersToBeAssignedRoles.map((userId) => {
-						return prisma.role.upsert({
-							where: { userId_committeeId: { userId, committeeId }, type: "chair" },
-							update: { userId, committeeId, type: "chair" },
-							create: { userId, committeeId, type: "chair" },
-						});
-					})
-				)
-				.catch((e) => error(e));
-
-			break;
-		case "member":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "member":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.member.upsert({
 							where: { userId_departmentId: { userId, departmentId } },
@@ -312,23 +286,10 @@ export async function addRole(formData, users) {
 							create: { userId, departmentId },
 						});
 					})
-				)
-				.catch((e) => error(e));
-			await prisma
-				.$transaction(
-					usersToBeAssignedRoles.map((userId) => {
-						return prisma.role.upsert({
-							where: { userId_departmentId: { userId, departmentId }, type: "member" },
-							update: { userId, departmentId, type: "member" },
-							create: { userId, departmentId, type: "member" },
-						});
-					})
-				)
-				.catch((e) => error(e));
-			break;
-		case "manager":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "manager":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.manager.upsert({
 							where: { userId_departmentId: { userId, departmentId } },
@@ -336,23 +297,10 @@ export async function addRole(formData, users) {
 							create: { userId, departmentId },
 						});
 					})
-				)
-				.catch((e) => error(e));
-			await prisma
-				.$transaction(
-					usersToBeAssignedRoles.map((userId) => {
-						return prisma.role.upsert({
-							where: { userId_departmentId: { userId, departmentId }, type: "manager" },
-							update: { userId, departmentId, type: "manager" },
-							create: { userId, departmentId, type: "manager" },
-						});
-					})
-				)
-				.catch((e) => error(e));
-			break;
-		case "schoolDirector":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "schoolDirector":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.schoolDirector.upsert({
 							where: { userId_schoolId_sessionId: { userId, schoolId, sessionId } },
@@ -360,23 +308,10 @@ export async function addRole(formData, users) {
 							create: { userId, schoolId, sessionId },
 						});
 					})
-				)
-				.catch((e) => error(e));
-			await prisma
-				.$transaction(
-					usersToBeAssignedRoles.map((userId) => {
-						return prisma.role.upsert({
-							where: { userId_schoolId_sessionId: { userId, schoolId, sessionId }, type: "schoolDirector" },
-							update: { userId, schoolId, sessionId, type: "schoolDirector" },
-							create: { userId, schoolId, sessionId, type: "schoolDirector" },
-						});
-					})
-				)
-				.catch((e) => error(e));
-			break;
-		case "deputyPresidentOfTheGeneralAssembly":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "deputyPresidentOfTheGeneralAssembly":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.deputyPresidentOfTheGeneralAssembly.upsert({
 							where: { userId_sessionId: { userId, sessionId } },
@@ -384,23 +319,10 @@ export async function addRole(formData, users) {
 							create: { userId, sessionId },
 						});
 					})
-				)
-				.catch((e) => error(e));
-			await prisma
-				.$transaction(
-					usersToBeAssignedRoles.map((userId) => {
-						return prisma.role.upsert({
-							where: { userId_sessionId_type: { userId, sessionId, type: "deputyPresidentOfTheGeneralAssembly" } },
-							update: { userId, sessionId, type: "deputyPresidentOfTheGeneralAssembly" },
-							create: { userId, sessionId, type: "deputyPresidentOfTheGeneralAssembly" },
-						});
-					})
-				)
-				.catch((e) => error(e));
-			break;
-		case "deputySecretaryGeneral":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "deputySecretaryGeneral":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.deputySecretaryGeneral.upsert({
 							where: { userId_sessionId: { userId, sessionId } },
@@ -408,22 +330,10 @@ export async function addRole(formData, users) {
 							create: { userId, sessionId },
 						});
 					})
-				)
-				.catch((e) => error(e));
-			await prisma
-				.$transaction(
-					usersToBeAssignedRoles.map((userId) => {
-						return prisma.role.upsert({
-							where: { userId_sessionId_type: { userId, sessionId, type: "deputySecretaryGeneral" } },
-							update: { userId, sessionId, type: "deputySecretaryGeneral" },
-							create: { userId, sessionId, type: "deputySecretaryGeneral" },
-						});
-					})
-				)
-				.catch((e) => error(e));
-		case "presidentOfTheGeneralAssembly":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "presidentOfTheGeneralAssembly":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.presidentOfTheGeneralAssembly.upsert({
 							where: { userId_sessionId: { userId, sessionId } },
@@ -431,23 +341,10 @@ export async function addRole(formData, users) {
 							create: { userId, sessionId },
 						});
 					})
-				)
-				.catch((e) => error(e));
-			await prisma
-				.$transaction(
-					usersToBeAssignedRoles.map((userId) => {
-						return prisma.role.upsert({
-							where: { userId_sessionId_type: { userId, sessionId, type: "presidentOfTheGeneralAssembly" } },
-							update: { userId, sessionId, type: "presidentOfTheGeneralAssembly" },
-							create: { userId, sessionId, type: "presidentOfTheGeneralAssembly" },
-						});
-					})
-				)
-				.catch((e) => error(e));
-			break;
-		case "secretaryGeneral":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "secretaryGeneral":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.secretaryGeneral.upsert({
 							where: { userId_sessionId: { userId, sessionId } },
@@ -455,114 +352,41 @@ export async function addRole(formData, users) {
 							create: { userId, sessionId },
 						});
 					})
-				)
-				.catch((e) => error(e));
-			await prisma
-				.$transaction(
-					usersToBeAssignedRoles.map((userId) => {
-						return prisma.role.upsert({
-							where: { userId_sessionId_type: { userId, sessionId, type: "secretaryGeneral" } },
-							update: { userId, sessionId, type: "secretaryGeneral" },
-							create: { userId, sessionId, type: "secretaryGeneral" },
-						});
-					})
-				)
-				.catch((e) => error(e));
-			break;
-		case "director":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "director":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.director.upsert({ where: { id: userId }, update: { id: userId }, create: { id: userId } });
 					})
-				)
-				.catch((e) => error(e));
-			usersToBeAssignedRoles.forEach(async (userId) => {
-				const director = await prisma.role.findFirst({ where: { userId: userId, type: "director" } }).catch((e) => error(e));
-				if (!director) {
-					await prisma.role
-						.create({
-							data: {
-								userId: userId,
-								type: "director",
-							},
-						})
-						.catch((e) => error(e));
-				}
-			});
-			break;
-		case "seniorDirector":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "seniorDirector":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.seniorDirector.upsert({ where: { id: userId }, update: { id: userId }, create: { id: userId } });
 					})
-				)
-				.catch((e) => error(e));
-			usersToBeAssignedRoles.forEach(async (userId) => {
-				const seniorDirector = await prisma.role.findFirst({ where: { userId: userId, type: "seniorDirector" } }).catch((e) => error(e));
-				if (!seniorDirector) {
-					await prisma.role
-						.create({
-							data: {
-								userId: userId,
-								type: "seniorDirector",
-							},
-						})
-						.catch((e) => error(e));
-				}
-			});
-			break;
-		case "admin":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "admin":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.admin.upsert({ where: { id: userId }, update: { id: userId }, create: { id: userId } });
 					})
-				)
-				.catch((e) => error(e));
-			usersToBeAssignedRoles.forEach(async (userId) => {
-				const admin = await prisma.role.findFirst({ where: { userId: userId, type: "admin" } }).catch((e) => error(e));
-				if (!admin) {
-					await prisma.role
-						.create({
-							data: {
-								userId: userId,
-								type: "admin",
-							},
-						})
-						.catch((e) => error(e));
-				}
-			});
-			break;
-		case "globalAdmin":
-			await prisma
-				.$transaction(
+				);
+				break;
+			case "globalAdmin":
+				await prisma.$transaction(
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.globalAdmin.upsert({ where: { id: userId }, update: { id: userId }, create: { id: userId } });
 					})
-				)
-				.catch((e) => error(e));
-			usersToBeAssignedRoles.forEach(async (userId) => {
-				const globalAdmin = await prisma.role.findFirst({ where: { userId: userId, type: "globalAdmin" } }).catch((e) => error(e));
-				if (!globalAdmin) {
-					await prisma.role
-						.create({
-							data: {
-								userId: userId,
-								type: "globalAdmin",
-							},
-						})
-						.catch((e) => error(e));
-				}
-			});
-			break;
+				);
+				break;
+		}
+	} catch (e) {
+		return { ok: false, message: "Error adding roles." };
 	}
 	return { ok: true, message: "Roles added" };
-}
-
-function error(e) {
-	return { ok: false, message: "Error" };
 }
 
 export async function toggleDisableOrEnableUsers(userIds, disable = true) {

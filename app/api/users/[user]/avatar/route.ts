@@ -22,7 +22,7 @@ export async function GET(request, { params }) {
 	}
 
 	if (!userExists) notFound();
-	if (!userExists.profilePicture) notFound();
+	if (!userExists.profilePicture) return NextResponse.json({ "Not Found": "True" });
 
 	let minioClient = minio();
 	let url: string | NextURL | URL;

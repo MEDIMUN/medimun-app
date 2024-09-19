@@ -15,7 +15,7 @@ import { EllipsisVerticalIcon, MagnifyingGlassIcon } from "@heroicons/react/16/s
 import { useDebouncedValue } from "@mantine/hooks";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { redirect, useRouter as useNextRouter, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter as useNextRouter, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "sonner";
 import { authorizedToEditResource } from "./@resourceModals/default";
@@ -127,7 +127,7 @@ export function TopBar({
 					)}
 				</div>
 			</div>
-			{children && <div className="grid w-full grid-cols-1 gap-4 bg-red-500 md:block md:w-auto">{children}</div>}
+			{children && <div className="grid w-full grid-cols-1 gap-4 md:block md:w-auto">{children}</div>}
 		</div>
 	);
 }

@@ -4,7 +4,7 @@ import { Button } from "@/components/button";
 import { useSearchParams, useRouter, ReadonlyURLSearchParams, useParams, usePathname } from "next/navigation";
 import { s, authorize } from "@/lib/authorize";
 import { useSession } from "next-auth/react";
-import { addCommittee, addSession, deleteSchool } from "./actions";
+import { addSession } from "./actions";
 import { toast } from "sonner";
 import { useFlushState } from "@/hooks/useFlushState";
 import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";

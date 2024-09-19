@@ -63,7 +63,7 @@ export default async function Page({ searchParams }) {
 				)}
 			</TopBar>
 			{!!numberOfSchools && (
-				<Table className="showscrollbar mt-10">
+				<Table className="showscrollbar">
 					<TableHead>
 						<TableRow>
 							{rows.map((row, i) => (

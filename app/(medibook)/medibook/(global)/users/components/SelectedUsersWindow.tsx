@@ -41,7 +41,7 @@ export function SelectedUsersWindow() {
 
 	return (
 		<>
-			<div className="mb-10 rounded-md bg-zinc-50 p-4">
+			<div className="rounded-md bg-zinc-50 p-4">
 				<div className="flex">
 					<div className="flex-shrink-0">
 						<CheckCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />

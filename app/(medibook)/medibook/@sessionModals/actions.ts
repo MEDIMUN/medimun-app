@@ -6,7 +6,6 @@ import { auth } from "@/auth";
 import { z } from "zod";
 import { parseFormData } from "@/lib/form";
 import { entityCase } from "@/lib/text";
-import { currentSession } from "../sessions/[sessionNumber]/(session)/actions";
 
 export async function addSession() {
 	const authSession = await auth();

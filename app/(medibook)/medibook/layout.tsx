@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 
-import { Avatar } from "@/components/avatar";
+import { Avatar } from "@nextui-org/avatar";
 import { Dropdown, DropdownButton } from "@/components/dropdown";
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "@/components/navbar";
 import { SidebarLayout } from "@/components/sidebar-layout";
@@ -97,8 +97,15 @@ export default async function RootLayout({
 									<div className="rounded-full border bg-content1/80 px-6 py-1 text-sm font-light shadow-md">Upcoming</div>
 									<NavbarSection>
 										<Dropdown>
-											<DropdownButton as={NavbarItem}>
-												<Avatar src={`/api/users/${authSession?.user?.id}/avatar`} square />
+											<DropdownButton className="p-0" as={NavbarItem}>
+												<Avatar
+													src={`/api/users/${authSession?.user?.id}/avatar`}
+													className="m-0 h-6 w-6 rounded-sm bg-primary"
+													showFallback
+													isBordered
+													size="sm"
+													radius="none"
+												/>
 											</DropdownButton>
 											<AccountDropdownMenu anchor="bottom end" />
 										</Dropdown>

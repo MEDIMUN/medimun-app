@@ -71,8 +71,7 @@ export default async function Sessions({ searchParams }) {
 					</SearchParamsButton>
 				)}
 			</TopBar>
-			{currentPage !== 1 && <Divider className="" />}
-			<ul className="">
+			<ul>
 				{sessions.map((session, index) => {
 					const firstDay = session?.Day[0]?.date;
 					const firstDayDate = firstDay?.toLocaleString("en-GB").slice(0, 10);
@@ -84,10 +83,7 @@ export default async function Sessions({ searchParams }) {
 					return (
 						<>
 							<li
-								className={cn(
-									"bg-cover",
-									session?.isCurrent && "mb-6 mt-4 overflow-hidden rounded-lg bg-center text-zinc-800 shadow-md duration-300"
-								)}
+								className={cn("bg-cover", session?.isCurrent && "mb-6 overflow-hidden rounded-lg bg-center text-zinc-800 shadow-md duration-300")}
 								style={
 									session.isCurrent
 										? session.coverImage

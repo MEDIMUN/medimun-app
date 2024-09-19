@@ -41,6 +41,7 @@ import { useSidebarContext } from "./providers";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { Text } from "@/components/text";
 import { Heading } from "@/components/heading";
+import { Badge } from "@/components/badge";
 
 export function AccountDropdownMenu({ anchor }: { anchor: "top start" | "bottom end" }) {
 	return (
@@ -163,14 +164,12 @@ export function Sidebar({ sessions }) {
 	const visibleCommitteeOptions = committeeOptionsList.filter((option) => option.isVisible);
 
 	const applicationOptionsList = [
-		{ name: "Chair", href: `/settings`, isVisible: isManagement },
-		{ name: "Dlegate", href: `/settings`, isVisible: isManagement },
-		{ name: "Manager", href: `/settings`, isVisible: isManagement },
-		{ name: "Member", href: `/settings`, isVisible: isManagement },
 		{ name: "School Director", href: `/applications/school-director`, isVisible: true },
-		{ name: "Delegation Declaration", href: `/applications/delegation-declaration`, isVisible: true },
-		{ name: "Delegate 2", href: `/topics`, isVisible: true },
-		{ name: "Delegate 3", href: `/roll-calls`, isVisible: isManagement },
+		{ name: "Delegation", href: `/applications/delegation`, isVisible: true },
+		{ name: "Delegate Assignment", href: `/applications/delegate-assignment`, isVisible: true },
+		{ name: "Chair", href: `/applications/chair`, isVisible: isManagement, isDisabled: true },
+		{ name: "Manager", href: `/applications/manager`, isVisible: isManagement, isDisabled: true },
+		{ name: "Member", href: `/applications/member`, isVisible: isManagement, isDisabled: true },
 	];
 
 	const visibleApplicationOptions = applicationOptionsList.filter((option) => option.isVisible);
@@ -200,6 +199,7 @@ export function Sidebar({ sessions }) {
 		return visibleApplicationOptions.map((committee, index) => (
 			<SidebarItem
 				key={index}
+				disabled={committee.isDisabled}
 				className={cn("h-8", index + 1 == visibleApplicationOptions.length && "mb-2")}
 				href={basePath + committee.href}
 				current={pathname == basePath + committee.href}>
@@ -212,7 +212,14 @@ export function Sidebar({ sessions }) {
 						)}
 					/>
 				</div>
-				<SidebarLabel>{committee.name}</SidebarLabel>
+				<SidebarLabel>
+					{committee.name}
+					{committee.isDisabled && (
+						<Badge color="red" className="ml-1">
+							Not Available
+						</Badge>
+					)}
+				</SidebarLabel>
 			</SidebarItem>
 		));
 	}
@@ -352,10 +359,13 @@ export function Sidebar({ sessions }) {
 								<SidebarLabel>My Students</SidebarLabel>
 							</SidebarItem>
 							<SidebarItem
-								href={`${schoolDirectorBasePath}/apply/delegation-declaration`}
-								current={pathname == `${schoolDirectorBasePath}/apply/delegation-declaration`}>
+								href={`/medibook/sessions/${selectedSession}/schools/${schoolDirectorRole?.schoolSlug || schoolDirectorRole?.schoolId}/delegation`}
+								current={
+									pathname ==
+									`/medibook/sessions/${selectedSession}/schools/${schoolDirectorRole?.schoolSlug || schoolDirectorRole?.schoolId}/apply/delegation`
+								}>
 								<Icon slot="icon" icon="heroicons-solid:document-add" height={20} />
-								<SidebarLabel>Delegation Declaration</SidebarLabel>
+								<SidebarLabel>Delegation</SidebarLabel>
 							</SidebarItem>
 							<SidebarItem href={`${schoolDirectorBasePath}/request-changes`} current={pathname == `${schoolDirectorBasePath}/request-changes`}>
 								<Icon slot="icon" icon="heroicons-solid:pencil-alt" height={20} />
@@ -458,7 +468,7 @@ export function Sidebar({ sessions }) {
 						<DropdownButton as={SidebarItem}>
 							<span className="flex min-w-0 items-center gap-3">
 								<NextUIAvatar
-									src={`/api/users/${authSession?.user?.id}/avatar`}
+									src={status === "authenticated" ? `/api/users/${authSession?.user?.id}/avatar` : null}
 									radius="sm"
 									size="md"
 									showFallback

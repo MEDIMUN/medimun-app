@@ -164,7 +164,7 @@ export function WebsiteNavbar() {
 										{({ open }) => (
 											<>
 												<DisclosureButton className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-													Product
+													Conference
 													<ChevronDownIcon className={cn(open ? "rotate-180" : "", "h-5 w-5 flex-none")} aria-hidden="true" />
 												</DisclosureButton>
 												<DisclosurePanel className="mt-2 space-y-2">
@@ -181,20 +181,49 @@ export function WebsiteNavbar() {
 											</>
 										)}
 									</Disclosure>
-									<a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-										Features
-									</a>
-									<a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-										Marketplace
-									</a>
-									<a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-										Company
-									</a>
+									<Link
+										onClick={() => setMobileMenuOpen(false)}
+										href="/about"
+										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+										About
+									</Link>
+									<Link
+										onClick={() => setMobileMenuOpen(false)}
+										href="/blog"
+										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+										Blog
+									</Link>
+									<Link
+										onClick={() => setMobileMenuOpen(false)}
+										href="/announcements"
+										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+										Announcements
+									</Link>
+									<Link
+										onClick={() => setMobileMenuOpen(false)}
+										href="/contact"
+										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+										Contact
+									</Link>
 								</div>
 								<div className="py-6">
-									<a href="#" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-										Log in
-									</a>
+									{status !== "authenticated" ? (
+										<Link
+											href="/login"
+											onClick={() => setMobileMenuOpen(false)}
+											prefetch={false}
+											className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+											Log in
+										</Link>
+									) : (
+										<Link
+											href="/medibook"
+											onClick={() => setMobileMenuOpen(false)}
+											prefetch={true}
+											className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+											Go To MediBook
+										</Link>
+									)}
 								</div>
 							</div>
 						</div>

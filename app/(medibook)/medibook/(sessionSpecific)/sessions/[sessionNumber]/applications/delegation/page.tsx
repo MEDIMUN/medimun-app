@@ -19,38 +19,33 @@ export function areDelegateApplicationsOpen(selectedSession) {
 export default async function Page({ params }) {
 	const selectedSession = await prisma.session.findFirst({
 		where: { number: params.sessionNumber },
+		include: { ApplicationGrantedDelegationCountries: true },
 	});
 
-	const applicationsOfSession = await prisma.delegationDeclaration.findMany({
-		where: {
-			session: {
-				number: selectedSession.number,
-			},
-		},
-		orderBy: {
-			date: "asc",
-		},
-		include: {
-			school: true,
-		},
+	const applicationsOfSession = await prisma.applicationDelegationPreferences.findMany({
+		where: { session: { number: selectedSession.number } },
+		orderBy: { date: "asc" },
+		include: { school: true },
 	});
+
+	const schools = await prisma.school.findMany();
 
 	const areApplicationsOpen = areDelegateApplicationsOpen(selectedSession);
 
 	return (
 		<>
 			<TopBar
-				buttonText={`Session ${romanize(selectedSession.numberInteger)}`}
-				buttonHref={`/medibook/sessions/${selectedSession.number}`}
+				buttonText={`Session ${romanize(selectedSession.numberInteger)} Applications`}
+				buttonHref={`/medibook/sessions/${selectedSession.number}/applications`}
 				hideSearchBar
-				title="Delegation Declarations"
+				title="Delegation Requests"
 			/>
-			<div className="grid grid-cols-1 gap-5">
+			<div className="flex flex-col gap-5">
 				<div className="mt-5 rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
 					<Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
 				</div>
 				<ApplicationOptions selectedSession={selectedSession} />
-				<CountryAssign selectedSession={selectedSession} applicationsOfSession={applicationsOfSession} />
+				<CountryAssign selectedSession={selectedSession} applicationsOfSession={applicationsOfSession} schools={schools} />
 			</div>
 		</>
 	);

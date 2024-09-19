@@ -111,7 +111,7 @@ export default async function Page({ searchParams }) {
 
 	return (
 		<>
-			<TopBar className="mb-8" title="All Users" defaultSort="officialNameasc" searchText="Search users..." sortOptions={sortOptions}>
+			<TopBar title="All Users" defaultSort="officialNameasc" searchText="Search users..." sortOptions={sortOptions}>
 				<SearchParamsButton searchParams={{ add: "" }}>Add User</SearchParamsButton>
 			</TopBar>
 			<SelectedContextProvider defaultUserData={editUsers}>
@@ -142,7 +142,6 @@ export default async function Page({ searchParams }) {
 								<TableRow key={user.id}>
 									<TableCell>
 										<UserSelector
-											className="mt-2"
 											disabled={highestRoleRank >= user.highestRoleRank}
 											uid={user.id}
 											displayName={user.displayName}
