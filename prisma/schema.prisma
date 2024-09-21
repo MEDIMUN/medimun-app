@@ -24,11 +24,9 @@ model passwordReset {
 }
 
 model Account {
-  id          String   @id @default(uuid())
-  password    String
-  timeCreated DateTime @default(now())
-  lastLogin   DateTime
-  user        User[]
+  id       String @id @default(uuid())
+  password String
+  user     User[]
 }
 
 model User {
@@ -36,6 +34,7 @@ model User {
   email                               String                                @unique
   phoneNumber                         String?
   profilePicture                      String?
+  lastLogin                           DateTime?
   //
   bestTimeToReach                     String?
   //
@@ -83,89 +82,88 @@ model User {
 }
 
 model Session {
-  id                                                              String                                  @id @unique @default(nanoid())
-  isCurrent                                                       Boolean                                 @default(false)
-  isPreviousCurrent                                               Boolean                                 @default(false)
+  id                                             String                                  @id @unique @default(nanoid())
+  isCurrent                                      Boolean                                 @default(false)
+  isMainShown                                    Boolean                                 @default(false)
   //
-  isPartlyVisible                                                 Boolean                                 @default(false)
-  isVisible                                                       Boolean                                 @default(false)
+  isPartlyVisible                                Boolean                                 @default(false)
+  isVisible                                      Boolean                                 @default(false)
   //
-  directorPrice                                                   Int                                     @default(0)
-  delegatePrice                                                   Int                                     @default(0)
-  isPriceLocked                                                   Boolean                                 @default(false)
+  directorPrice                                  Int                                     @default(0)
+  delegatePrice                                  Int                                     @default(0)
+  isPriceLocked                                  Boolean                                 @default(false)
   //
-  isSchoolDirectorApplicationsForceOpen                           Boolean                                 @default(false)
-  isSchoolDirectorApplicationsAutoOpen                            Boolean                                 @default(false)
-  schoolDirectorApplicationsAutoOpenTime                          DateTime?
-  schoolDirectorApplicationsAutoCloseTime                         DateTime?
+  isSchoolDirectorApplicationsForceOpen          Boolean                                 @default(false)
+  isSchoolDirectorApplicationsAutoOpen           Boolean                                 @default(false)
+  schoolDirectorApplicationsAutoOpenTime         DateTime?
+  schoolDirectorApplicationsAutoCloseTime        DateTime?
   //
-  isSecretariatApplicationsForceOpen                              Boolean                                 @default(false)
-  isSecretariatApplicationsAutoOpen                               Boolean                                 @default(false)
-  secretariatApplicationsAutoOpenTime                             DateTime?
-  secretariatApplicationsAutoCloseTime                            DateTime?
+  isSecretariatApplicationsForceOpen             Boolean                                 @default(false)
+  isSecretariatApplicationsAutoOpen              Boolean                                 @default(false)
+  secretariatApplicationsAutoOpenTime            DateTime?
+  secretariatApplicationsAutoCloseTime           DateTime?
   //
-  isChairAplicationsForceOpen                                     Boolean                                 @default(false)
-  isChairApplicationsAutoOpen                                     Boolean                                 @default(false)
-  chairApplicationsAutoOpenTime                                   DateTime?
-  chairApplicationsAutoCloseTime                                  DateTime?
+  isChairAplicationsForceOpen                    Boolean                                 @default(false)
+  isChairApplicationsAutoOpen                    Boolean                                 @default(false)
+  chairApplicationsAutoOpenTime                  DateTime?
+  chairApplicationsAutoCloseTime                 DateTime?
   //
-  isDelegateApplicationsForceOpen                                 Boolean                                 @default(false)
-  isDelegateApplicationsAutoOpen                                  Boolean                                 @default(false)
-  delegateApplicationsAutoOpenTime                                DateTime?
-  delegateApplicationsAutoCloseTime                               DateTime?
+  isDelegateApplicationsForceOpen                Boolean                                 @default(false)
+  isDelegateApplicationsAutoOpen                 Boolean                                 @default(false)
+  delegateApplicationsAutoOpenTime               DateTime?
+  delegateApplicationsAutoCloseTime              DateTime?
   //
-  isMemberApplicationsForceOpen                                   Boolean                                 @default(false)
-  isMemberApplicationsAutoOpen                                    Boolean                                 @default(false)
-  memberApplicationsAutoOpenTime                                  DateTime?
-  memberApplicationsAutoCloseTime                                 DateTime?
+  isMemberApplicationsForceOpen                  Boolean                                 @default(false)
+  isMemberApplicationsAutoOpen                   Boolean                                 @default(false)
+  memberApplicationsAutoOpenTime                 DateTime?
+  memberApplicationsAutoCloseTime                DateTime?
   //
-  isManagerApplicationsForceOpen                                  Boolean                                 @default(false)
-  isManagerApplicationsAutoOpen                                   Boolean                                 @default(false)
-  managerApplicationsAutoOpenTime                                 DateTime?
-  managerApplicationsAutoCloseTime                                DateTime?
+  isManagerApplicationsForceOpen                 Boolean                                 @default(false)
+  isManagerApplicationsAutoOpen                  Boolean                                 @default(false)
+  managerApplicationsAutoOpenTime                DateTime?
+  managerApplicationsAutoCloseTime               DateTime?
   //
-  number                                                          String                                  @unique
-  numberInteger                                                   Int                                     @unique
+  number                                         String                                  @unique
+  numberInteger                                  Int                                     @unique
   //
-  theme                                                           String?
-  subTheme                                                        String?
+  theme                                          String?
+  subTheme                                       String?
   //
-  description                                                     String?
-  welcomeText                                                     String?
-  about                                                           String?
+  description                                    String?
+  welcomeText                                    String?
+  about                                          String?
   //
-  cover                                                           String?
+  cover                                          String?
   //
-  committee                                                       Committee[]
-  department                                                      Department[]
+  committee                                      Committee[]
+  department                                     Department[]
   //
-  schoolDirector                                                  SchoolDirector[]
-  Day                                                             Day[]
+  schoolDirector                                 SchoolDirector[]
+  Day                                            Day[]
   //
-  secretaryGeneral                                                SecretaryGeneral[]
-  presidentOfTheGeneralAssembly                                   PresidentOfTheGeneralAssembly[]
-  deputySecretaryGeneral                                          DeputySecretaryGeneral[]
-  deputyPresidentOfTheGeneralAssembly                             DeputyPresidentOfTheGeneralAssembly[]
+  secretaryGeneral                               SecretaryGeneral[]
+  presidentOfTheGeneralAssembly                  PresidentOfTheGeneralAssembly[]
+  deputySecretaryGeneral                         DeputySecretaryGeneral[]
+  deputyPresidentOfTheGeneralAssembly            DeputyPresidentOfTheGeneralAssembly[]
   //
-  Announcement                                                    Announcement[]
-  Resource                                                        Resource[]
+  Announcement                                   Announcement[]
+  Resource                                       Resource[]
   //
-  data                                                            String?
+  data                                           String?
   //
-  savedDelegationDeclarationState                                 String?
+  savedDelegationDeclarationState                String?
   //
-  securityCouncilCountriesOfYear                                  String[]                                @default(["CN", "FR", "RU", "GB", "US"])
-  countriesOfSession                                              String[]                                @default(["CN", "FR", "RU", "GB", "US"])
-  maxNumberOfGeneralAssemblyDelegationsPerSchool                  Int?
-  maxNumberOfSecurityCouncilAndSpecialCommitteeDelegatesPerSchool Int?
-  minimumDelegateAgeOnFirstConferenceDay                          Int?
-  maximunDelegateAgeOnFirstConferenceDay                          Int?
-  ApplicationSchoolDirector                                       ApplicationSchoolDirector[]
-  SchoolDelegationProposal                                        SchoolDelegationProposal[]
-  Invoice                                                         Invoice[]
-  finalDelegation                                                 finalDelegation[]
-  ApplicationDelegationPreferences                                ApplicationDelegationPreferences[]
-  ApplicationGrantedDelegationCountries                           ApplicationGrantedDelegationCountries[]
+  securityCouncilCountriesOfYear                 String[]                                @default(["CN", "FR", "RU", "GB", "US"])
+  countriesOfSession                             String[]                                @default(["CN", "FR", "RU", "GB", "US"])
+  maxNumberOfGeneralAssemblyDelegationsPerSchool Int?
+  minimumDelegateAgeOnFirstConferenceDay         Int?
+  maximumDelegateAgeOnFirstConferenceDay         Int?
+  ApplicationSchoolDirector                      ApplicationSchoolDirector[]
+  SchoolDelegationProposal                       SchoolDelegationProposal[]
+  Invoice                                        Invoice[]
+  finalDelegation                                finalDelegation[]
+  ApplicationDelegationPreferences               ApplicationDelegationPreferences[]
+  ApplicationGrantedDelegationCountries          ApplicationGrantedDelegationCountries[]
 }
 
 model Invoice {

@@ -180,12 +180,11 @@ export default async function Page({ params, searchParams }) {
 					) : (
 						`The ${selectedSession.number + getOrdinal(selectedSession.numberInteger)} Annual Session`
 					)
-				}
-				subheading="Session Overview">
+				}>
 				{authorize(authSession, [s.management]) && <Button href={`/medibook/sessions/${selectedSession.number}/settings`}>Edit Session</Button>}
 			</TopBar>
 			<div className="flex max-w-[1500px] flex-col gap-4 2xl:mx-auto">
-				<div className="-mx-4 -mb-4 -mt-4 flex w-[calc(100%+32px)] flex-col gap-4 rounded-none bg-[url(/gradients/7.jpg)] bg-cover p-4 py-4 md:m-0 md:w-full md:rounded-xl lg:flex-row">
+				<div className="-mx-4 -mb-4 -mt-4 flex w-[calc(100%+32px)] flex-col gap-4 rounded-none bg-[url(/assets/gradients/7.jpg)] bg-cover p-4 py-4 md:m-0 md:w-full md:rounded-xl lg:flex-row">
 					<div className="mt-auto flex w-full flex-col">
 						<h2 className="bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-3xl font-semibold tracking-tight text-transparent dark:to-foreground-200 lg:inline-block">
 							{selectedSession.theme || `The ${selectedSession.number + getOrdinal(selectedSession.number)} Annual Session`}

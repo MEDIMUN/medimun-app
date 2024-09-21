@@ -27,8 +27,10 @@ export default async function Sessions({ searchParams }) {
 	const currentPage = parseInt(searchParams.page) || 1;
 	const query = searchParams.search || "";
 	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
 
 	const whereObject = {
+		...(isManagement ? {} : { isPartlyVisible: true }),
 		OR: [
 			{ number: { contains: query, mode: "insensitive" } },
 			{ theme: { contains: query, mode: "insensitive" } },
@@ -88,7 +90,7 @@ export default async function Sessions({ searchParams }) {
 									session.isCurrent
 										? session.coverImage
 											? { backgroundImage: `url(/api/sessions/${session.number}/background)` }
-											: { backgroundImage: `url(/gradients/${2}.jpg)` }
+											: { backgroundImage: `url(/assets/gradients/${2}.jpg)` }
 										: null
 								}
 								key={session.id}>
@@ -106,7 +108,7 @@ export default async function Sessions({ searchParams }) {
 														</div>
 													) : (
 														<div
-															style={{ backgroundImage: `url(/gradients/${index + 1}.jpg)` }}
+															style={{ backgroundImage: `url(/assets/gradients/${index + 1}.jpg)` }}
 															className={`flex aspect-square justify-center rounded-lg bg-cover align-middle opacity-70 shadow`}>
 															<p className="my-auto translate-y-1 font-[GilroyLight] text-5xl font-light text-white drop-shadow">{session?.number}</p>
 														</div>

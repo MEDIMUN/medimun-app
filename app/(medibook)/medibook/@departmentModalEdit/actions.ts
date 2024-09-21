@@ -11,25 +11,27 @@ export async function editDepartment(formData: FormData, departmentId) {
 	const schema = z.object({
 		name: z.string().trim().min(3).max(100).transform(entityCase),
 		shortName: z.string().trim().min(2).max(4).toUpperCase().optional().nullable(),
-		type: z.array(
-			z.enum([
-				"APPROVAL",
-				"CATERING",
-				"FUNDING",
-				"ADVERTISING",
-				"IT",
-				"SALES",
-				"GRAPHIC",
-				"SOCIAL",
-				"PHOTO",
-				"MEDINEWS",
-				"PI",
-				"PREP",
-				"ADMINSTAFF",
-				"DATA",
-				"OTHER",
-			])
-		),
+		type: z
+			.array(
+				z.enum([
+					"APPROVAL",
+					"CATERING",
+					"FUNDING",
+					"ADVERTISING",
+					"IT",
+					"SALES",
+					"GRAPHIC",
+					"SOCIAL",
+					"PHOTO",
+					"MEDINEWS",
+					"PI",
+					"PREP",
+					"ADMINSTAFF",
+					"DATA",
+					"OTHER",
+				])
+			)
+			.default(["OTHER"]),
 		isVisible: z.boolean(),
 		slug: z.string().optional().nullable().transform(processSlug),
 	});
@@ -50,7 +52,7 @@ export async function editDepartment(formData: FormData, departmentId) {
 		...otherDeptParsedData,
 		type: type?.split(","),
 	});
-
+	if (error) console.log(error);
 	if (error) return { ok: false, message: "Invalid data" };
 
 	try {

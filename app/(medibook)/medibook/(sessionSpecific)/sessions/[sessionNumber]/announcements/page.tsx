@@ -1,9 +1,10 @@
-import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, authorizePerRole, authorizePerSession, s } from "@/lib/authorize";
+import { authorize, authorizePerSession, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { parseOrderDirection } from "@/lib/orderDirection";
 import prisma from "@/prisma/client";
 import { AnnouncementsTable } from "@/app/(medibook)/medibook/server-components";
 import { notFound } from "next/navigation";
+import { romanize } from "@/lib/romanize";
 
 const itemsPerPage = 10;
 
@@ -13,15 +14,16 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 	const orderBy = searchParams.order || "title";
 	const orderDirection = parseOrderDirection(searchParams.direction);
 	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
 
 	const hasSomeArray = [
 		"SESSIONWEBSITE",
 		authorizePerSession(authSession, [s.management, s.chair], [params.sessionNumber]) ? "SESSIONCHAIR" : null,
 		authorizePerSession(authSession, [s.management, s.delegate], [params.sessionNumber]) ? "SESSIONDELEGATE" : null,
-		authorizePerSession(authSession, [s.manager, s.management], [params.sessionNumber]) ? "SESSIONMANAGER" : null,
-		authorizePerSession(authSession, [s.member, s.management], [params.sessionNumber]) ? "SESSIONMEMBER" : null,
-		authorizePerSession(authSession, [s.sec, s.management], [params.sessionNumber]) ? "SESSIONSECRETARIAT" : null,
-		authorizePerSession(authSession, [s.schooldirector, s.management], [params.sessionNumber]) ? "SESSIONSCHOOLDIRECTORS" : null,
+		authorizePerSession(authSession, [s.management, s.manager], [params.sessionNumber]) ? "SESSIONMANAGER" : null,
+		authorizePerSession(authSession, [s.management, s.member], [params.sessionNumber]) ? "SESSIONMEMBER" : null,
+		authorizePerSession(authSession, [s.management, s.sec], [params.sessionNumber]) ? "SESSIONSECRETARIAT" : null,
+		authorizePerSession(authSession, [s.management, s.schooldirector], [params.sessionNumber]) ? "SESSIONSCHOOLDIRECTORS" : null,
 		authorizePerSession(authSession, [s.director, s.sd], [params.sessionNumber]) ? "SESSIONDIRECTORS" : null,
 		authorizePerSession(authSession, [s.sd], [params.sessionNumber]) ? "SESSIONSENIORDIRECTORS" : null,
 	].filter((x) => x);
@@ -65,6 +67,9 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		<AnnouncementsTable
 			title={"Session Announcements"}
 			baseUrl={`/medibook/sessions/${params.sessionNumber}/announcements`}
+			buttonText={`Session ${romanize(params.sessionNumber)}`}
+			buttonHref={`/medibook/sessions/${params.sessionNumber}`}
+			showPublishButton={isManagement}
 			announcements={prismaAnnouncements}
 			totalItems={totalItems}
 		/>

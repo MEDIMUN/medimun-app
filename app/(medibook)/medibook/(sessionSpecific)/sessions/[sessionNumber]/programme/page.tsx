@@ -2,27 +2,27 @@ import prisma from "@/prisma/client";
 import Modal, { DeleteModal } from "./modals";
 import { notFound } from "next/navigation";
 import { authorize, s } from "@/lib/authorize";
-import { Button, ButtonGroup } from "@nextui-org/button";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Link } from "@nextui-org/link";
 import { Tooltip } from "@nextui-org/tooltip";
 import Paginator from "@/components/pagination";
-import { Suspense } from "react";
-import Icon from "@/components/icon";
-import { EditCommitteeButton } from "./buttons";
 import { DayTypeMap } from "@/data/constants";
 import { auth } from "@/auth";
-import { CardsTable, TableCard, TableCardBody, TableCardChip, TableCardFooter } from "@/misc/medibook/table";
-import { cn } from "@/lib/cn";
+import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
+import { romanize } from "@/lib/romanize";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
+import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
 
 export const metadata = {
 	title: "Conference Days",
 	description: "Days of the session",
 };
 
+const itemsPerPage = 10;
+
 export default async function Page({ params, searchParams }) {
-	const daysPerPage = 9;
 	const currentPage = searchParams.page || 1;
 	const total = await prisma.day.count({ where: { session: { number: params.sessionNumber } } }).catch(notFound);
 	const session = await auth();
@@ -75,56 +75,52 @@ export default async function Page({ params, searchParams }) {
 	});
 
 	return (
-		<CardsTable
-			emptyTitle="No Days Added Yet"
-			emptyDescription="Check out other sessions"
-			emptyHref={`/medibook/sessions`}
-			currentPage={currentPage}
-			total={Math.ceil((total as number) / daysPerPage)}
-			/* modals={[<Modal locations={locations} edit={edit} selectedSession={selectedSession} />, <DeleteModal />]} */
-		>
-			{allDays.map((day: any, index: number) => {
-				const date = new Date(day.date).toUTCString().slice(0, 16);
-				const today = new Date().toUTCString().slice(0, 16);
-				const standardName = `${DayTypeMap[day?.type]} Day ${(day?.index + 1).toString()}`;
-				const isToday = date == today;
-				const isPreviousToday = allDays[index - 1]?.date.toUTCString().slice(0, 16) == today;
-				return (
-					<TableCard
-						hideBorder={index == allDays.length - 1}
-						title={<p className={cn(isToday && "text-white")}>{day?.name ? day?.name : standardName}</p>}
-						className={cn(
-							isPreviousToday && "rounded-t-xl",
-							isToday && "mb-4 rounded-xl border-none bg-[url(/gradients/1.jpg)] bg-cover hover:bg-primary hover:shadow-lg"
-						)}
-						key={index}>
-						<TableCardBody className={cn(isToday && "text-white")}>
-							<TableCardChip classNames={{ content: "px-0" }} className="text-sm shadow-none" color="">
-								{day.date.toUTCString().slice(0, 16)}
-							</TableCardChip>
-							{day?.location?.name && (
-								<TableCardChip className="text-sm">
-									{"at "}
-									<Link showAnchorIcon href={`/medibook/locations/${day?.location?.slug || day?.location?.id}`} className="text-sm">
-										{day?.location?.name}
-									</Link>
-								</TableCardChip>
-							)}
-						</TableCardBody>
-						<TableCardFooter>
-							{authorize(session, [s.management]) && <EditCommitteeButton className="border-r text-inherit" committeeId={day.id} />}
-							<Button
-								endContent={<Icon icon="solar:arrow-right-outline" width={18} />}
-								as={Link}
-								className="text-inherit"
-								href={`/medibook/sessions/${sessionNumber}/program/${day?.type?.toString().toLowerCase()}-day-${day?.index + 1}`}
-								fullWidth>
-								Programme
-							</Button>
-						</TableCardFooter>
-					</TableCard>
-				);
-			})}
-		</CardsTable>
+		<>
+			<TopBar
+				buttonHref={`/medibook/sessions/${sessionNumber}`}
+				hideSearchBar
+				buttonText={`Session ${romanize(sessionNumber)}`}
+				title="Conference Days">
+				{authorize(session, [s.sd, s.admins, s.director]) && (
+					<SearchParamsButton searchParams={{ "create-day": selectedSession.id }}>Create New</SearchParamsButton>
+				)}
+			</TopBar>
+			<Table>
+				<TableHead>
+					<TableRow>
+						<TableHeader>Day</TableHeader>
+						<TableHeader>Date</TableHeader>
+						<TableHeader>
+							<span className="sr-only">Actions</span>
+						</TableHeader>
+					</TableRow>
+				</TableHead>
+				<TableBody>
+					{allDays.map((day) => {
+						const standardName = `${DayTypeMap[day?.type]} Day ${(day?.index + 1).toString()}`;
+
+						return (
+							<TableRow key={day.handle}>
+								<TableCell>{day.name || standardName}</TableCell>
+								<TableCell>{day.date.toUTCString().slice(0, 16)}</TableCell>
+								<TableCell>
+									<Dropdown>
+										<DropdownButton plain aria-label="More options">
+											<EllipsisHorizontalIcon />
+										</DropdownButton>
+										<DropdownMenu anchor="bottom end">
+											<DropdownItem>View</DropdownItem>
+											<DropdownItem>Edit</DropdownItem>
+											<DropdownItem>Delete</DropdownItem>
+										</DropdownMenu>
+									</Dropdown>
+								</TableCell>
+							</TableRow>
+						);
+					})}
+				</TableBody>
+			</Table>
+			<Paginator totalItems={total} itemsOnPage={allDays.length} />
+		</>
 	);
 }

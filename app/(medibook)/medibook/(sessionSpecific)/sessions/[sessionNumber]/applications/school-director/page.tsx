@@ -100,11 +100,11 @@ export default async function SchoolDirectorApplicationsPage({ params, searchPar
 				buttonHref={`/medibook/sessions/${params.sessionNumber}/applications`}
 				title="School Director Applications"
 			/>
-			<div className="mt-5 rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
+			<div className="rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
 				<Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
 			</div>
 			<ApplicationOptions selectedSession={selectedSession} />
-			<Table className="showscrollbar mt-5">
+			<Table className="showscrollbar">
 				<TableHead>
 					<TableRow>
 						<TableHeader>

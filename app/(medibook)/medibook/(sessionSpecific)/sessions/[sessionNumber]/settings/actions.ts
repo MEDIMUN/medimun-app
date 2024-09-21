@@ -179,6 +179,7 @@ export async function setCurrentSession(session) {
 	const authSession = await auth();
 	let selectedSession, currentSession;
 	const isAuthorized = authorize(authSession, [s.admins, s.sd]);
+	if (!isAuthorized) return { ok: false, message: "Not authorized." };
 	try {
 		selectedSession = prisma.session.findFirstOrThrow({
 			where: {
@@ -202,13 +203,12 @@ export async function setCurrentSession(session) {
 		await prisma.$transaction([
 			prisma.session.update({
 				where: { id: selectedSession.id },
-				data: { isCurrent: true, isPreviousCurrent: false, isVisible: false, isPartlyVisible: false, isPriceLocked: false },
+				data: { isCurrent: true, isVisible: false, isPartlyVisible: false, isPriceLocked: false },
 			}),
 			prisma.session.update({
 				where: { id: currentSession.id },
 				data: {
 					isCurrent: false,
-					isPreviousCurrent: true,
 					isVisible: true,
 					isPartlyVisible: true,
 					isPriceLocked: true,
@@ -245,16 +245,33 @@ export async function setPartiallyVisibleSession(session) {
 		return { ok: false, message: `Contact Berzan something is wrong with session ${session}` };
 
 	try {
-		await prisma.session.update({
-			where: { id: selectedSession.id },
-			data: {
-				isCurrent: true,
-				isPartlyVisible: true,
-				isPreviousCurrent: false,
-				isPriceLocked: true,
-				isVisible: false,
+		const currentlyShown = await prisma.session.findFirst({
+			where: {
+				isMainShown: true,
 			},
 		});
+		await prisma.$transaction([
+			prisma.session.update({
+				where: { id: selectedSession.id },
+				data: {
+					isCurrent: true,
+					isPartlyVisible: true,
+					isMainShown: true,
+					isPriceLocked: true,
+					isVisible: false,
+				},
+			}),
+			prisma.session.update({
+				where: { id: currentlyShown.id },
+				data: {
+					isCurrent: true,
+					isPartlyVisible: true,
+					isMainShown: true,
+					isPriceLocked: true,
+					isVisible: false,
+				},
+			}),
+		]);
 	} catch {
 		return { ok: false, message: "Could not set partially visible session." };
 	}
@@ -286,7 +303,7 @@ export async function setFullyVisibleSession(session) {
 			data: {
 				isCurrent: true,
 				isPartlyVisible: true,
-				isPreviousCurrent: false,
+				isMainShown: true,
 				isPriceLocked: true,
 				isVisible: true,
 			},
@@ -300,8 +317,8 @@ export async function setFullyVisibleSession(session) {
 export async function sessionNumbersChange(formData: FormData, selectedSessionNumber) {
 	const schema = z.object({
 		maxNumberOfGeneralAssemblyDelegationsPerSchool: z.number().int().min(1).max(99),
-		maxNumberOfSecurityCouncilAndSpecialCommitteeDelegatesPerSchool: z.number().int().min(1).max(99),
 		minimumDelegateAgeOnFirstConferenceDay: z.number().int().min(1).max(999),
+		maximumDelegateAgeOnFirstConferenceDay: z.number().int().min(1).max(999),
 	});
 
 	let selectedSession;
@@ -321,13 +338,14 @@ export async function sessionNumbersChange(formData: FormData, selectedSessionNu
 
 	const { error, data } = schema.safeParse({
 		maxNumberOfGeneralAssemblyDelegationsPerSchool: parseInt(parsedFormData.maxNumberOfGeneralAssemblyDelegationsPerSchool),
-		maxNumberOfSecurityCouncilAndSpecialCommitteeDelegatesPerSchool: parseInt(
-			parsedFormData.maxNumberOfSecurityCouncilAndSpecialCommitteeDelegatesPerSchool
-		),
 		minimumDelegateAgeOnFirstConferenceDay: parseInt(parsedFormData.minimumDelegateAgeOnFirstConferenceDay),
+		maximumDelegateAgeOnFirstConferenceDay: parseInt(parsedFormData.maximumDelegateAgeOnFirstConferenceDay),
 	});
 
 	if (error) return { ok: false, message: "Invalid Data" };
+
+	if (data.minimumDelegateAgeOnFirstConferenceDay >= data.maximumDelegateAgeOnFirstConferenceDay)
+		return { ok: false, message: "Minimum age should be less than maximum age." };
 
 	if (!isManagement) return { ok: false, message: "Not Authorized" };
 

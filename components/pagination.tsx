@@ -8,7 +8,7 @@ import { InformationCircleIcon } from "@heroicons/react/16/solid";
 
 export function Paginator({
 	totalItems,
-	itemsPerPage,
+	itemsPerPage = 10,
 	itemsOnPage,
 	control,
 	...props
@@ -36,7 +36,7 @@ export function Paginator({
 
 	if (itemsOnPage == 0 && currentPage == 1)
 		return (
-			<div className="mx-auto w-full rounded-md bg-zinc-50 p-4">
+			<div className="mx-auto w-full rounded-md bg-zinc-100 p-4">
 				<div className="flex">
 					<div className="flex-shrink-0">
 						<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />

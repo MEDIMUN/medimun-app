@@ -71,7 +71,7 @@ export function ApplicationOptions({ selectedSession }) {
 	}, [debouncedAutoOpenTime, debouncedAutoCloseTime]);
 
 	return (
-		<form ref={formRef} className="mt-5 rounded-lg bg-zinc-100 px-4 shadow-sm ring-1 ring-zinc-950/10" onSubmit={handleSubmit}>
+		<form ref={formRef} className="rounded-lg bg-zinc-100 px-4 shadow-sm ring-1 ring-zinc-950/10" onSubmit={handleSubmit}>
 			<Divider className="invisible mb-10" />
 
 			<SwitchField disabled={!selectedSession.isCurrent || isLoading}>
@@ -96,7 +96,13 @@ export function ApplicationOptions({ selectedSession }) {
 				/>
 			</SwitchField>
 
-			<Divider className={cn("my-10", !selectedSession.isSchoolDirectorApplicationsAutoOpen && "invisible")} />
+			<Divider
+				className={cn(
+					"mt-10",
+					!selectedSession.isSchoolDirectorApplicationsAutoOpen && "invisible",
+					selectedSession.isSchoolDirectorApplicationsAutoOpen && "mb-10"
+				)}
+			/>
 			{selectedSession.isSchoolDirectorApplicationsAutoOpen && (
 				<>
 					<Field disabled={!selectedSession.isCurrent || isLoading}>

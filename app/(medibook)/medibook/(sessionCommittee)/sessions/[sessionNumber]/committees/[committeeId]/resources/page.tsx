@@ -85,9 +85,10 @@ export default async function Page({ params, searchParams }) {
 				buttonText={selectedCommittee.name}
 				sortOptions={sortOptions}
 				defaultSort="timedesc"
-				className="mb-8"
 				title="Committee Resources">
-				<SearchParamsButton searchParams={{ uploadcommitteeresource: selectedCommittee.id }}>Upload Committee Resource</SearchParamsButton>
+				{(isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], selectedCommittee.id)) && (
+					<SearchParamsButton searchParams={{ uploadcommitteeresource: selectedCommittee.id }}>Upload Committee Resource</SearchParamsButton>
+				)}
 			</TopBar>
 			<ResourcesTable resources={prismaResources} isManagement={isManagement} />
 			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />

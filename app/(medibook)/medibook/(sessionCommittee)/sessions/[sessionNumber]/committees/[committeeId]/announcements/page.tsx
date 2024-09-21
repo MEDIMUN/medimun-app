@@ -55,6 +55,10 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 	return (
 		<AnnouncementsTable
 			buttonHref={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}`}
+			showPublishButton={
+				authorize(authSession, [s.management]) ||
+				authorizeChairCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedEntity.id)
+			}
 			buttonText={selectedEntity.name}
 			title={"Committee Announcements"}
 			baseUrl={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/announcements`}

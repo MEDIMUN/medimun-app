@@ -73,7 +73,7 @@ export default async function Page({ searchParams }) {
 
 	users = prisma.user
 		.findMany({
-			include: { ...generateUserDataObject(), account: { select: { id: true, timeCreated: true, lastLogin: true } } },
+			include: { ...generateUserDataObject(), account: { select: { id: true } } },
 			...(queryObject as any),
 			skip: (currentPage - 1) * usersPerPage,
 			take: usersPerPage,

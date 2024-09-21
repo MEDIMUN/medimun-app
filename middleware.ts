@@ -55,6 +55,10 @@ export default auth((req) => {
 
 	if (logggedInNotAllowedPaths.includes(pathname) && isAuthenticated) return NextResponse.redirect(new URL("/medibook", nextUrl.origin));
 
+	//if path matches /medibook/session/<anyNumber>/applications/* check with regex
+	if (pathname.includes("/medibook/session") && pathname.includes("/applications") && !isManagement)
+		return NextResponse.redirect(new URL(`/medibook/not-found`, nextUrl.origin));
+
 	/* 	if (!pathname.includes("/medibook") && !pathname.includes("/home") && isAuthenticated) {
 		return NextResponse.redirect(new URL("/medibook", nextUrl.origin));
 	}

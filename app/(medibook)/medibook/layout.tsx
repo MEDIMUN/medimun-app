@@ -15,6 +15,7 @@ import { Toaster } from "sonner";
 import type { Metadata } from "next";
 import { cn } from "@/lib/cn";
 import TopFl from "./flprovider";
+import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
 
 export const metadata: Metadata = {
 	title: {
@@ -118,7 +119,6 @@ export default async function RootLayout({
 								<Sidebar sessions={sessions} />
 							</SidebarContextProvider>
 						}>
-						{/*-*/}
 						<TopFl />
 						{announcement}
 						{children}

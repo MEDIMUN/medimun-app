@@ -51,14 +51,14 @@ const rows = [
 
 export default async function Page({ params, searchParams }) {
 	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
+	if (!authSession || !isManagement) notFound();
 	const currentPage = Number(searchParams.page) || 1;
 	const query = searchParams.search || "";
 
 	const orderBy = searchParams.order || "officialName";
 	const orderDirection = parseOrderDirection(searchParams.direction);
 	const selectedSession = await prisma.session.findFirst({ where: { number: params.sessionNumber } }).catch(notFound);
-
-	const isManagement = authorize(authSession, [s.management]);
 
 	const queryObject = {
 		AND: [
@@ -90,7 +90,7 @@ export default async function Page({ params, searchParams }) {
 
 	const prismaUsers = await prisma.user
 		.findMany({
-			where: { ...queryObject },
+			where: { ...(queryObject as any) },
 			include: { ...generateUserDataObject() },
 			orderBy: { [orderBy]: orderDirection },
 			skip: (currentPage - 1) * itemsPerPage,
@@ -107,15 +107,15 @@ export default async function Page({ params, searchParams }) {
 	return (
 		<>
 			<TopBar
-				buttonText="Session"
+				buttonText={`Session ${romanize(selectedSession.numberInteger)}`}
 				buttonHref={`/medibook/sessions/${selectedSession.number}`}
 				sortOptions={sortOptions}
-				title={`People of Session ${romanize(selectedSession.numberInteger)}`}
+				title={`Session ${romanize(selectedSession.numberInteger)} Participants`}
 				defaultSort="officialNameasc"
 				searchText="Search students..."
 			/>
-			{!!totalItems ? (
-				<Table className="showscrollbar mt-10">
+			{!!totalItems && (
+				<Table className="showscrollbar">
 					<TableHead>
 						<TableRow>
 							{rows.map((row, i) => (
@@ -134,14 +134,10 @@ export default async function Page({ params, searchParams }) {
 											</DropdownButton>
 											<DropdownMenu anchor="bottom end">
 												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
-												{isManagement && (
-													<>
-														<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit</SearchParamsDropDropdownItem>
-														<SearchParamsDropDropdownItem searchParams={{ "assign-roles": user.id }}>Assign</SearchParamsDropDropdownItem>
-														<SearchParamsDropDropdownItem searchParams={{ "edit-roles": user.id }}>Edit</SearchParamsDropDropdownItem>
-														<SearchParamsDropDropdownItem searchParams={{ "delete-user": user.id }}>Delete</SearchParamsDropDropdownItem>
-													</>
-												)}
+												<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit</SearchParamsDropDropdownItem>
+												<SearchParamsDropDropdownItem searchParams={{ "assign-roles": user.id }}>Assign</SearchParamsDropDropdownItem>
+												<SearchParamsDropDropdownItem searchParams={{ "edit-roles": user.id }}>Edit</SearchParamsDropDropdownItem>
+												<SearchParamsDropDropdownItem searchParams={{ "delete-user": user.id }}>Delete</SearchParamsDropDropdownItem>
 											</DropdownMenu>
 										</Dropdown>
 									</TableCell>
@@ -161,12 +157,8 @@ export default async function Page({ params, searchParams }) {
 						})}
 					</TableBody>
 				</Table>
-			) : (
-				<div className="my-10 text-center">
-					<h3 className="mt-2 text-sm font-semibold text-gray-900">No Users Found</h3>
-				</div>
 			)}
-			<Paginator itemsPerPage={itemsPerPage} totalItems={totalItems} />
+			<Paginator itemsOnPage={prismaUsers.length} itemsPerPage={itemsPerPage} totalItems={totalItems} />
 		</>
 	);
 }

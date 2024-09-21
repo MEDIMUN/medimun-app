@@ -478,20 +478,21 @@ export function SettingsForm({ selectedSession }) {
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Maximum number of Experienced Delegates</Subheading>
+						<Subheading>Maximun Delegate Age</Subheading>
 						<Text>
-							The maximum number of experienced delegates a school can bring to the session for the Security Council and Special Committee.
+							The maximun age a delegate must be to participate in the session. Calculated based on the first conference day.
 							<br />
-							<em>Min 1, Max 500</em>
+							<em>Min 1, Max 99</em>
 						</Text>
 					</div>
-					<div className="my-auto grid grid-cols-1 gap-6">
+					<div className="my-auto grid grid-cols-1">
 						<Input
-							defaultValue={selectedSession?.maxNumberOfSecurityCouncilAndSpecialCommitteeDelegatesPerSchool || 2}
+							defaultValue={selectedSession?.maximumDelegateAgeOnFirstConferenceDay || 19}
 							min={1}
-							max={500}
+							max={99}
 							type="number"
-							name="maxNumberOfSecurityCouncilAndSpecialCommitteeDelegatesPerSchool"
+							name="maximumDelegateAgeOnFirstConferenceDay"
+							disabled={selectedSession.isPriceLocked || !authorize(authSession, [s.admins, s.sd])}
 						/>
 					</div>
 				</section>

@@ -127,7 +127,7 @@ export function TopBar({
 					)}
 				</div>
 			</div>
-			{children && <div className="grid w-full grid-cols-1 gap-4 md:block md:w-auto">{children}</div>}
+			{children && <div className="grid w-full grid-cols-1 gap-6 md:block md:w-auto">{children}</div>}
 		</div>
 	);
 }

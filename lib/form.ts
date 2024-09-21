@@ -1,4 +1,4 @@
-export function parseFormData(formData: FormData): Object {
+export function parseFormData(formData: FormData): any {
 	const rawData = Object.fromEntries(formData);
 	const data = Object.keys(rawData).reduce((acc, key) => {
 		const value = rawData[key];

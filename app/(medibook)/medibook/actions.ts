@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import prisma from "@/prisma/client";
+import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
 
 export async function getMoreSessions(skip = 5) {
 	const authSession = await auth();
@@ -57,5 +58,9 @@ export async function getSessionData(number) {
 	} catch (e) {
 		return;
 	}
-	return selectedSession;
+	const sessionObject = {
+		...selectedSession,
+		applicationsOpen: areSchoolDirectorApplicationsOpen(selectedSession),
+	};
+	return sessionObject;
 }

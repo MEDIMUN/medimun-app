@@ -25,7 +25,7 @@ const columns = ["Name", "Uploader", "Date Uploaded", "Tags"];
 
 export async function ResourcesTable({ resources, isManagement, tableColumns = columns }) {
 	const authSession = await auth();
-	if (resources.length)
+	if (!!resources.length)
 		return (
 			<Table className="showscrollbar">
 				<TableHead>
@@ -138,68 +138,69 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 
 const itemsPerPage = 10;
 
-export async function AnnouncementsTable({ title, announcements, baseUrl, totalItems, buttonHref, buttonText }) {
+export async function AnnouncementsTable({ title, announcements, baseUrl, totalItems, buttonHref, buttonText, showPublishButton }) {
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
 	return (
 		<>
 			<TopBar buttonHref={buttonHref} buttonText={buttonText} title={title || "Announcements"}>
-				<Button href={baseUrl + "/publish"}>Publish Announcement</Button>
+				{showPublishButton && <Button href={baseUrl + "/publish"}>Publish</Button>}
 			</TopBar>
-			<ul className="grid grid-flow-row">
-				{announcements.map((announcement, index) => {
-					const fullName = announcement.user.displayName || `${announcement.user.officialName} ${announcement.user.officialSurname}`;
-					const url = `${baseUrl}/${announcement.id}${announcement.slug ? "/" : ""}${announcement.slug ? announcement.slug : ""}`;
-					const isTimeSame = announcement.time.toLocaleTimeString() == announcement.editTime.toLocaleTimeString();
-					return (
-						<li key={announcement.id}>
-							<div className="mx-1 my-6 flex gap-2 md:my-10">
-								<div className="max-w-auto w-full">
-									<Link href={url} className="!cursor-pointer hover:underline">
-										<h3 className="text-base/6 font-semibold">{announcement.title}</h3>
-									</Link>
-									<Text className="mb-2 line-clamp-1">{announcement.description}</Text>
-									<Text className="line-clamp-2">{processMarkdownPreview(announcement.markdown)}</Text>
-									<div className="mt-2 flex flex-wrap gap-2 md:flex-row">
-										<Badge className="max-w-max px-2">
-											{announcement?.privacy === "ANONYMOUS" && (isManagement ? `${fullName} (Anonymous)` : "Anonymous")}
-											{announcement?.privacy === "BOARD" && (isManagement ? `${fullName} (Anonymous - Board of Directors)` : "Board of Directors")}
-											{announcement?.privacy === "NORMAL" && fullName}
-											{announcement?.privacy === "SECRETARIAT" && (isManagement ? `${fullName} (Secretariat)` : "Secretariat")}
-										</Badge>
-										{isTimeSame ? (
-											<Badge className="max-w-max px-2">{announcement.time.toLocaleString("uk").replace(",", " -")}</Badge>
-										) : (
-											<Badge className="max-w-max px-2">Edited {announcement.editTime.toLocaleString("uk").replace(",", " -")}</Badge>
-										)}
+			{!!announcements.length && (
+				<ul className="grid grid-flow-row gap-6">
+					{announcements.map((announcement, index) => {
+						const fullName = announcement.user.displayName || `${announcement.user.officialName} ${announcement.user.officialSurname}`;
+						const url = `${baseUrl}/${announcement.id}${announcement.slug ? "/" : ""}${announcement.slug ? announcement.slug : ""}`;
+						const isTimeSame = announcement.time.toLocaleTimeString() == announcement.editTime.toLocaleTimeString();
+						return (
+							<li className="rounded-md bg-zinc-100 p-4" key={announcement.id}>
+								<div className="flex gap-2">
+									<div className="max-w-auto w-full">
+										<Link href={url} className="!cursor-pointer hover:underline">
+											<h3 className="text-base/6 font-semibold">{announcement.title}</h3>
+										</Link>
+										<Text className="mb-2 line-clamp-1">{announcement.description}</Text>
+										<Text className="line-clamp-2">{processMarkdownPreview(announcement.markdown)}</Text>
+										<div className="mt-2 flex flex-wrap gap-2 md:flex-row">
+											<Badge className="max-w-max px-2">
+												{announcement?.privacy === "ANONYMOUS" && (isManagement ? `${fullName} (Anonymous)` : "Anonymous")}
+												{announcement?.privacy === "BOARD" && (isManagement ? `${fullName} (Anonymous - Board of Directors)` : "Board of Directors")}
+												{announcement?.privacy === "NORMAL" && fullName}
+												{announcement?.privacy === "SECRETARIAT" && (isManagement ? `${fullName} (Secretariat)` : "Secretariat")}
+											</Badge>
+											{isTimeSame ? (
+												<Badge className="max-w-max px-2">{announcement.time.toLocaleString("uk").replace(",", " -")}</Badge>
+											) : (
+												<Badge className="max-w-max px-2">Edited {announcement.editTime.toLocaleString("uk").replace(",", " -")}</Badge>
+											)}
+										</div>
+									</div>
+									<div className="ml-2 flex">
+										<Dropdown>
+											<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
+												<EllipsisVerticalIcon />
+											</DropdownButton>
+											<DropdownMenu anchor="bottom end">
+												<DropdownItem href={url}>View</DropdownItem>
+												{authorizedToEditAnnouncement(authSession, announcement) && (
+													<>
+														<SearchParamsDropDropdownItem url={url} searchParams={{ "edit-announcement": announcement.id }}>
+															Edit
+														</SearchParamsDropDropdownItem>
+														<SearchParamsDropDropdownItem searchParams={{ "delete-announcement": announcement.id }}>
+															Delete
+														</SearchParamsDropDropdownItem>
+													</>
+												)}
+											</DropdownMenu>
+										</Dropdown>
 									</div>
 								</div>
-								<div className="ml-2 flex">
-									<Dropdown>
-										<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
-											<EllipsisVerticalIcon />
-										</DropdownButton>
-										<DropdownMenu anchor="bottom end">
-											<DropdownItem href={url}>View</DropdownItem>
-											{authorizedToEditAnnouncement(authSession, announcement) && (
-												<>
-													<SearchParamsDropDropdownItem url={url} searchParams={{ "edit-announcement": announcement.id }}>
-														Edit
-													</SearchParamsDropDropdownItem>
-													<SearchParamsDropDropdownItem searchParams={{ "delete-announcement": announcement.id }}>
-														Delete
-													</SearchParamsDropDropdownItem>
-												</>
-											)}
-										</DropdownMenu>
-									</Dropdown>
-								</div>
-							</div>
-							{!(index + 1 == announcements.length) && <Divider />}
-						</li>
-					);
-				})}
-			</ul>
+							</li>
+						);
+					})}
+				</ul>
+			)}
 			<Paginator itemsOnPage={announcements.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
 		</>
 	);
@@ -231,7 +232,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 			},
 		});
 		baseUrl = `/medibook/sessions/${selectedSession.number}/announcements`;
-		buttonText = `Session ${romanize(selectedSession.numberInteger)}`;
+		buttonText = `Session ${romanize(selectedSession.numberInteger)} Announcements`;
 		buttonHref = `/medibook/sessions/${selectedSession.number}`;
 		createType = "sessionAnnouncement";
 	}
@@ -247,7 +248,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 			include: { session: true },
 		});
 		baseUrl = `/medibook/sessions/${selectedCommittee.session.number}/committees/${selectedCommittee.slug || selectedCommittee.id}/announcements`;
-		buttonText = selectedCommittee.name;
+		buttonText = `${selectedCommittee.name} Announcements`;
 		buttonHref = `/medibook/sessions/${selectedCommittee.session.number}/committees/${selectedCommittee.slug || selectedCommittee.id}`;
 		createType = "committeeAnnouncement";
 	}
@@ -263,7 +264,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 			include: { session: true },
 		});
 		baseUrl = `/medibook/sessions/${selectedDepartment.session.number}/departments/${selectedDepartment.slug || selectedDepartment.id}/announcements`;
-		buttonText = selectedDepartment.name;
+		buttonText = `${selectedDepartment.name} Announcements`;
 		buttonHref = `/medibook/sessions/${selectedDepartment.session.number}/departments/${selectedDepartment.slug || selectedDepartment.id}`;
 		createType = "departmentAnnouncement";
 	}

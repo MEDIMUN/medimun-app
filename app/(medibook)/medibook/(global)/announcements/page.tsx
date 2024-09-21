@@ -66,6 +66,7 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 	return (
 		<AnnouncementsTable
 			title={"Global Announcements"}
+			showPublishButton={isManagement}
 			baseUrl={"/medibook/announcements"}
 			announcements={prismaAnnouncements}
 			totalItems={totalItems}

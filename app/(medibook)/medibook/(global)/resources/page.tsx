@@ -70,7 +70,9 @@ export default async function Page({ params, searchParams }) {
 	return (
 		<>
 			<TopBar sortOptions={sortOptions} defaultSort="timedesc" title="Global Resources">
-				<SearchParamsButton searchParams={{ uploadglobalresource: true }}>Upload Global Resource</SearchParamsButton>
+				{authorize(authSession, [s.management]) && (
+					<SearchParamsButton searchParams={{ uploadglobalresource: true }}>Upload Global Resource</SearchParamsButton>
+				)}
 			</TopBar>
 			<ResourcesTable resources={prismaResources} isManagement={isManagement} />
 			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />

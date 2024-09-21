@@ -39,6 +39,7 @@ export async function editCommittee(formData, committeeId) {
 			data: data,
 		});
 	} catch (e) {
+		if (e.code === "P2002") return { ok: false, message: "Committee short name and slug must be unique." };
 		return { ok: false, message: "An error occurred while updating the committee." };
 	}
 

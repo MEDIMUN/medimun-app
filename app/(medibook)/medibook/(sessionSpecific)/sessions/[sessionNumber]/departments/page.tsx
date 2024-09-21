@@ -38,9 +38,14 @@ export default async function Page({ params, searchParams }) {
 
 	const prismaDepartments = await prisma.department
 		.findMany({
-			where: { session: { number: selectedSession.number }, name: { contains: searchParams.search, mode: "insensitive" } },
+			where: {
+				session: { number: selectedSession.number },
+				...(isManagement ? {} : { isVisible: true }),
+				name: { contains: searchParams.search, mode: "insensitive" },
+			},
 			include: { manager: { include: { user: true } }, member: { include: { user: true } } },
 			orderBy: { [orderBy]: orderDirection },
+
 			skip: (currentPage - 1) * itemsPerPage,
 			take: itemsPerPage,
 		})
@@ -68,78 +73,89 @@ export default async function Page({ params, searchParams }) {
 				title="Departments">
 				{isManagement && <SearchParamsButton searchParams={{ "create-department": true }}>Create New</SearchParamsButton>}
 			</TopBar>
-			<ul className="mt-10">
-				{sortedDepartments.map((department: any, index: number) => {
-					const managers = department?.manager;
-					const chairsLength = managers?.length;
-					const isInvolved = currentDepartmentIds?.includes(department.id);
-					return (
-						<>
-							<li key={department.id}>
-								<Divider soft={index > 0} />
-								<div className="flex items-center justify-between">
-									<div key={department.id} className="flex gap-6 py-6">
-										<div className="w-32 shrink-0">
-											<Link href={`/medibook/sessions/${selectedSession?.number}/committees/${department?.slug || department.id}`} aria-hidden="true">
-												<img
-													className="aspect-[3/2] rounded-lg shadow"
-													src={department?.cover ? `/api/departments/${department.id}/cover` : `/gradients/${((index + 1) % 6) + 1}.jpg`}
-													alt="Committee cover image."
-												/>
-											</Link>
-										</div>
-										<div className="space-y-1.5">
-											<div className="text-base/6 font-semibold">
-												<Link href={`/medibook/sessions/${selectedSession?.number}/departments/${department?.slug || department.id}`}>
-													{department.name} {isInvolved && <Badge className="-translate-y-[2px]">My Department</Badge>}
+			{!!prismaDepartments.length && (
+				<ul>
+					{sortedDepartments.map((department: any, index: number) => {
+						const managers = department?.manager;
+						const chairsLength = managers?.length;
+						const isInvolved = currentDepartmentIds?.includes(department.id);
+						return (
+							<>
+								<li key={department.id}>
+									<Divider soft={index > 0} />
+									<div className="flex items-center justify-between">
+										<div key={department.id} className="flex gap-6 py-6">
+											<div className="w-32 shrink-0">
+												<Link
+													href={`/medibook/sessions/${selectedSession?.number}/committees/${department?.slug || department.id}`}
+													aria-hidden="true">
+													<img
+														className="aspect-[3/2] rounded-lg shadow"
+														src={department?.cover ? `/api/departments/${department.id}/cover` : `/assets/gradients/${((index + 1) % 6) + 1}.jpg`}
+														alt="Committee cover image."
+													/>
 												</Link>
 											</div>
-											<div className="text-xs/6 text-zinc-500">
-												{!!chairsLength ? "Overseen by " : "No Managers Assigned"}
-												{managers.map((manager: any, index: number) => {
-													const user = manager?.user;
-													const displayNameShortened =
-														user?.displayName?.split(" ").length == 1
-															? user?.displayName
-															: user?.displayName?.split(" ")[0] + " " + user?.displayName?.split(" ")[1][0] + ".";
-													const fullName = user?.displayName
-														? displayNameShortened
-														: user?.officialName.split(" ")[0] + " " + user?.officialSurname[0] + ".";
-													return (
-														<Fragment key={index}>
-															{fullName}
-															{chairsLength - 1! > index + 1 && ", "}
-															{chairsLength - 1 == index + 1 && " & "}
-														</Fragment>
-													);
-												})}
+											<div className="space-y-1.5">
+												<div className="text-base/6 font-semibold">
+													<Link href={`/medibook/sessions/${selectedSession?.number}/departments/${department?.slug || department.id}`}>
+														{department.name} {isInvolved && <Badge className="-translate-y-[2px]">My Department</Badge>}
+														{!department.isVisible && (
+															<Badge color="red" className="-translate-y-[2px]">
+																Hidden
+															</Badge>
+														)}
+													</Link>
+												</div>
+												<div className="text-xs/6 text-zinc-500">
+													{!!chairsLength ? "Overseen by " : "No Managers Assigned"}
+													{managers.map((manager: any, index: number) => {
+														const user = manager?.user;
+														const displayNameShortened =
+															user?.displayName?.split(" ").length == 1
+																? user?.displayName
+																: user?.displayName?.split(" ")[0] + " " + user?.displayName?.split(" ")[1][0] + ".";
+														const fullName = user?.displayName
+															? displayNameShortened
+															: user?.officialName.split(" ")[0] + " " + user?.officialSurname[0] + ".";
+														return (
+															<Fragment key={index}>
+																{fullName}
+																{chairsLength - 1! > index + 1 && ", "}
+																{chairsLength - 1 == index + 1 && " & "}
+															</Fragment>
+														);
+													})}
+												</div>
 											</div>
 										</div>
+										<div className="flex items-center gap-4">
+											<Dropdown>
+												<DropdownButton plain aria-label="More options">
+													<EllipsisVerticalIcon />
+												</DropdownButton>
+												<DropdownMenu anchor="bottom end">
+													<DropdownItem href={`/medibook/sessions/${params.sessionNumber}/departments/${department.slug || department.id}`}>
+														View
+													</DropdownItem>
+													{isManagement && (
+														<DropdownSection>
+															<SearchParamsDropDropdownItem searchParams={{ "edit-department": department.id }}>Edit</SearchParamsDropDropdownItem>
+															<SearchParamsDropDropdownItem searchParams={{ "delete-department": department.id }}>
+																Delete
+															</SearchParamsDropDropdownItem>
+														</DropdownSection>
+													)}
+												</DropdownMenu>
+											</Dropdown>
+										</div>
 									</div>
-									<div className="flex items-center gap-4">
-										<Dropdown>
-											<DropdownButton plain aria-label="More options">
-												<EllipsisVerticalIcon />
-											</DropdownButton>
-											<DropdownMenu anchor="bottom end">
-												<DropdownItem href={`/medibook/sessions/${params.sessionNumber}/departments/${department.slug || department.id}`}>
-													View
-												</DropdownItem>
-												{isManagement && (
-													<DropdownSection>
-														<SearchParamsDropDropdownItem searchParams={{ "edit-department": department.id }}>Edit</SearchParamsDropDropdownItem>
-														<SearchParamsDropDropdownItem searchParams={{ "delete-department": department.id }}>Delete</SearchParamsDropDropdownItem>
-													</DropdownSection>
-												)}
-											</DropdownMenu>
-										</Dropdown>
-									</div>
-								</div>
-							</li>
-						</>
-					);
-				})}
-			</ul>
+								</li>
+							</>
+						);
+					})}
+				</ul>
+			)}
 			<Paginator itemsOnPage={sortedDepartments.length} itemsPerPage={itemsPerPage} totalItems={totalItems} />
 		</>
 	);

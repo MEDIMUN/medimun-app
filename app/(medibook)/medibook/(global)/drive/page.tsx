@@ -40,7 +40,7 @@ export default async function Page({ params, searchParams }) {
 	const isManagement = authorize(authSession, [s.management]);
 	return (
 		<>
-			<TopBar sortOptions={sortOptions} defaultSort="timedesc" title="Personal Files" subheading="Personal Files & All Resources Uploaded by Me">
+			<TopBar sortOptions={sortOptions} defaultSort="timedesc" title="Personal Files">
 				<SearchParamsButton searchParams={{ uploadresource: true }}>Upload File</SearchParamsButton>
 			</TopBar>
 			<ResourcesTable tableColumns={["Name", "Scope", "Date Uploaded", "Tags"]} resources={prismaResources} isManagement={isManagement} />

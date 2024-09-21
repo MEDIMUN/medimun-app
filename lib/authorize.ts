@@ -209,6 +209,7 @@ export function authorizePerRole(userdata: object, scope: s[]): boolean {
 export function authorizePerSession(userdata: object, scope: s[], conferenceSessions: string[]): boolean {
 	const allRoles = userdata?.user?.currentRoles.concat(userdata?.user?.pastRoles);
 	//filter based on conferenceSessions array
+	if (!allRoles) return false;
 	const allRoleIdentifiers = allRoles.map((role) => role.roleIdentifier);
 	if (
 		allRoleIdentifiers.includes("globalAdmin") ||
