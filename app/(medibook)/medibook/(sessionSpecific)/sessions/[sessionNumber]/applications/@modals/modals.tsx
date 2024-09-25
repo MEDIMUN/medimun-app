@@ -59,7 +59,7 @@ export function ApproveApplicationModal({ selectedApplication }) {
 					<DescriptionDetails>{selectedApplication.id}</DescriptionDetails>
 
 					<DescriptionTerm>Application Date</DescriptionTerm>
-					<DescriptionDetails>{selectedApplication.date.toLocaleString("uk").replace(",", " at ")}</DescriptionDetails>
+					<DescriptionDetails>{selectedApplication.date.toLocaleString("en-GB").replace(",", " at ")}</DescriptionDetails>
 
 					<DescriptionTerm>School Name</DescriptionTerm>
 					<DescriptionDetails>{school.name}</DescriptionDetails>
@@ -167,7 +167,7 @@ export function DeleteApplicationModal({ selectedApplication }) {
 					<DescriptionDetails>{selectedApplication.id}</DescriptionDetails>
 
 					<DescriptionTerm>Application Date</DescriptionTerm>
-					<DescriptionDetails>{selectedApplication.date.toLocaleString("uk").replace(",", " at ")}</DescriptionDetails>
+					<DescriptionDetails>{selectedApplication.date.toLocaleString("en-GB").replace(",", " at ")}</DescriptionDetails>
 
 					<DescriptionTerm>School Name</DescriptionTerm>
 					<DescriptionDetails>{school.name}</DescriptionDetails>

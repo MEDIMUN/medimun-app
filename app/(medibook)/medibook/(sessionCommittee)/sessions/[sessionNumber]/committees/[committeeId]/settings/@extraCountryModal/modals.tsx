@@ -63,12 +63,12 @@ export function AddExtraCountryModal() {
 					<Field>
 						<Label>Name</Label>
 						<Description>The long name of the country or entity.</Description>
-						<Input placeholder="e.g. The European Union, Soviet Union." name="name" required />
+						<Input placeholder="e.g. The European Union, Soviet Union." name="countryNameEn" required />
 					</Field>
 					<Field>
 						<Label>Country/Organization Code</Label>
 						<Description>The 2 to 4 letter code to distinctly identify the country/entity.</Description>
-						<Input placeholder="e.g. EU, USSR." name="code" required />
+						<Input placeholder="e.g. EU, USSR." name="countryCode" required />
 					</Field>
 					<Field>
 						<Label>Power to Veto</Label>
@@ -127,7 +127,7 @@ export function EditExtraCountryModal({ selectedCommittee, selectedExtraCountry 
 	return (
 		<Dialog open={isOpen} onClose={onClose}>
 			<DialogTitle>
-				Edit {selectedExtraCountry?.code} ({selectedExtraCountry?.name}).
+				Edit {selectedExtraCountry?.countryCode} ({selectedExtraCountry?.countryNameEn}).
 			</DialogTitle>
 			<DialogDescription>
 				You can&apos;t change the country/entity code. If you need to change it delete and re-add the country/entity.
@@ -137,7 +137,7 @@ export function EditExtraCountryModal({ selectedCommittee, selectedExtraCountry 
 					<Field>
 						<Label>Name</Label>
 						<Description>The long name of the country or entity.</Description>
-						<Input defaultValue={selectedExtraCountry?.name} placeholder="e.g. The European Union, Soviet Union." name="name" required />
+						<Input defaultValue={selectedExtraCountry?.name} placeholder="e.g. The European Union, Soviet Union." name="countryNameEn" required />
 					</Field>
 					<Field>
 						<Label>Power to Veto</Label>

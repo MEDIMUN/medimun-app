@@ -106,9 +106,9 @@ export async function deleteSchool(formData: FormData) {
 	const res = await deleteCoverImage(id);
 	if (!res.ok) return { ok: false, message: "Something went wrong." };
 	const password = formData.get("password").toString();
-	const user = await prisma.user.findUnique({ where: { id: authSession.user.id }, include: { account: true } });
+	const user = await prisma.user.findUnique({ where: { id: authSession.user.id }, include: { Account: true } });
 	if (!id || !password) return { ok: false, message: "Invalid data" };
-	if (!(await verifyPassword(password, user.account.password))) return { ok: false, message: "Invalid password" };
+	if (!(await verifyPassword(password, user?.Account[0].password))) return { ok: false, message: "Invalid password" };
 	await prisma.school.delete({ where: { id: id } }).catch(() => {
 		return { ok: false, message: "Something went wrong." };
 	});

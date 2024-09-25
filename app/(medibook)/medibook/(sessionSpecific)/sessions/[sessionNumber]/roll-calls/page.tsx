@@ -1,22 +1,32 @@
-import { DateSelector } from "./components/DateSelector";
 import prisma from "@/prisma/client";
 import { notFound, redirect } from "next/navigation";
-import { DeleteModal, RollCallModal } from "./modals";
-import { DeleteButton, EditButton, MoveDownButton, MoveUpButton } from "./buttons";
-import { Chip } from "@nextui-org/chip";
-import { CardsTable, TableCard, TableCardBody, TableCardChip, TableCardFooter, TableCardHeader } from "@/misc/medibook/table";
+import { DateSelector, MoveDownButton, MoveUpButton } from "./client-components";
+import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
+import { romanize } from "@/lib/romanize";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import Paginator from "@/components/pagination";
+import { Dropdown, DropdownButton, DropdownMenu } from "@/components/dropdown";
+import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
+import { auth } from "@/auth";
+import { authorize, s } from "@/lib/authorize";
+import { Badge } from "@/components/badge";
 
 export default async function Page({ params, searchParams }) {
-	const days = await prisma.day
-		.findMany({
-			orderBy: [{ type: "asc" }, { date: "asc" }],
-			select: {
-				id: true,
-				date: true,
-				type: true,
-				name: true,
-			},
-		})
+	const authSession = await auth();
+	if (!authSession || !authorize(authSession, [s.management])) return notFound();
+
+	const [days, rollCalls] = await prisma
+		.$transaction([
+			prisma.day.findMany({
+				orderBy: [{ type: "asc" }, { date: "asc" }],
+				select: { id: true, date: true, type: true, name: true },
+			}),
+			prisma.rollCall.findMany({
+				where: { day: { id: searchParams?.["selected-day"] } },
+				orderBy: { index: "asc" },
+				include: { day: true },
+			}),
+		])
 		.catch(notFound);
 
 	const conferenceDays = days
@@ -31,89 +41,72 @@ export default async function Page({ params, searchParams }) {
 			return { ...day, title: `Workshop Day ${index + 1}` };
 		});
 
-	const today = new Date();
-	const currentDay = days.find((day) => day.date.toDateString() === today.toDateString()) || null;
+	const currentDay = days.find((day) => day.date.toDateString() === new Date().toDateString()) || null;
 	const currentDayId = currentDay?.id || null;
 
-	function dayIdExists(dayId) {
-		return days.some((day) => day.id === dayId);
-	}
-	if (searchParams.day) {
-		const selectedDay = days.find((day) => day.id === searchParams.day);
-		if (!selectedDay && !currentDayId) {
-			redirect(`/medibook/sessions/${params.sessionNumber}/roll-calls`);
-		}
+	if (searchParams?.["selected-day"]) {
+		const selectedDay = days.find((day) => day.id === searchParams?.["selected-day"]);
+		if (!selectedDay && !currentDayId) redirect(`/medibook/sessions/${params.sessionNumber}/roll-calls`);
 	}
 
-	if (!searchParams.day && currentDayId) {
-		redirect(`/medibook/sessions/${params.sessionNumber}/roll-calls?day=${currentDayId}`);
-	}
-
-	let edit = null;
-	if (searchParams.edit) {
-		edit = await prisma.rollCall.findFirst({ where: { id: searchParams.edit || "" } }).catch(notFound);
-	}
-
-	let rollCalls;
-	if (searchParams.day && dayIdExists(searchParams.day)) {
-		rollCalls = await prisma.rollCall
-			.findMany({
-				where: {
-					day: {
-						id: searchParams.day,
-					},
-				},
-				orderBy: {
-					index: "asc",
-				},
-				include: {
-					day: true,
-				},
-			})
-			.catch(notFound);
-	}
+	if (!searchParams?.["selected-day"] && currentDayId) redirect(`/medibook/sessions/${params.sessionNumber}/roll-calls?selected-day=${currentDayId}`);
 
 	return (
-		<CardsTable
-			emptyTitle="No Roll Calls Registered"
-			emptyDescription="Check out other sessions"
-			emptyHref="/medibook/sessions"
-			/* modals={[<RollCallModal edit={edit} conferenceDays={conferenceDays} workshopDays={workshopDays} />, <DeleteModal />]} */
-		>
-			<TableCardHeader>
-				<div className="flex w-full flex-col gap-3 rounded-xl bg-content1/60 p-4 md:flex-row">
-					<div className="my-auto ml-1">Select Day</div>
-					<DateSelector className="ml-auto md:max-w-[300px]" conferenceDays={conferenceDays} workshopDays={workshopDays} />
-				</div>
-			</TableCardHeader>
-			{!!rollCalls?.length &&
-				rollCalls.map((rc, index: number) => {
-					return (
-						<TableCard
-							hideBorder={index == rollCalls.length - 1}
-							title={
-								<>
-									<p className="line-clamp-2 capitalize">{rc.name || rc?.day?.date.toLocaleString().slice(0, 10)}</p>
-									{rc.day.date == "" && (
-										<Chip className="mt-[6px] max-h-[18px] rounded-md bg-primary/90 px-0 text-xs font-medium text-white dark:border-white/20 md:my-auto">
-											Today
-										</Chip>
-									)}
-								</>
-							}
-							key={index}>
-							<TableCardBody>
-								<TableCardChip>Roll Call {rc.index + 1}</TableCardChip>
-							</TableCardBody>
-							<TableCardFooter>
-								<MoveDownButton isDisabled={index == rollCalls.length - 1} rcId={rc.id} />
-								<MoveUpButton isDisabled={index == 0} rcId={rc.id} />
-								<EditButton rcId={rc.id} />
-								<DeleteButton rcId={rc.id} />
-							</TableCardFooter>
-						</TableCard>
-					);
-				})}
-		</CardsTable>
+		<>
+			<TopBar
+				buttonHref={`/medibook/sessions/${params.sessionNumber}`}
+				hideSearchBar
+				buttonText={`Session ${romanize(params.sessionNumber)}`}
+				title="Roll Calls">
+				<DateSelector className="ml-auto md:max-w-[300px]" conferenceDays={conferenceDays} workshopDays={workshopDays} />
+				<SearchParamsButton
+					disabled={rollCalls.length > 9}
+					className="min-w-max"
+					searchParams={{ "create-roll-call": searchParams?.["selected-day"] }}>
+					Create New
+				</SearchParamsButton>
+			</TopBar>
+			{!!rollCalls?.length && (
+				<Table>
+					<TableHead>
+						<TableRow>
+							<TableHeader>
+								<span className="sr-only">Actions</span>
+							</TableHeader>
+							<TableHeader>
+								<span className="sr-only">Index</span>
+							</TableHeader>
+							<TableHeader>Name</TableHeader>
+							<TableHeader>ID</TableHeader>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{rollCalls.map((rc, index) => (
+							<TableRow key={rc.id}>
+								<TableCell>
+									<Dropdown>
+										<DropdownButton plain>
+											<EllipsisHorizontalIcon />
+										</DropdownButton>
+										<DropdownMenu>
+											<MoveUpButton rcId={rc.id} />
+											<MoveDownButton rcId={rc.id} />
+											<SearchParamsDropDropdownItem searchParams={{ "edit-roll-call": rc.id }}>Edit</SearchParamsDropDropdownItem>
+											<SearchParamsDropDropdownItem searchParams={{ "delete-roll-call": rc.id }}>Delete</SearchParamsDropDropdownItem>
+										</DropdownMenu>
+									</Dropdown>
+								</TableCell>
+								<TableCell>
+									<Badge>{index + 1}</Badge>
+								</TableCell>
+								<TableCell>{rc.name || `Roll Call ${index + 1}`}</TableCell>
+								<TableCell>{rc.id}</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			)}
+			<Paginator totalItems={rollCalls.length} itemsOnPage={rollCalls.length} />
+		</>
 	);
 }

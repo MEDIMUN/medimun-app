@@ -14,19 +14,8 @@ export default async function Page(): Promise<JSX.Element> {
 }
 
 export async function HomePage(): Promise<JSX.Element> {
-	/* 	const currentSession = await prisma.session.findFirst({
-		where: {
-			OR: [
-				{ isCurrent: true, isPartlyVisible: true },
-				{ isPreviousCurrent: true, isVisible: true },
-			],
-		},
-		select: { theme: true, subTheme: true },
-	}); */
-
 	const currentSession = await prisma.session.findFirst({
-		where: { isCurrent: true },
-
+		where: { isMainShown: true },
 		select: { theme: true, subTheme: true },
 	});
 

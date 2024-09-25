@@ -7,13 +7,34 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model PendingHalfUser {
+  id       String   @id @default(nanoid())
+  email    String   @unique
+  //
+  code     String
+  //
+  user     User?    @relation(fields: [userId], references: [id])
+  userId   String?
+  //
+  school   School?  @relation(fields: [schoolId], references: [id])
+  schoolId String?
+  //
+  time     DateTime @default(now())
+}
+
 model PendingUser {
-  id                    Int    @id @default(autoincrement())
-  email                 String @unique
-  password              String
-  officialName          String
-  officialSurname       String
-  emailVerificationCode String
+  id              String   @id @default(nanoid())
+  email           String   @unique
+  //
+  officialName    String
+  officialSurname String
+  //
+  code            String
+  //
+  time            DateTime @default(now())
+  //
+  school          School?  @relation(fields: [schoolId], references: [id])
+  schoolId        String?
 }
 
 model passwordReset {
@@ -24,9 +45,11 @@ model passwordReset {
 }
 
 model Account {
-  id       String @id @default(uuid())
+  id       String @id @default(nanoid())
   password String
-  user     User[]
+  //
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String
 }
 
 model User {
@@ -58,9 +81,6 @@ model User {
   Student                             School?                               @relation(fields: [schoolId], references: [id])
   schoolId                            String?
   //ACCOUNT
-  account                             Account?                              @relation(fields: [accountId], references: [id])
-  accountId                           String?                               @unique
-  //
   member                              Member[]
   delegate                            Delegate[]
   schoolDirector                      SchoolDirector[]
@@ -79,6 +99,9 @@ model User {
   Resource                            Resource[]
   ApplicationSchoolDirector           ApplicationSchoolDirector[]
   Invoice                             Invoice[]
+  Blacklist                           Blacklist?
+  PendingHalfUser                     PendingHalfUser[]
+  Account                             Account[]
 }
 
 model Session {
@@ -164,6 +187,7 @@ model Session {
   finalDelegation                                finalDelegation[]
   ApplicationDelegationPreferences               ApplicationDelegationPreferences[]
   ApplicationGrantedDelegationCountries          ApplicationGrantedDelegationCountries[]
+  Blacklist                                      Blacklist[]
 }
 
 model Invoice {
@@ -405,24 +429,48 @@ model Committee {
   CommitteeRollCall CommitteeRollCall[]
   Resource          Resource[]
   ExtraCountry      ExtraCountry[]
+  Topic             Topic[]
 
   @@unique([sessionId, name])
   @@unique([sessionId, shortName])
   @@unique([sessionId, slug])
 }
 
+model Topic {
+  id          String    @id @default(nanoid())
+  //
+  title       String
+  description String?
+  //
+  committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+  committeeId String
+}
+
 model ExtraCountry {
   id            String    @id @default(nanoid())
-  code          String
+  countryCode   String
   //
-  name          String
+  countryNameEn String
   //
   isPowerToVeto Boolean   @default(false)
   //
   committee     Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
   committeeId   String
 
-  @@unique([committeeId, code])
+  @@unique([committeeId, countryCode])
+}
+
+model Blacklist {
+  id                String   @id @default(nanoid())
+  //
+  user              User     @relation(fields: [userId], references: [id])
+  userId            String   @unique
+  //
+  session           Session? @relation(fields: [sessionId], references: [id])
+  sessionId         String?
+  //
+  description       String?
+  publicDescription String?
 }
 
 model Department {
@@ -486,6 +534,8 @@ model School {
   finalDelegation                       finalDelegation[]
   ApplicationDelegationPreferences      ApplicationDelegationPreferences[]
   ApplicationGrantedDelegationCountries ApplicationGrantedDelegationCountries[]
+  PendingHalfUser                       PendingHalfUser[]
+  PendingUser                           PendingUser[]
 }
 
 // ROLL CALLS ///////////////////////////////////////////////////////////

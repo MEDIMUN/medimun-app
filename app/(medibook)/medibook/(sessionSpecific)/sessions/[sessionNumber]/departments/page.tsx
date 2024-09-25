@@ -16,12 +16,12 @@ import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 const itemsPerPage = 9;
 
 const sortOptions = [
-	{ value: "name", order: "asc", label: "Name", description: "Ascending" },
-	{ value: "name", order: "desc", label: "Name", description: "Descending" },
-	{ value: "shortName", order: "asc", label: "Short Name", description: "Ascending" },
-	{ value: "shortName", order: "desc", label: "Short Name", description: "Descending" },
-	{ value: "type", order: "asc", label: "Type", description: "Ascending" },
-	{ value: "type", order: "desc", label: "Type", description: "Descending" },
+	{ value: "name", order: "asc", label: "Name" },
+	{ value: "name", order: "desc", label: "Name" },
+	{ value: "shortName", order: "asc", label: "Short Name" },
+	{ value: "shortName", order: "desc", label: "Short Name" },
+	{ value: "type", order: "asc", label: "Type" },
+	{ value: "type", order: "desc", label: "Type" },
 ];
 
 export default async function Page({ params, searchParams }) {

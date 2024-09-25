@@ -4,11 +4,6 @@ import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
 
 export async function handleFinalAssignDelegates(filteredAssignments, selectedSessionId, schoolId) {
-	console.log(schoolId);
-	/* 	console.log(filteredAssignments, selectedSessionId);
-	 */
-	//verify if all users exist
-
 	const selectedSession = await prisma.session.findFirst({ where: { id: selectedSessionId } });
 
 	if (!selectedSession) return { ok: false, message: ["Session not found."] };

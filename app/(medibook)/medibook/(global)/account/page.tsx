@@ -50,8 +50,12 @@ export default async function Settings({ searchParams }) {
 			username: z.string().max(50).trim().optional().nullable(),
 			phoneNumber: z.string().max(50).trim().optional().nullable(),
 			schoolId: z.string().optional().nullable(),
-			dateOfBirth: z.string({ required_error: "Date of Birth is required." }).transform((v) => new Date(v).toISOString()),
-			nationality: z.string({ required_error: "Nationality is required." }),
+			dateOfBirth: z
+				.string()
+				.transform((v) => new Date(v).toISOString())
+				.optional()
+				.nullable(),
+			nationality: z.string().optional().nullable(),
 			pronouns: z.string().max(15).trim().transform(processPronouns).optional().nullable(),
 			bio: z.string().max(250).trim().optional().nullable(),
 			bestTimeToReach: z.string().max(50).trim().optional().nullable(),
@@ -165,7 +169,6 @@ export default async function Settings({ searchParams }) {
 					<div className="my-auto">
 						<Input
 							name="dateOfBirth"
-							required
 							type="date"
 							defaultValue={selectedUser?.dateOfBirth ? new Date(selectedUser?.dateOfBirth).toISOString().split("T")[0] : undefined}
 						/>

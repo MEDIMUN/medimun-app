@@ -38,12 +38,15 @@ export default async function RootLayout({
 	departmentModalDelete,
 	departmentModalCreate,
 	departmentModalEdit,
+	rollCallModals,
+	dayModals,
+	topicsModals,
 }): Promise<JSX.Element> {
 	const authSession = await auth();
 	const sessions = await prisma.session
 		.findMany({
 			take: 5,
-			orderBy: [{ isCurrent: "desc" }, { numberInteger: "desc" }],
+			orderBy: [{ isMainShown: "desc" }, { numberInteger: "desc" }],
 		})
 		.catch();
 
@@ -87,6 +90,9 @@ export default async function RootLayout({
 					{departmentModalDelete}
 					{departmentModalCreate}
 					{departmentModalEdit}
+					{dayModals}
+					{rollCallModals}
+					{topicsModals}
 					<SidebarLayout
 						navbar={
 							<SidebarContextProvider>

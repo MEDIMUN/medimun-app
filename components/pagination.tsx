@@ -14,9 +14,9 @@ export function Paginator({
 	...props
 }: {
 	totalItems: number;
-	itemsPerPage: number;
+	itemsPerPage?: number;
 	itemsOnPage?: number;
-	control;
+	control?;
 }) {
 	const searchParams = useSearchParams();
 	const router = useRouter();

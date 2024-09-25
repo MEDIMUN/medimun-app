@@ -32,7 +32,15 @@ const { auth } = NextAuth({
 	},
 });
 
-const managementDirectPaths = ["/medibook/schools", "/medibook/users", "/medibook/locations"];
+const managementDirectPaths = [
+	"/medibook/schools",
+	"/medibook/users",
+	"/medibook/locations",
+	"/medibook/applications",
+	"/medibook/applications/school-director",
+	"/medibook/applications/delegate-assignment",
+	"/medibook/applications/delegation",
+];
 const logggedInNotAllowedPaths = ["/login", "/signup", "/"];
 
 export default auth((req) => {

@@ -1,6 +1,5 @@
 "use client";
 
-import { updateProfilePictureForUser, deleteProfilePictureForUser } from "../actions";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Badge } from "@nextui-org/badge";
@@ -10,7 +9,8 @@ import { Link } from "@nextui-org/link";
 import { flushSync } from "react-dom";
 import Icon from "@/components/icon";
 import { toast } from "sonner";
-import { Button } from "@/components/button";
+import { deleteProfilePictureForUser, updateProfilePictureForUser } from "../../../@userModals/actions";
+import { Button } from "@nextui-org/button";
 
 export function ProfileUploader({ user }) {
 	const router = useRouter();
@@ -66,7 +66,7 @@ export function ProfileUploader({ user }) {
 								badge: "w-5 h-5",
 							}}
 							content={
-								<Button disabled={loading} onClick={() => ref.current.click()} className="h-5 w-5 min-w-5 bg-background p-0 text-default-500">
+								<Button disabled={loading} onPress={() => ref.current.click()} className="h-5 w-5 min-w-5 bg-background p-0 text-default-500">
 									{user?.profilePicture ? (
 										<Icon className="h-[9px] w-[9px]" icon="solar:pen-linear" />
 									) : (
@@ -79,10 +79,11 @@ export function ProfileUploader({ user }) {
 							<Avatar
 								isDisabled={loading}
 								as={Button}
+								radius="full"
 								onPress={ref?.current?.click}
 								isLoading={loading}
 								isIconOnly
-								className="h-16 w-16"
+								className="h-16 w-16 rounded-full"
 								src={url}
 								showFallback
 							/>

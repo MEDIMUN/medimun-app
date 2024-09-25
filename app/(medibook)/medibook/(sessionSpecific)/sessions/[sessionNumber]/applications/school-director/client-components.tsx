@@ -20,8 +20,8 @@ export function ApplicationOptions({ selectedSession }) {
 	const formRef = useRef(null);
 
 	// Separate state for each form field
-	const [autoOpenTime, setAutoOpenTime] = useState(selectedSession.schoolDirectorApplicationsAutoOpenTime.toISOString().slice(0, -1) || "");
-	const [autoCloseTime, setAutoCloseTime] = useState(selectedSession.schoolDirectorApplicationsAutoCloseTime.toISOString().slice(0, -1) || "");
+	const [autoOpenTime, setAutoOpenTime] = useState(selectedSession.schoolDirectorApplicationsAutoOpenTime?.toISOString()?.slice(0, -1) || "");
+	const [autoCloseTime, setAutoCloseTime] = useState(selectedSession.schoolDirectorApplicationsAutoCloseTime?.toISOString()?.slice(0, -1) || "");
 	const [debouncedAutoOpenTime] = useDebouncedValue(autoOpenTime, 2000);
 	const [debouncedAutoCloseTime] = useDebouncedValue(autoCloseTime, 2000);
 	const [isLoading, setIsLoading] = useState(false);

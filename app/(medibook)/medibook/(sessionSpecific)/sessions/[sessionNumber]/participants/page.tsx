@@ -22,18 +22,18 @@ export const metadata = {
 const itemsPerPage = 10;
 
 const sortOptions = [
-	{ value: "officialName", order: "asc", label: "Name", description: "Ascending" },
-	{ value: "officialName", order: "desc", label: "Name", description: "Descending" },
-	{ value: "officialSurname", order: "asc", label: "Surname", description: "Ascending" },
-	{ value: "officialSurname", order: "desc", label: "Surname", description: "Descending" },
-	{ value: "displayName", order: "asc", label: "Display Name", description: "Ascending" },
-	{ value: "displayName", order: "desc", label: "Display Name", description: "Descending" },
-	{ value: "id", order: "asc", label: "User ID", description: "Ascending" },
-	{ value: "id", order: "desc", label: "User ID", description: "Descending" },
-	{ value: "email", order: "asc", label: "Email", description: "Ascending" },
-	{ value: "email", order: "desc", label: "Email", description: "Descending" },
-	{ value: "username", order: "asc", label: "Username", description: "Ascending" },
-	{ value: "username", order: "desc", label: "Username", description: "Descending" },
+	{ value: "officialName", order: "asc", label: "Name" },
+	{ value: "officialName", order: "desc", label: "Name" },
+	{ value: "officialSurname", order: "asc", label: "Surname" },
+	{ value: "officialSurname", order: "desc", label: "Surname" },
+	{ value: "displayName", order: "asc", label: "Display Name" },
+	{ value: "displayName", order: "desc", label: "Display Name" },
+	{ value: "id", order: "asc", label: "User ID" },
+	{ value: "id", order: "desc", label: "User ID" },
+	{ value: "email", order: "asc", label: "Email" },
+	{ value: "email", order: "desc", label: "Email" },
+	{ value: "username", order: "asc", label: "Username" },
+	{ value: "username", order: "desc", label: "Username" },
 ];
 
 const rows = [

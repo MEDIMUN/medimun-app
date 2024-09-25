@@ -67,7 +67,7 @@ export const metadata = {
 export default async function Example() {
 	const currentSession = await prisma.session.findFirst({
 		where: {
-			isCurrent: true,
+			isMainShown: true,
 		},
 	});
 	return (
@@ -102,9 +102,9 @@ export default async function Example() {
 							<div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
 								<div className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
 									<h1 className="-font-[canela] font-[canela] text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl md:!leading-[64px]">
-										{currentSession.theme}
+										{currentSession?.theme}
 									</h1>
-									<h2 className="-font-[canela] mt-2 text-2xl font-light tracking-tight text-gray-700 sm:text-4xl">{currentSession.subTheme}</h2>
+									<h2 className="-font-[canela] mt-2 text-2xl font-light tracking-tight text-gray-700 sm:text-4xl">{currentSession?.subTheme}</h2>
 									<p className="relative mt-6 text-lg italic leading-7 text-gray-500 sm:max-w-md md:block lg:max-w-none">
 										We are a UN Simulation for teens aged 15 to 19, where students represent assigned countries. They research their nation&apos;s
 										policies to draft and debate resolutions on global issues.
@@ -187,19 +187,8 @@ export default async function Example() {
 						</h2>
 						<div className="mt-6 flex flex-col gap-x-8 gap-y-20 lg:flex-row">
 							<div className="lg:w-full lg:max-w-2xl lg:flex-auto">
-								<p className="text-xl leading-8 text-gray-600">{currentSession.welcomeText}</p>
-								<div className="mt-10 max-w-xl text-base leading-7 text-gray-700">
-									<p>
-										Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet vitae sed turpis id. Id
-										dolor praesent donec est. Odio penatibus risus viverra tellus varius sit neque erat velit. Faucibus commodo massa rhoncus,
-										volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet vitae sed turpis id.
-									</p>
-									<p className="mt-10">
-										Et vitae blandit facilisi magna lacus commodo. Vitae sapien duis odio id et. Id blandit molestie auctor fermentum dignissim. Lacus
-										diam tincidunt ac cursus in vel. Mauris varius vulputate et ultrices hac adipiscing egestas. Iaculis convallis ac tempor et ut. Ac
-										lorem vel integer orci.
-									</p>
-								</div>
+								<p className="text-xl leading-8 text-gray-600">{currentSession?.welcomeText}</p>
+								<div className="mt-10 max-w-xl text-base leading-7 text-gray-700">{currentSession?.description}</div>
 							</div>
 							<div className="lg:flex lg:flex-auto lg:justify-center">
 								<dl className="w-64 space-y-8 xl:w-80">
@@ -240,7 +229,7 @@ export default async function Example() {
 
 				{/* Logo cloud */}
 				<div className="relative isolate -z-10 mt-32 sm:mt-48">
-					<div className="absolute inset-x-0 top-1/2 -z-10 flex -translate-y-1/2 justify-center overflow-hidden [mask-image:radial-gradient(50%_45%_at_50%_55%,white,transparent)]">
+					{/*	<div className="absolute inset-x-0 top-1/2 -z-10 flex -translate-y-1/2 justify-center overflow-hidden [mask-image:radial-gradient(50%_45%_at_50%_55%,white,transparent)]">
 						<svg className="h-[40rem] w-[80rem] flex-none stroke-gray-200" aria-hidden="true">
 							<defs>
 								<pattern
@@ -260,7 +249,7 @@ export default async function Example() {
 							<rect width="100%" height="100%" strokeWidth={0} fill="url(#e9033f3e-f665-41a6-84ef-756f6778e6fe)" />
 						</svg>
 					</div>
-					<div className="mx-auto max-w-7xl px-6 lg:px-8">
+				 <div className="mx-auto max-w-7xl px-6 lg:px-8">
 						<h2 className="text-center text-lg font-semibold leading-8 text-gray-900">Trusted by the world’s most innovative teams</h2>
 						<div className="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5">
 							<img
@@ -327,11 +316,11 @@ export default async function Example() {
 								height={48}
 							/>
 						</div>
-					</div>
+					</div> */}
 				</div>
 
 				{/* Blog section */}
-				<div className="mx-auto mb-32 mt-32 max-w-7xl px-6 sm:mt-40 lg:px-8">
+				{/* <div className="mx-auto mb-32 mt-32 max-w-7xl px-6 sm:mt-40 lg:px-8">
 					<div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
 						<h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">From the blog</h2>
 						<p className="mt-2 text-lg leading-8 text-gray-600">Vel dolorem qui facilis soluta sint aspernatur totam cumque.</p>
@@ -367,8 +356,8 @@ export default async function Example() {
 								</h3>
 							</article>
 						))}
-					</div>
-				</div>
+					</div> 
+				</div>*/}
 			</main>
 			{/* Footer */}
 		</div>

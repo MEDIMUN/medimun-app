@@ -16,7 +16,7 @@ export function EditRolesButton({ userId }) {
 		router.refresh();
 	}
 	function onDeleteRolesClickHandler() {
-		updateSearchParams({ editroles: userId }, router);
+		updateSearchParams({ "edit-roles": userId }, router);
 		router.refresh();
 	}
 

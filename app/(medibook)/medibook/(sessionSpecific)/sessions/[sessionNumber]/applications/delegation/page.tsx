@@ -40,13 +40,11 @@ export default async function Page({ params }) {
 				hideSearchBar
 				title="Delegation Requests"
 			/>
-			<div className="flex flex-col gap-5">
-				<div className="mt-5 rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
-					<Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
-				</div>
-				<ApplicationOptions selectedSession={selectedSession} />
-				<CountryAssign selectedSession={selectedSession} applicationsOfSession={applicationsOfSession} schools={schools} />
+			<div className="mt-5 rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
+				<Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
 			</div>
+			<ApplicationOptions selectedSession={selectedSession} />
+			<CountryAssign selectedSession={selectedSession} applicationsOfSession={applicationsOfSession} schools={schools} />
 		</>
 	);
 }

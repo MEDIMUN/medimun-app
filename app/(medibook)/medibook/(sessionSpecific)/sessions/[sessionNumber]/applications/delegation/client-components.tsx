@@ -287,7 +287,12 @@ export function CountryAssign({
 									return 0;
 								})
 								.map((softAssignedCountry) => {
-									if (softAssignedCountry.country == "NOTGRANTED") return <Badge color="red">Delegation Not Granted</Badge>;
+									if (softAssignedCountry.country == "NOTGRANTED")
+										return (
+											<Badge key={softAssignedCountry.country} color="red">
+												Delegation Not Granted
+											</Badge>
+										);
 									const selectedCountry = countries.find((c) => c.countryCode === softAssignedCountry.country);
 									return (
 										<Badge className="my-auto max-h-min" color="green" key={softAssignedCountry.country}>
@@ -412,7 +417,7 @@ export function CountryAssign({
 											}
 											disabled={isDisabled}
 											onChange={(val) => handleSoftAssignChange(application, index, val)}>
-											<ListboxOption value="NOTGRANTED">Don't Grant Delegation Request</ListboxOption>
+											<ListboxOption value="NOTGRANTED">Don&apos;t Grant Delegation Request</ListboxOption>
 											{selectedSession.countriesOfSession
 												.filter((country) => {
 													const assignedToCurrentDelegation = softAssignedCountries.some(
@@ -446,7 +451,6 @@ export function CountryAssign({
 								);
 							})}
 						</div>
-
 						{!isDisabled && (
 							<div className="col-span-2 flex w-full justify-end">
 								<Button
@@ -470,7 +474,7 @@ export function CountryAssign({
 			{/* Pagination controls */}
 			<Paginator
 				control={{
-					total: Math.ceil(applicationsOfSession.length / itemsPerPage),
+					total: Math.ceil(applicationsOfSession.length / itemsPerPage) || 1,
 					page,
 					onChange: setPage,
 				}}

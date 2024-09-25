@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import prisma from "@/prisma/client";
 import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
+import { authorize, s } from "@/lib/authorize";
 
 export async function getMoreSessions(skip = 5) {
 	const authSession = await auth();
@@ -11,15 +12,16 @@ export async function getMoreSessions(skip = 5) {
 		.findMany({
 			skip: skip,
 			take: 10,
-			orderBy: [{ isCurrent: "desc" }, { numberInteger: "desc" }],
+			orderBy: [{ isMainShown: "desc" }, { numberInteger: "desc" }],
 		})
 		.catch();
 	return sessions;
 }
 
 export async function getSessionData(number) {
-	const session = await auth();
-	if (!session) return;
+	const authSession = await auth();
+	if (!authSession) return;
+	const isManagement = authorize(authSession, [s.management]);
 	let selectedSession = null;
 	try {
 		selectedSession = await prisma.session.findFirst({
@@ -31,6 +33,7 @@ export async function getSessionData(number) {
 			},
 			include: {
 				committee: {
+					...(isManagement ? {} : { where: { isVisible: true } }),
 					select: {
 						id: true,
 						name: true,
@@ -43,6 +46,7 @@ export async function getSessionData(number) {
 					},
 				},
 				department: {
+					...(isManagement ? {} : { where: { isVisible: true } }),
 					select: {
 						id: true,
 						name: true,

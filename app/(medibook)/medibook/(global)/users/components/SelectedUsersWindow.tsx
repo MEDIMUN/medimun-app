@@ -1,21 +1,30 @@
 "use client";
 
-import { use } from "react";
 import { useSelectedContext } from "./StateStateProvider";
-import { UserChip } from "./UserChip";
-import { maxNoOfSelected } from "../page";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/button";
 import { updateSearchParams } from "@/lib/searchParams";
-import { Divider } from "@/components/divider";
 import { toggleDisableOrEnableUsers } from "../../../@userModals/actions";
 import { CheckCircleIcon } from "@heroicons/react/16/solid";
+import { Badge } from "@/components/badge";
+import { Avatar } from "@nextui-org/avatar";
+
+export function UserChip({ uid, officialName, displayName }) {
+	const { setSelected } = useSelectedContext();
+	function onClickHandler() {
+		setSelected((prev) => prev.filter((item) => item.id !== uid));
+	}
+
+	return (
+		<Badge className="cursor-pointer hover:bg-primary hover:text-white hover:line-through" onClick={onClickHandler} key={uid}>
+			<Avatar showFallback className="my-auto h-4 w-4 bg-primary text-white shadow-md" src={`/api/users/${uid}/avatar`} />
+			{displayName || officialName}
+		</Badge>
+	);
+}
 
 export function SelectedUsersWindow() {
 	const router = useRouter();
-	const searchParams = useSearchParams();
 	const { selected, setSelected } = useSelectedContext();
 
 	async function handleDisableOrEnableAll(isEnable) {
@@ -34,8 +43,8 @@ export function SelectedUsersWindow() {
 	}
 
 	function onAssignRolesClickHandler() {
-		const selectedString = selected.map((user) => user.id).join("U");
-		updateSearchParams({ assignroles: selectedString }, router);
+		const selectedString = selected.map((user) => user.id).join(",");
+		updateSearchParams({ "assign-roles": selectedString }, router);
 		router.refresh();
 	}
 

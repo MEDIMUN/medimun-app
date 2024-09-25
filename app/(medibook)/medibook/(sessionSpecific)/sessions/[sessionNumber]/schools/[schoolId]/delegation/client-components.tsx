@@ -30,7 +30,7 @@ import { cn } from "@/lib/cn";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 
 export function SelectCountriesSection({ selectedSchool, filteredCountries, selectedSession, numberOfGACommittees }) {
-	const [selectedArray, setSelectedArray] = useState(arrayFromNumber(15).map(() => ""));
+	const [selectedArray, setSelectedArray] = useState(arrayFromNumber(10).map(() => ""));
 	const [numberOfDelegations, setNumberOfDelegations] = useState(1);
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
@@ -76,11 +76,12 @@ export function SelectCountriesSection({ selectedSchool, filteredCountries, sele
 				<div className="space-y-1">
 					<Subheading>Preferred Countries</Subheading>
 					<Text>
-						Select 15 countries in order of preference to be assigned to your delegations. Countries are assigned in a first come first serve basis.
+						Select 10 countries in order of preference to be assigned to your delegations. Countries are assigned in a first come first serve basis.
+						You may not be assigned any of the countries you select.
 					</Text>
 				</div>
 				<div className="my-auto grid grid-cols-1 gap-2">
-					{arrayFromNumber(15).map((number) => (
+					{arrayFromNumber(10).map((number) => (
 						<div key={number + Math.random()} className="flex flex-row gap-2">
 							<div className="my-auto min-w-24">
 								<Text className="min-w-max">
@@ -123,7 +124,7 @@ export function SelectCountriesSection({ selectedSchool, filteredCountries, sele
 				<Button
 					plain
 					onClick={() => {
-						setSelectedArray(arrayFromNumber(15).map(() => ""));
+						setSelectedArray(arrayFromNumber(10).map(() => ""));
 					}}>
 					Reset
 				</Button>
@@ -170,10 +171,6 @@ export function SelectStudents({ students, selectedSession, grantedDelegation, n
 		}
 	}, [debouncedSearch, router]);
 
-	useEffect(() => {
-		console.log(assignedStudents);
-	}, [assignedStudents]);
-
 	if (!!students.length && (stage == 2 || stage == 3))
 		return (
 			<>
@@ -198,7 +195,7 @@ export function SelectStudents({ students, selectedSession, grantedDelegation, n
 						this page you will see the delegation assignment form again.
 						<br />
 						<br />
-						<b>Please don't submit this form with missing info or with delegates who have not confirmed their participation yet.</b>
+						<b>Please don&apos;t submit this form with missing info or with delegates who have not confirmed their participation yet.</b>
 					</DialogDescription>
 					<DialogBody></DialogBody>
 					<DialogActions>
@@ -372,7 +369,7 @@ export function SelectStudents({ students, selectedSession, grantedDelegation, n
 												setAssignedStudents(filteredAssignedStudents);
 											}
 										}}>
-										<ListboxOption value={"EMPTY"}>Don't Nominate Delegate</ListboxOption>
+										<ListboxOption value={"EMPTY"}>Don&apos;t Nominate Delegate</ListboxOption>
 										{selectedStudents
 											.filter((student) => {
 												const assignedToOtherDelegationAndCountry = assignedStudents.find(

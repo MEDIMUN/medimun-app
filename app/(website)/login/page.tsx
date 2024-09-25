@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import LoginForm from "./client-components";
 import { cn } from "@/lib/cn";
 
@@ -13,9 +14,13 @@ export default function Page() {
 			style={{
 				backgroundImage: `url(/assets/gradients/${random.toString()}.jpg)`,
 			}}
-			className={cn(`flex min-h-dvh w-full bg-cover bg-center align-middle font-[montserrat] duration-300`)}>
-			<div className="mx-auto my-auto h-[600px] w-[400px] rounded-md bg-content1/70 p-12 shadow-md md:ml-20">
-				<LoginForm />
+			className={cn(
+				`-bg-gradient-to-tr flex min-h-dvh w-full from-zinc-300 to-white bg-cover bg-center align-middle font-[montserrat] duration-300`
+			)}>
+			<div className="mx-auto my-auto h-[600px] w-[400px] rounded-2xl bg-content1/70 p-12 shadow-lg md:ml-20">
+				<Suspense fallback={<div>Loading...</div>}>
+					<LoginForm />
+				</Suspense>
 			</div>
 		</section>
 	);

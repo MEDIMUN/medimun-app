@@ -34,13 +34,13 @@ export function AssignUserChip({ uid, officialName, displayName }) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	function onClickHandler() {
-		const userIdsArray = searchParams.get("assignroles").split("U");
+		const userIdsArray = searchParams.get("assignroles").split(",");
 		const newUsersArray = userIdsArray.filter((id) => id !== uid);
 		if (!newUsersArray.length) {
 			removeSearchParams({ assignroles: "" }, router);
 			router.refresh();
 		} else {
-			updateSearchParams({ assignroles: newUsersArray.join("U") }, router);
+			updateSearchParams({ assignroles: newUsersArray.join(",") }, router);
 			router.refresh();
 		}
 	}
@@ -79,7 +79,7 @@ export function DeleteRoleButton({ role, userID }) {
 	);
 }
 
-export function EditUserModal({ edit, schools }) {
+export function EditUserModal({ edit, schools, studentSchoolId }) {
 	const { data: authSession, status } = useSession();
 	const searchParams = useSearchParams();
 	const [isLoading, setIsLoading] = useState(false);
@@ -91,20 +91,20 @@ export function EditUserModal({ edit, schools }) {
 		const res = await editUser(formData);
 		if (res) toast(res?.message);
 		if (res?.ok) {
-			removeSearchParams({ edituser: "", viewuser: "", adduser: "" }, router);
+			removeSearchParams({ "edit-user": "", "add-user": "" }, router);
 			router.refresh();
 		}
 		setIsLoading(false);
 	}
 
-	const onClose = () => removeSearchParams({ edituser: "", viewuser: "", adduser: "" });
+	const onClose = () => removeSearchParams({ "edit-user": "", adduser: "" });
 
 	if (status !== "authenticated") return null;
 
 	const isManagerOfMember = authorizeManagerMember(authSession.user.currentRoles, edit?.currentRoles);
 	const isChairOfDelegate = authorizeChairDelegate(authSession.user.currentRoles, edit?.currentRoles);
 	const isManagement = authorize(authSession, [s.management]);
-	const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession.user.currentRoles, edit);
+	const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession.user.currentRoles, { schoolId: studentSchoolId });
 
 	const generalEdit = isManagement || isChairOfDelegate || isManagerOfMember;
 
@@ -128,7 +128,7 @@ export function EditUserModal({ edit, schools }) {
 
 	const isOpen =
 		(edit?.id &&
-			searchParams.get("edituser") &&
+			searchParams.get("edit-user") &&
 			status === "authenticated" &&
 			(isManagement || isChairOfDelegate || isManagerOfMember || isDirectorOfStudent)) ||
 		false;
@@ -295,7 +295,7 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 		);
 		if (res?.ok) {
 			toast.success(res?.message);
-			removeSearchParams({ assignroles: "", selected: "", remove: "", role: "" }, router);
+			removeSearchParams({ "assign-roles": "", selected: "", remove: "", role: "" }, router);
 		} else {
 			toast.error(res?.message);
 		}
@@ -304,7 +304,7 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 	}
 
 	function onClose() {
-		removeSearchParams({ assignroles: "", session: "" });
+		removeSearchParams({ "assign-roles": "", session: "" });
 	}
 
 	const session = searchParams.get("session");
@@ -334,7 +334,7 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 		{ value: "globalAdmin", label: "Global Admin", disabled: selectedUsers?.length > 1 },
 	];
 
-	const isOpen = searchParams.has("assignroles") && selectedUsers.length > 0;
+	const isOpen = !!searchParams.get("assign-roles") && selectedUsers.length > 0;
 	const numberOfUsers = selectedUsers?.length;
 
 	return (
@@ -483,13 +483,13 @@ export function EditRolesModal({ selectedUser }) {
 	const { data: authSession } = useSession();
 
 	function handleOnClose() {
-		removeSearchParams({ editroles: "" });
+		removeSearchParams({ "edit-roles": "" });
 	}
 
 	const allRoles = selectedUser?.currentRoles.concat(selectedUser?.pastRoles);
 
 	const fullName = selectedUser?.displayName || `${selectedUser?.officialName} ${selectedUser?.officialSurname}`;
-	const isOpen: boolean = (searchParams.has("editroles") as boolean) && authorize(authSession, [s.management]);
+	const isOpen: boolean = !!searchParams.get("edit-roles") && authorize(authSession, [s.management]);
 
 	return (
 		<Dialog open={isOpen} onClose={handleOnClose}>
@@ -568,14 +568,14 @@ export function UnafilliateStudentModal({ fullName, userId }) {
 		const res = await unafilliateStudent(userId);
 		if (res) toast(res?.message);
 		if (res?.ok) {
-			removeSearchParams({ edituser: "", viewuser: "", adduser: "", unafilliatestudent: "" }, router);
+			removeSearchParams({ "edit-user": "", adduser: "", "unafilliate-student": "" }, router);
 			router.refresh();
 		}
 		setIsLoading(false);
 	}
 
-	const handleOnClose = () => removeSearchParams({ unafilliatestudent: "" });
-	const isOpen: boolean = (searchParams.has("unafilliatestudent") as boolean) && authorize(authSession, [s.schooldirector]);
+	const handleOnClose = () => removeSearchParams({ "unafilliate-student": "" });
+	const isOpen: boolean = !!searchParams.get("unafilliate-student") && authorize(authSession, [s.schooldirector]);
 
 	return (
 		<Dialog open={isOpen} onClose={handleOnClose}>

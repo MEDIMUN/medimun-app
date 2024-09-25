@@ -1,7 +1,15 @@
 import { BuildingOffice2Icon, EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { contactUs } from "./actions";
+import { Badge } from "@/components/badge";
+import { Button } from "@/components/button";
+import { Field, Label } from "@/components/fieldset";
+import { Input } from "@/components/input";
+import { Textarea } from "@/components/textarea";
+import { RecaptchaComp } from "./client-components";
+import { InformationCircleIcon } from "@heroicons/react/16/solid";
+import Link from "next/link";
 
-export default function Page() {
+export default function Page({ searchParams }) {
 	return (
 		<div className="relative isolate min-h-screen bg-white">
 			<div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
@@ -57,7 +65,7 @@ export default function Page() {
 								</dt>
 								<dd>
 									<a className="hover:text-gray-900" href="mailto:hello@medimun.org">
-										hello@medimun.org
+										info@medimun.org
 									</a>
 								</dd>
 							</div>
@@ -66,85 +74,91 @@ export default function Page() {
 				</div>
 				<form action={contactUs} className="px-6 pb-24 pt-20 sm:pb-32 lg:px-8 lg:py-48">
 					<div className="mx-auto max-w-xl lg:mr-0 lg:max-w-lg">
-						<div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-							<div>
-								<label htmlFor="first-name" className="block text-sm font-semibold leading-6 text-gray-900">
-									First name
-								</label>
-								<div className="mt-2.5">
-									<input
-										type="text"
-										name="first-name"
-										id="first-name"
-										autoComplete="given-name"
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-									/>
+						{searchParams.success == "true" && (
+							<div className="rounded-md bg-green-50 p-4">
+								<div className="flex">
+									<div className="flex-shrink-0">
+										<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-green-400" />
+									</div>
+									<div className="ml-3 flex-1 md:flex md:justify-between">
+										<p className="text-sm text-green-700">We will get back to you as soon as possible.</p>
+										<p className="mt-3 text-sm md:ml-6 md:mt-0">
+											<Link href="/contact" className="whitespace-nowrap font-medium text-green-700 hover:text-green-600">
+												Contact us again
+												<span aria-hidden="true"> &rarr;</span>
+											</Link>
+										</p>
+									</div>
 								</div>
 							</div>
-							<div>
-								<label htmlFor="last-name" className="block text-sm font-semibold leading-6 text-gray-900">
-									Last name
-								</label>
-								<div className="mt-2.5">
-									<input
-										type="text"
-										name="last-name"
-										id="last-name"
-										autoComplete="family-name"
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-									/>
+						)}
+						{searchParams.error == "invalid-data" && (
+							<div className="mb-4 rounded-md bg-red-50 p-4">
+								<div className="flex">
+									<div className="flex-shrink-0">
+										<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-red-400" />
+									</div>
+									<div className="ml-3 flex-1 md:flex md:justify-between">
+										<p className="text-sm text-red-700">You have entered invalid info.</p>
+									</div>
 								</div>
 							</div>
-							<div className="sm:col-span-2">
-								<label htmlFor="email" className="block text-sm font-semibold leading-6 text-gray-900">
-									Email
-								</label>
-								<div className="mt-2.5">
-									<input
-										type="email"
-										name="email"
-										id="email"
-										autoComplete="email"
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-									/>
+						)}
+						{searchParams.error == "failed-to-send-email" && (
+							<div className="rounded-md bg-red-50 p-4">
+								<div className="flex">
+									<div className="flex-shrink-0">
+										<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-red-400" />
+									</div>
+									<div className="ml-3 flex-1 md:flex md:justify-between">
+										<p className="text-sm text-red-700">
+											Failed to send email.
+											<br />
+											Please contact us directly.
+										</p>
+										<p className="mt-3 text-sm md:ml-6 md:mt-0">
+											<Link href="mailto:medimun.cyprus@gmail.com" className="whitespace-nowrap font-medium text-red-700 hover:text-red-600">
+												Email us
+												<span aria-hidden="true"> &rarr;</span>
+											</Link>
+										</p>
+									</div>
 								</div>
 							</div>
-							<div className="sm:col-span-2">
-								<label htmlFor="phone-number" className="block text-sm font-semibold leading-6 text-gray-900">
-									Phone number
-								</label>
-								<div className="mt-2.5">
-									<input
-										type="tel"
-										name="phone-number"
-										id="phone-number"
-										autoComplete="tel"
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-									/>
+						)}
+						{!searchParams.success && (
+							<>
+								<div className="grid grid-cols-1 gap-x-8 gap-y-6">
+									<Field>
+										<Label>
+											Name <Badge color="red">Required</Badge>
+										</Label>
+										<Input name="name" type="text" required autoComplete="given-name" />
+									</Field>
+									<Field>
+										<Label>
+											Email <Badge color="red">Required</Badge>
+										</Label>
+										<Input name="email" type="email" required autoComplete="email" />
+									</Field>
+									<Field>
+										<Label>Phone Number</Label>
+										<Input name="phone" type="tel" autoComplete="tel" />
+									</Field>
+									<Field>
+										<Label>
+											Message <Badge color="red">Required</Badge>
+										</Label>
+										<Textarea className="max-h-[500px]" required name="message" />
+									</Field>
 								</div>
-							</div>
-							<div className="sm:col-span-2">
-								<label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
-									Message
-								</label>
-								<div className="mt-2.5">
-									<textarea
-										name="message"
-										id="message"
-										rows={4}
-										className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-										defaultValue={""}
-									/>
+								<div className="mt-8 flex justify-end">
+									<Button type="submit" color="primary">
+										Send message
+									</Button>
 								</div>
-							</div>
-						</div>
-						<div className="mt-8 flex justify-end">
-							<button
-								type="submit"
-								className="rounded-md bg-black px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-black/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-								Send message
-							</button>
-						</div>
+							</>
+						)}
 					</div>
 				</form>
 			</div>

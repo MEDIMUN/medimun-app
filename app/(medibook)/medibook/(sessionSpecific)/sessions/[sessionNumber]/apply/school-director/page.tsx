@@ -17,7 +17,12 @@ export default async function SchoolDirectorApplicationsPage({ params }: { param
 	const [selectedSession, selectedUserHasApplication, userIsSchoolDirectorInSession, schools, selectedUser] = await Promise.all([
 		prisma.session.findFirstOrThrow({ where: { number: params.sessionNumber } }).catch(notFound),
 		prisma.applicationSchoolDirector.findFirst({
-			where: { userId: authSession.user.id, sessionId: params.sessionNumber },
+			where: {
+				userId: authSession.user.id,
+				session: {
+					number: params.sessionNumber,
+				},
+			},
 			include: { user: true, school: true },
 		}),
 		prisma.schoolDirector.findFirst({
@@ -92,7 +97,7 @@ export default async function SchoolDirectorApplicationsPage({ params }: { param
 								{selectedUserHasApplication.isApproved ? <Badge color="green">Approved</Badge> : <Badge color="yellow">Submitted & Pending</Badge>}
 							</DescriptionDetails>
 							<DescriptionTerm>Application Date</DescriptionTerm>
-							<DescriptionDetails>{selectedUserHasApplication.date.toLocaleString("uk").replace(",", " at ")}</DescriptionDetails>
+							<DescriptionDetails>{selectedUserHasApplication.date.toLocaleString("en-GB").replace(",", " at ")}</DescriptionDetails>
 							<DescriptionTerm>School Name</DescriptionTerm>
 							<DescriptionDetails>{selectedUserHasApplication.school.name}</DescriptionDetails>
 							<DescriptionTerm>School Email</DescriptionTerm>

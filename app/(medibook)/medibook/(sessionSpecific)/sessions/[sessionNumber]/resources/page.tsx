@@ -10,10 +10,10 @@ import { ResourcesTable } from "@/app/(medibook)/medibook/server-components";
 const itemsPerPage = 10;
 
 const sortOptions = [
-	{ value: "name", order: "asc", label: "Name", description: "Ascending" },
-	{ value: "name", order: "desc", label: "Name", description: "Descending" },
-	{ value: "time", order: "asc", label: "Date Uploaded", description: "Ascending" },
-	{ value: "time", order: "desc", label: "Date Uploaded", description: "Descending" },
+	{ value: "name", order: "asc", label: "Name" },
+	{ value: "name", order: "desc", label: "Name" },
+	{ value: "time", order: "asc", label: "Date Uploaded" },
+	{ value: "time", order: "desc", label: "Date Uploaded" },
 ];
 
 export default async function Page({ params, searchParams }) {

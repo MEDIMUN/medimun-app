@@ -52,7 +52,6 @@ export async function editDepartment(formData: FormData, departmentId) {
 		...otherDeptParsedData,
 		type: type?.split(","),
 	});
-	if (error) console.log(error);
 	if (error) return { ok: false, message: "Invalid data" };
 
 	try {

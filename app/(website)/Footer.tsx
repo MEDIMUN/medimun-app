@@ -137,7 +137,7 @@ export default function Example() {
 						</div>
 						<div className="md:grid md:grid-cols-2 md:gap-8">
 							<div>
-								<h3 className="text-sm font-semibold leading-6 text-white">Company</h3>
+								<h3 className="text-sm font-semibold leading-6 text-white">MediBook</h3>
 								<ul role="list" className="mt-6 space-y-4">
 									{navigation.company.map((item) => (
 										<li key={item.name}>

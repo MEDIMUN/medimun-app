@@ -164,7 +164,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				try {
 					prismaUser = await prisma.user.findFirstOrThrow({
 						where: { OR: [{ email: username }, { id: username }, { username: username }] },
-						include: { ...generateUserDataObject(), account: true },
+						include: { ...generateUserDataObject(), Account: true },
 					});
 				} catch (error) {
 					throw new UserNotFoundError();
@@ -172,13 +172,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				if (prismaUser === null) {
 					throw new UserNotFoundError();
 				}
-				if (!prismaUser.account) {
+				if (!prismaUser?.Account?.length) {
 					throw new AccountNotActivatedError();
 				}
 				if (prismaUser.isDisabled) {
 					throw new AccountDisabledError();
 				}
-				const isPasswordValid = await verifyPassword(password, prismaUser.account.password);
+				const isPasswordValid = await verifyPassword(password, prismaUser.Account[0].password);
 				if (isPasswordValid) {
 					const userData = generateUserData(prismaUser);
 					await prisma.user.update({

@@ -62,11 +62,11 @@ export async function updateSession(formData: FormData, selectedSessionNumber) {
 	});
 	if (!selectedSession) return { ok: false, message: "Session not found" };
 	const userData = generateUserData(prismaUser);
-	const isManagement = authorizePerSession(userData, [s.management], [selectedSession.number]);
+	const isManagement = authorize(authSession, [s.management]);
 	if (!isManagement) return { ok: false, message: "Not Authorized" };
 
 	const { error, data } =
-		selectedSession.isVisible || selectedSession.isCurrent
+		selectedSession.isVisible || selectedSession.isCurrent || selectedSession.isMainShown
 			? currentSessionSchema.safeParse(parseFormData(formData))
 			: sessionSchema.safeParse(parseFormData(formData));
 
@@ -211,6 +211,7 @@ export async function setCurrentSession(session) {
 					isCurrent: false,
 					isVisible: true,
 					isPartlyVisible: true,
+					isMainShown: true,
 					isPriceLocked: true,
 				},
 			}),
@@ -227,14 +228,14 @@ export async function setPartiallyVisibleSession(session) {
 	const isAuthorized = authorize(authSession, [s.admins, s.sd]);
 	if (!isAuthorized) return { ok: false, message: "Not authorized." };
 	try {
-		selectedSession = prisma.session.findFirstOrThrow({
-			where: {
-				number: session,
-			},
-		});
+		selectedSession = await prisma.session.findFirstOrThrow({ where: { number: session } });
 	} catch {
 		return { ok: false, message: "Session not found." };
 	}
+
+	if (!selectedSession.theme) return { ok: false, message: "Session theme is not set." };
+
+	const numberOfSessions = await prisma.session.count();
 
 	if (!selectedSession.isCurrent) return { ok: false, message: "Session is not current." };
 	if (selectedSession.isPartlyVisible) return { ok: false, message: "Session is already partly visible." };
@@ -245,34 +246,52 @@ export async function setPartiallyVisibleSession(session) {
 		return { ok: false, message: `Contact Berzan something is wrong with session ${session}` };
 
 	try {
+		if (numberOfSessions === 1) {
+			try {
+				await prisma.session.update({
+					where: { id: selectedSession.id },
+					data: {
+						isCurrent: true,
+						isMainShown: true,
+						isPriceLocked: true,
+						isPartlyVisible: true,
+						isVisible: false,
+					},
+				});
+			} catch {
+				return { ok: false, message: "Could not set partially visible session." };
+			}
+			return { ok: true, message: "Session set as fully visible." };
+		}
+
 		const currentlyShown = await prisma.session.findFirst({
 			where: {
 				isMainShown: true,
 			},
 		});
+		if (!currentlyShown) return { ok: false, message: "Currently shown session not found." };
 		await prisma.$transaction([
 			prisma.session.update({
 				where: { id: selectedSession.id },
 				data: {
 					isCurrent: true,
-					isPartlyVisible: true,
 					isMainShown: true,
 					isPriceLocked: true,
+					isPartlyVisible: true,
 					isVisible: false,
 				},
 			}),
 			prisma.session.update({
 				where: { id: currentlyShown.id },
 				data: {
-					isCurrent: true,
+					isCurrent: false,
 					isPartlyVisible: true,
-					isMainShown: true,
+					isMainShown: false,
 					isPriceLocked: true,
-					isVisible: false,
 				},
 			}),
 		]);
-	} catch {
+	} catch (e) {
 		return { ok: false, message: "Could not set partially visible session." };
 	}
 	return { ok: true, message: "Session set as partially visible." };
@@ -284,7 +303,7 @@ export async function setFullyVisibleSession(session) {
 	const isAuthorized = authorize(authSession, [s.admins, s.sd]);
 	if (!isAuthorized) return { ok: false, message: "Not authorized." };
 	try {
-		selectedSession = prisma.session.findFirstOrThrow({
+		selectedSession = await prisma.session.findFirstOrThrow({
 			where: {
 				number: session,
 			},

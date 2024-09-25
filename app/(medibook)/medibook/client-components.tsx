@@ -19,6 +19,7 @@ import { redirect, useRouter as useNextRouter, useRouter, useSearchParams } from
 import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "sonner";
 import { authorizedToEditResource } from "./@resourceModals/default";
+import { Divider } from "@/components/divider";
 
 export function DirectionDropdown({ defaultValue, items }) {
 	const router = useNextRouter();
@@ -42,7 +43,7 @@ export function DirectionDropdown({ defaultValue, items }) {
 			{items.map((option, index) => (
 				<ListboxOption key={index} value={option}>
 					<ListboxLabel>{option.label}</ListboxLabel>
-					<ListboxDescription>{option.description}</ListboxDescription>
+					<ListboxDescription>{option.description ? option.description : option.order.includes("asc") ? "↑" : "↓"}</ListboxDescription>
 				</ListboxOption>
 			))}
 		</Listbox>
@@ -81,6 +82,7 @@ export function TopBar({
 	subheading = "",
 	buttonText = "",
 	buttonHref = "",
+	showDivider = false,
 }: {
 	className?: string;
 	title: string;
@@ -92,43 +94,47 @@ export function TopBar({
 	subheading?: string;
 	buttonText?: string;
 	buttonHref?: string;
+	showDivider?: boolean;
 }) {
 	sortOptions = sortOptions && sortOptions.map((option, index) => ({ ...option, key: index }));
 	return (
-		<div className={cn("flex flex-wrap items-end justify-between gap-4", className)}>
-			<div className="w-full sm:flex-1">
-				{buttonText && buttonHref && (
-					<Link href={buttonHref}>
-						<div className="-ml-2 flex max-w-min cursor-pointer rounded-full from-gray-100 to-gray-300 duration-300 hover:bg-gradient-to-r hover:shadow-sm">
-							<Icon
-								icon="majesticons:chevron-left"
-								height={18}
-								width={18}
-								className="my-auto ml-1 min-h-5 min-w-5 -translate-y-[0.5px] text-zinc-400"
-							/>
-							<Text className="mr-[11px] min-w-max text-sm">{buttonText}</Text>
-						</div>
-					</Link>
-				)}
-				<Heading>{title}</Heading>
-				<Subheading level={6} className="line-clamp-1 cursor-help !font-light duration-250 hover:line-clamp-none">
-					{subheading}
-				</Subheading>
-				<div className={cn("flex flex-col gap-4 md:flex-row", (!hideSearchBar || sortOptions) && "mt-4")}>
-					{!hideSearchBar && (
-						<div className="w-full flex-1">
-							<SearchBar placeholder={searchText} />
-						</div>
+		<>
+			<div className={cn("flex flex-wrap items-end justify-between gap-4", className)}>
+				<div className="w-full sm:flex-1">
+					{buttonText && buttonHref && (
+						<Link href={buttonHref}>
+							<div className="-ml-2 flex max-w-min cursor-pointer rounded-full from-gray-100 to-gray-300 duration-300 hover:bg-gradient-to-r hover:shadow-sm">
+								<Icon
+									icon="majesticons:chevron-left"
+									height={18}
+									width={18}
+									className="my-auto ml-1 min-h-5 min-w-5 -translate-y-[0.5px] text-zinc-400"
+								/>
+								<Text className="mr-[11px] min-w-max text-sm">{buttonText}</Text>
+							</div>
+						</Link>
 					)}
-					{sortOptions && (
-						<div>
-							<DirectionDropdown items={sortOptions} defaultValue={defaultSort} />
-						</div>
-					)}
+					<Heading>{title}</Heading>
+					<Subheading level={6} className="line-clamp-1 cursor-help !font-light duration-250 hover:line-clamp-none">
+						{subheading}
+					</Subheading>
+					<div className={cn("flex flex-col gap-4 md:flex-row", (!hideSearchBar || sortOptions) && "mt-4")}>
+						{!hideSearchBar && (
+							<div className="w-full flex-1">
+								<SearchBar placeholder={searchText} />
+							</div>
+						)}
+						{sortOptions && (
+							<div>
+								<DirectionDropdown items={sortOptions} defaultValue={defaultSort} />
+							</div>
+						)}
+					</div>
 				</div>
+				{children && <div className="grid w-full grid-cols-1 gap-6 md:flex md:w-auto md:flex-row">{children}</div>}
 			</div>
-			{children && <div className="grid w-full grid-cols-1 gap-6 md:block md:w-auto">{children}</div>}
-		</div>
+			{showDivider && <Divider soft />}
+		</>
 	);
 }
 

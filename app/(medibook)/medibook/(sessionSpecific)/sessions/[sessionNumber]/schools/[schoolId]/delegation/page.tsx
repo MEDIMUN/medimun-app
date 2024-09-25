@@ -92,10 +92,14 @@ export default async function Page({ params, searchParams }) {
 						)}
 					</DescriptionTerm>
 					<DescriptionDetails>
-						<Badge className="!p-0" color="">
-							<Avatar showFallback className="h-4 w-4 bg-primary text-white" src={`/api/users/${student.id}/avatar`} />
-							{student.displayName || `${student.officialName} ${student.officialSurname}`}
-						</Badge>
+						{student?.id ? (
+							<Badge className="!p-0" color="">
+								<Avatar showFallback className="h-4 w-4 bg-primary text-white" src={`/api/users/${student.id}/avatar`} />
+								{student.displayName || `${student.officialName} ${student.officialSurname}`}
+							</Badge>
+						) : (
+							<Badge color="red">Deleted User</Badge>
+						)}
 					</DescriptionDetails>
 				</>
 			);
@@ -246,7 +250,7 @@ export default async function Page({ params, searchParams }) {
 										<li>
 											To appear in the list below, students must have a MediBook account, select {selectedSchool.name} as their school in their
 											account settings, provide a valid birthday, and be aged between {selectedSession.minimumDelegateAgeOnFirstConferenceDay} and{" "}
-											{selectedSession.maximunDelegateAgeOnFirstConferenceDay} years old on the first day of the conference. For questions about our
+											{selectedSession.maximumDelegateAgeOnFirstConferenceDay} years old on the first day of the conference. For questions about our
 											age policy or if a student who should be listed does not appear, please contact us at{" "}
 											<Link href="mailto:medimun.cyprus@gmail.com">medimun.cyprus@gmail.com</Link>.
 										</li>

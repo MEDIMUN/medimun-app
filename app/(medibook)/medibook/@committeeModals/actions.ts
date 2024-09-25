@@ -55,11 +55,11 @@ export async function deleteCommittee(formData, committeeId) {
 
 	if (!selectedCommittee.session.isCurrent && !authorize(authSession, [s.admins, s.sd])) return { ok: false, message: "Error" };
 
-	const selectedUser = await prisma.user.findUnique({ where: { id: authSession.user.id }, include: { account: true } });
+	const selectedUser = await prisma.user.findUnique({ where: { id: authSession.user.id }, include: { Account: true } });
 
 	const password = formData.get("password");
 
-	const isPasswordCorrect = await verifyPassword(password, selectedUser.account.password);
+	const isPasswordCorrect = await verifyPassword(password, selectedUser.Account[0].password);
 
 	if (!isPasswordCorrect) return { ok: false, message: "Invalid password" };
 

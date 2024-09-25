@@ -86,7 +86,7 @@ export default async function Page({ params, searchParams }) {
 
 	[numberOfNationalities, numberOfSchools, selectedSession] = await Promise.all([numberOfNationalities, numberOfSchools, selectedSession]);
 
-	const numberOfDelegates = selectedSession.committee.reduce((acc, curr) => acc + curr._count.delegate, 0);
+	const numberOfDelegates = selectedSession?.committee?.reduce((acc, curr) => acc + curr._count.delegate, 0);
 	const roundedNumberOfDelegates = Math.ceil(numberOfDelegates / 50) * 50;
 
 	const numberOfMembers = selectedSession.department.reduce((acc, curr) => acc + curr._count.member, 0);
@@ -232,7 +232,7 @@ export default async function Page({ params, searchParams }) {
 									<div style={{ animationDelay: `${index * 250}ms` }} key={index} className="flex flex-row gap-2 bg-content1/50 p-4">
 										<p className="font-regular my-auto bg-gradient-to-br from-black to-neutral-800 bg-clip-text text-xl tracking-tight text-transparent dark:to-foreground-200 lg:inline-block">
 											{day.name || `Workshop Day ${index + 1}`}
-											<span className="ml-2 font-thin">({day.date.toLocaleString("uk-en").slice(0, 10)})</span>
+											<span className="ml-2 font-thin">({day.date.toLocaleString("en-GB").slice(0, 10)})</span>
 										</p>
 										<Button
 											href={`/medibook/sessions/${selectedSession.number}/programme/workshop-day-${index + 1}`}
@@ -249,7 +249,7 @@ export default async function Page({ params, searchParams }) {
 									<div style={{ animationDelay: `${index * 100}ms` }} key={index} className="flex flex-row gap-2 bg-content1/50 p-4">
 										<p className="font-regular my-auto bg-gradient-to-br from-black to-neutral-800 bg-clip-text text-xl tracking-tight text-transparent dark:to-foreground-200 lg:inline-block">
 											{day.name || `Conference Day ${index + 1}`}
-											<span className="ml-2 font-thin">({day.date.toLocaleString("uk-en").slice(0, 10)})</span>
+											<span className="ml-2 font-thin">({day.date.toLocaleString("en-GB").slice(0, 10)})</span>
 										</p>
 										<Button
 											href={`/medibook/sessions/${selectedSession.number}/programme/conference-day-${index + 1}`}

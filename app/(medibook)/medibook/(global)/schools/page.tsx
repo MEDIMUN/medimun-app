@@ -28,12 +28,12 @@ const rows = [
 ];
 
 const sortOptions = [
-	{ value: "name", order: "asc", label: "Name", description: "Ascending" },
-	{ value: "name", order: "desc", label: "Name", description: "Descending" },
-	{ value: "slug", order: "asc", label: "Short Name", description: "Ascending" },
-	{ value: "slug", order: "desc", label: "Short Name", description: "Descending" },
-	{ value: "joinYear", order: "asc", label: "Year Joined", description: "Ascending" },
-	{ value: "joinYear", order: "desc", label: "Year Joined", description: "Descending" },
+	{ value: "name", order: "asc", label: "Name" },
+	{ value: "name", order: "desc", label: "Name" },
+	{ value: "slug", order: "asc", label: "Short Name" },
+	{ value: "slug", order: "desc", label: "Short Name" },
+	{ value: "joinYear", order: "asc", label: "Year Joined" },
+	{ value: "joinYear", order: "desc", label: "Year Joined" },
 ];
 
 export default async function Page({ searchParams }) {
@@ -63,7 +63,7 @@ export default async function Page({ searchParams }) {
 				{authorize(authSession, [s.management]) && <SearchParamsButton searchParams={{ "add-school": true }}>Add School</SearchParamsButton>}
 			</TopBar>
 			{!!numberOfSchools && (
-				<Table className="showscrollbar mt-10">
+				<Table className="showscrollbar">
 					<TableHead>
 						<TableRow>
 							{rows.map((row, i) => (

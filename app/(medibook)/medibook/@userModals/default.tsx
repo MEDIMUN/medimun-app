@@ -12,9 +12,9 @@ export default async function UserModals({ searchParams }) {
 	let schools, sessions, committees, departments, editUserData, filteredAllowedEditUserData;
 
 	let editSelectedUser = null;
-	if (searchParams.edituser) {
+	if (searchParams["edit-user"]) {
 		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(notFound);
-		editSelectedUser = prisma.user.findFirst({ where: { id: searchParams.edituser }, include: { ...generateUserDataObject() } }).catch(notFound);
+		editSelectedUser = prisma.user.findFirst({ where: { id: searchParams["edit-user"] }, include: { ...generateUserDataObject() } }).catch(notFound);
 		[schools, editSelectedUser] = await Promise.all([schools, editSelectedUser]);
 		editSelectedUser = { highestRoleRank: generateUserData(editSelectedUser)?.highestRoleRank, ...editSelectedUser };
 		editSelectedUser = editSelectedUser.highestRoleRank > highestRoleRank ? editSelectedUser : null;
@@ -93,8 +93,8 @@ export default async function UserModals({ searchParams }) {
 	}
 
 	let assignUsers = [];
-	if (searchParams.assignroles) {
-		const selectedUserIds = searchParams.assignroles.split("U").filter((id) => id);
+	if (searchParams["assign-roles"]) {
+		const selectedUserIds = searchParams["assign-roles"].split(",").filter((id) => id);
 		if (!selectedUserIds.length) return;
 		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(notFound);
 		sessions = prisma.session.findMany();
@@ -113,10 +113,10 @@ export default async function UserModals({ searchParams }) {
 	}
 
 	let selectedUser;
-	if (searchParams.editroles) {
+	if (searchParams?.["edit-roles"]) {
 		const prismaUser = await prisma.user
 			.findFirstOrThrow({
-				where: { id: searchParams.editroles },
+				where: { id: searchParams?.["edit-roles"] },
 				include: { ...generateUserDataObject() },
 			})
 			.catch(() => {
@@ -130,13 +130,14 @@ export default async function UserModals({ searchParams }) {
 	}
 
 	let unafilliateStudent = {};
-	if (searchParams.unafilliatestudent) {
+	if (searchParams?.["unafilliate-student"]) {
 		const prismaUser = await prisma.user
-			.findFirst({ where: { id: searchParams.unafilliatestudent }, include: { ...generateUserDataObject() } })
+			.findFirst({ where: { id: searchParams["unafilliate-student"] }, include: { ...generateUserDataObject() } })
 			.catch(() => {
 				return;
 			});
 		const userData = generateUserData(prismaUser);
+		console.log("userData.highestRoleRank", userData.highestRoleRank, highestRoleRank);
 
 		if (userData.highestRoleRank <= highestRoleRank) return;
 
@@ -148,9 +149,7 @@ export default async function UserModals({ searchParams }) {
 		const authSchoolDirectorRoles = authSession?.user.currentRoles.filter((role) => role.roleIdentifier === "schoolDirector");
 		const studentSchoolId = userData?.schoolId;
 		const isDirectorOfStudent = authSchoolDirectorRoles?.some((role) => role.schoolId === studentSchoolId);
-
 		if (!isDirectorOfStudent) return;
-
 		unafilliateStudent = fullUserObject;
 	}
 

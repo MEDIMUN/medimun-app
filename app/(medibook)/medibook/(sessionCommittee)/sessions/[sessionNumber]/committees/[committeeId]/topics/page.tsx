@@ -1,74 +1,99 @@
 import prisma from "@/prisma/client";
-import { EditTopicsModal } from "./modals";
 import { notFound } from "next/navigation";
-import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 import Icon from "@/components/icon";
+import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
+import { authorize, authorizeChairCommittee, s } from "@/lib/authorize";
+import { auth } from "@/auth";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Text } from "@/components/text";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
+import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
+import { Button } from "@/components/button";
+import { processMarkdownPreview } from "@/lib/text";
 
 export default async function Page({ params }) {
-	const committee = await getData(params);
-	const topics = [
-		{ name: committee.topic1, description: committee.topic1description },
-		{ name: committee.topic2, description: committee.topic2description },
-		{ name: committee.topic3, description: committee.topic3description },
-	];
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
+	const selectedCommittee = await prisma.committee.findFirstOrThrow({
+		where: { OR: [{ slug: params.committeeId }, { id: params.committeeId }], session: { number: params.sessionNumber } },
+		include: { Topic: true },
+	});
+	const isChairOfCommittee = authorizeChairCommittee(authSession.currentRoles, selectedCommittee.id);
+	const topics = selectedCommittee.Topic;
 
 	return (
 		<>
-			<EditTopicsModal committee={committee} params={params} />
-			<div className="mx-auto grid w-full gap-2 p-4 md:flex-row">
-				{topics.map((topic, index) => (
-					<li
-						key={index}
-						className="flex w-full flex-col gap-2 rounded-xl border border-black/10 bg-content1/60 p-4 dark:border-white/20 md:flex-row">
-						<div className="flex">
-							<div className="flex flex-col gap-1">
-								<div className="flex gap-2">
-									<p className="mb-[-10px] bg-gradient-to-br from-foreground-800 to-foreground-500 bg-clip-text text-xl font-semibold tracking-tight text-transparent dark:to-foreground-200">
-										{topic.name}
-									</p>
-								</div>
-								<p className="mt-1 text-default-400">{topic.description}</p>
-							</div>
-						</div>
-						<div className="my-auto ml-auto flex gap-2">
-							<Button
-								as={Link}
-								href={`/`}
-								isIconOnly
-								endContent={<Icon className="" icon="solar:user-outline" width={22} />}
-								fullWidth
-								className="w-auto border-small border-black/10 bg-black/10 shadow-md light:text-black dark:border-white/20 dark:bg-white/10"></Button>
-							{/* 							<EditButton id={user.id} />
-							 */}
-						</div>
-					</li>
-				))}
-			</div>
+			<TopBar
+				hideSearchBar
+				title="Topics"
+				buttonText={selectedCommittee.name}
+				buttonHref={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}`}>
+				{authorize(authSession, [s.management]) && (
+					<SearchParamsButton searchParams={{ "create-topic": selectedCommittee.id }}>Create Topic</SearchParamsButton>
+				)}
+			</TopBar>
+			<Table>
+				<TableHead>
+					<TableRow>
+						<TableHeader>
+							<span className="sr-only">Actions</span>
+						</TableHeader>
+						<TableHeader>Topic</TableHeader>
+						<TableHeader>Description</TableHeader>
+					</TableRow>
+				</TableHead>
+				<TableBody>
+					{topics.map((topic) => (
+						<TableRow key={topic.id}>
+							<TableCell>
+								{isChairOfCommittee || isManagement ? (
+									<Dropdown>
+										<DropdownButton plain aria-label="More options">
+											<EllipsisVerticalIcon />
+										</DropdownButton>
+										<DropdownMenu anchor="bottom end">
+											{topic.description && (
+												<DropdownItem
+													href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
+														topic.id
+													}`}>
+													View
+												</DropdownItem>
+											)}
+											<SearchParamsDropDropdownItem searchParams={{ "edit-topic": topic.id }}>Edit Topic</SearchParamsDropDropdownItem>
+											{isManagement && (
+												<SearchParamsDropDropdownItem searchParams={{ "delete-topic": topic.id }}>Delete Topic</SearchParamsDropDropdownItem>
+											)}
+										</DropdownMenu>
+									</Dropdown>
+								) : (
+									topic.description && (
+										<Button
+											href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
+												topic.id
+											}`}
+											plain>
+											View Details
+										</Button>
+									)
+								)}
+							</TableCell>
+							<TableCell>{topic.title}</TableCell>
+							<TableCell>{topic.description ? processMarkdownPreview(topic.description) : "-"}</TableCell>
+						</TableRow>
+					))}
+				</TableBody>
+			</Table>
 		</>
 	);
 }
 
-async function getData(params) {
-	let committee: any;
-	try {
-		committee = await prisma.committee.findFirstOrThrow({
-			where: {
-				OR: [{ slug: params.committeeId }, { id: params.committeeId }],
-				session: {
-					number: params.sessionNumber,
-				},
-			},
-			include: {
-				session: {
-					select: {
-						number: true,
-					},
-				},
-			},
-		});
-	} catch {
-		return notFound();
-	}
-	return committee;
+{
+	/* <DropdownItem
+											href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
+												topic.id
+											}`}>
+											View
+										</DropdownItem> */
 }

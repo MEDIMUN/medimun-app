@@ -14,8 +14,8 @@ export async function addExtraCountry(formData, params) {
 	if (!authSession || !authorize(authSession, [s.management])) return { ok: false, message: "Unauthorized" };
 
 	const schema = z.object({
-		name: z.string().trim().min(3).max(100).transform(entityCase),
-		code: z
+		countryNameEn: z.string().trim().min(3).max(100).transform(entityCase),
+		countryCode: z
 			.string()
 			.trim()
 			.min(2)
@@ -33,7 +33,7 @@ export async function addExtraCountry(formData, params) {
 
 	const allExistingCountryCodes = countries.map((country) => country.countryCode);
 
-	if (data.code && allExistingCountryCodes.includes(data.code)) return { ok: false, message: "Country code already exists." };
+	if (data.countryCode && allExistingCountryCodes.includes(data.countryCode)) return { ok: false, message: "Country code already exists." };
 
 	const selectedSession = await prisma.session.findUnique({ where: { number: params.sessionNumber } });
 
@@ -68,8 +68,8 @@ export async function addExtraCountry(formData, params) {
 	try {
 		await prisma.extraCountry.create({
 			data: {
-				name: data.name,
-				code: data.code,
+				countryNameEn: data.countryNameEn,
+				countryCode: data.countryCode,
 				isPowerToVeto: data.isPowerToVeto,
 				committeeId: selectedCommittee.id,
 			},
@@ -88,7 +88,7 @@ export async function editExtraCountry(formData, params, extraCountryId) {
 	if (!authSession || !authorize(authSession, [s.management])) return { ok: false, message: "Unauthorized" };
 
 	const schema = z.object({
-		name: z.string().trim().min(3).max(100).transform(entityCase),
+		countryNameEn: z.string().trim().min(3).max(100).transform(entityCase),
 		isPowerToVeto: z.boolean(),
 	});
 	const parsedFormData = parseFormData(formData);
@@ -173,7 +173,7 @@ export async function deleteExtraCountry(params, extraCountryId) {
 			prisma.delegate.updateMany({
 				where: {
 					committeeId: selectedCommittee.id,
-					country: selectedExtraCountry.code,
+					country: selectedExtraCountry.countryCode,
 				},
 				data: {
 					country: null,

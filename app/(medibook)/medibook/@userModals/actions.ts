@@ -531,9 +531,10 @@ export async function editUser(formData) {
 }
 
 export async function updateProfilePictureForUser(targetUserId: string, formData: FormData) {
+	//FIX
 	const session = await auth();
-
-	if (!authorize(session, [s.management, s.chair, s.manager])) return { ok: false, message: "Not authorized." };
+	console.log(authorize(session, [s.management, s.chair, s.manager, s.schooldirector]));
+	if (!authorize(session, [s.management, s.chair, s.manager, s.schooldirector])) return { ok: false, message: "Not authorized." };
 
 	const editorData = await userData(session?.user?.id);
 	const editedData = await userData(targetUserId);
@@ -598,8 +599,8 @@ export async function updateProfilePictureForUser(targetUserId: string, formData
 export async function deleteProfilePictureForUser(targetUserId: string) {
 	const session = await auth();
 
-	if (!authorize(session, [s.management, s.chair, s.manager])) return { ok: false, message: "Not authorized." };
-
+	if (!authorize(session, [s.management, s.chair, s.manager, s.schooldirector])) return { ok: false, message: "Not authorized." };
+	//FIX
 	const editorData = await userData(session?.user?.id);
 	const editedData = await userData(targetUserId);
 

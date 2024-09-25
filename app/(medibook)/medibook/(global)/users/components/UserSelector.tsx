@@ -3,10 +3,9 @@
 import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
 import { useEffect, useState } from "react";
 import { useSelectedContext } from "./StateStateProvider";
-import { maxNoOfSelected } from "../page";
 import { Checkbox } from "@/components/checkbox";
 
-const separator = "U";
+const separator = ",";
 const selectKeyword = "select";
 
 export function UserSelector({ uid, officialName, displayName, ...props }) {
@@ -14,7 +13,7 @@ export function UserSelector({ uid, officialName, displayName, ...props }) {
 
 	async function onSelectionChange(e) {
 		if (e) {
-			if (selected.length >= maxNoOfSelected) return;
+			if (selected.length >= 25) return;
 			setSelected((prev) => [...prev, { id: uid, officialName, displayName }]);
 		} else {
 			if (selected.length == 1) {
@@ -35,5 +34,5 @@ export function UserSelector({ uid, officialName, displayName, ...props }) {
 
 	const isSelected = selected.some((item) => item.id === uid);
 
-	return <Checkbox disabled={selected.length >= maxNoOfSelected && !isSelected} {...props} checked={isSelected} onChange={onSelectionChange} />;
+	return <Checkbox disabled={selected.length >= 25 && !isSelected} {...props} checked={isSelected} onChange={onSelectionChange} />;
 }

@@ -600,7 +600,7 @@ export async function userData(user) {
 			displayName: roles.displayName as string,
 			schoolName: roles.Student ? roles.Student.name : (null as string),
 			isDisabled: roles.isDisabled as boolean,
-			nationality: nationality.countryCode as string,
+			nationality: roles.nationality as string,
 			phoneNumber: roles.phoneNumber as string,
 			pronouns: roles.pronouns as string,
 		},

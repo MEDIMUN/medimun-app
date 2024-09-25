@@ -2,7 +2,7 @@ import { TopBar } from "@/app/(medibook)/medibook/client-components";
 import { cn } from "@/lib/cn";
 import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
-import { AcademicCapIcon, BanknotesIcon, CheckBadgeIcon, ClockIcon, ReceiptRefundIcon, UsersIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 export default async function Page({ params }) {
 	const selectedSession = await prisma.session.findFirst({
@@ -14,49 +14,31 @@ export default async function Page({ params }) {
 			title: "School Director Applications",
 			description: "Applications for the position of School Director.",
 			href: `/medibook/sessions/${selectedSession.number}/applications/school-director`,
-			icon: ClockIcon,
-			iconForeground: "text-teal-700",
-			iconBackground: "bg-teal-50",
 		},
 		{
 			title: "Delegation Applications",
 			description: "Applications for the delegation.",
 			href: `/medibook/sessions/${selectedSession.number}/applications/delegation`,
-			icon: CheckBadgeIcon,
-			iconForeground: "text-purple-700",
-			iconBackground: "bg-purple-50",
 		},
 		{
 			title: "Delegate Assignments",
 			description: "Assign delegates to their respective committees",
 			href: `/medibook/sessions/${selectedSession.number}/applications/delegate-assignment`,
-			icon: UsersIcon,
-			iconForeground: "text-sky-700",
-			iconBackground: "bg-sky-50",
 		},
 		{
 			title: "Chair Applications",
 			description: "Applications for the position of Chair.",
 			href: `/medibook/sessions/${selectedSession.number}/applications/chair`,
-			icon: BanknotesIcon,
-			iconForeground: "text-yellow-700",
-			iconBackground: "bg-yellow-50",
 		},
 		{
 			title: "Manager Applications",
 			description: "Applications for the position of Manager",
 			href: `/medibook/sessions/${selectedSession.number}/applications/manager`,
-			icon: ReceiptRefundIcon,
-			iconForeground: "text-rose-700",
-			iconBackground: "bg-rose-50",
 		},
 		{
 			title: "Member Applications",
 			description: "Applications for the position of Member",
 			href: `/medibook/sessions/${selectedSession.number}/applications/member`,
-			icon: AcademicCapIcon,
-			iconForeground: "text-indigo-700",
-			iconBackground: "bg-indigo-50",
 		},
 	];
 
@@ -68,29 +50,22 @@ export default async function Page({ params }) {
 				hideSearchBar
 				title="Session Applications"
 			/>
-			<div className="mt-4 divide-y divide-gray-200 overflow-hidden rounded-lg bg-gray-200 ring-1 ring-gray-200 sm:grid sm:grid-cols-2 sm:gap-px sm:divide-y-0">
+			<div className="divide-y divide-gray-200 overflow-hidden rounded-md bg-gray-200 ring-1 ring-gray-200 sm:grid sm:grid-cols-1 sm:gap-px sm:divide-y-0">
 				{actions.map((action, actionIdx) => (
 					<div
 						key={action.title}
 						className={cn(
-							actionIdx === 0 ? "rounded-tl-lg rounded-tr-lg sm:rounded-tr-none" : "",
-							actionIdx === 1 ? "sm:rounded-tr-lg" : "",
-							actionIdx === actions.length - 2 ? "sm:rounded-bl-lg" : "",
-							actionIdx === actions.length - 1 ? "rounded-bl-lg rounded-br-lg sm:rounded-bl-none" : "",
-							"group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500"
+							actionIdx === 0 ? "rounded-tl-md rounded-tr-md sm:rounded-tr-none" : "",
+							actionIdx === actions.length - 1 ? "rounded-bl-md rounded-br-md sm:rounded-bl-none" : "",
+							"group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary"
 						)}>
 						<div>
-							<span className={cn(action.iconBackground, action.iconForeground, "inline-flex rounded-lg p-3 ring-4 ring-white")}>
-								<action.icon aria-hidden="true" className="h-6 w-6" />
-							</span>
-						</div>
-						<div className="mt-8">
 							<h3 className="text-base font-semibold leading-6 text-gray-900">
-								<a href={action.href} className="focus:outline-none">
+								<Link href={action.href} className="focus:outline-none">
 									{/* Extend touch target to entire panel */}
 									<span aria-hidden="true" className="absolute inset-0" />
 									{action.title}
-								</a>
+								</Link>
 							</h3>
 							<p className="mt-2 text-sm text-gray-500">{action.description}</p>
 						</div>

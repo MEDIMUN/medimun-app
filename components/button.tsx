@@ -101,6 +101,14 @@ const styles = {
 			"text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:theme(colors.red.600)] [--btn-border:theme(colors.red.700/90%)]",
 			"[--btn-icon:theme(colors.red.300)] data-[active]:[--btn-icon:theme(colors.red.200)] data-[hover]:[--btn-icon:theme(colors.red.200)]",
 		],
+		primary: [
+			"text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:primary)] [--btn-border:theme(colors.red.700/90%)]",
+			"[--btn-icon:theme(colors.red.300)] data-[active]:[--btn-icon:theme(colors.red.200)] data-[hover]:[--btn-icon:theme(colors.red.200)]",
+		],
+		englishschool: [
+			"text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:englishschool])] [--btn-border:theme(colors.red.700/90%)]",
+			"[--btn-icon:theme(colors.red.300)] data-[active]:[--btn-icon:theme(colors.red.200)] data-[hover]:[--btn-icon:theme(colors.red.200)]",
+		],
 		orange: [
 			"text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:theme(colors.orange.500)] [--btn-border:theme(colors.orange.600/90%)]",
 			"[--btn-icon:theme(colors.orange.300)] data-[active]:[--btn-icon:theme(colors.orange.200)] data-[hover]:[--btn-icon:theme(colors.orange.200)]",

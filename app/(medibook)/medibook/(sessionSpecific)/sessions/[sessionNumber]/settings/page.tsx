@@ -18,7 +18,7 @@ export default async function Page({ params }) {
 		})
 		.catch(notFound);
 
-	const isManagement = authorizePerSession(authSession, [s.management], [selectedSession.number]) && authorize(authSession, [s.management]);
+	const isManagement = authorize(authSession, [s.management]);
 
 	if (!authSession || !isManagement) return notFound();
 

@@ -32,6 +32,10 @@ const config = {
                DEFAULT: "#AE2D28",
                foreground: "hsl(var(--primary-foreground))",
             },
+            englishschool: {
+               DEFAULT: "#383f9A",
+               foreground: "hsl(var(--englishschool-foreground))",
+            },
             secondary: {
                DEFAULT: "hsl(var(--secondary))",
                foreground: "hsl(var(--secondary-foreground))",

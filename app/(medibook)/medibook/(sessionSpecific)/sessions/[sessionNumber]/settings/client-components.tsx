@@ -661,7 +661,7 @@ export function SettingsForm({ selectedSession }) {
 							<Divider className="my-10" soft />
 						</>
 					)}
-					{!selectedSession.isVisible && !selectedSession.isPartiallyVisible && selectedSession.isCurrent && (
+					{!selectedSession.isVisible && !selectedSession.isPartlyVisible && selectedSession.isCurrent && (
 						<>
 							<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 								<div className="space-y-1">
@@ -705,7 +705,7 @@ export function SettingsForm({ selectedSession }) {
 							<Divider className="my-10" soft />
 						</>
 					)}
-					{selectedSession.isPartiallyVisible && !selectedSession.isPartiallyVisible && (
+					{selectedSession.isPartlyVisible && !selectedSession.isVisible && (
 						<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 							<div className="space-y-1">
 								<Subheading>

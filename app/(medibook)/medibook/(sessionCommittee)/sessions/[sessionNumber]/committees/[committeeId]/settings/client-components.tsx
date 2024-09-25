@@ -212,8 +212,8 @@ export function CommitteeSettingsForm({ selectedCommittee }) {
 								<div className="flex">
 									<div className="flex">
 										<p className="my-auto text-sm font-medium text-zinc-800">
-											<span className="mr-2">{extra.name}</span>
-											<Badge className="mr-2">{extra.code}</Badge>
+											<span className="mr-2">{extra.countryNameEn}</span>
+											<Badge className="mr-2">{extra.countryCode}</Badge>
 											{extra.isPowerToVeto && <Badge color="red">Veto Power</Badge>}
 										</p>
 									</div>

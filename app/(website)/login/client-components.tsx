@@ -34,10 +34,10 @@ export default function LoginForm() {
 		setIsLoading(true);
 		const afterLogin = searchParams?.get("after-login");
 		const res = await signIn(formData);
-		if (!res?.ok) {
-			toast.error(res?.message);
-		}
+		if (!res?.ok) toast.error(res?.message);
+		if (res?.ok) toast.success(res?.message);
 		setIsLoading(false);
+		if (res?.firstLogin) redirect(`/medibook/account?first-login=true${afterLogin ? `&after-login=${afterLogin}` : ""}`);
 		redirect(afterLogin || `/medibook`);
 	}
 	return (
@@ -85,26 +85,23 @@ export default function LoginForm() {
 							<Label>Password</Label>
 							<Input className="mb-5 animate-appearance-in delay-300" name="password" placeholder="At least 8 characters" type="password" />
 						</Field>
-						<Link href="/login/help" className="-mx-auto ml-1 cursor-pointer text-xs text-content3-foreground hover:text-primary">
+						<Link href="/contact" className="-mx-auto ml-1 cursor-pointer text-xs text-content3-foreground hover:text-primary">
 							Forgot Password?
 						</Link>
-						<button
-							className={cn("mt-5 w-full rounded-md bg-primary p-[6px] text-sm text-white duration-300 hover:shadow-md")}
-							type="submit"
-							color="red"
-							disabled={isLoading}>
+						<Button className={cn("mt-5 w-full")} type="submit" color="primary" disabled={isLoading}>
 							Login
-						</button>
+						</Button>
 						<OrSpacer />
-						<button
+						<Button
 							onClick={() => {
 								updateSearchParams({ type: "englishschool" });
 							}}
-							color="blue"
-							className="w-full rounded-md bg-[#383f9a] p-[6px] text-sm text-white"
+							disabled
+							color="englishschool"
+							className="w-full"
 							type="submit">
 							Login with The English School
-						</button>
+						</Button>
 					</form>
 					<div className="mt-8 flex w-full animate-appearance-in justify-between rounded-small bg-content2 p-3">
 						<p className="text-xs">Don&apos;t have an account?</p>

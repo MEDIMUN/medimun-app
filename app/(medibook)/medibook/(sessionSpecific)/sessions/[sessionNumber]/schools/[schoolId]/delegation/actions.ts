@@ -18,14 +18,14 @@ export async function submitDelegationDeclaration(selectedSchoolId: string, numb
 	const areAllCountriesValid =
 		preferredCountriesArray.filter((country) => {
 			return countries.find((c) => c.countryCode === country);
-		}).length === 15;
+		}).length === 10;
 
 	if (!areAllCountriesValid) {
 		return { ok: false, message: "Invalid country data." };
 	}
 
-	if (preferredCountriesArray.length !== 15) {
-		return { ok: false, message: "Please select 15 countries." };
+	if (preferredCountriesArray.length !== 10) {
+		return { ok: false, message: "Please select 10 countries." };
 	}
 
 	//if the number of req delegations is bigger than allowed error

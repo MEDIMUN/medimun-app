@@ -1,9 +1,9 @@
 import Image from "next/image";
-import Rose from "@/public/assets/red-rose-bottom-right.png";
+import Rose from "@/public/assets/elays-rose.png";
 
 import { auth } from "@/auth";
 
-const onlyIds = ["100000000001"];
+const onlyIds = ["111111111111"];
 
 export async function TopFl() {
 	const authSession = await auth();
@@ -11,7 +11,7 @@ export async function TopFl() {
 	if (!onlyIds.includes(authSession?.user?.id)) return;
 	return (
 		<div className="absolute bottom-2 right-2 w-24 select-none opacity-60 duration-150 hover:opacity-0 dark:opacity-55 md:w-32">
-			<Image src={Rose} alt="Fl" className="select-none" />
+			<Image src={Rose} alt="Flower" className="select-none" />
 		</div>
 	);
 }
