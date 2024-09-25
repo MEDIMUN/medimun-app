@@ -1,5 +1,8 @@
 FROM node:20-alpine as builder
 
+ARG DATABASE_URL
+ENV DATABASE_URL $DATABASE_URL
+
 COPY package.json /tmp/package.json
 RUN cd /tmp && npm install --ignore-engines
 RUN mkdir -p /usr/src/app && cp -a /tmp/node_modules /usr/src/app/
