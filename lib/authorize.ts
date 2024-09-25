@@ -24,7 +24,8 @@ export enum s {
 
 export const authorize = (userdata: object, scope: s[]): boolean => {
 	if (!userdata) return false;
-	const { currentRoleNames } = userdata.user;
+	const currentRoleNames = userdata?.user?.currentRoleNames;
+	if (!userdata?.user) return false;
 	if (userdata?.isDisabled) return false;
 	if (!currentRoleNames) return false;
 	if (!scope[0]) return true;
