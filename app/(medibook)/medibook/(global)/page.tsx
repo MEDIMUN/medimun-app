@@ -47,6 +47,8 @@ export default async function Home() {
 		},
 	];
 
+	if (!userId) return null;
+
 	return (
 		<>
 			<div>
