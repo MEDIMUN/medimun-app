@@ -88,7 +88,7 @@ const navigation = {
 	],
 };
 
-export default function Example() {
+export function Footer() {
 	const currentYear = new Date().getFullYear();
 	return (
 		<footer className="bg-zinc-900 font-thin" aria-labelledby="footer-heading">

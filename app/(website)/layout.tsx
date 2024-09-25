@@ -1,12 +1,12 @@
 import "@/styles/globals.css";
 
-import Footer from "./footer";
 import { WebsiteNavbar } from "@/app/(website)/navbar";
 
 import { NextAuthProvider } from "./providers";
 import { Toaster } from "sonner";
 import { StrictMode } from "react";
 import prisma from "@/prisma/client";
+import { Footer } from "./footer";
 
 export const metadata = {
 	title: {
