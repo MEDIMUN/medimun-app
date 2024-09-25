@@ -6,7 +6,7 @@ import { NextAuthProvider } from "./providers";
 import { Toaster } from "sonner";
 import { StrictMode } from "react";
 import prisma from "@/prisma/client";
-import { Footer } from "@/app/(website)/footer";
+import { Footer } from "@/app/(website)/main-footer";
 
 export const metadata = {
 	title: {
