@@ -1,4 +1,4 @@
-FROM node:20.17.0-alpine as builder
+FROM node:20.12.2 as builder
 
 COPY package.json /tmp/package.json
 RUN cd /tmp && npm install --ignore-engines
