@@ -52,7 +52,7 @@ export default auth((req) => {
 
 	if (pathname.includes("/medibook") && isDisabled) return NextResponse.redirect(new URL(`/`, nextUrl.origin));
 
-	const isManagement = authorize(authSession, [s.management]);
+	const isManagement = isAuthenticated && authorize(authSession, [s.management]);
 
 	if (authSession?.user?.isDisabled && pathname == "/login") return NextResponse.redirect(new URL("/", nextUrl.origin));
 
