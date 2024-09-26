@@ -207,6 +207,7 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 }
 
 export async function AnnouncementViewPage({ params, searchParams }) {
+	const authSession = await auth();
 	const selectedAnnouncement = await prisma.announcement.findUnique({
 		where: {
 			id: params.announcementId[0],
@@ -220,6 +221,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 	});
 
 	let baseUrl = "/announcements";
+	let createType: "globalAnnouncement" | "sessionAnnouncement" | "committeeAnnouncement" | "departmentAnnouncement" = "globalAnnouncement";
 
 	if (params.sessionNumber && !params.committeeId && !params.departmentId) {
 		const selectedSession = await prisma.session.findUnique({
@@ -232,6 +234,10 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 
 	if (selectedAnnouncement?.slug !== params?.announcementId[1]) {
 		if (selectedAnnouncement?.slug) return redirect(`${baseUrl}/${selectedAnnouncement.id}/${selectedAnnouncement.slug}`);
+	}
+
+	if (params.announcementId[0] === "publish") {
+		return <PageCreateAnnouncement returnUrl={baseUrl} type={createType} />;
 	}
 
 	if (searchParams["edit-announcement"]) return null;

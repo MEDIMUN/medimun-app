@@ -75,7 +75,7 @@ export default async function Settings({ searchParams }) {
 		redirect("?success=Changes saved.#notice");
 	}
 
-	const isAllowedToEditBio = !authorize(authSession, [s.management, s.chair, s.manager]);
+	const isAllowedToEditBio = authorize(authSession, [s.management, s.chair, s.manager]);
 
 	return (
 		<>
