@@ -3,14 +3,14 @@ import Rose from "@/public/assets/elays-rose.png";
 
 import { auth } from "@/auth";
 
-const onlyIds = ["100000000001"];
+const onlyIds = ["100000000001", "111111111111"];
 
 export async function TopFl() {
 	const authSession = await auth();
 	if (!authSession) return;
 	if (!onlyIds.includes(authSession?.user?.id)) return;
 	return (
-		<div className="absolute bottom-2 right-2 w-24 select-none opacity-60 duration-150 hover:opacity-0 dark:opacity-55 md:w-32">
+		<div className="absolute bottom-2 right-2 w-6 select-none opacity-60 duration-150 hover:opacity-0 dark:opacity-55 md:w-6">
 			<Image src={Rose} alt="Flower" className="select-none" />
 		</div>
 	);

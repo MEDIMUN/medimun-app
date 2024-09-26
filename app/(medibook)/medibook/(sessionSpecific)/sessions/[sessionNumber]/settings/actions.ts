@@ -109,7 +109,7 @@ export async function updateSessionTexts(formData: FormData, selectedSessionNumb
 	});
 	if (!selectedSession) return { ok: false, message: "Session not found" };
 	const userData = generateUserData(prismaUser);
-	const isManagement = authorizePerSession(userData, [s.management], [selectedSession.number]);
+	const isManagement = authorize(userData, [s.management]);
 	if (!isManagement) return { ok: false, message: "Not Authorized" };
 
 	const { error, data } =
