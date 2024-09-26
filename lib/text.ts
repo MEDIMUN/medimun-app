@@ -1,6 +1,6 @@
 export function nameCase(name: string): string {
 	// First, remove characters not allowed, while keeping spaces, hyphens, apostrophes, and ampersands
-	name = name.replace(/[^a-zA-Z0-9üşöçı\-\s']/g, "");
+	name = name.replace(/[^a-zA-Z0-9üşöçış\-\s']/g, "");
 
 	// Capitalize the first letter of each part of the name and handle special characters
 	return name

@@ -83,12 +83,6 @@ export async function updateSession(formData: FormData, selectedSessionNumber) {
 	return { ok: true, message: "Session updated." };
 }
 
-const currentTextsSchema = z.object({
-	welcomeText: z.string().min(10).max(500),
-	description: z.string().min(1).max(500).optional().nullable(),
-	about: z.string().min(1).max(2000).optional().nullable(),
-});
-
 const textsSchema = z.object({
 	welcomeText: z.string().max(500).optional().nullable(),
 	description: z.string().max(500).optional().nullable(),
@@ -112,10 +106,7 @@ export async function updateSessionTexts(formData: FormData, selectedSessionNumb
 	const isManagement = authorize(userData, [s.management]);
 	if (!isManagement) return { ok: false, message: "Not Authorized" };
 
-	const { error, data } =
-		selectedSession.isVisible || selectedSession.isCurrent
-			? currentTextsSchema.safeParse(parseFormData(formData))
-			: textsSchema.safeParse(parseFormData(formData));
+	const { error, data } = textsSchema.safeParse(parseFormData(formData));
 
 	if (error) return { ok: false, message: "Invalid Data" };
 
@@ -137,23 +128,17 @@ const currentPricesSchema = z.object({
 
 export async function updateSessionPrices(formData: FormData, selectedSessionNumber) {
 	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
+	if (!isManagement) return { ok: false, message: "Not Authorized" };
 
-	const prismaUser = await prisma.user.findFirst({
-		where: { id: authSession.user.id },
-		include: { ...generateUserDataObject() },
-	});
 	const selectedSession = await prisma.session.findFirst({
 		where: {
 			number: selectedSessionNumber,
 		},
 	});
 	if (!selectedSession) return { ok: false, message: "Session not found" };
-	const userData = generateUserData(prismaUser);
-	const isManagement = authorize(userData, [s.management]);
-	if (!isManagement) return { ok: false, message: "Not Authorized" };
 
-	if (selectedSession.isVisible || selectedSession.isCurrent || selectedSession.isPriceLocked)
-		return { ok: false, message: "You can't update the price of a current or fully published session." };
+	if (selectedSession.isPriceLocked) return { ok: false, message: "You can't update the price of a current or fully published session." };
 
 	const parsedFormData = parseFormData(formData);
 
