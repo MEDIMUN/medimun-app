@@ -193,7 +193,11 @@ export default function SignUpForm() {
 							<Checkbox onChange={(val) => setAcceptedTerms(val)} checked={acceptedTerms} className="animate-appearance-in delay-200" />
 						</CheckboxField>
 					</div>
-					<Button className="mt-5 w-full" type="submit" color="primary" disabled={isLoading || !acceptedTerms || !email.trim()}>
+					<Button
+						className="mt-5 w-full"
+						type="submit"
+						color="primary"
+						disabled={isLoading || !acceptedTerms || !email.trim() || process.env.ALLOW_SIGN_UP == "false"}>
 						Continue
 					</Button>
 					<div className="mt-auto flex w-full  animate-appearance-in justify-between rounded-small bg-content2 p-3">

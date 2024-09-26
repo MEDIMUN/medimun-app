@@ -61,7 +61,9 @@ export default function LoginForm() {
 							className="-mx-auto mb-5 ml-1 cursor-pointer text-xs text-content3-foreground hover:text-primary">
 							Forgot Password?
 						</Link>
-						<Button className="w-full bg-[#383f9a] text-white">Login </Button>
+						<Button disabled={process.env.ALLOW_LOGIN == "false"} className="w-full bg-[#383f9a] text-white">
+							Login{" "}
+						</Button>
 						<OrSpacer />
 						<Button className="w-full" href="/login" type="submit">
 							<p className="-translate-x-2">Login with MediBook</p>
