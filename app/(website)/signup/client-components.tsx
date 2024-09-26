@@ -68,8 +68,10 @@ function FakeDash() {
 	);
 }
 
-export default function SignUpForm({ allowSignUp }) {
+export default function SignUpForm() {
 	const router = useRouter();
+
+	const allowSignUp = "false";
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [stage, setStage] = useState("START");
@@ -158,7 +160,7 @@ export default function SignUpForm({ allowSignUp }) {
 	return (
 		<div
 			className={cn(
-				"mx-auto my-auto h-[600px] w-[400px] rounded-2xl bg-content1/70 p-12 shadow-md duration-1000 md:ml-20",
+				"mx-auto my-auto h-[640px] w-[400px] rounded-2xl bg-content1/70 p-12 shadow-md duration-1000 md:ml-20",
 				stage == "NO_USER" && "h-[800px]"
 			)}>
 			<div className="mx-auto h-14 w-[180px] md:mx-0">

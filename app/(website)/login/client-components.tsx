@@ -102,7 +102,7 @@ export default function LoginForm({ allowLogin }) {
 							color="englishschool"
 							className="w-full"
 							type="submit">
-							Login with The English School
+							The English School
 						</Button>
 					</form>
 					<div className="mt-8 flex w-full animate-appearance-in justify-between rounded-small bg-content2 p-3">
