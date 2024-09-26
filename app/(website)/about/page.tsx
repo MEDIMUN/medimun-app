@@ -70,6 +70,7 @@ export default async function Example() {
 			isMainShown: true,
 		},
 	});
+	return <div className="absolute mt-32 w-full text-center">Page will be available on the 27th of September 2024.</div>;
 	return (
 		<div className="bg-white">
 			<main className="isolate">
