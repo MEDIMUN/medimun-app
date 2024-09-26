@@ -68,10 +68,8 @@ function FakeDash() {
 	);
 }
 
-export default function SignUpForm() {
+export default function SignUpForm({ allowSignUp }) {
 	const router = useRouter();
-
-	const allowSignUp = "false";
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [stage, setStage] = useState("START");
