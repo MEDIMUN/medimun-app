@@ -391,8 +391,8 @@ export async function addRole(formData, users) {
 
 export async function toggleDisableOrEnableUsers(userIds, disable = true) {
 	const authSession = await auth();
-	const highestRoleRank = authSession.user.highestRoleRank;
 	if (!authSession || !authorize(authSession, [s.management])) return { ok: false, message: "Not authorized." };
+	const highestRoleRank = authSession?.user?.highestRoleRank;
 
 	let usersToBeDisabled = (await prisma.user.findMany({ where: { id: { in: userIds } }, include: { ...generateUserDataObject() } }).catch(() => {
 		return { ok: false, message: "Error while finding users." };
