@@ -166,7 +166,6 @@ export async function createNewUser(id, password, verificationCode) {
 			await tx.pendingUser.delete({ where: { id: id } });
 		});
 	} catch (e) {
-		console.log(e);
 		return { ok: false, message: ["Failed to create account."] };
 	}
 	return { ok: true, message: [`Account created. Your user ID is ${user.id}`], data: { stage: "NEW_ACCOUNT_CREATED" } };

@@ -533,7 +533,6 @@ export async function editUser(formData) {
 export async function updateProfilePictureForUser(targetUserId: string, formData: FormData) {
 	//FIX
 	const session = await auth();
-	console.log(authorize(session, [s.management, s.chair, s.manager, s.schooldirector]));
 	if (!authorize(session, [s.management, s.chair, s.manager, s.schooldirector])) return { ok: false, message: "Not authorized." };
 
 	const editorData = await userData(session?.user?.id);

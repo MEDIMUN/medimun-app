@@ -137,7 +137,6 @@ export default async function UserModals({ searchParams }) {
 				return;
 			});
 		const userData = generateUserData(prismaUser);
-		console.log("userData.highestRoleRank", userData.highestRoleRank, highestRoleRank);
 
 		if (userData.highestRoleRank <= highestRoleRank) return;
 

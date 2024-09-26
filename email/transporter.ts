@@ -23,7 +23,9 @@ export default async function sendEmailTransport(options) {
 	};
 
 	const response = await transporter.sendMail(mailOptions).catch((err) => {
-		console.error(err);
+		/* 		console.error(err);
+		 */
 	});
-	console.log(response?.accepted);
+	/* 	console.log(response?.accepted);
+	 */
 }

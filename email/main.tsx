@@ -3,7 +3,7 @@ import { render } from "@react-email/render";
 import sendEmailTransport from "./transporter";
 
 export default function MainTemplate(props) {
-	const baseUrl = "http://localhost";
+	const baseUrl = "https://www.medimun.org";
 
 	return (
 		<Tailwind

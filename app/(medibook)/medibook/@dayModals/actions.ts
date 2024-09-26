@@ -24,8 +24,6 @@ export async function createDay(formData: FormData) {
 	const parsedFormData = parseFormData(formData);
 	const { error, data } = schema.safeParse(parsedFormData);
 
-	if (error) console.error(error.errors);
-
 	if (error) {
 		return { ok: false, message: ["Invalid data."] };
 	}
@@ -40,7 +38,6 @@ export async function createDay(formData: FormData) {
 			},
 		});
 	} catch (e) {
-		console.error(e);
 		return { ok: false, message: ["Failed to create day."] };
 	}
 

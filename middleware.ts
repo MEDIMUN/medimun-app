@@ -50,8 +50,6 @@ export default auth((req) => {
 	const isDisabled = authSession?.user?.isDisabled;
 	const isAuthenticated = !!req.auth;
 
-	console.log(req.auth);
-
 	if (pathname.includes("/medibook") && isDisabled) return NextResponse.redirect(new URL(`/`, nextUrl.origin));
 
 	const isManagement = isAuthenticated && authorize(authSession, [s.management]);
