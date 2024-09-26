@@ -13,6 +13,8 @@ export default async function Page(): Promise<JSX.Element> {
 	return <HomePage />;
 }
 
+export const revalidate = 120;
+
 export async function HomePage(): Promise<JSX.Element> {
 	const currentSession = await prisma.session.findFirst({
 		where: { isMainShown: true },
