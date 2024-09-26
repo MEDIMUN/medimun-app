@@ -107,7 +107,12 @@ export default async function Page({ searchParams }) {
 
 	return (
 		<>
-			<TopBar title="All Users" defaultSort="officialNameasc" searchText="Search users..." sortOptions={sortOptions}>
+			<TopBar
+				subheading={`${numberOfUsers} Users`}
+				title="All Users"
+				defaultSort="officialNameasc"
+				searchText="Search users..."
+				sortOptions={sortOptions}>
 				<SearchParamsButton searchParams={{ add: "" }}>Add User</SearchParamsButton>
 			</TopBar>
 			<SelectedContextProvider defaultUserData={editUsers}>
@@ -116,8 +121,12 @@ export default async function Page({ searchParams }) {
 					<Table className="showscrollbar">
 						<TableHead>
 							<TableRow>
-								<TableHeader></TableHeader>
-								<TableHeader></TableHeader>
+								<TableHeader>
+									<span className="sr-only">Select</span>
+								</TableHeader>
+								<TableHeader>
+									<span className="sr-only">Avatar</span>
+								</TableHeader>
 								<TableHeader>Name</TableHeader>
 								<TableHeader>Surname</TableHeader>
 								<TableHeader className="invisible md:visible"></TableHeader>
@@ -127,7 +136,6 @@ export default async function Page({ searchParams }) {
 								<TableHeader>Username</TableHeader>
 								<TableHeader>User ID</TableHeader>
 								<TableHeader>Email</TableHeader>
-								<TableHeader>Username</TableHeader>
 								<TableHeader>Current Roles</TableHeader>
 								<TableHeader>Past & Future Roles</TableHeader>
 								<TableHeader className="visible md:invisible"></TableHeader>
@@ -168,7 +176,6 @@ export default async function Page({ searchParams }) {
 											<UserIdDisplay userId={user.id} />
 										</TableCell>
 										<TableCell>{user.email || "-"}</TableCell>
-										<TableCell>{user.username || "-"}</TableCell>
 										<TableCell>{!!user?.currentRoleNames.length ? <DisplayCurrentRoles user={user} /> : "-"}</TableCell>
 										<TableCell>{!!user?.pastRoleNames.length ? <DisplayPastRoles user={user} /> : "-"}</TableCell>
 										<TableCell className="visible md:invisible">

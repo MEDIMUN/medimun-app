@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Paginator from "@/components/pagination";
 import { Link } from "@/components/link";
 import { parseOrderDirection } from "@/lib/orderDirection";
+import { Badge } from "@/components/badge";
 
 const itemsPerPage = 10;
 
@@ -20,6 +21,7 @@ const rows = [
 	"Name",
 	"Country",
 	"Short Name",
+	"Visibility",
 	"Current Directors",
 	"Phone",
 	"Email",
@@ -59,7 +61,12 @@ export default async function Page({ searchParams }) {
 
 	return (
 		<>
-			<TopBar sortOptions={sortOptions} title="Schools" defaultSort="nameasc" searchText="Search schools...">
+			<TopBar
+				subheading={`${numberOfSchools} Schools`}
+				sortOptions={sortOptions}
+				title="Schools"
+				defaultSort="nameasc"
+				searchText="Search schools...">
 				{authorize(authSession, [s.management]) && <SearchParamsButton searchParams={{ "add-school": true }}>Add School</SearchParamsButton>}
 			</TopBar>
 			{!!numberOfSchools && (
@@ -90,6 +97,7 @@ export default async function Page({ searchParams }) {
 									<TableCell>{school.name}</TableCell>
 									<TableCell>{country?.countryNameEn || "-"}</TableCell>
 									<TableCell>{school.slug || "-"}</TableCell>
+									<TableCell>{school.isPublic ? <Badge color="green">Public</Badge> : <Badge color="red">Private</Badge>}</TableCell>
 									<TableCell>{directors}</TableCell>
 									<TableCell>{school.phone || "-"}</TableCell>
 									<TableCell>{school.email || "-"}</TableCell>

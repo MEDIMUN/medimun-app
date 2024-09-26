@@ -220,7 +220,9 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 		},
 	});
 
-	let baseUrl = "/announcements";
+	let baseUrl = "/medibook/announcements";
+	let buttonText = "";
+	let buttonHref = "";
 	let createType: "globalAnnouncement" | "sessionAnnouncement" | "committeeAnnouncement" | "departmentAnnouncement" = "globalAnnouncement";
 
 	if (params.sessionNumber && !params.committeeId && !params.departmentId) {
@@ -229,7 +231,42 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 				number: params.sessionNumber,
 			},
 		});
-		baseUrl = `/sessions/${selectedSession.number}/announcements`;
+		baseUrl = `/medibook/sessions/${selectedSession.number}/announcements`;
+		buttonText = `Session ${romanize(selectedSession.numberInteger)} Announcements`;
+		buttonHref = `/medibook/sessions/${selectedSession.number}`;
+		createType = "sessionAnnouncement";
+	}
+
+	if (params.committeeId && !params.departmentId && params.sessionNumber) {
+		const selectedCommittee = await prisma.committee.findFirstOrThrow({
+			where: {
+				OR: [
+					{ id: params.committeeId, session: { number: params.sessionNumber } },
+					{ slug: params.committeeId, session: { number: params.sessionNumber } },
+				],
+			},
+			include: { session: true },
+		});
+		baseUrl = `/medibook/sessions/${selectedCommittee.session.number}/committees/${selectedCommittee.slug || selectedCommittee.id}/announcements`;
+		buttonText = `${selectedCommittee.name} Announcements`;
+		buttonHref = `/medibook/sessions/${selectedCommittee.session.number}/committees/${selectedCommittee.slug || selectedCommittee.id}`;
+		createType = "committeeAnnouncement";
+	}
+
+	if (params.departmentId && !params.committeeId && params.sessionNumber) {
+		const selectedDepartment = await prisma.department.findFirstOrThrow({
+			where: {
+				OR: [
+					{ id: params.departmentId, session: { number: params.sessionNumber } },
+					{ slug: params.departmentId, session: { number: params.sessionNumber } },
+				],
+			},
+			include: { session: true },
+		});
+		baseUrl = `/medibook/sessions/${selectedDepartment.session.number}/departments/${selectedDepartment.slug || selectedDepartment.id}/announcements`;
+		buttonText = `${selectedDepartment.name} Announcements`;
+		buttonHref = `/medibook/sessions/${selectedDepartment.session.number}/departments/${selectedDepartment.slug || selectedDepartment.id}`;
+		createType = "departmentAnnouncement";
 	}
 
 	if (selectedAnnouncement?.slug !== params?.announcementId[1]) {
@@ -240,7 +277,9 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 		return <PageCreateAnnouncement returnUrl={baseUrl} type={createType} />;
 	}
 
-	if (searchParams["edit-announcement"]) return null;
+	if (searchParams["edit-announcement"]) {
+		return null;
+	}
 
 	if (!selectedAnnouncement) return;
 

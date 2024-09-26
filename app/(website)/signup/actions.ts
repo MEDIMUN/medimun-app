@@ -50,7 +50,7 @@ export async function checkEmail(email: string) {
 	if (!user) {
 		let schools;
 		try {
-			schools = await prisma.school.findMany({ where: { isPublic: true } });
+			schools = await prisma.school.findMany({ where: { isPublic: true }, orderBy: { name: "asc" } });
 		} catch (e) {
 			return { ok: false, data: null, message: ["An error occured."] };
 		}

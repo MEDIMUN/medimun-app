@@ -34,6 +34,34 @@ function RoleDisplay({ roles }) {
 						buttonText = "View Department";
 						roleUrl = `/medibook/sessions/${role.session}/departments/${role.departmentSlug || role.departmentId}`;
 						break;
+					case "secretaryGeneral":
+						roleText = `Secretary-General of the ${role.session}${getOrdinal(role.session)} Annual Session`;
+						buttonText = "View Session";
+						roleUrl = `/medibook/sessions/${role.session}`;
+						break;
+					case "deputySecretaryGeneral":
+						roleText = `Deputy Secretary-General of the ${role.session}${getOrdinal(role.session)} Annual Session`;
+						buttonText = "View Session";
+						roleUrl = `/medibook/sessions/${role.session}`;
+						break;
+					case "presidentOfTheGeneralAssembly":
+						roleText = `President of the General Assembly of the ${role.session}${getOrdinal(role.session)} Annual Session`;
+						buttonText = "View Session";
+						roleUrl = `/medibook/sessions/${role.session}`;
+						break;
+					case "deputyPresidentOfTheGeneralAssembly":
+						roleText = `Vice President of the General Assembly of the ${role.session}${getOrdinal(role.session)} Annual Session`;
+						buttonText = "View Session";
+						roleUrl = `/medibook/sessions/${role.session}`;
+						break;
+					case "schoolDirector":
+						roleText = `School Director of ${role.school}`;
+						buttonText = "View School";
+						roleUrl = `/medibook/schools/${role.schoolSlug || role.schoolId}`;
+						break;
+					case "seniorDirector":
+						roleText = `Senior Director of MEDIMUN`;
+						break;
 					default:
 						return null;
 				}
@@ -53,13 +81,11 @@ function RoleDisplay({ roles }) {
 						</div>
 						<div className="flex flex-col gap-2 md:ml-auto">
 							<div className="my-auto flex gap-2">
-								<Tooltip content="View Committee">
-									<Button
-										href={roleUrl}
-										className="my-auto border-small border-black/10 bg-black/10 shadow-md light:text-black dark:border-white/20 dark:bg-white/10 md:w-full">
-										{buttonText}
-									</Button>
-								</Tooltip>
+								<Button
+									href={roleUrl}
+									className="my-auto border-small border-black/10 bg-black/10 shadow-md light:text-black dark:border-white/20 dark:bg-white/10 md:w-full">
+									{buttonText}
+								</Button>
 							</div>
 						</div>
 					</li>
@@ -110,7 +136,7 @@ export function ProfileTabs({ user }) {
 				radius="full"
 				variant="light">
 				<Tab key="about" title="About Me">
-					<h2 className="mx-auto max-w-[600px] text-center text-large text-default-500">{user.user.bio}</h2>
+					<h2 className="mx-auto max-w-[600px] text-center text-large text-default-500">{user.bio}</h2>
 				</Tab>
 
 				<Tab key="currentRoles">

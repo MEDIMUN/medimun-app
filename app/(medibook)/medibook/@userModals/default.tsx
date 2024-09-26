@@ -97,7 +97,9 @@ export default async function UserModals({ searchParams }) {
 		const selectedUserIds = searchParams["assign-roles"].split(",").filter((id) => id);
 		if (!selectedUserIds.length) return;
 		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(notFound);
-		sessions = prisma.session.findMany();
+		sessions = prisma.session.findMany({
+			orderBy: [{ numberInteger: "desc" }],
+		});
 		committees = prisma.committee.findMany({ where: { session: { id: searchParams.session } } }).catch(notFound);
 		departments = prisma.department.findMany({ where: { session: { id: searchParams.session } } }).catch(notFound);
 		[schools, sessions, committees, departments] = await Promise.all([schools, sessions, committees, departments]);

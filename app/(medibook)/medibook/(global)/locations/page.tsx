@@ -57,7 +57,12 @@ export default async function Page({ searchParams }) {
 
 	return (
 		<>
-			<TopBar sortOptions={sortOptions} title="Locations" defaultSort="nameasc" searchText="Search locations...">
+			<TopBar
+				subheading={`${numberOfSchools} Locations`}
+				sortOptions={sortOptions}
+				title="Locations"
+				defaultSort="nameasc"
+				searchText="Search locations...">
 				{authorize(authSession, [s.management]) && (
 					<SearchParamsButton searchParams={{ "create-location": true }}>Create Location</SearchParamsButton>
 				)}

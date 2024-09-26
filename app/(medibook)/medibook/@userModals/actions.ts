@@ -429,7 +429,7 @@ const fullSchemaObject = {
 	pronouns: z.string().trim().max(50).optional().nullable().transform(processPronouns),
 	bio: z.string().max(500).optional().nullable(),
 	isProfilePrivate: z.boolean(),
-	schoolId: z.string().uuid().optional().nullable(),
+	schoolId: z.string().optional().nullable(),
 	isDisabled: z.boolean(),
 	dateOfBirth: z
 		.string()
@@ -439,7 +439,7 @@ const fullSchemaObject = {
 		.transform((d) => new Date(d)),
 };
 
-export async function editUser(formData) {
+export async function editUser(formData: FormData) {
 	const authSession = await auth();
 
 	const prismaUser = await prisma.user.findFirstOrThrow({
@@ -493,7 +493,6 @@ export async function editUser(formData) {
 		allUpdatableFields.map((field) => [field, fullSchemaObject[field]]).filter(([key, value]) => value !== undefined)
 	);
 
-	//Parse schema based on the dynamic schema object
 	const schema = z.object(dynamicSchemaObject);
 	const parsedFormData = parseFormData(formData);
 	const { data, error } = schema.safeParse(parsedFormData);
@@ -503,7 +502,6 @@ export async function editUser(formData) {
 	if (authSession.user.highestRoleRank >= userData.highestRoleRank)
 		return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
 
-	//Check if the username already exists fo some other user
 	if (data.username) {
 		const usernameExists = await prisma.user.findFirst({ where: { AND: [{ username: data.username }, { NOT: { id: data.id } }] } });
 		if (usernameExists) return { ok: false, message: "Username already exists." };
