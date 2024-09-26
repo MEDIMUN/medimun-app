@@ -19,7 +19,7 @@ export default function Page() {
 			)}>
 			<div className="mx-auto my-auto h-[600px] w-[400px] rounded-2xl bg-content1/70 p-12 shadow-lg md:ml-20">
 				<Suspense fallback={<div>Loading...</div>}>
-					<LoginForm />
+					<LoginForm allowLogin={process.env.ALLOW_LOGIN} />
 				</Suspense>
 			</div>
 		</section>

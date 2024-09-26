@@ -11,7 +11,7 @@ export default async function Page() {
 				backgroundImage: `url(/assets/gradients/${random.toString()}.jpg)`,
 			}}
 			className={cn(`flex min-h-dvh w-full bg-cover bg-center align-middle font-[montserrat] duration-300`)}>
-			<SignUpForm />
+			<SignUpForm allowSignUp={process.env.ALLOW_SIGN_UP} />
 		</section>
 	);
 }

@@ -25,7 +25,7 @@ function OrSpacer() {
 	);
 }
 
-export default function LoginForm() {
+export default function LoginForm({ allowLogin }) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const searchParams = useSearchParams();
@@ -61,8 +61,8 @@ export default function LoginForm() {
 							className="-mx-auto mb-5 ml-1 cursor-pointer text-xs text-content3-foreground hover:text-primary">
 							Forgot Password?
 						</Link>
-						<Button disabled={process.env.ALLOW_LOGIN == "false"} className="w-full bg-[#383f9a] text-white">
-							Login{" "}
+						<Button disabled={allowLogin == "false"} className="w-full bg-[#383f9a] text-white">
+							{allowLogin == "false" ? "Login Disabled" : "Login"}
 						</Button>
 						<OrSpacer />
 						<Button className="w-full" href="/login" type="submit">
@@ -90,8 +90,8 @@ export default function LoginForm() {
 						<Link href="/contact" className="-mx-auto ml-1 cursor-pointer text-xs text-content3-foreground hover:text-primary">
 							Forgot Password?
 						</Link>
-						<Button className={cn("mt-5 w-full")} type="submit" color="primary" disabled={isLoading}>
-							Login
+						<Button disabled={allowLogin == "false" || isLoading} className={cn("mt-5 w-full")} type="submit" color="primary">
+							{allowLogin == "false" ? "Login Disabled" : "Login"}
 						</Button>
 						<OrSpacer />
 						<Button
