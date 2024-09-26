@@ -149,7 +149,7 @@ export async function updateSessionPrices(formData: FormData, selectedSessionNum
 	});
 	if (!selectedSession) return { ok: false, message: "Session not found" };
 	const userData = generateUserData(prismaUser);
-	const isManagement = authorizePerSession(userData, [s.management], [selectedSession.number]);
+	const isManagement = authorize(userData, [s.management]);
 	if (!isManagement) return { ok: false, message: "Not Authorized" };
 
 	if (selectedSession.isVisible || selectedSession.isCurrent || selectedSession.isPriceLocked)
