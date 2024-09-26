@@ -247,7 +247,8 @@ export default function SignUpForm() {
 							onChange={(e) => setPassword(e.target.value)}
 							value={password}
 							className="animate-appearance-in delay-150"
-							name="email"
+							name="password"
+							type="password"
 							placeholder="Password"
 						/>
 					</Field>
@@ -255,7 +256,8 @@ export default function SignUpForm() {
 						onChange={(e) => setConfirmPassword(e.target.value)}
 						value={confirmPassword}
 						className="mt-5 animate-appearance-in delay-200"
-						name="email"
+						name="password"
+						type="password"
 						placeholder="Confirm Password"
 					/>
 					<Button
@@ -303,7 +305,8 @@ export default function SignUpForm() {
 							onChange={(e) => setPassword(e.target.value)}
 							value={password}
 							className="animate-appearance-in delay-150"
-							name="email"
+							name="password"
+							type="password"
 							placeholder="Password"
 						/>
 					</Field>
@@ -311,7 +314,8 @@ export default function SignUpForm() {
 						onChange={(e) => setConfirmPassword(e.target.value)}
 						value={confirmPassword}
 						className="mt-5 animate-appearance-in delay-200"
-						name="email"
+						name="password"
+						type="password"
 						placeholder="Confirm Password"
 					/>
 					<Button

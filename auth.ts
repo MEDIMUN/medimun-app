@@ -204,6 +204,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				});
 				const userData = generateUserData(prismaUser);
 				token.user = userData;
+				token.version = "1.0.0";
 			}
 			return token;
 		},
@@ -211,6 +212,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		async session({ session, token }) {
 			session.user = token.user;
 			session.lastUpdated = token.lastUpdated;
+			session.version = token.version;
 			return session;
 		},
 	},
