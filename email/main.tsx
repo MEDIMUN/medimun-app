@@ -23,7 +23,7 @@ export default function MainTemplate(props) {
 				<Section className="mt-[40px] rounded-b-lg bg-zinc-100 px-[32px] py-[40px]">
 					<Row>
 						<Column className="w-[80%]">
-							<Img alt="React Email logo" height="42" src={`${baseUrl}/assets/branding/logos/logo-white.svg`} />
+							<Img alt="MEDIMUN Logo" height="42" src={`${baseUrl}/assets/branding/logos/logo-white-email.png`} />
 						</Column>
 						<Column align="right">
 							<Row align="right">
