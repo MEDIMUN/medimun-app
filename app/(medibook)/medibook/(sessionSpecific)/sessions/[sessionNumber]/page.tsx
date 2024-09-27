@@ -52,12 +52,14 @@ export default async function Page({ params, searchParams }) {
 			description: "View the committees of the session",
 			href: `/medibook/sessions/${params.sessionNumber}/committees`,
 		},
-		authorize(authSession, [s.management]) && {
-			title: "Session Settings",
-			description: "Edit the settings of the session",
-			href: `/medibook/sessions/${params.sessionNumber}/settings`,
-		},
-	];
+		authorize(authSession, [s.management])
+			? {
+					title: "Session Settings",
+					description: "Edit the settings of the session",
+					href: `/medibook/sessions/${params.sessionNumber}/settings`,
+			  }
+			: null,
+	].filter((x) => x);
 
 	let numberOfNationalities = prisma.user
 		.groupBy({
