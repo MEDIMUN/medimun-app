@@ -1,6 +1,6 @@
 "use client";
 
-export default async function Page() {
+export default function Page() {
 	return (
 		<div className="px-2 pb-8 pt-[100px] md:px-8">
 			<iframe
