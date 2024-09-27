@@ -113,7 +113,7 @@ export default async function Page({ searchParams }) {
 				defaultSort="officialNameasc"
 				searchText="Search users..."
 				sortOptions={sortOptions}>
-				<SearchParamsButton searchParams={{ add: "" }}>Add User</SearchParamsButton>
+				<SearchParamsButton searchParams={{ "create-user": true }}>Add User</SearchParamsButton>
 			</TopBar>
 			<SelectedContextProvider defaultUserData={editUsers}>
 				<SelectedUsersWindow />

@@ -48,9 +48,7 @@ export function EditRollCallModal({ selectedRollCall }) {
 			<DialogTitle>Edit Roll Call</DialogTitle>
 			<DialogBody as="form" id="edit-roll-call" action={handleSubmit}>
 				<Field>
-					<Label>
-						Name <Badge color="yellow">Optional</Badge>
-					</Label>
+					<Label>Name</Label>
 					<Input maxLength={20} name="name" defaultValue={selectedRollCall.name} />
 				</Field>
 			</DialogBody>
@@ -97,9 +95,7 @@ export function CreateRollCallModal({ selectedDay }) {
 			<DialogTitle>Add Roll Call</DialogTitle>
 			<DialogBody as="form" id="create-roll-call" action={handleSubmit}>
 				<Field>
-					<Label>
-						Name <Badge color="yellow">Optional</Badge>
-					</Label>
+					<Label>Name</Label>
 					<Input maxLength={20} name="name" />
 				</Field>
 			</DialogBody>

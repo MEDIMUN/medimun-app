@@ -13,6 +13,11 @@
 }
 
 @font-face {
+  font-family: "JackyBlack";
+  src: url("/fonts/JackyBlack.ttf");
+}
+
+@font-face {
   font-family: "GilroyLight";
   src: url("/fonts/GilroyLight.ttf");
 }

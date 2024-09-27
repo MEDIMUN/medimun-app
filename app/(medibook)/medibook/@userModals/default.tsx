@@ -1,6 +1,6 @@
 import React from "react";
 import prisma from "@/prisma/client";
-import { EditUserModal, EditRolesModal, AddRolesModal, UnafilliateStudentModal } from "./modals";
+import { EditUserModal, EditRolesModal, AddRolesModal, UnafilliateStudentModal, CreateUserModal, DeleteUserModal } from "./modals";
 import { generateUserData, generateUserDataObject } from "@/lib/user";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
@@ -97,9 +97,7 @@ export default async function UserModals({ searchParams }) {
 		const selectedUserIds = searchParams["assign-roles"].split(",").filter((id) => id);
 		if (!selectedUserIds.length) return;
 		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(notFound);
-		sessions = prisma.session.findMany({
-			orderBy: [{ numberInteger: "desc" }],
-		});
+		sessions = prisma.session.findMany({ orderBy: [{ numberInteger: "desc" }] });
 		committees = prisma.committee.findMany({ where: { session: { id: searchParams.session } } }).catch(notFound);
 		departments = prisma.department.findMany({ where: { session: { id: searchParams.session } } }).catch(notFound);
 		[schools, sessions, committees, departments] = await Promise.all([schools, sessions, committees, departments]);
@@ -154,8 +152,29 @@ export default async function UserModals({ searchParams }) {
 		unafilliateStudent = fullUserObject;
 	}
 
+	if (searchParams?.["create-user"]) {
+		schools = await prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(notFound);
+	}
+
+	if (searchParams?.["delete-user"]) {
+		if (!authorize(authSession, [s.management])) return;
+		const prismaUser = await prisma.user
+			.findFirst({ where: { id: searchParams["delete-user"] }, include: { ...generateUserDataObject() } })
+			.catch(() => {
+				return;
+			});
+		const userData = generateUserData(prismaUser);
+
+		console.log(userData);
+
+		if (userData && !(userData.highestRoleRank > highestRoleRank)) return;
+		selectedUser = userData;
+	}
+
 	return (
 		<>
+			<DeleteUserModal selectedUser={selectedUser} />
+			<CreateUserModal schools={schools} />
 			<EditRolesModal selectedUser={selectedUser} highestRoleRank={highestRoleRank} />
 			<AddRolesModal selectedUsers={assignUsers} schools={schools} sessions={sessions} committees={committees} departments={departments} />
 			<EditUserModal studentSchoolId={editUserData?.schoolId} edit={filteredAllowedEditUserData} schools={schools} />

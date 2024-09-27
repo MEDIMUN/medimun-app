@@ -439,6 +439,65 @@ const fullSchemaObject = {
 		.transform((d) => new Date(d)),
 };
 
+const newSchemaObject = {
+	officialName: z.string().min(2).max(50).transform(nameCase),
+	officialSurname: z.string().min(2).max(50).transform(nameCase),
+	displayName: z.string().max(75, "Display name can not be longer than 75 characters.").transform(nameCase).optional().nullable(),
+	email: z.string().email().email().max(50),
+	username: z.string().max(50).optional().nullable().transform(postProcessUsername),
+	phoneNumber: z.string().nullable(),
+	gender: z
+		.enum(["MALE", "FEMALE", "PREFERNOTTOANSWER", "NONBINARY", "OTHER"])
+		.transform((v) => (v ? v : null))
+		.optional()
+		.nullable(),
+	nationality: z.string().min(2).max(2).toUpperCase().nullable(),
+	pronouns: z.string().trim().max(50).optional().nullable().transform(processPronouns),
+	bio: z.string().max(500).optional().nullable(),
+	isProfilePrivate: z.boolean(),
+	schoolId: z.string().optional().nullable(),
+	isDisabled: z.boolean(),
+	dateOfBirth: z
+		.string()
+		.max(10)
+		.min(10)
+		.nullable()
+		.transform((d) => new Date(d)),
+};
+
+export async function createUser(formData: FormData) {
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
+	if (!isManagement) return { ok: false, message: ["Unauthorized"] };
+
+	const schema = z.object(newSchemaObject);
+	const parsedFormData = parseFormData(formData);
+	const { data, error } = schema.safeParse(parsedFormData);
+	if (error) console.log(error.errors);
+	if (error) return { ok: false, message: ["Invalid data."] };
+
+	if (data.username) {
+		const usernameExists = await prisma.user.findFirst({ where: { username: data.username } });
+		if (usernameExists) return { ok: false, message: ["Username already exists."] };
+	}
+
+	const twelveDigitNumber = Math.floor(100000000000 + Math.random() * 900000000000).toString();
+
+	try {
+		const { schoolId, ...otherData } = data;
+		await prisma.user.create({
+			data: {
+				id: twelveDigitNumber,
+				...otherData,
+				...(schoolId ? { schoolId: schoolId } : {}),
+			},
+		});
+	} catch (e) {
+		return { ok: false, message: ["Error updating user."] };
+	}
+	return { ok: true, message: ["User updated"] };
+}
+
 export async function editUser(formData: FormData) {
 	const authSession = await auth();
 
@@ -682,4 +741,34 @@ export async function unafilliateStudent(studentId: string) {
 		return { ok: false, message: "Error while unaffiliating student." };
 	}
 	return { ok: true, message: "Student unaffiliated." };
+}
+
+export async function deleteUser(userId: string) {
+	const authSession = await auth();
+	if (!userId) return { ok: false, message: "No user ID provided." };
+
+	const prismaUser = await prisma.user.findFirstOrThrow({
+		where: { id: userId },
+		include: { ...generateUserDataObject() },
+	});
+	const userData = generateUserData(prismaUser);
+
+	if (!authSession || !authorize(authSession, [s.management])) return { ok: false, message: "Not authorized." };
+	if (authSession.user.highestRoleRank > userData.highestRoleRank)
+		return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
+
+	try {
+		await prisma.$transaction(async (tx) => {
+			const selectedUser = await tx.user.findUnique({ where: { id: userId } });
+			if (!selectedUser) return { ok: false, message: "User not found." };
+			const profilePicture = selectedUser.profilePicture;
+			if (profilePicture) {
+				await minio.removeObject(process.env.BUCKETNAME, `avatars/${profilePicture}`);
+			}
+			await tx.user.delete({ where: { id: userId } });
+		});
+	} catch (e) {
+		return { ok: false, message: "Error while deleting user." };
+	}
+	return { ok: true, message: "User deleted." };
 }

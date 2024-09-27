@@ -51,9 +51,7 @@ export function CreateTopicModal({ selectedCommittee }) {
 					<Input required name="title" type="text" />
 				</Field>
 				<Field>
-					<Label>
-						Description <Badge color="yellow">Optional</Badge>
-					</Label>
+					<Label>Description</Label>
 					<Description>Supports Markdown</Description>
 					<Textarea name="description" />
 				</Field>
@@ -113,9 +111,7 @@ export function EditTopicModal({ selectedTopic }) {
 					</Field>
 				)}
 				<Field>
-					<Label>
-						Description <Badge color="yellow">Optional</Badge>
-					</Label>
+					<Label>Description</Label>
 					<Description>Supports Markdown</Description>
 					<Textarea defaultValue={selectedTopic.description} name="description" />
 				</Field>

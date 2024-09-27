@@ -66,9 +66,7 @@ export function EditDayModal({ locations, selectedDay }) {
 					</Select>
 				</Field>
 				<Field>
-					<Label>
-						Location <Badge color="yellow">Optional</Badge>
-					</Label>
+					<Label>Location</Label>
 					<Description>
 						<Link
 							href="/medibook/locations?create-location=true&return=/medibook/sessions/${params.sessionNumber}/programme"
@@ -86,15 +84,11 @@ export function EditDayModal({ locations, selectedDay }) {
 					</Select>
 				</Field>
 				<Field>
-					<Label>
-						Name <Badge color="yellow">Optional</Badge>
-					</Label>
+					<Label>Name</Label>
 					<Input defaultValue={selectedDay.name} disabled={isLoading} name="name" type="text" />
 				</Field>
 				<Field>
-					<Label>
-						Description <Badge color="yellow">Optional</Badge>
-					</Label>
+					<Label>Description</Label>
 					<Textarea defaultValue={selectedDay.description} disabled={isLoading} name="description" />
 				</Field>
 			</DialogBody>
@@ -157,9 +151,7 @@ export function CreateDayModal({ locations }) {
 					</Select>
 				</Field>
 				<Field>
-					<Label>
-						Location <Badge color="yellow">Optional</Badge>
-					</Label>
+					<Label>Location</Label>
 					<Description>
 						<Link
 							href="/medibook/locations?create-location=true&return=/medibook/sessions/${params.sessionNumber}/programme"
@@ -177,15 +169,11 @@ export function CreateDayModal({ locations }) {
 					</Select>
 				</Field>
 				<Field>
-					<Label>
-						Name <Badge color="yellow">Optional</Badge>
-					</Label>
+					<Label>Name</Label>
 					<Input disabled={isLoading} name="name" type="text" />
 				</Field>
 				<Field>
-					<Label>
-						Description <Badge color="yellow">Optional</Badge>
-					</Label>
+					<Label>Description</Label>
 					<Textarea disabled={isLoading} name="description" />
 				</Field>
 			</DialogBody>

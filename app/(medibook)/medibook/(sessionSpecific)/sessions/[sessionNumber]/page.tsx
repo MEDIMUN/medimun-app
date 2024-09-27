@@ -3,8 +3,8 @@ import { getOrdinal } from "@/lib/ordinal";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Avatar } from "@nextui-org/avatar";
-/* import TeamMemberCard from "@/nextuipro/team-member-card";
- */ import { StatsCard } from "./StatsCard";
+import { StatsCard } from "./StatsCard";
+import MediBookWelcome from "@/public/assets/medibook-session-welcome.webp";
 
 import Icon from "@/components/icon";
 import { Button } from "@/components/button";
@@ -13,10 +13,14 @@ import { romanize } from "@/lib/romanize";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import Image from "next/image";
+import { cn } from "@/lib/cn";
+import { Text } from "@/components/text";
+import { Divider } from "@/components/divider";
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params }: { params: { sessionNumber: string } }) {
 	const sessionNumber = params.sessionNumber;
-	const ordinal = getOrdinal(params.sessionNumber);
+	const ordinal = getOrdinal(parseInt(params.sessionNumber));
 	return {
 		title: `${sessionNumber + ordinal} Annual Session - MediBook`,
 		description: `${sessionNumber + ordinal} Annual Session of the Mediterranean Model United Nations`,
@@ -26,13 +30,41 @@ export async function generateMetadata({ params }) {
 export const revalidate = 60;
 
 export default async function Page({ params, searchParams }) {
+	const authSession = await auth();
+	const actions = [
+		{
+			title: "Session Announcements",
+			description: "View all the announcements from the session",
+			href: `/medibook/sessions/${params.sessionNumber}/announcements`,
+		},
+		{
+			title: "Session Resources",
+			description: "View all the resources from the session",
+			href: `/medibook/sessions/${params.sessionNumber}/resources`,
+		},
+		{
+			title: "Session Programme",
+			description: "View the programme of the session",
+			href: `/medibook/sessions/${params.sessionNumber}/programme`,
+		},
+		{
+			title: "Session Committees",
+			description: "View the committees of the session",
+			href: `/medibook/sessions/${params.sessionNumber}/committees`,
+		},
+		authorize(authSession, [s.management]) && {
+			title: "Session Settings",
+			description: "Edit the settings of the session",
+			href: `/medibook/sessions/${params.sessionNumber}/settings`,
+		},
+	];
+
 	let numberOfNationalities = prisma.user
 		.groupBy({
 			where: { delegate: { some: { committee: { session: { number: params.sessionNumber } } } } },
 			by: ["nationality"],
 		})
 		.catch(notFound);
-	const authSession = await auth();
 
 	let numberOfSchools = prisma.user
 		.groupBy({
@@ -119,7 +151,7 @@ export default async function Page({ params, searchParams }) {
 		},
 	];
 
-	const secretaryGeneral = selectedSession.secretaryGeneral.map(({ user }) => {
+	const secretaryGeneralArray = selectedSession.secretaryGeneral.map(({ user }) => {
 		return {
 			role: "Secretary-General",
 			name: user.displayName ? user.displayName : `${user.officialName} ${user.officialSurname}`,
@@ -155,15 +187,12 @@ export default async function Page({ params, searchParams }) {
 		};
 	});
 
-	const allSecretariatMembers = [
-		...secretaryGeneral,
-		...deputySecretaryGeneral,
-		...presidentOfTheGeneralAssembly,
-		...deputyPresidentOfTheGeneralAssembly,
-	];
+	const allSecretariatMembers = [...deputySecretaryGeneral, ...presidentOfTheGeneralAssembly, ...deputyPresidentOfTheGeneralAssembly];
 
 	const conferenceDays = selectedSession?.Day?.filter((day) => day.type === "CONFERENCE");
 	const workshopDays = selectedSession?.Day?.filter((day) => day.type === "WORKSHOP");
+
+	const secretaryGeneral = selectedSession?.secretaryGeneral[0]?.user;
 
 	return (
 		<>
@@ -173,95 +202,66 @@ export default async function Page({ params, searchParams }) {
 				buttonText="Sessions"
 				title={
 					selectedSession.theme ? (
-						<>
-							{selectedSession.theme}
-							<Badge className="ml-1 -translate-y-[3px]">Session {romanize(selectedSession.numberInteger)}</Badge>
-						</>
+						<>Annual Session {romanize(selectedSession.numberInteger)}</>
 					) : (
 						`The ${selectedSession.number + getOrdinal(selectedSession.numberInteger)} Annual Session`
 					)
 				}>
 				{authorize(authSession, [s.management]) && <Button href={`/medibook/sessions/${selectedSession.number}/settings`}>Edit Session</Button>}
 			</TopBar>
-			<div className="flex max-w-[1500px] flex-col gap-4 2xl:mx-auto">
-				<div className="-mx-4 -mb-4 -mt-4 flex w-[calc(100%+32px)] flex-col gap-4 rounded-none bg-[url(/assets/gradients/7.jpg)] bg-cover p-4 py-4 md:m-0 md:w-full md:rounded-xl lg:flex-row">
-					<div className="mt-auto flex w-full flex-col">
-						<h2 className="bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-3xl font-semibold tracking-tight text-transparent dark:to-foreground-200 lg:inline-block">
-							{selectedSession.theme || `The ${selectedSession.number + getOrdinal(selectedSession.number)} Annual Session`}
-						</h2>
-						{selectedSession.phrase2 && (
-							<p className="font-regular bg-gradient-to-br from-white to-neutral-400 bg-clip-text text-xl tracking-tight text-transparent dark:to-foreground-200 lg:inline-block">
-								{selectedSession.phrase2}
-							</p>
-						)}
-						<div className="mt-4 grid w-full grid-cols-2 gap-[2px] overflow-hidden rounded-lg md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-6">
-							{statsArray.map((card, index) => (
-								<StatsCard style={{ animationDelay: `${index * 100}ms` }} title={card.title} value={card.data} key={index} />
-							))}
-						</div>
-						{selectedSession.welcomeText && (
-							<div className="mt-4 animate-appearance-in rounded-xl bg-content1/50 p-4 pt-3">
-								<p className="font-[200]">{selectedSession.welcomeText}</p>
-								{!!secretaryGeneral.length && (
-									<div className="mt-2 flex max-w-max gap-2 rounded-lg duration-300">
-										<Avatar
-											className="mask mask-squircle shadow-md"
-											showFallback
-											src={`/api/users/${secretaryGeneral[0].id}/avatar`}
-											radius="none"
-											size="sm"
-										/>
-										<div className="my-auto">
-											<p className="text-sm leading-4">{secretaryGeneral[0].name}</p>
-											<p className="text-xs">Secretary-General</p>
-										</div>
-									</div>
-								)}
-							</div>
-						)}
-						{!!allSecretariatMembers.length && (
-							<div className="mt-4 grid w-full grid-cols-1 gap-[2px] overflow-hidden rounded-xl md:grid-cols-2 lg:grid-cols-2">
-								{/* {allSecretariatMembers.map((member, index) => (
-									<TeamMemberCard style={{ animationDelay: `${index * 100}ms` }} className="animate-appearance-in" key={index} member={member} />
-								))} */}
-							</div>
-						)}
-						{!!workshopDays.length && (
-							<div className="mt-4 grid animate-appearance-in gap-[2px] overflow-hidden rounded-xl delay-150 lg:grid-cols-2">
-								{workshopDays.map((day, index) => (
-									<div style={{ animationDelay: `${index * 250}ms` }} key={index} className="flex flex-row gap-2 bg-content1/50 p-4">
-										<p className="font-regular my-auto bg-gradient-to-br from-black to-neutral-800 bg-clip-text text-xl tracking-tight text-transparent dark:to-foreground-200 lg:inline-block">
-											{day.name || `Workshop Day ${index + 1}`}
-											<span className="ml-2 font-thin">({day.date.toLocaleString("en-GB").slice(0, 10)})</span>
-										</p>
-										<Button
-											href={`/medibook/sessions/${selectedSession.number}/programme/workshop-day-${index + 1}`}
-											className="ml-auto max-w-max bg-content2/60 shadow-sm">
-											Programme
-										</Button>
-									</div>
-								))}
-							</div>
-						)}
-						{!!conferenceDays.length && (
-							<div className="mt-4 grid animate-appearance-in gap-[2px] overflow-hidden rounded-xl delay-150 lg:grid-cols-2">
-								{conferenceDays.map((day, index) => (
-									<div style={{ animationDelay: `${index * 100}ms` }} key={index} className="flex flex-row gap-2 bg-content1/50 p-4">
-										<p className="font-regular my-auto bg-gradient-to-br from-black to-neutral-800 bg-clip-text text-xl tracking-tight text-transparent dark:to-foreground-200 lg:inline-block">
-											{day.name || `Conference Day ${index + 1}`}
-											<span className="ml-2 font-thin">({day.date.toLocaleString("en-GB").slice(0, 10)})</span>
-										</p>
-										<Button
-											href={`/medibook/sessions/${selectedSession.number}/programme/conference-day-${index + 1}`}
-											className="ml-auto max-w-max bg-content2/60 shadow-sm">
-											Programme
-										</Button>
-									</div>
-								))}
-							</div>
-						)}
-					</div>
+			<div className="flex h-[200px] w-full overflow-hidden rounded-xl bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right md:h-[328px]">
+				<div className="mt-auto p-5">
+					<p className="mb-1 font-[canela] text-2xl text-primary md:text-4xl">{selectedSession.theme}</p>
+					<p className="font-[canela] text-xl text-zinc-700 md:text-2xl">{selectedSession.subTheme}</p>
 				</div>
+			</div>
+			{secretaryGeneral && selectedSession.welcomeText && (
+				<div className="rounded-xl bg-zinc-100/20 p-4 ring-1 ring-gray-200">
+					<Text>{selectedSession.welcomeText}</Text>
+					<Divider className="invisible my-2" />
+					<p className="my-auto font-[JackyBlack] text-sm">
+						<span className="text-primary">
+							{secretaryGeneral.displayName || `${secretaryGeneral.officialName} ${secretaryGeneral.officialSurname}`}
+						</span>
+						, Secretary-General
+					</p>
+				</div>
+			)}
+			{selectedSession.isVisible && (
+				<dl className="grid grid-cols-2 gap-0.5 divide-gray-200 overflow-hidden rounded-2xl text-center ring-1 ring-gray-200 sm:grid-cols-2 lg:grid-cols-4">
+					{statsArray.map((stat, index) => (
+						<div key={index + Math.random()} className="flex flex-col bg-gray-200/5 p-8">
+							<dt className="text-sm font-semibold leading-6 text-gray-600">{stat.title}</dt>
+							<dd className="order-first text-3xl font-semibold tracking-tight text-gray-900">{stat.data}</dd>
+						</div>
+					))}
+				</dl>
+			)}
+			<div className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-gray-200 ring-1 ring-gray-200 sm:grid sm:grid-cols-1 sm:gap-px sm:divide-y-0">
+				{actions.map((action, actionIdx) => (
+					<div
+						key={action.title}
+						className={cn(
+							actionIdx === 0 ? "rounded-tl-xl rounded-tr-xl sm:rounded-tr-none" : "",
+							actionIdx === actions.length - 1 ? "rounded-bl-xl rounded-br-xl sm:rounded-bl-none" : "",
+							"group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary"
+						)}>
+						<div>
+							<h3 className="text-base font-semibold leading-6 text-gray-900">
+								<Link href={action.href} className="focus:outline-none">
+									<span aria-hidden="true" className="absolute inset-0" />
+									{action.title}
+								</Link>
+							</h3>
+							<p className="mt-2 text-sm text-gray-500">{action.description}</p>
+						</div>
+						<span aria-hidden="true" className="pointer-events-none absolute right-6 top-6 text-gray-300 group-hover:text-gray-400">
+							<svg fill="currentColor" viewBox="0 0 24 24" className="h-6 w-6">
+								<path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
+							</svg>
+						</span>
+					</div>
+				))}
 			</div>
 		</>
 	);

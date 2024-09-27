@@ -403,9 +403,7 @@ export default function SignUpForm({ allowSignUp }) {
 						<Input className="mt-5" name="officialSurname" />
 					</Field>
 					<Field className="animate-appearance-in delay-500">
-						<Label>
-							School <Badge color="yellow">Optional</Badge>
-						</Label>
+						<Label>School</Label>
 						<Description>
 							<span className="text-xs">
 								You need to have a school selected to be able to attend the conference. You can change this later in settings.

@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { InformationCircleIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { roleRanks } from "@/data/constants";
 
-import { editUser, addRole, removeRole, unafilliateStudent } from "./actions";
+import { editUser, addRole, removeRole, unafilliateStudent, createUser, deleteUser } from "./actions";
 
 import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
 import formatDateForInput from "@/lib/formatDateForInput";
@@ -16,7 +16,7 @@ import { authorize, authorizeChairDelegate, authorizeManagerMember, authorizeSch
 import { getOrdinal } from "@/lib/ordinal";
 import { romanize } from "@/lib/romanize";
 
-import { Field, Label } from "@/components/fieldset";
+import { Description, Field, Label } from "@/components/fieldset";
 import { Input } from "@/components/input";
 import { Select } from "@/components/select";
 import { SlugInput } from "@/components/slugInput";
@@ -128,7 +128,7 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 
 	const isOpen =
 		(edit?.id &&
-			searchParams.get("edit-user") &&
+			!!searchParams.get("edit-user") &&
 			status === "authenticated" &&
 			(isManagement || isChairOfDelegate || isManagerOfMember || isDirectorOfStudent)) ||
 		false;
@@ -253,7 +253,7 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 					{allUpdatableFields.includes("pronouns") && (
 						<Field className="flex flex-col gap-3">
 							<Label>Pronouns</Label>
-							<Input defaultValue={edit?.pronouns} placeholder="Separate with commas" type="text" name="pronouns" maxLength={50} />
+							<Input defaultValue={edit?.pronouns} placeholder="Separate with slashes" type="text" name="pronouns" maxLength={50} />
 						</Field>
 					)}
 
@@ -280,10 +280,12 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 }
 
 export function AddRolesModal({ schools, committees, departments, selectedUsers, sessions }) {
+	const { data: authSession, status } = useSession();
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 	const selectedRole = searchParams.get("role") || "delegate";
+	const isManagement = authorize(authSession, [s.management]);
 
 	async function addRolehandler(formData) {
 		flushSync(() => {
@@ -334,7 +336,7 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 		{ value: "globalAdmin", label: "Global Admin", disabled: selectedUsers?.length > 1 },
 	];
 
-	const isOpen = !!searchParams.get("assign-roles") && selectedUsers.length > 0;
+	const isOpen = !!searchParams.get("assign-roles") && selectedUsers.length > 0 && status === "authenticated" && isManagement;
 	const numberOfUsers = selectedUsers?.length;
 
 	return (
@@ -478,9 +480,10 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 	);
 }
 
-export function EditRolesModal({ selectedUser }) {
+export function EditRolesModal({ selectedUser, highestRoleRank }) {
+	//FIX
 	const searchParams = useSearchParams();
-	const { data: authSession } = useSession();
+	const { data: authSession, status } = useSession();
 
 	function handleOnClose() {
 		removeSearchParams({ "edit-roles": "" });
@@ -490,6 +493,8 @@ export function EditRolesModal({ selectedUser }) {
 
 	const fullName = selectedUser?.displayName || `${selectedUser?.officialName} ${selectedUser?.officialSurname}`;
 	const isOpen: boolean = !!searchParams.get("edit-roles") && authorize(authSession, [s.management]);
+
+	if (status !== "authenticated") return null;
 
 	return (
 		<Dialog open={isOpen} onClose={handleOnClose}>
@@ -591,4 +596,196 @@ export function UnafilliateStudentModal({ fullName, userId }) {
 			</DialogActions>
 		</Dialog>
 	);
+}
+
+export function CreateUserModal({ schools }) {
+	const { data: authSession, status } = useSession();
+	const searchParams = useSearchParams();
+	const [isLoading, setIsLoading] = useState(false);
+	const router = useRouter();
+
+	async function createUserHandler(formData: FormData) {
+		flushSync(() => setIsLoading(true));
+		const res = await createUser(formData);
+		if (res?.ok) {
+			toast.success(...res?.message);
+			removeSearchParams({ "create-user": "", "edit-user": "" }, router);
+			router.refresh();
+		} else {
+			toast.error(...res?.message);
+		}
+		setIsLoading(false);
+	}
+
+	const onClose = () => removeSearchParams({ "create-user": "", "edit-user": "" });
+
+	if (status !== "authenticated") return null;
+	const isManagement = authorize(authSession, [s.management]);
+	const isOpen = !!searchParams.get("create-user") && status === "authenticated" && isManagement;
+
+	return (
+		<Dialog open={isOpen} onClose={onClose}>
+			<DialogTitle>Add User</DialogTitle>
+			<DialogBody as="form" id="create-user" className="flex flex-col gap-6" action={createUserHandler}>
+				<Field>
+					<Label>
+						Email <Badge color="red">Required</Badge>
+					</Label>
+					<Input maxLength={50} required type="email" name="email" />
+				</Field>
+
+				<Field>
+					<Label>
+						Official Name <Badge color="red">Required</Badge>
+					</Label>
+					<Description>As per official documents</Description>
+					<Input maxLength={50} required type="text" name="officialName" />
+				</Field>
+
+				<Field>
+					<Label>
+						Official Surname <Badge color="red">Required</Badge>
+					</Label>
+					<Description>As per official documents</Description>
+					<Input maxLength={50} required type="text" name="officialSurname" />
+				</Field>
+
+				<Field>
+					<Label>Display Name</Label>
+					<Description>How the user will be displayed to others, this should include the surname.</Description>
+					<Input maxLength={50} type="text" name="displayName" />
+				</Field>
+
+				<Field>
+					<Label>Date of Birth</Label>
+					<Input type="date" name="dateOfBirth" />
+				</Field>
+
+				<Field>
+					<Label>School</Label>
+					<Select name="schoolId">
+						<option value="null">None</option>
+						{schools?.map((school) => (
+							<option key={school?.id} value={school?.id}>
+								{school?.name}
+							</option>
+						))}
+					</Select>
+				</Field>
+
+				<Field>
+					<Label>Username</Label>
+					<SlugInput separator="_" name="username" />
+				</Field>
+
+				<Field>
+					<Label>Phone Number</Label>
+					<Description>Include country code</Description>
+					<Input maxLength={30} name="phoneNumber" />
+				</Field>
+
+				<Field>
+					<Label>Nationality</Label>
+					<Select name="nationality">
+						<option value="null">None</option>
+						{countries.map((country) => (
+							<option key={country.countryCode} value={country.countryCode}>
+								{country.countryNameEn}
+							</option>
+						))}
+					</Select>
+				</Field>
+
+				<Field>
+					<Label>Profile Visibility</Label>
+					<Select name="isProfilePrivate">
+						<option value="false">Public</option>
+						<option value="true">Private</option>
+					</Select>
+				</Field>
+
+				<Field>
+					<Label>Account Status</Label>
+					<Select name="isDisabled">
+						<option value="false">Enabled</option>
+						<option value="true">Disabled</option>
+					</Select>
+				</Field>
+
+				<Field>
+					<Label>Gender</Label>
+					<Select name="gender">
+						<option value="FEMALE">Female</option>
+						<option value="MALE">Male</option>
+						<option value="NONBINARY">Non-Binary</option>
+						<option value="OTHER">Other</option>
+						<option value="PREFERNOTTOANSWER">Prefer not to Answer</option>
+					</Select>
+				</Field>
+
+				<Field>
+					<Label>Pronouns</Label>
+					<Input placeholder="Separate with slashes" type="text" name="pronouns" maxLength={50} />
+				</Field>
+
+				<Field>
+					<Label>Biography</Label>
+					<Textarea maxLength={500} name="bio" />
+				</Field>
+			</DialogBody>
+
+			<DialogActions>
+				<Button plain onClick={onClose}>
+					Close
+				</Button>
+				<Button disabled={isLoading} form="create-user" type="submit">
+					Save
+				</Button>
+			</DialogActions>
+		</Dialog>
+	);
+}
+
+export function DeleteUserModal({ selectedUser }) {
+	const { data: authSession, status } = useSession();
+	const searchParams = useSearchParams();
+	const [isLoading, setIsLoading] = useState(false);
+	const router = useRouter();
+
+	async function deleteUserHandler() {
+		flushSync(() => setIsLoading(true));
+		const res = await deleteUser(selectedUser.id);
+		if (res?.ok) {
+			toast.success(...res?.message);
+			removeSearchParams({ "create-user": "", "edit-user": "" }, router);
+			router.refresh();
+		} else {
+			toast.error(...res?.message);
+		}
+		setIsLoading(false);
+	}
+
+	const onClose = () => removeSearchParams({ "create-user": "", "edit-user": "", "delete-user": "" });
+
+	if (status !== "authenticated") return null;
+	const isManagement = authorize(authSession, [s.management]);
+	const isOpen = !!searchParams.get("delete-user") && status === "authenticated" && isManagement && !!selectedUser;
+
+	if (isOpen)
+		return (
+			<Dialog open={isOpen} onClose={onClose}>
+				<DialogTitle>
+					Delete {selectedUser.officialName} {selectedUser.officialSurname}?
+				</DialogTitle>
+				<DialogDescription>Deleting this user will remove all their data and they will no longer be able to access the platform.</DialogDescription>
+				<DialogActions>
+					<Button plain onClick={onClose}>
+						Close
+					</Button>
+					<Button color="red" disabled={isLoading} onClick={deleteUserHandler}>
+						Delete
+					</Button>
+				</DialogActions>
+			</Dialog>
+		);
 }
