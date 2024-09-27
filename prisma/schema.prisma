@@ -58,6 +58,7 @@ model User {
   phoneNumber                         String?
   profilePicture                      String?
   lastLogin                           DateTime?
+  lastSessionUpdate                   DateTime?
   //
   bestTimeToReach                     String?
   //
