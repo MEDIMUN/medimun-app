@@ -45,11 +45,20 @@ import { Heading } from "@/components/heading";
 import { Badge } from "@/components/badge";
 
 export function AccountDropdownMenu({ anchor }: { anchor: "top start" | "bottom end" }) {
+	const { data: authSession, status } = useSession();
 	return (
 		<DropdownMenu className="min-w-64" anchor={anchor}>
-			<DropdownItem href="/medibook/account">
+			{status === "authenticated" && (
+				<DropdownItem href="/medibook/account">
+					<UserCircleIcon />
+					<DropdownLabel>My Account</DropdownLabel>
+				</DropdownItem>
+			)}
+			<DropdownItem href={`/medibook/users/${authSession?.user?.username || authSession?.user?.id}`}>
 				<UserCircleIcon />
-				<DropdownLabel>My Account</DropdownLabel>
+				<DropdownLabel>
+					My Profile <Badge color="yellow">New</Badge>
+				</DropdownLabel>
 			</DropdownItem>
 			<DropdownDivider />
 			<DropdownItem href="/privacy">

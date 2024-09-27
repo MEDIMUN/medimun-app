@@ -36,12 +36,12 @@ export async function checkEmail(email: string) {
 			await tx.pendingUser.deleteMany({ where: { email: processedEmail } });
 			const selectedUser = await tx.pendingHalfUser.create({
 				data: { email: processedEmail, code: randomCode, user: { connect: { email: processedEmail } } },
-				select: { user: { select: { officialName: true } } },
+				select: { user: { select: { officialName: true } }, code: true },
 			});
 			await sendEmailVerificationEmail({
 				email: processedEmail,
 				officialName: selectedUser.user.officialName,
-				code: `${randomCode.slice(0, 3)}-${randomCode.slice(3)}`,
+				code: selectedUser.code,
 			});
 		});
 		return { ok: true, data: { stage: "USER_WITHOUT_ACCOUNT" }, message: [] };
@@ -110,8 +110,8 @@ export async function createPendingUser(formData: FormData, email: string) {
 	try {
 		await prisma.$transaction(async (tx) => {
 			const randomCode = random6DigitNumber();
-			await prisma.pendingUser.deleteMany({ where: { email: email } });
-			newPendingUserData = await prisma.pendingUser.create({
+			await tx.pendingUser.deleteMany({ where: { email: email } });
+			newPendingUserData = await tx.pendingUser.create({
 				data: {
 					...rest,
 					code: randomCode,
@@ -121,7 +121,7 @@ export async function createPendingUser(formData: FormData, email: string) {
 			await sendEmailVerificationEmail({
 				email: data.email,
 				officialName: data.officialName,
-				code: `${randomCode.slice(0, 3)}-${randomCode.slice(3)}`,
+				code: newPendingUserData.code,
 			});
 		});
 	} catch (e) {

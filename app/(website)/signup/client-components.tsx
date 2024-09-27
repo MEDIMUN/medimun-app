@@ -68,7 +68,7 @@ function FakeDash() {
 	);
 }
 
-export default function SignUpForm({ allowSignUp }) {
+export function SignUpForm({ allowSignUp }) {
 	const router = useRouter();
 
 	const [isLoading, setIsLoading] = useState(false);
@@ -84,6 +84,7 @@ export default function SignUpForm({ allowSignUp }) {
 	const { width, height } = useWindowDimensions();
 
 	async function handleStage1() {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await checkEmail(email);
 
@@ -109,6 +110,7 @@ export default function SignUpForm({ allowSignUp }) {
 	}
 
 	async function handleHalfVerifyEmail() {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await approveHalfUser(email, verificationCode, password);
 		if (res?.ok) {
@@ -120,6 +122,7 @@ export default function SignUpForm({ allowSignUp }) {
 	}
 
 	async function handleCreateNewPendingUser(formData: FormData) {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await createPendingUser(formData, email);
 		if (res?.ok) {
@@ -132,6 +135,7 @@ export default function SignUpForm({ allowSignUp }) {
 	}
 
 	async function handleCreateNewUser() {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await createNewUser(verificationCodeId, password, verificationCode);
 		if (res?.ok) {
@@ -281,7 +285,7 @@ export default function SignUpForm({ allowSignUp }) {
 				</form>
 			)}
 			{stage === "NEW_PENDING_USER_EMAIL_PASSWORD" && (
-				<form className="flex h-[calc(100%-56px)] flex-col" action={handleStage1}>
+				<form className="flex h-[calc(100%-56px)] flex-col">
 					<Text className="mt-5">Create a password.</Text>
 					<Field className="mt-5">
 						<Label>Password</Label>
@@ -325,7 +329,6 @@ export default function SignUpForm({ allowSignUp }) {
 					<Button
 						onClick={() => setStage("NEW_PENDING_USER_EMAIL_VERIFICATION")}
 						className="mt-5 w-full"
-						type="submit"
 						color="primary"
 						disabled={!isPasswordValid || !doPasswordsMatch || isLoading}>
 						Continue
@@ -429,7 +432,6 @@ export default function SignUpForm({ allowSignUp }) {
 					</div>
 				</form>
 			)}
-
 			{stage === "NEW_PENDING_USER_EMAIL_VERIFICATION" && (
 				<form className="flex h-[calc(100%-56px)] flex-col">
 					<Field className="mt-8">

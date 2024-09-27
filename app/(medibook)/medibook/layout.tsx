@@ -11,6 +11,7 @@ import { AccountDropdownMenu } from "./sidebar";
 import prisma from "@/prisma/client";
 import { Providers, SidebarContextProvider } from "./providers";
 import { Toaster } from "sonner";
+import NextTopLoader from "nextjs-toploader";
 
 import type { Metadata } from "next";
 import { cn } from "@/lib/cn";
@@ -125,6 +126,16 @@ export default async function RootLayout({
 								<Sidebar sessions={sessions} />
 							</SidebarContextProvider>
 						}>
+						<NextTopLoader
+							color="#AE2D28"
+							showSpinner={false}
+							initialPosition={0.08}
+							crawlSpeed={200}
+							height={2}
+							crawl={true}
+							easing="ease"
+							speed={200}
+						/>
 						<TopFl />
 						{announcement}
 						{children}
