@@ -19,7 +19,7 @@ import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-com
 import { Code } from "@/components/text";
 
 export const metadata: Metadata = {
-	title: "Sessions",
+	title: "All Sessions",
 };
 
 const sessionsPerPage = 6;
@@ -114,11 +114,12 @@ export default async function Sessions({ searchParams }) {
 													<Link href={`/medibook/sessions/${session?.number}`}>
 														{session.theme ? (
 															<>
-																{session.theme} <Code className="font-light">Session {romanized}</Code>
+																{session.theme} <Badge className="font-light">Session {romanized}</Badge>
 															</>
 														) : (
 															`Session ${romanized}`
-														)}
+														)}{" "}
+														{!session.isPartlyVisible && <Badge color="red">Hidden</Badge>}
 													</Link>
 												</div>
 												<div className="text-xs/6 text-zinc-500">

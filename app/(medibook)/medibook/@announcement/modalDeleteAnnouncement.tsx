@@ -48,7 +48,7 @@ export function ModalDeleteAnnouncement({ selectedAnnouncement }) {
 				<Button plain onClick={onClose}>
 					Cancel
 				</Button>
-				<Button color="red" disabled={isLoading} type="button" onClick={handleSubmit}>
+				<Button loading={isLoading} color="red" disabled={isLoading} type="button" onClick={handleSubmit}>
 					Delete
 				</Button>
 			</DialogActions>

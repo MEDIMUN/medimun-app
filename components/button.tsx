@@ -4,6 +4,8 @@ import * as Headless from "@headlessui/react";
 import clsx from "clsx";
 import React, { forwardRef } from "react";
 import { Link } from "./link";
+import Icon from "./icon";
+import { Spinner } from "@nextui-org/spinner";
 
 const styles = {
 	base: [
@@ -172,13 +174,14 @@ type ButtonProps = (
 	| { color?: keyof typeof styles.colors; outline?: never; plain?: never }
 	| { color?: never; outline: true; plain?: never }
 	| { color?: never; outline?: never; plain: true }
-) & { className?: string; children: React.ReactNode } & (
-		| Omit<Headless.ButtonProps, "className">
-		| Omit<React.ComponentPropsWithoutRef<typeof Link>, "className">
-	);
+) & {
+	className?: string;
+	children: React.ReactNode;
+	loading?: boolean; // Define the loading prop as boolean
+} & (Omit<Headless.ButtonProps, "className"> | Omit<React.ComponentPropsWithoutRef<typeof Link>, "className">);
 
 export const Button = forwardRef(function Button(
-	{ color, outline, plain, className, children, ...props }: ButtonProps,
+	{ color, outline, plain, className, children, loading, ...props }: ButtonProps,
 	ref: React.ForwardedRef<HTMLElement>
 ) {
 	let classes = clsx(
@@ -189,11 +192,11 @@ export const Button = forwardRef(function Button(
 
 	return "href" in props ? (
 		<Link {...props} className={classes} ref={ref as React.ForwardedRef<HTMLAnchorElement>}>
-			<TouchTarget>{children}</TouchTarget>
+			<TouchTarget>{loading ? <Spinner size="sm" /> : children}</TouchTarget>
 		</Link>
 	) : (
 		<Headless.Button {...props} className={clsx(classes, "cursor-default")} ref={ref}>
-			<TouchTarget>{children}</TouchTarget>
+			<TouchTarget>{loading ? <Spinner size="sm" /> : children}</TouchTarget>
 		</Headless.Button>
 	);
 });

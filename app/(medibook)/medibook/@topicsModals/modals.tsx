@@ -83,6 +83,7 @@ export function EditTopicModal({ selectedTopic }) {
 	}
 
 	async function handleSubmit(formData: FormData) {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await editTopic(formData, selectedTopic.id);
 		if (res?.ok) {
@@ -120,7 +121,7 @@ export function EditTopicModal({ selectedTopic }) {
 				<Button disabled={isLoading} plain onClick={onClose}>
 					Cancel
 				</Button>
-				<Button type="submit" form="edit-topic" disabled={isLoading}>
+				<Button loading={isLoading} type="submit" form="edit-topic" disabled={isLoading}>
 					Update
 				</Button>
 			</DialogActions>
@@ -139,6 +140,7 @@ export function DeleteTopicModal({ selectedTopic }) {
 	}
 
 	async function handleSubmit() {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await deleteTopic(selectedTopic.id);
 		if (res?.ok) {
@@ -162,7 +164,7 @@ export function DeleteTopicModal({ selectedTopic }) {
 				<Button disabled={isLoading} plain onClick={onClose}>
 					Cancel
 				</Button>
-				<Button color="red" onClick={handleSubmit} disabled={isLoading}>
+				<Button loading={isLoading} color="red" onClick={handleSubmit} disabled={isLoading}>
 					Delete
 				</Button>
 			</DialogActions>

@@ -18,6 +18,7 @@ import { romanize } from "@/lib/romanize";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
+import { useState } from "react";
 
 function onClose(searchParams: ReadonlyURLSearchParams, router: any[] | AppRouterInstance) {
 	/* 	if (searchParams.has("return")) router.push(searchParams.get("return"));
@@ -29,8 +30,11 @@ export function ModalEditCommittee({ selectedCommittee }) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const { data: authSession } = useSession();
+	const [isLoading, setIsLoading] = useState(false);
 
 	async function addCommitteeHandler(formData: FormData) {
+		if (isLoading) return;
+		setIsLoading(true);
 		const res = await editCommittee(formData, selectedCommittee.id);
 		if (res?.ok) {
 			toast.success(res?.message);
@@ -39,6 +43,7 @@ export function ModalEditCommittee({ selectedCommittee }) {
 			toast.error(res?.message);
 			router.refresh();
 		}
+		setIsLoading(false);
 	}
 
 	const isOpen = searchParams.has("edit-committee") && authorize(authSession, [s.management]);
@@ -108,7 +113,7 @@ export function ModalEditCommittee({ selectedCommittee }) {
 				<Button plain onClick={onClose}>
 					Cancel
 				</Button>
-				<Button form="edit-committee" type="submit">
+				<Button loading={isLoading} form="edit-committee" type="submit">
 					Save
 				</Button>
 			</DialogActions>
@@ -120,8 +125,11 @@ export function ModalDeleteCommittee({ selectedCommittee }) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const { data: authSession } = useSession();
+	const [isLoading, setIsLoading] = useFlushState(false);
 
 	async function deleteCommitteeHandler(formData: FormData) {
+		if (isLoading) return;
+		setIsLoading(true);
 		const res = await deleteCommittee(formData, selectedCommittee.id);
 		if (res?.ok) {
 			toast.success(res?.message);
@@ -130,6 +138,7 @@ export function ModalDeleteCommittee({ selectedCommittee }) {
 			toast.error(res?.message);
 		}
 		router.refresh();
+		setIsLoading(false);
 	}
 
 	function onClose() {
@@ -155,7 +164,7 @@ export function ModalDeleteCommittee({ selectedCommittee }) {
 				<Button plain onClick={onClose}>
 					Cancel
 				</Button>
-				<Button form="delete-committee" type="submit">
+				<Button loading={isLoading} form="delete-committee" type="submit">
 					Save
 				</Button>
 			</DialogActions>
@@ -173,6 +182,8 @@ export function ModalCreateCommittee() {
 	const [isLoading, setIsLoading] = useFlushState(false);
 
 	async function addCommitteeHandler(formData: FormData) {
+		if (isLoading) return;
+		setIsLoading(true);
 		const res = await addCommittee(formData, params?.sessionNumber);
 		if (res?.ok) {
 			updateSearchParams({ "edit-committee": res.data }, router);
@@ -205,10 +216,10 @@ export function ModalCreateCommittee() {
 				</form>
 			</DialogBody>
 			<DialogActions>
-				<Button plain onClick={() => onClose(searchParams, router)}>
+				<Button plain disabled={isLoading} onClick={() => onClose(searchParams, router)}>
 					Cancel
 				</Button>
-				<Button type="submit" form="create-committee" disabled={isLoading}>
+				<Button loading={isLoading} type="submit" form="create-committee" disabled={isLoading}>
 					Create
 				</Button>
 			</DialogActions>

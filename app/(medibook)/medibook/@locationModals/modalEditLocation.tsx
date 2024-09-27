@@ -29,6 +29,7 @@ export function EditLocationModal({ edit }) {
 	const inputRef = useRef();
 
 	async function removeCoverImageHandler() {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await deleteCoverImage(edit?.id);
 		if (res?.ok) {
@@ -63,6 +64,7 @@ export function EditLocationModal({ edit }) {
 	}
 
 	async function editLocationHandler(formData: FormData) {
+		if (isLoading) return;
 		setIsLoading(true);
 		formData.append("id", edit?.id);
 		const res = await editLocation(formData);
@@ -184,7 +186,7 @@ export function EditLocationModal({ edit }) {
 				<Button plain disabled={isLoading} onClick={onClose}>
 					Cancel
 				</Button>
-				<Button disabled={isLoading} type="submit" form="update">
+				<Button disabled={isLoading} loading={isLoading} type="submit" form="update">
 					Save
 				</Button>
 			</DialogActions>

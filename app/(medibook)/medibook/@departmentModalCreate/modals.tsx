@@ -31,6 +31,8 @@ export function ModalCreateDepartment() {
 	const [isLoading, setIsLoading] = useFlushState(false);
 
 	const addDepartmentHandler = async (formData: FormData) => {
+		if (isLoading) return;
+		setIsLoading(true);
 		const res = await addDepartment(formData, params?.sessionNumber);
 		if (res?.ok) {
 			updateSearchParams({ "edit-department": res.data }, router);
@@ -62,10 +64,10 @@ export function ModalCreateDepartment() {
 				</form>
 			</DialogBody>
 			<DialogActions>
-				<Button plain onClick={() => onClose(searchParams, router)}>
+				<Button plain disabled={isLoading} onClick={() => onClose(searchParams, router)}>
 					Cancel
 				</Button>
-				<Button type="submit" form="create-department" disabled={isLoading}>
+				<Button loading={isLoading} type="submit" form="create-department" disabled={isLoading}>
 					Create
 				</Button>
 			</DialogActions>

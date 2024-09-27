@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 import { cn } from "@/lib/cn";
 import { romanize } from "@/lib/romanize";
+import { displayNumberInSentenceAsText } from "@/lib/text";
 import prisma from "@/prisma/client";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -55,17 +56,16 @@ export default async function Page({ params, searchParams }) {
 			description: "Roll calls for the committee.",
 			href: `${basePath}/roll-calls`,
 		},
-		{
+		authorize(authSession, [s.management]) && {
 			title: "Settings",
 			description: "Settings for the committee.",
 			href: `${basePath}/settings`,
 		},
-	];
+	].filter((x) => x);
 
 	return (
 		<>
 			<TopBar
-				showDivider
 				title={selectedCommittee.name}
 				buttonText={`Session ${romanize(selectedCommittee.session.numberInteger)} Committees`}
 				buttonHref={`/medibook/sessions/${selectedCommittee.session.number}/committees`}
@@ -73,6 +73,12 @@ export default async function Page({ params, searchParams }) {
 				subheading={selectedCommittee.description}>
 				{isManagement && <SearchParamsButton searchParams={{ "edit-committee": selectedCommittee.id }}>Edit Committee</SearchParamsButton>}
 			</TopBar>
+			<div className="flex h-[200px] w-full overflow-hidden rounded-xl bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right ring-1 ring-gray-200 md:h-[328px]">
+				<div className="mt-auto p-5">
+					<p className="mb-1 font-[canela] text-2xl text-primary md:text-4xl">{displayNumberInSentenceAsText(selectedCommittee.name)}</p>
+					{selectedCommittee.description && <p className="font-[canela] text-xl text-zinc-700 md:text-2xl">{selectedCommittee.description}</p>}
+				</div>
+			</div>
 			<div className="divide-y divide-gray-200 overflow-hidden rounded-md bg-gray-200 ring-1 ring-gray-200 sm:grid sm:grid-cols-1 sm:gap-px sm:divide-y-0">
 				{actions.map((action, actionIdx) => (
 					<div

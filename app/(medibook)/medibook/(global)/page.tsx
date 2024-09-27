@@ -60,7 +60,7 @@ export default async function Home() {
 				</Text>
 			</div>
 			<div className="w-full overflow-hidden rounded-xl shadow-md">
-				<Image alt="Welcome to MediBook." quality={100} className="!relative ml-1 object-cover" src={MediBookWelcome} fill />
+				<Image alt="Welcome to MediBook." quality={100} className="!relative object-cover" src={MediBookWelcome} fill />
 			</div>
 			<div className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-gray-200 shadow-md ring-1 ring-gray-200 sm:grid sm:grid-cols-1 sm:gap-px sm:divide-y-0">
 				{actions.map((action, actionIdx) => (

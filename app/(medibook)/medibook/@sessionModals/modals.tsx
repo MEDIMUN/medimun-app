@@ -37,6 +37,8 @@ export function ModalCreateSession() {
 	const [isLoading, setIsLoading] = useFlushState(false);
 
 	async function addSessionHandler() {
+		if (isLoading) return;
+		setIsLoading(true);
 		const res = await addSession();
 		if (res?.ok) {
 			toast.success(res?.message);
@@ -68,7 +70,7 @@ export function ModalCreateSession() {
 				<Button plain onClick={() => onClose(searchParams, router)}>
 					Cancel
 				</Button>
-				<Button onClick={addSessionHandler} disabled={isLoading}>
+				<Button loading={isLoading} onClick={addSessionHandler} disabled={isLoading}>
 					Create
 				</Button>
 			</DialogActions>

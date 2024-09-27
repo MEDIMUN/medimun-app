@@ -753,6 +753,7 @@ export function DeleteUserModal({ selectedUser }) {
 	const router = useRouter();
 
 	async function deleteUserHandler() {
+		if (isLoading) return;
 		flushSync(() => setIsLoading(true));
 		const res = await deleteUser(selectedUser.id);
 		if (res?.ok) {
@@ -779,10 +780,10 @@ export function DeleteUserModal({ selectedUser }) {
 				</DialogTitle>
 				<DialogDescription>Deleting this user will remove all their data and they will no longer be able to access the platform.</DialogDescription>
 				<DialogActions>
-					<Button plain onClick={onClose}>
+					<Button plain disabled={isLoading} onClick={onClose}>
 						Close
 					</Button>
-					<Button color="red" disabled={isLoading} onClick={deleteUserHandler}>
+					<Button loading={isLoading} color="red" disabled={isLoading} onClick={deleteUserHandler}>
 						Delete
 					</Button>
 				</DialogActions>

@@ -37,6 +37,7 @@ export function EditSchoolModal({ edit, locations }) {
 	const inputRef = useRef();
 
 	async function removeCoverImageHandler() {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await deleteCoverImage(edit?.id);
 		if (res?.ok) {
@@ -72,6 +73,7 @@ export function EditSchoolModal({ edit, locations }) {
 	}
 
 	async function editSchoolHandler(formData: FormData) {
+		if (isLoading) return;
 		setIsLoading(true);
 		formData.append("id", edit?.id);
 		const res = await editSchool(formData);
@@ -176,7 +178,7 @@ export function EditSchoolModal({ edit, locations }) {
 				<Button plain disabled={isLoading} onClick={() => onClose(searchParams, router)}>
 					Cancel
 				</Button>
-				<Button disabled={isLoading} type="submit" form="update">
+				<Button disabled={isLoading} loading={isLoading} type="submit" form="update">
 					Save
 				</Button>
 			</DialogActions>

@@ -52,7 +52,7 @@ const rows = [
 export default async function Page({ params, searchParams }) {
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
-	if (!authSession || !isManagement) notFound();
+	if (!isManagement) notFound();
 	const currentPage = Number(searchParams.page) || 1;
 	const query = searchParams.search || "";
 

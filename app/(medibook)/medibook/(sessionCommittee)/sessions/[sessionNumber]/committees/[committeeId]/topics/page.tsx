@@ -1,6 +1,5 @@
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
-import { Link } from "@nextui-org/link";
 import Icon from "@/components/icon";
 import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
 import { authorize, authorizeChairCommittee, s } from "@/lib/authorize";
@@ -11,14 +10,20 @@ import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/componen
 import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import { Button } from "@/components/button";
 import { processMarkdownPreview } from "@/lib/text";
+import Paginator from "@/components/pagination";
 
 export default async function Page({ params }) {
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
-	const selectedCommittee = await prisma.committee.findFirstOrThrow({
-		where: { OR: [{ slug: params.committeeId }, { id: params.committeeId }], session: { number: params.sessionNumber } },
-		include: { Topic: true },
-	});
+	const selectedCommittee = await prisma.committee
+		.findFirstOrThrow({
+			where: {
+				OR: [{ slug: params.committeeId }, { id: params.committeeId }],
+				session: { number: params.sessionNumber, ...(!isManagement ? { isVisible: true } : {}) },
+			},
+			include: { Topic: true },
+		})
+		.catch(notFound);
 	const isChairOfCommittee = authorizeChairCommittee(authSession.currentRoles, selectedCommittee.id);
 	const topics = selectedCommittee.Topic;
 
@@ -29,71 +34,63 @@ export default async function Page({ params }) {
 				title="Topics"
 				buttonText={selectedCommittee.name}
 				buttonHref={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}`}>
-				{authorize(authSession, [s.management]) && (
-					<SearchParamsButton searchParams={{ "create-topic": selectedCommittee.id }}>Create Topic</SearchParamsButton>
-				)}
+				{isManagement && <SearchParamsButton searchParams={{ "create-topic": selectedCommittee.id }}>Create Topic</SearchParamsButton>}
 			</TopBar>
-			<Table>
-				<TableHead>
-					<TableRow>
-						<TableHeader>
-							<span className="sr-only">Actions</span>
-						</TableHeader>
-						<TableHeader>Topic</TableHeader>
-						<TableHeader>Description</TableHeader>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{topics.map((topic) => (
-						<TableRow key={topic.id}>
-							<TableCell>
-								{isChairOfCommittee || isManagement ? (
-									<Dropdown>
-										<DropdownButton plain aria-label="More options">
-											<EllipsisVerticalIcon />
-										</DropdownButton>
-										<DropdownMenu anchor="bottom end">
-											{topic.description && (
-												<DropdownItem
-													href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
-														topic.id
-													}`}>
-													View
-												</DropdownItem>
-											)}
-											<SearchParamsDropDropdownItem searchParams={{ "edit-topic": topic.id }}>Edit Topic</SearchParamsDropDropdownItem>
-											{isManagement && (
-												<SearchParamsDropDropdownItem searchParams={{ "delete-topic": topic.id }}>Delete Topic</SearchParamsDropDropdownItem>
-											)}
-										</DropdownMenu>
-									</Dropdown>
-								) : (
-									topic.description && (
-										<Button
-											href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
-												topic.id
-											}`}
-											plain>
-											View Details
-										</Button>
-									)
-								)}
-							</TableCell>
-							<TableCell>{topic.title}</TableCell>
-							<TableCell>{topic.description ? processMarkdownPreview(topic.description) : "-"}</TableCell>
+			{!!topics.length && (
+				<Table>
+					<TableHead>
+						<TableRow>
+							<TableHeader>
+								<span className="sr-only">Actions</span>
+							</TableHeader>
+							<TableHeader>Topic</TableHeader>
+							<TableHeader>Description</TableHeader>
 						</TableRow>
-					))}
-				</TableBody>
-			</Table>
+					</TableHead>
+					<TableBody>
+						{topics.map((topic) => (
+							<TableRow key={topic.id}>
+								<TableCell>
+									{isChairOfCommittee || isManagement ? (
+										<Dropdown>
+											<DropdownButton plain aria-label="More options">
+												<EllipsisVerticalIcon />
+											</DropdownButton>
+											<DropdownMenu anchor="bottom end">
+												{topic.description && (
+													<DropdownItem
+														href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
+															topic.id
+														}`}>
+														View
+													</DropdownItem>
+												)}
+												<SearchParamsDropDropdownItem searchParams={{ "edit-topic": topic.id }}>Edit Topic</SearchParamsDropDropdownItem>
+												{isManagement && (
+													<SearchParamsDropDropdownItem searchParams={{ "delete-topic": topic.id }}>Delete Topic</SearchParamsDropDropdownItem>
+												)}
+											</DropdownMenu>
+										</Dropdown>
+									) : (
+										topic.description && (
+											<Button
+												href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
+													topic.id
+												}`}
+												plain>
+												View Details
+											</Button>
+										)
+									)}
+								</TableCell>
+								<TableCell>{topic.title}</TableCell>
+								<TableCell>{topic.description ? processMarkdownPreview(topic.description) : "-"}</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			)}
+			<Paginator totalItems={topics.length} itemsOnPage={topics.length} />
 		</>
 	);
-}
-
-{
-	/* <DropdownItem
-											href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
-												topic.id
-											}`}>
-											View
-										</DropdownItem> */
 }

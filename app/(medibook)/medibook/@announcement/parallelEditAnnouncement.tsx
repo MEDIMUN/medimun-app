@@ -187,7 +187,7 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 				<Button type="reset" form="publishAnnouncement" disabled={isLoading} plain onClick={onClose}>
 					Cancel
 				</Button>
-				<Button disabled={isLoading} form="publishAnnouncement" type="submit">
+				<Button loading={isLoading} disabled={isLoading} form="publishAnnouncement" type="submit">
 					Save
 				</Button>
 			</div>

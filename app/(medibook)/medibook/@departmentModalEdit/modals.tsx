@@ -30,8 +30,11 @@ export function ModalEditDepartment({ selectedDepartment }) {
 	const router = useRouter();
 	const { data: authSession } = useSession();
 	const [type, setType] = useState(selectedDepartment?.type);
+	const [isLoading, setIsLoading] = useState(false);
 
 	async function editDepartmentHandler(formData: FormData) {
+		if (isLoading) return;
+		setIsLoading(true);
 		formData.append("type", type);
 		const res = await editDepartment(formData, selectedDepartment.id);
 		if (res?.ok) {
@@ -42,6 +45,7 @@ export function ModalEditDepartment({ selectedDepartment }) {
 			toast.error(res?.message);
 			router.refresh();
 		}
+		setIsLoading(false);
 	}
 
 	useEffect(() => {
@@ -107,10 +111,10 @@ export function ModalEditDepartment({ selectedDepartment }) {
 			</DialogBody>
 
 			<DialogActions>
-				<Button plain onClick={onClose}>
+				<Button plain disabled={isLoading} onClick={onClose}>
 					Cancel
 				</Button>
-				<Button form="edit-department" type="submit">
+				<Button disabled={isLoading} loading={isLoading} form="edit-department" type="submit">
 					Save
 				</Button>
 			</DialogActions>

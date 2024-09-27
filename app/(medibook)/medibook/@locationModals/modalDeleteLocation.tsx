@@ -23,6 +23,8 @@ export function DeleteLocationModal({ location, total }) {
 	if (!location) return;
 
 	async function deleteLocationHandler(formData: FormData) {
+		if (isLoading) return;
+		setIsLoading(true);
 		formData.append("id", location.id);
 		const res = await deleteLocation(formData);
 		const isChange = (total - 1) % 10 === 0;
@@ -66,10 +68,10 @@ export function DeleteLocationModal({ location, total }) {
 				</form>
 			</DialogBody>
 			<DialogActions>
-				<Button plain onClick={onClose}>
+				<Button plain disabled={isLoading} onClick={onClose}>
 					Cancel
 				</Button>
-				<Button color="red" disabled={isLoading} type="submit" form="delete">
+				<Button color="red" loading={isLoading} disabled={isLoading} type="submit" form="delete">
 					Delete
 				</Button>
 			</DialogActions>

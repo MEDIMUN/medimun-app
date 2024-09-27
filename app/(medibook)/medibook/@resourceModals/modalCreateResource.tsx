@@ -268,7 +268,7 @@ export function ModalUploadResource() {
 				<Button disabled={isLoading} plain onClick={onClose}>
 					Cancel
 				</Button>
-				<Button disabled={isLoading} form="uploadResource" type="submit">
+				<Button disabled={isLoading} loading={isLoading} form="uploadResource" type="submit">
 					Upload
 				</Button>
 			</DialogActions>

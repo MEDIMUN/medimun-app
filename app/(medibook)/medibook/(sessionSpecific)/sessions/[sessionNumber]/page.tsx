@@ -211,7 +211,7 @@ export default async function Page({ params, searchParams }) {
 				}>
 				{authorize(authSession, [s.management]) && <Button href={`/medibook/sessions/${selectedSession.number}/settings`}>Edit Session</Button>}
 			</TopBar>
-			<div className="flex h-[200px] w-full overflow-hidden rounded-xl bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right md:h-[328px]">
+			<div className="flex h-[200px] w-full overflow-hidden rounded-xl bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right ring-1 ring-gray-200 md:h-[328px]">
 				<div className="mt-auto p-5">
 					<p className="mb-1 font-[canela] text-2xl text-primary md:text-4xl">{selectedSession.theme}</p>
 					<p className="font-[canela] text-xl text-zinc-700 md:text-2xl">{selectedSession.subTheme}</p>

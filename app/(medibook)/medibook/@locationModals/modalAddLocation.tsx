@@ -20,6 +20,8 @@ export function AddLocationModal() {
 	const [isLoading, setIsLoading] = useFlushState(false);
 
 	async function createLocationHandler(formData: FormData) {
+		if (isLoading) return;
+		setIsLoading(true);
 		const res = await addLocation(formData);
 		if (res?.ok) {
 			onClose();
@@ -54,10 +56,10 @@ export function AddLocationModal() {
 				</form>
 			</DialogBody>
 			<DialogActions>
-				<Button plain onClick={onClose}>
+				<Button plain disabled={isLoading} onClick={onClose}>
 					Cancel
 				</Button>
-				<Button disabled={isLoading} type="submit" form="add">
+				<Button loading={isLoading} disabled={isLoading} type="submit" form="add">
 					Next
 				</Button>
 			</DialogActions>

@@ -27,6 +27,7 @@ export function EditDayModal({ locations, selectedDay }) {
 	}
 
 	async function handleSubmit(formData: FormData) {
+		if (isLoading) return;
 		setIsLoading(true);
 		formData.append("id", searchParams.get("edit-day"));
 		const res = await editDay(formData);
@@ -96,7 +97,7 @@ export function EditDayModal({ locations, selectedDay }) {
 				<Button disabled={isLoading} onClick={onClose} plain>
 					Cancel
 				</Button>
-				<Button disabled={isLoading} type="submit" form="edit-day">
+				<Button loading={isLoading} disabled={isLoading} type="submit" form="edit-day">
 					Update
 				</Button>
 			</DialogActions>

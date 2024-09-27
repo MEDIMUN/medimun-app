@@ -100,10 +100,10 @@ export function CreateRollCallModal({ selectedDay }) {
 				</Field>
 			</DialogBody>
 			<DialogActions>
-				<Button onClick={onClose} plain>
+				<Button onClick={onClose} disabled={isLoading} plain>
 					Cancel
 				</Button>
-				<Button disabled={isLoading} type="submit" form="create-roll-call">
+				<Button disabled={isLoading} loading={isLoading} type="submit" form="create-roll-call">
 					Create
 				</Button>
 			</DialogActions>
@@ -145,7 +145,7 @@ export function DeleteRollCallModal({ selectedRollCall }) {
 				<Button disabled={isLoading} plain onClick={onClose}>
 					Cancel
 				</Button>
-				<Button disabled={isLoading} color="red" onClick={handleSubmit}>
+				<Button loading={isLoading} disabled={isLoading} color="red" onClick={handleSubmit}>
 					Delete
 				</Button>
 			</DialogActions>
