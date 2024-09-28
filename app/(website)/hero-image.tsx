@@ -38,10 +38,11 @@ export default function HeroImage() {
 			className="fixed bottom-0 z-[5] flex w-full justify-center">
 			<div className=" mt-auto flex">
 				<Image
+					priority
 					src="/assets/delegates-vector.png"
 					alt=""
-					width={4000}
-					height={4000}
+					width={3000}
+					height={3000}
 					quality={90}
 					className="!relative h-[60svh] w-full object-cover object-right opacity-85 drop-shadow-xl grayscale md:h-[85vh] md:object-center"
 				/>
