@@ -17,5 +17,7 @@ export async function GET(request, { params }) {
 		notFound();
 	}
 
-	return NextResponse.json({ url: selectedResource.driveUrl ? `https://${selectedResource.driveUrl}` : presignedFileUrl });
+	return NextResponse.json({
+		url: selectedResource.driveUrl ? `https://${selectedResource.driveUrl}` : presignedFileUrl.replace("http://", "https://"),
+	});
 }
