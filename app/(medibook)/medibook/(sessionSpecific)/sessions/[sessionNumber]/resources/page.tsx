@@ -79,7 +79,14 @@ export default async function Page({ params, searchParams }) {
 				buttonHref={`/medibook/sessions/${params.sessionNumber}`}
 				buttonText={`Session ${romanize(params.sessionNumber)}`}
 				title="Session Resources">
-				{isManagement && <SearchParamsButton searchParams={{ uploadsessionresource: params.sessionNumber }}>Upload Resource</SearchParamsButton>}
+				{isManagement && (
+					<>
+						<SearchParamsButton searchParams={{ uploadsessionresource: params.sessionNumber }}>Upload Resource</SearchParamsButton>
+						<SearchParamsButton color="yellow" searchParams={{ uploadsessionprospectus: params.sessionNumber }}>
+							Upload Prospectus
+						</SearchParamsButton>
+					</>
+				)}
 			</TopBar>
 			<ResourcesTable resources={prismaResources} isManagement={isManagement} />
 			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />

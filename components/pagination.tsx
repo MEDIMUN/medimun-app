@@ -1,7 +1,7 @@
 "use client";
 
 import { Pagination } from "@nextui-org/pagination";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { updateSearchParams } from "@/lib/searchParams";
 import { useEffect } from "react";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
@@ -21,6 +21,7 @@ export function Paginator({
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const currentPage = parseInt(searchParams.get("page")) || 1;
+	const pathname = usePathname();
 
 	function onChangeHandler(page) {
 		updateSearchParams({ page: page }, router);
@@ -34,19 +35,36 @@ export function Paginator({
 		}
 	}, [currentPage, itemsOnPage, router, total]);
 
-	if (itemsOnPage == 0 && currentPage == 1)
-		return (
-			<div className="mx-auto w-full rounded-md bg-zinc-100 p-4">
-				<div className="flex">
-					<div className="flex-shrink-0">
-						<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+	if (itemsOnPage == 0 && currentPage == 1) {
+		if (pathname.includes("/medibook")) {
+			return (
+				<div className="mx-auto w-full rounded-md bg-zinc-100 p-4">
+					<div className="flex">
+						<div className="flex-shrink-0">
+							<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+						</div>
+						<div className="ml-3 flex-1 md:flex md:justify-between">
+							<p className="text-sm text-zinc-700">No items {searchParams.get("search") ? "found" : "yet"}.</p>
+						</div>
 					</div>
-					<div className="ml-3 flex-1 md:flex md:justify-between">
-						<p className="text-sm text-zinc-700">No items {searchParams.get("search") ? "found" : "yet"}.</p>
+				</div>
+			);
+		}
+		return (
+			<div className="m-8">
+				<div className="mx-auto w-full max-w-[400px] rounded-md bg-zinc-100 p-4">
+					<div className="flex">
+						<div className="flex-shrink-0">
+							<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+						</div>
+						<div className="ml-3 flex-1 md:flex md:justify-between">
+							<p className="text-sm text-zinc-700">No items {searchParams.get("search") ? "found" : "yet"}.</p>
+						</div>
 					</div>
 				</div>
 			</div>
 		);
+	}
 
 	if (total <= 1) return null;
 

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import WhiteLogo from "@/public/assets/branding/logos/logo-white.svg";
+import BlackLogo from "@/public/assets/branding/logos/logo-black.svg";
 
 import { useState } from "react";
 import {
@@ -52,12 +53,17 @@ const callsToAction = [
 	{ name: "View all products", href: "#", icon: RectangleGroupIcon }, */
 ];
 
+const whitepages = ["/resources", "/announcements", "/blog", "/sessions"];
+
 const hiddenPathnames = ["/login", "/forgot-password", "/reset-password", "/verify-email", "/signup"];
 
 export function WebsiteNavbar({ selectedSession }) {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const { data: authSession, status } = useSession();
 	const pathname = usePathname();
+
+	let isWhite = whitepages.includes(pathname);
+	if (!pathname.includes("/medibook") && pathname.includes("/announcements")) isWhite = true;
 
 	const ordinal = getOrdinal(selectedSession?.numberInteger);
 
@@ -68,7 +74,7 @@ export function WebsiteNavbar({ selectedSession }) {
 					<div className="flex lg:flex-1">
 						<Link href={status === "authenticated" ? "/home" : "/"} className="-m-1.5 p-1.5">
 							<span className="sr-only">MEDIMUN</span>
-							<Image className="h-12 w-auto" src={WhiteLogo} alt="" />
+							<Image className="h-12 w-auto" src={isWhite ? BlackLogo : WhiteLogo} alt="" />
 						</Link>
 					</div>
 					<div className="flex lg:hidden">
@@ -80,9 +86,13 @@ export function WebsiteNavbar({ selectedSession }) {
 							<Bars3Icon className="h-6 w-6" aria-hidden="true" />
 						</button>
 					</div>
-					<PopoverGroup className="hidden rounded-full border bg-zinc-100/60 px-6 py-2 shadow-md lg:flex lg:gap-x-12">
+					<PopoverGroup
+						className={cn(
+							"hidden rounded-full border bg-zinc-100/60 px-6 py-2 shadow-md lg:flex lg:gap-x-12",
+							isWhite && "border-zinc-700 bg-gray-900/90 shadow-zinc-800"
+						)}>
 						<Popover>
-							<PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+							<PopoverButton className={cn("flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900", isWhite && "text-white")}>
 								Conference
 								<ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
 							</PopoverButton>
@@ -137,16 +147,16 @@ export function WebsiteNavbar({ selectedSession }) {
 							</PopoverPanel>
 						</Popover>
 
-						<Link href="/about" className="text-sm font-semibold leading-6 text-gray-900">
+						<Link href="/about" className={cn("text-sm font-semibold leading-6 text-gray-900", isWhite && "text-white")}>
 							About
 						</Link>
 						{/* <Link href="/blog" className="text-sm font-semibold leading-6 text-gray-900">
 							Blog
 						</Link> */}
-						<Link href="/announcements" className="text-sm font-semibold leading-6 text-gray-900">
+						<Link href="/announcements" className={cn("text-sm font-semibold leading-6 text-gray-900", isWhite && "text-white")}>
 							Announcements
 						</Link>
-						<Link href="/contact" className="text-sm font-semibold leading-6 text-gray-900">
+						<Link href="/contact" className={cn("text-sm font-semibold leading-6 text-gray-900", isWhite && "text-white")}>
 							Contact
 						</Link>
 					</PopoverGroup>
@@ -158,7 +168,10 @@ export function WebsiteNavbar({ selectedSession }) {
 						)}
 						<Link
 							href={status === "authenticated" ? "/medibook" : "/signup"}
-							className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+							className={cn(
+								"rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+								isWhite && "bg-white text-gray-900 hover:bg-gray-300"
+							)}>
 							{status === "authenticated" ? (authSession.user.isDisabled ? "Account Disabled" : "Go to MediBook") : "Sign Up"}
 						</Link>
 					</div>

@@ -50,11 +50,11 @@ export default auth((req) => {
 	const isDisabled = authSession?.user?.isDisabled;
 	const isAuthenticated = !!req.auth;
 
-	if (pathname.includes("/medibook") && isDisabled) return NextResponse.redirect(new URL(`/`, nextUrl.origin));
+	if (pathname.includes("/medibook") && isDisabled) return NextResponse.redirect(new URL(`/home`, nextUrl.origin));
 
 	const isManagement = isAuthenticated && authorize(authSession, [s.management]);
 
-	if (authSession?.user?.isDisabled && pathname == "/login") return NextResponse.redirect(new URL("/", nextUrl.origin));
+	if (authSession?.user?.isDisabled && pathname == "/login") return NextResponse.redirect(new URL("/home", nextUrl.origin));
 
 	if (pathname.includes("/medibook") && !isAuthenticated) return NextResponse.redirect(new URL(`/login?after-login=${pathname}`, nextUrl.origin));
 
@@ -66,38 +66,6 @@ export default auth((req) => {
 	//if path matches /medibook/session/<anyNumber>/applications/* check with regex
 	if (pathname.includes("/medibook/session") && pathname.includes("/applications") && !isManagement)
 		return NextResponse.redirect(new URL(`/medibook/not-found`, nextUrl.origin));
-
-	/* 	if (!pathname.includes("/medibook") && !pathname.includes("/home") && isAuthenticated) {
-		return NextResponse.redirect(new URL("/medibook", nextUrl.origin));
-	}
-
-	if ((pathname.includes("/medibook") || pathname.includes("/home")) && !isAuthenticated) {
-		return NextResponse.redirect(new URL(`/login?after-login=${pathname}`, nextUrl.origin));
-	} */
-
-	/* 	if (nextUrl.pathname.includes("/dashboard") && !isAuthenticated) {
-		return NextResponse.redirect(new URL(`/login?return=${nextUrl.pathname}`, nextUrl.origin));
-	}
-
-	if (nextUrl.pathname.includes("/dashboard") && isAuthenticated && !req.auth.user.admin) {
-		return NextResponse.redirect(new URL("/", nextUrl.origin));
-	}
-
-	if (nextUrl.pathname.includes("/vote") && !isAuthenticated) {
-		return NextResponse.redirect(new URL(`/login?return=${nextUrl.pathname}`, nextUrl.origin));
-	}
-
-	if (nextUrl.pathname.includes("/vote") && isAuthenticated && !req.auth.user.student) {
-		return NextResponse.redirect(new URL("/", nextUrl.origin));
-	}
-
-	if (nextUrl.pathname.includes("/profile") && !isAuthenticated) {
-		return NextResponse.redirect(new URL(`/login?return=${nextUrl.pathname}`, nextUrl.origin));
-	}
-
-	if (nextUrl.pathname.includes("/profile") && isAuthenticated && !req.auth.user.candidate) {
-		return NextResponse.redirect(new URL("/", nextUrl.origin));
-	} */
 });
 
 export const config = {

@@ -20,11 +20,11 @@ import { Suspense } from "react";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { Subheading } from "@/components/heading";
 import { PageCreateAnnouncement } from "./@announcement/pageCreateAnnouncement";
+import { Topbar } from "@/app/(website)/server-components";
 
 const columns = ["Name", "Uploader", "Date Uploaded", "Tags"];
 
 export async function ResourcesTable({ resources, isManagement, tableColumns = columns }) {
-	const authSession = await auth();
 	if (!!resources.length)
 		return (
 			<Table className="showscrollbar">
@@ -284,28 +284,28 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 	if (!selectedAnnouncement) return;
 
 	return (
-		<div className="pt-24 sm:pt-32">
-			<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-				<p className="mx-auto mb-8 mt-2 max-w-lg text-pretty text-center text-4xl font-medium tracking-tight text-gray-950 sm:text-3xl">
-					{selectedAnnouncement.title}
-				</p>
-				<Suspense fallback={<div>404</div>}>
-					{/* @ts-ignore */}
-					<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedAnnouncement.markdown} />
-				</Suspense>
-				<Divider className="mt-[712px]" />
-				<Subheading className="my-10 !font-extralight">
-					{"We are not responsible for the contents of announcements. Please refer to our "}
-					<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
-						code of conduct
-					</Link>
-					{" and "}
-					<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
-						terms of service
-					</Link>
-					{" for more information."}
-				</Subheading>
+		<>
+			<Topbar title={selectedAnnouncement.title} description={selectedAnnouncement.description} />
+			<div className="pt-24 sm:pt-32">
+				<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
+					<Suspense fallback={<div>404</div>}>
+						{/* @ts-ignore */}
+						<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedAnnouncement.markdown} />
+					</Suspense>
+					<Divider className="mt-[712px]" />
+					<Subheading className="my-10 !font-extralight">
+						{"We are not responsible for the contents of announcements. Please refer to our "}
+						<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
+							code of conduct
+						</Link>
+						{" and "}
+						<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
+							terms of service
+						</Link>
+						{" for more information."}
+					</Subheading>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }

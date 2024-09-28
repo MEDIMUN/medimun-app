@@ -620,7 +620,7 @@ export function SettingsForm({ selectedSession }) {
 			<Divider className="my-10" soft />
 			{authorize(authSession, [s.admins, s.sd]) && (
 				<form id="dangerousActions">
-					{(!selectedSession.isVisible || !selectedSession.isPartiallyVisible) && !selectedSession.isCurrent && (
+					{!selectedSession.isVisible && !selectedSession.isPartiallyVisible && !selectedSession.isCurrent && (
 						<>
 							<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 								<div className="space-y-1">

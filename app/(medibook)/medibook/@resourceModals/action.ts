@@ -45,7 +45,7 @@ export async function uploadResource(formData: FormData, searchParams: any) {
 		resourceDriveUrl: z.string().optional().nullable(),
 		resourceFile: z
 			.any()
-			.refine((files) => files?.[0]?.size <= 20000000, `Max image size is 20MB.`)
+			.refine((files) => files?.[0]?.size <= 30000000, `Max image size is 30MB.`)
 			.refine(
 				//has "pdf" or "image"
 				(files) => {

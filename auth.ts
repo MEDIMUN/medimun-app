@@ -181,9 +181,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				const isPasswordValid = await verifyPassword(password, prismaUser.Account[0].password);
 				if (isPasswordValid) {
 					const userData = generateUserData(prismaUser);
+					const dateNow = new Date();
 					await prisma.user.update({
 						where: { id: userData.id },
-						data: { lastLogin: new Date() },
+						data: { lastLogin: dateNow, lastSessionUpdate: dateNow },
 					});
 					return userData;
 				} else {

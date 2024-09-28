@@ -1,25 +1,122 @@
 import Paginator from "@/components/pagination";
 import { Suspense } from "react";
+import { Topbar } from "../server-components";
+import prisma from "@/prisma/client";
+import { notFound } from "next/navigation";
+import { romanize } from "@/lib/romanize";
+import { cn } from "@/lib/cn";
+import Link from "next/link";
+import { Badge } from "@/components/badge";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
+import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
+import { Divider } from "@/components/divider";
+import { Code } from "@/components/text";
 
-export default async function Page() {
+export const revalidate = 60;
+
+export default async function Page({ searchParams }) {
+	const currentPage = parseInt(searchParams.page) || 1;
+
+	const whereObject = {
+		isPartlyVisible: true,
+	};
+
+	const [sessions, numberOfSessions] = await Promise.all([
+		prisma.session.findMany({
+			where: whereObject,
+			take: 10,
+			include: { Day: { orderBy: { date: "asc" }, where: { type: "CONFERENCE" }, include: { location: true } } },
+			skip: (currentPage - 1) * 10,
+			orderBy: [{ isMainShown: "desc" }, { numberInteger: "desc" }],
+		}),
+		prisma.session.count({ where: whereObject }),
+	]).catch(notFound);
+
 	return (
-		<div className="py-24 sm:py-32">
-			<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-				<div className="mb-4 lg:px-8">
-					<div className="mx-auto max-w-2xl text-left md:text-center">
-						<h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Sessions</h2>
-						<p className="mt-2 text-lg leading-6 text-gray-600 md:mt-3">
-							All Past, Current and Future Sessions of our Conference.
-							<br />
-							This section will be made available on the 26th of September, 2024
-						</p>
-					</div>
-				</div>
-				<Suspense fallback={<div>Loading...</div>}>
-					<Paginator totalItems={0} itemsOnPage={0} />
-				</Suspense>
-			</div>
-		</div>
+		<>
+			<Topbar title={"Sessions"} description={"All Past, Current and Future Sessions of our Conference."} />
+			{!!sessions.length && (
+				<ul className="mx-auto max-w-7xl px-5">
+					{sessions.map((session, index) => {
+						const firstDay = session?.Day[0]?.date;
+						const firstDayDate = firstDay?.toLocaleString("en-GB").slice(0, 10);
+						const lastDayDate = session?.Day[session?.Day.length - 1]?.date.toLocaleString("en-GB").slice(0, 10);
+						const location = session?.Day[0]?.location?.name;
+						const romanized = romanize(session?.numberInteger);
+						return (
+							<>
+								<li
+									className={cn("bg-cover", session?.isMainShown && "mb-6 overflow-hidden rounded-lg text-zinc-800 shadow-md duration-300")}
+									style={
+										session.isMainShown
+											? session.cover
+												? { backgroundImage: `url(/api/sessions/${session.id}/cover)` }
+												: { backgroundImage: `url(/assets/gradients/${2}.jpg)` }
+											: null
+									}
+									key={session.id}>
+									{!!index && !session?.isMainShown && <Divider soft={index > 0} />}
+									<div className={cn("flex items-center justify-between", session?.isMainShown && "bg-white bg-opacity-60 pl-6 pr-4")}>
+										<div key={session.id} className="flex gap-6 py-6">
+											{!session.isMainShown && (
+												<div className="w-[85.33px] shrink-0">
+													<Link href={`/medibook/sessions/${session?.number}`} aria-hidden="true">
+														{session?.cover ? (
+															<div
+																style={{ backgroundImage: `url(/api/sessions/${session.id}/cover)` }}
+																className={`flex aspect-square justify-center rounded-lg bg-cover align-middle shadow`}>
+																<p className="my-auto translate-y-1 font-[GilroyLight] text-5xl font-light text-white drop-shadow">
+																	{session.number}
+																</p>
+															</div>
+														) : (
+															<div
+																style={{ backgroundImage: `url(/assets/gradients/${index + 1}.jpg)` }}
+																className={`flex aspect-square justify-center rounded-lg bg-cover align-middle opacity-70 shadow`}>
+																<p className="my-auto translate-y-1 font-[GilroyLight] text-5xl font-light text-white drop-shadow">
+																	{session.number}
+																</p>
+															</div>
+														)}
+													</Link>
+												</div>
+											)}
+											<div className="space-y-1.5">
+												<div className="text-base/6 font-semibold">
+													<Link href={`/medibook/sessions/${session?.number}`}>
+														{session.theme ? (
+															<>
+																{session.theme} <Badge className="font-light">Session {romanized}</Badge>
+															</>
+														) : (
+															`Session ${romanized}`
+														)}{" "}
+													</Link>
+												</div>
+												<div className="line-clamp-1 text-xs/6 text-zinc-500">
+													{firstDayDate && lastDayDate ? `${firstDayDate} to ${lastDayDate}` : "No dates set"}
+													{location ? ` • ${location}` : " • No location set"}
+												</div>
+											</div>
+										</div>
+										<div className="flex items-center gap-4">
+											<Dropdown>
+												<DropdownButton plain aria-label="More options">
+													<EllipsisVerticalIcon />
+												</DropdownButton>
+												<DropdownMenu anchor="bottom end">
+													<DropdownItem href={`/medibook/sessions/${session?.number}`}>View</DropdownItem>
+												</DropdownMenu>
+											</Dropdown>
+										</div>
+									</div>
+								</li>
+							</>
+						);
+					})}
+				</ul>
+			)}
+		</>
 	);
 }
 

@@ -131,7 +131,7 @@ export function TopBar({
 						)}
 					</div>
 				</div>
-				{children && <div className="grid w-full grid-cols-1 gap-6 md:flex md:w-auto md:flex-row">{children}</div>}
+				{children && <div className="grid w-full grid-cols-1 gap-4 md:flex md:w-auto md:flex-row">{children}</div>}
 			</div>
 			{showDivider && <Divider soft />}
 		</>
@@ -173,6 +173,7 @@ const FileDownloader = ({ resourceId, fileName }) => {
 			document.body.removeChild(anchor);
 			window.URL.revokeObjectURL(blobUrl);
 		} catch (error) {
+			console.log(error);
 			toast.error("Failed to download file", { id: "downloadingFile" });
 			return null;
 		}
@@ -195,7 +196,9 @@ const FileDownloader = ({ resourceId, fileName }) => {
 export function SessionResourceDropdown({ selectedResource }) {
 	const router = useRouter();
 	const { data: authSession, status } = useSession();
-	const resourceUrl = selectedResource.driveUrl ? `https://${selectedResource.id.driveUrl}` : `/medibook/resources/${selectedResource.id.id}`;
+	const resourceUrl = selectedResource.driveUrl
+		? `https://${selectedResource.id.driveUrl}`
+		: `https://www.medimun.org/resources/${selectedResource.id}`;
 
 	const authorizedToEdit = status === "authenticated" && authorizedToEditResource(authSession, selectedResource);
 

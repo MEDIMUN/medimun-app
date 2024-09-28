@@ -1,25 +1,155 @@
+import { SessionResourceDropdown } from "@/app/(medibook)/medibook/client-components";
+import { Badge } from "@/components/badge";
 import Paginator from "@/components/pagination";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { romanize } from "@/lib/romanize";
+import { capitaliseEachWord } from "@/lib/text";
+import prisma from "@/prisma/client";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { Topbar } from "../server-components";
 
-export default async function Page() {
+export const dynamic = "force-dynamic";
+
+function PublicResourcesTable({ resources }) {
+	const tableColumns = ["Name", "Date Uploaded", "Tags"];
+
 	return (
-		<div className="py-24 sm:py-32">
-			<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-				<div className="mb-4 lg:px-8">
-					<div className="mx-auto max-w-2xl text-left md:text-center">
-						<h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Resources</h2>
-						<p className="mt-2 text-lg leading-6 text-gray-600 md:mt-3">
-							Global Resources and Resources from the latest session.
-							<br />
-							This section will be made available on the 26th of September, 2024
-						</p>
-					</div>
-				</div>
-				<Suspense fallback={<div>Loading...</div>}>
-					<Paginator totalItems={0} itemsOnPage={0} />
-				</Suspense>
-			</div>
-		</div>
+		<Table className="showscrollbar">
+			<TableHead>
+				<TableRow>
+					{[
+						<span key="actions" className="sr-only">
+							Actions
+						</span>,
+						...tableColumns,
+					].map((row, i) => (
+						<TableHeader key={i}>{row}</TableHeader>
+					))}
+				</TableRow>
+			</TableHead>
+			<TableBody>
+				{resources.map((resource) => {
+					return (
+						<TableRow key={resource.id}>
+							<TableCell>
+								<SessionResourceDropdown selectedResource={resource} />
+							</TableCell>
+							{tableColumns.includes("Name") && (
+								<TableCell>
+									<Link
+										target="_blank"
+										className="hover:underline"
+										href={resource.driveUrl ? `https://${resource.driveUrl}` : `/medibook/resources/${resource.id}`}>
+										{resource.isPinned && "📌 "}
+										{resource.name}
+									</Link>
+								</TableCell>
+							)}
+							{tableColumns.includes("Scope") && (
+								<TableCell>
+									<div className="mr-auto flex flex-wrap gap-1">
+										{resource.scope.map((scope, index) => {
+											if (scope.includes("SESSION")) {
+												return (
+													<Badge key={index} color="purple" className="max-w-min">
+														{capitaliseEachWord(scope.replace("SESSION", ""))} (Session {romanize(resource?.session?.number)})
+													</Badge>
+												);
+											}
+											if (scope.includes("COMMITTEE")) {
+												return (
+													<Badge key={index} color="purple" className="max-w-min">
+														{capitaliseEachWord(scope.replace("COMMITTEE", ""))} viewing {resource?.committee?.shortName || resource?.committee?.name}{" "}
+														in Session {romanize(resource?.committee?.session.number)}
+													</Badge>
+												);
+											}
+											if (scope.includes("DEPARTMENT")) {
+												return (
+													<Badge key={index} color="purple" className="max-w-min">
+														{capitaliseEachWord(scope.replace("DEPARTMENT", ""))} viewing{" "}
+														{resource?.department?.shortName || resource?.department?.name} in Session{" "}
+														{romanize(resource?.department?.session.number)}
+													</Badge>
+												);
+											}
+											if (scope.includes("PERSONAL")) {
+												return (
+													<Badge key={index} color="purple" className="max-w-min">
+														{capitaliseEachWord(scope)}
+													</Badge>
+												);
+											}
+											return (
+												<Badge key={index} color="purple" className="max-w-min">
+													{capitaliseEachWord(scope)}
+												</Badge>
+											);
+										})}
+									</div>
+								</TableCell>
+							)}
+							{tableColumns.includes("Date Uploaded") && <TableCell>{resource.time.toLocaleString("uk-en").replace(",", " at")}</TableCell>}
+							{tableColumns.includes("Tags") && (
+								<TableCell>
+									{resource.driveUrl ? (
+										<Badge color="yellow" className="mr-2">
+											External File
+										</Badge>
+									) : resource.fileId ? (
+										<Badge color="green" className="mr-2">
+											Local File
+										</Badge>
+									) : (
+										<Badge className="mr-2">Unknown</Badge>
+									)}
+									{resource.isPrivate && (
+										<Badge className="mr-2" color="red">
+											Private
+										</Badge>
+									)}
+									{resource.scope?.includes("SESSIONPROSPECTUS") && <Badge color="blue">Session Prospectus</Badge>}
+								</TableCell>
+							)}
+						</TableRow>
+					);
+				})}
+			</TableBody>
+		</Table>
+	);
+}
+
+export default async function Page({ searchParams }) {
+	const currentPage = Number(searchParams.page) || 1;
+	const whereObject = {
+		isPrivate: false,
+		OR: [
+			{ scope: { hasSome: ["WEBSITE"] } },
+			{ session: { isMainShown: true }, scope: { hasSome: ["SESSIONPROSPECTUS"] } },
+			{ session: { isMainShown: true }, scope: { hasSome: ["SESSIONWEBSITE"] } },
+		],
+	};
+
+	const [resources, totalItems] = await Promise.all([
+		prisma.resource.findMany({
+			where: whereObject,
+			orderBy: {
+				time: "desc",
+			},
+			take: 20,
+			skip: (currentPage - 1) * 20,
+		}),
+		prisma.resource.count({ where: whereObject }),
+	]).catch(notFound);
+
+	return (
+		<>
+			<Topbar title={"Resources"} description={"Global Resources and Resources from the latest session."} />
+			<PublicResourcesTable resources={resources}></PublicResourcesTable>
+			<Paginator totalItems={totalItems} itemsOnPage={resources.length} itemsPerPage={20} />
+		</>
 	);
 }
 
