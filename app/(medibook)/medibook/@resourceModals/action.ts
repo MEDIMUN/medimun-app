@@ -38,7 +38,7 @@ export async function uploadResource(formData: FormData, searchParams: any) {
 	};
 
 	const resourceEditableDataSchema = z.object({
-		resourceName: z.string().min(2, "Name must be at least 2 characters long").max(50, "Name must at most 50 characters long"),
+		resourceName: z.string().min(2, "Name must be at least 2 characters long").max(100, "Name must at most 100 characters long"),
 		resourceIsPrivate: z.boolean(),
 		resourceIsPinned: z.boolean(),
 		resourceIsAnonymous: z.boolean(),
@@ -195,7 +195,7 @@ export async function editResourceDetails(formData: FormData, resourceId: string
 	if (!authorzedToEdit) return { ok: false, message: "Not authorized" };
 
 	const schema = z.object({
-		name: z.string().min(2, "Name must be at least 2 characters long").max(50, "Name must at most 50 characters long"),
+		name: z.string().min(2, "Name must be at least 2 characters long").max(100, "Name must at most 100 characters long"),
 		isPrivate: z.boolean(),
 		isPinned: z.boolean(),
 		isAnonymous: z.boolean(),

@@ -162,7 +162,9 @@ const FileDownloader = ({ resourceId, fileName }) => {
 				signal: AbortSignal.timeout(100000),
 			});
 			const response1Json = await response1.json();
+			console.log("response1Json", response1Json);
 			const response = await fetch(response1Json.url);
+			console.log("response", response);
 			const blob = await fetch(response.url, { signal: AbortSignal.timeout(100000) }).then((res) => res.blob());
 			const blobUrl = window.URL.createObjectURL(blob);
 			const anchor = document.createElement("a");
