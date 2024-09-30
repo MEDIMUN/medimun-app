@@ -782,8 +782,6 @@ const countriesSvg = (
 export function InteractiveMap({ coloredMapArray }) {
 	const countriesArray = countriesSvg.props.children.props.children;
 
-	console.log(coloredMapArray);
-
 	const getCountryColor = (countryId) => {
 		for (const color in coloredMapArray) {
 			if (coloredMapArray[color].includes(countryId.toUpperCase())) {
@@ -805,7 +803,7 @@ export function InteractiveMap({ coloredMapArray }) {
 			{countriesArray.map((country) => {
 				const selectedCountry = countries.find((c) => c.countryCode.toLowerCase() === country.props.id);
 				return (
-					<Tooltip content={selectedCountry?.flag + " " + selectedCountry?.countryNameEn} placement="top">
+					<Tooltip key={Math.random() + country.props.id} content={selectedCountry?.flag + " " + selectedCountry?.countryNameEn} placement="top">
 						<country.type
 							key={country.props.id}
 							id={country.props.id}
