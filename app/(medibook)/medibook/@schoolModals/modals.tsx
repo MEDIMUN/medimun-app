@@ -53,7 +53,7 @@ export function EditSchoolModal({ edit, locations }) {
 	async function onImageUpdate(e) {
 		const coverImage = e.target.files[0];
 		if (!coverImage) return toast.error("Profile Picture is required");
-		if (coverImage.size > 5000000) return toast.error("The maximun file size is 5MB");
+		if (coverImage.size > 10000000) return toast.error("The maximun file size is 10MB");
 		if (!["image/png", "image/gif", "image/jpeg"].includes(coverImage.type)) return toast.error("File type is not supported");
 		setUrl(URL.createObjectURL(e.target.files[0]));
 		const formData = new FormData(formRef.current);
@@ -194,6 +194,8 @@ export function AddSchoolModal() {
 	const [isLoading, setIsLoading] = useFlushState(false);
 
 	async function createSchoolHandler(formData: FormData) {
+		if (isLoading) return;
+		setIsLoading(true);
 		const res = await addSchool(formData);
 		if (res?.ok) {
 			onClose(searchParams, router);
@@ -241,6 +243,8 @@ export function DeleteSchoolModal({ school, total }) {
 	const [isLoading, setIsLoading] = useFlushState(false);
 
 	async function deleteSchoolHandler(formData: FormData) {
+		if (isLoading) return;
+		setIsLoading(true);
 		formData.append("id", school.id);
 		const res = await deleteSchool(formData);
 		const isChange = (total - 1) % 10 === 0;

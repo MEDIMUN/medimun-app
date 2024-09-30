@@ -61,6 +61,7 @@ function RoleDisplay({ roles }) {
 						break;
 					case "seniorDirector":
 						roleText = `Senior Director of MEDIMUN`;
+
 						break;
 					default:
 						return null;
@@ -69,25 +70,31 @@ function RoleDisplay({ roles }) {
 				return (
 					<li
 						key={index}
-						className={`mx-auto flex w-full max-w-[700px] flex-col gap-2 rounded-xl border border-black/10 bg-content1/60 p-4 dark:border-white/20 md:flex-row`}>
+						className={`mx-auto flex w-full max-w-[700px] flex-col gap-2 rounded-xl border border-black/10 bg-content1/60 p-4 dark:border-white/20 md:flex-col`}>
 						<div className="flex flex-col gap-1">
 							<div className="mb-[-10px] line-clamp-4 flex flex-col gap-2 bg-gradient-to-br from-foreground-800 to-foreground-500 bg-clip-text text-xl font-semibold tracking-tight text-transparent dark:to-foreground-200">
 								<p>{roleText}</p>
 							</div>
-							<p className="mt-1 line-clamp-2 text-default-400">
-								{role?.session}
-								<sup>{getOrdinal(role?.session)}</sup> Annual Session
-							</p>
+							{role.session ? (
+								<p className="mt-1 line-clamp-2 text-default-400">
+									{role?.session}
+									<sup>{getOrdinal(role?.session)}</sup> Annual Session
+								</p>
+							) : (
+								<p className="mt-1 line-clamp-2 text-default-400">All Sessions</p>
+							)}
 						</div>
-						<div className="flex flex-col gap-2 md:ml-auto">
-							<div className="my-auto flex gap-2">
-								<Button
-									href={roleUrl}
-									className="my-auto border-small border-black/10 bg-black/10 shadow-md light:text-black dark:border-white/20 dark:bg-white/10 md:w-full">
-									{buttonText}
-								</Button>
+						{roleUrl && (
+							<div className="flex flex-col gap-2">
+								<div className="my-auto flex gap-2">
+									<Button
+										href={roleUrl}
+										className="my-auto w-full border-small border-black/10 bg-black/10 shadow-md light:text-black dark:border-white/20 dark:bg-white/10 ">
+										{buttonText}
+									</Button>
+								</div>
 							</div>
-						</div>
+						)}
 					</li>
 				);
 			})}
@@ -96,7 +103,7 @@ function RoleDisplay({ roles }) {
 }
 
 export function ProfileTabs({ user }) {
-	const [selectedTab, setSelectedTab] = useState("about");
+	const [selectedTab, setSelectedTab] = useState("currentRoles");
 
 	useEffect(() => {
 		const hash = window.location.hash.substring(1);
@@ -119,7 +126,6 @@ export function ProfileTabs({ user }) {
 					}}
 					radius="full"
 					variant="light">
-					{user.user.bio && <Tab key="about" title="About" />}
 					<Tab key="currentRoles" title="Current Roles" />
 					<Tab key="pastRoles" title="Past & Future Roles" />
 					<Tab key="awards" title="Awards" />
@@ -135,10 +141,6 @@ export function ProfileTabs({ user }) {
 				}}
 				radius="full"
 				variant="light">
-				<Tab key="about" title="About Me">
-					<h2 className="mx-auto max-w-[600px] text-center text-large text-default-500">{user.bio}</h2>
-				</Tab>
-
 				<Tab key="currentRoles">
 					<RoleDisplay roles={user.currentRoles} />
 				</Tab>

@@ -26,7 +26,6 @@ export default async function Page({ params }) {
 	const authSession = await auth();
 	const selectedUser = await prisma.user.findFirst({
 		where: { OR: [{ id: params.userId }, { username: params.userId }] },
-		select: { id: true },
 	});
 	const userData = await userGetter(selectedUser.id);
 	const fullName = userData?.user.displayName || `${userData?.user.officialName} ${userData?.user.officialSurname}`;
@@ -113,8 +112,11 @@ export default async function Page({ params }) {
 					</div>
 				</div>
 			</div>
-			<section className="mx-auto flex max-w-5xl flex-col p-4 py-24">
-				<ProfileTabs user={userData} />
+			<div className="rounded-lg p-5 text-center">
+				<p>{selectedUser.bio}</p>
+			</div>
+			<section className="mx-auto flex max-w-5xl flex-col p-4">
+				<ProfileTabs user={{ ...userData, bio: selectedUser.bio }} />
 			</section>
 		</>
 	);

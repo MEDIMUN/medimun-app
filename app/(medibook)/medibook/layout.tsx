@@ -60,6 +60,7 @@ export default async function RootLayout({
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<link rel="preconnect" href="https://rsms.me/" />
 				<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+				<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
 			</head>
 			<body className="overflow-x-hidden">
 				<noscript className="fixed z-[1000] flex min-h-[100vh] w-full flex-col bg-primary text-white">

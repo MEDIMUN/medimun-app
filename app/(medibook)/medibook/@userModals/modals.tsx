@@ -240,7 +240,7 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 					{allUpdatableFields.includes("gender") && (
 						<Field className="flex flex-col">
 							<Label>Gender</Label>
-							<Select name="gender" defaultValue={[edit?.gender || null]}>
+							<Select name="gender" defaultValue={[edit?.gender || "PREFERNOTTOANSWER"]}>
 								<option value="FEMALE">Female</option>
 								<option value="MALE">Male</option>
 								<option value="NONBINARY">Non-Binary</option>

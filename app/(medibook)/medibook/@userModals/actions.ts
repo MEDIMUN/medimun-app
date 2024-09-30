@@ -448,7 +448,7 @@ const newSchemaObject = {
 	phoneNumber: z.string().nullable(),
 	gender: z
 		.enum(["MALE", "FEMALE", "PREFERNOTTOANSWER", "NONBINARY", "OTHER"])
-		.transform((v) => (v ? v : null))
+		.transform((v) => (v ? v : "PREFERNOTTOANSWER"))
 		.optional()
 		.nullable(),
 	nationality: z.string().min(2).max(2).toUpperCase().nullable(),

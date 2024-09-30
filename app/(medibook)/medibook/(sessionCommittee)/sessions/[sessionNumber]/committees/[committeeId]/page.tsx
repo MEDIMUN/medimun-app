@@ -1,10 +1,14 @@
 import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
+import { InteractiveMap } from "@/app/(medibook)/medibook/interactive-map";
 import { auth } from "@/auth";
+import { Badge } from "@/components/badge";
+import { Divider } from "@/components/divider";
 import { authorize, s } from "@/lib/authorize";
 import { cn } from "@/lib/cn";
 import { romanize } from "@/lib/romanize";
 import { displayNumberInSentenceAsText } from "@/lib/text";
 import prisma from "@/prisma/client";
+import { Avatar } from "@nextui-org/avatar";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -19,7 +23,7 @@ export default async function Page({ params, searchParams }) {
 					{ slug: { equals: params.committeeId, mode: "insensitive" }, session: { number: params.sessionNumber } },
 				],
 			},
-			include: { session: true, chair: { select: { user: true } } },
+			include: { session: true, chair: { select: { user: true } }, delegate: { select: { country: true } } },
 		})
 		.catch(notFound);
 
@@ -63,23 +67,41 @@ export default async function Page({ params, searchParams }) {
 		},
 	].filter((x) => x);
 
+	/* 	const assignedCountries = selectedCommittee.delegate.map((delegate) => delegate.country);
+	 */
+
 	return (
 		<>
 			<TopBar
 				title={selectedCommittee.name}
+				subheading={
+					!!selectedCommittee.chair.length && (
+						<p className="text-zinc-700 md:text-sm">
+							Chaired by{" "}
+							{selectedCommittee.chair.map((chair, index) => (
+								<>
+									<Link key={chair.user.id} className="hover:underline" href={`/medibook/users/${chair.user.username || chair.user.id}`}>
+										{chair.user.displayName}
+									</Link>
+									{index === 0 && selectedCommittee.chair.length > 1 && <span> & </span>}
+									{index < selectedCommittee.chair.length - 1 && <span>, </span>}
+								</>
+							))}
+						</p>
+					)
+				}
 				buttonText={`Session ${romanize(selectedCommittee.session.numberInteger)} Committees`}
 				buttonHref={`/medibook/sessions/${selectedCommittee.session.number}/committees`}
-				hideSearchBar
-				subheading={selectedCommittee.description}>
+				hideSearchBar>
 				{isManagement && <SearchParamsButton searchParams={{ "edit-committee": selectedCommittee.id }}>Edit Committee</SearchParamsButton>}
 			</TopBar>
 			<div className="flex h-[200px] w-full overflow-hidden rounded-xl bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right ring-1 ring-gray-200 md:h-[328px]">
 				<div className="mt-auto p-5">
-					<p className="mb-1 font-[canela] text-2xl text-primary md:text-4xl">{displayNumberInSentenceAsText(selectedCommittee.name)}</p>
-					{selectedCommittee.description && <p className="font-[canela] text-xl text-zinc-700 md:text-2xl">{selectedCommittee.description}</p>}
+					<p className="font-[canela] text-2xl text-primary md:text-4xl">{displayNumberInSentenceAsText(selectedCommittee.name)}</p>
+					{selectedCommittee.description && <p className="font-[canela] text-medium text-zinc-700 md:text-2xl">{selectedCommittee.description}</p>}
 				</div>
 			</div>
-			<div className="divide-y divide-gray-200 overflow-hidden rounded-md bg-gray-200 ring-1 ring-gray-200 sm:grid sm:grid-cols-1 sm:gap-px sm:divide-y-0">
+			<div className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-gray-200 ring-1 ring-gray-200 sm:grid sm:grid-cols-1 sm:gap-px sm:divide-y-0">
 				{actions.map((action, actionIdx) => (
 					<div
 						key={action.title}

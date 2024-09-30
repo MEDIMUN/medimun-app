@@ -10,8 +10,8 @@ export async function TopFl() {
 	if (!authSession) return;
 	if (!onlyIds.includes(authSession?.user?.id)) return;
 	return (
-		<div className="absolute bottom-2 right-2 w-[22px] select-none opacity-60 duration-150 hover:opacity-0 dark:opacity-55 md:w-[22px]">
-			<Image src={Rose} alt="Flower" className="select-none" />
+		<div className="absolute bottom-2 right-2 w-[16px] select-none opacity-60 duration-150 hover:opacity-0 dark:opacity-55 md:w-[16px]">
+			<Image src={Rose} alt="Flower for..." className="select-none" />
 		</div>
 	);
 }

@@ -45,7 +45,11 @@ export async function HomePage(): Promise<JSX.Element> {
 					</div>
 				</div>
 			</section>
-			<section className="min-h-svh"></section>
+			{/* <section className="min-h-svh">
+				<div className="flex p-8 md:p-16">
+					<div className="mx-auto h-full min-h-[300px] w-full max-w-7xl rounded-2xl bg-gradient-to-tr from-primary to-red-500">...</div>
+				</div>
+			</section> */}
 		</>
 	);
 }
