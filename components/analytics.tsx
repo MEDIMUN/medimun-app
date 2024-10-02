@@ -1,6 +1,7 @@
 "use client";
 
 import { init, push } from "@socialgouv/matomo-next";
+import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
@@ -10,6 +11,7 @@ const MATOMO_SITE_ID = "1";
 export function MatomoAnalytics() {
 	const pathname = usePathname();
 	const isInitialLoad = useRef(true);
+	const { data: authSession, status } = useSession();
 
 	useEffect(() => {
 		init({ url: MATOMO_URL, siteId: MATOMO_SITE_ID });
@@ -23,6 +25,9 @@ export function MatomoAnalytics() {
 			if (pathname) {
 				push(["setCustomUrl", pathname]);
 				push(["trackPageView"]);
+				if (status === "authenticated") {
+					push(["setUserId", authSession?.user?.id]);
+				}
 			}
 		}
 	}, [pathname]);
