@@ -55,7 +55,10 @@ export default async function Page({ params }: { params: { sessionNumber: string
 
 	const selectedResource = selectedSession.Resource[0];
 
-	const presignedFileUrl = await minioClient.presignedGetObject(process.env.BUCKETNAME, `resources/${selectedResource.fileId}`, 60 * 60);
+	const presignedFileUrl = await minioClient
+		.presignedGetObject(process.env.BUCKETNAME, `resources/${selectedResource.fileId}`, 60 * 60)
+		.catch(notFound);
+	const presignedFileUrlHttps = presignedFileUrl.replace("http://", "https://");
 
 	return (
 		<>
@@ -68,7 +71,7 @@ export default async function Page({ params }: { params: { sessionNumber: string
 				}
 			/>
 			<div className="flex flex-col pb-8 md:px-8">
-				<iframe src={presignedFileUrl} className="mx-auto min-h-screen w-full max-w-4xl overflow-hidden md:rounded-lg"></iframe>
+				<iframe src={presignedFileUrlHttps} className="mx-auto min-h-screen w-full max-w-4xl overflow-hidden md:rounded-lg"></iframe>
 				<div className="w-4xl mx-auto mt-8 rounded-md bg-zinc-50 p-4">
 					<div className="flex">
 						<div className="flex-shrink-0">
@@ -83,7 +86,7 @@ export default async function Page({ params }: { params: { sessionNumber: string
 								.
 							</p>
 							<p className="mt-3 text-sm md:ml-6 md:mt-0">
-								<a target="_blank" href={presignedFileUrl} className="whitespace-nowrap font-medium text-zinc-700 hover:text-zinc-600">
+								<a target="_blank" href={presignedFileUrlHttps} className="whitespace-nowrap font-medium text-zinc-700 hover:text-zinc-600">
 									Download
 								</a>
 							</p>
