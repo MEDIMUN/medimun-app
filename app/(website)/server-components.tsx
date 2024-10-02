@@ -269,8 +269,8 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 
 export function Topbar({ title, description }) {
 	return (
-		<div className=" py-24 text-left font-[Montserrat] sm:py-32 lg:text-center">
-			<div className="mx-auto max-w-7xl px-6 lg:px-8">
+		<div className="pb-[58px] pt-24 text-left font-[Montserrat] sm:pb-[72px] sm:pt-32 lg:text-center">
+			<div className="mx-auto max-w-7xl  px-6 lg:px-8">
 				<div className="mx-auto max-w-2xl bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text lg:mx-auto">
 					<h2 className="mx-auto text-4xl font-semibold tracking-tight sm:text-5xl">{title}</h2>
 					{description && <p className="mt-4 text-lg leading-8 text-gray-300">{description}</p>}
