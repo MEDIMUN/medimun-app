@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import DelegatesVector from "@/public/assets/delegates-vector.webp";
 
 export default function HeroImage() {
 	const [scrollY, setScrollY] = useState(0);
@@ -39,10 +40,10 @@ export default function HeroImage() {
 			<div className=" mt-auto flex">
 				<Image
 					priority
-					src="/assets/delegates-vector.png"
+					src={DelegatesVector}
 					alt=""
-					width={3000}
-					height={3000}
+					width={2000}
+					height={2000}
 					quality={90}
 					className="!relative h-[60svh] w-full object-cover object-right opacity-85 drop-shadow-xl grayscale md:h-[85vh] md:object-center"
 				/>
