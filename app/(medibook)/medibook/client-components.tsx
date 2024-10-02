@@ -86,7 +86,7 @@ export function TopBar({
 }: {
 	className?: string;
 	title: string;
-	sortOptions?: { value: string; order: string; label: string; description: string }[];
+	sortOptions?: { value: string; order: string; label: string; description?: string }[];
 	defaultSort?: string;
 	children?: React.ReactNode;
 	searchText?: string;

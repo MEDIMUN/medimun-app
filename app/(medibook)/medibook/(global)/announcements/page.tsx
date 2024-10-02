@@ -65,6 +65,8 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 	const isManagement = authorize(authSession, [s.management]);
 	return (
 		<AnnouncementsTable
+			buttonHref="/medibook"
+			buttonText="Home"
 			title={"Global Announcements"}
 			showPublishButton={isManagement}
 			baseUrl={"/medibook/announcements"}

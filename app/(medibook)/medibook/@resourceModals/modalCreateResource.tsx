@@ -63,7 +63,7 @@ export function ModalUploadResource() {
 
 	const onUrlChange = (e) => {
 		let initialValue = e;
-		initialValue = initialValue.trim().toLowerCase().replace(" ", "").replace("https://", "").replace("http://", "");
+		initialValue = initialValue.trim().replace(" ", "").replace("https://", "").replace("http://", "");
 		setUrl(initialValue);
 	};
 

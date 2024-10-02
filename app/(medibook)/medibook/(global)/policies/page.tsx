@@ -9,7 +9,9 @@ import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import { Button } from "@/components/button";
 import Paginator from "@/components/pagination";
 
-export default async function PoliciesRoot({ searchParams }) {
+export const dynamic = "force-dynamic";
+
+export default async function PoliciesPage({ searchParams }) {
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
 	const query = searchParams["search"];

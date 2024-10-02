@@ -53,7 +53,13 @@ export default async function Sessions({ searchParams }) {
 
 	return (
 		<>
-			<TopBar title="All Sessions" defaultSort="nameasc" searchText="Search sessions..." hideSearchBar={false}>
+			<TopBar
+				title="All Sessions"
+				buttonHref="/medibook"
+				buttonText="Home"
+				defaultSort="nameasc"
+				searchText="Search sessions..."
+				hideSearchBar={false}>
 				{authorize(authSession, [s.admins, s.sd]) && (
 					<SearchParamsButton
 						searchParams={{

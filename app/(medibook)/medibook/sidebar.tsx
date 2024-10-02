@@ -329,7 +329,7 @@ export function Sidebar({ sessions }) {
 									<SoonBadge />
 								</SidebarLabel>
 							</SidebarItem>
-							<SidebarItem disabled href="/medibook/policies" current={pathname === "/medibook/policies"}>
+							<SidebarItem href="/medibook/policies" current={pathname === "/medibook/policies"}>
 								<Icon slot="icon" icon="heroicons-solid:book-open" height={20} />
 								<SidebarLabel>Policies</SidebarLabel>
 							</SidebarItem>

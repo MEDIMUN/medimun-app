@@ -108,6 +108,8 @@ export default async function Page({ searchParams }) {
 	return (
 		<>
 			<TopBar
+				buttonHref="/medibook"
+				buttonText="Home"
 				subheading={`${numberOfUsers} Users`}
 				title="All Users"
 				defaultSort="officialNameasc"

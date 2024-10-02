@@ -14,7 +14,7 @@ export function MatomoAnalytics() {
 	const { data: authSession, status } = useSession();
 
 	useEffect(() => {
-		init({ url: MATOMO_URL, siteId: MATOMO_SITE_ID });
+		init({ url: MATOMO_URL, siteId: MATOMO_SITE_ID, disableCookies: status === "unauthenticated" });
 		return () => push(["HeatmapSessionRecording::disable"]);
 	}, []);
 
