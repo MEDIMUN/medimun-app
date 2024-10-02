@@ -9,6 +9,7 @@ import prisma from "@/prisma/client";
 import { Footer } from "@/app/(website)/main-footer";
 import NextTopLoader from "nextjs-toploader";
 import { notFound } from "next/navigation";
+import { MatomoAnalytics } from "@/components/analytics";
 
 export const metadata = {
 	title: {
@@ -27,6 +28,7 @@ export default async function RootLayout({ children }) {
 					<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
 				</head>
 				<body id="remove-scrollbar" className="m-0 bg-transparent p-0">
+					<MatomoAnalytics />
 					<NextAuthProvider>
 						<NextTopLoader
 							color="#AE2D28"

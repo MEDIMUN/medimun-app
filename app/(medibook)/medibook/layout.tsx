@@ -17,6 +17,7 @@ import type { Metadata } from "next";
 import { cn } from "@/lib/cn";
 import TopFl from "./flprovider";
 import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
+import { MatomoAnalytics } from "@/components/analytics";
 
 export const metadata: Metadata = {
 	title: {
@@ -82,6 +83,7 @@ export default async function RootLayout({
 					</div>
 				</noscript>
 				<Providers>
+					<MatomoAnalytics />
 					{departmentModals}
 					{committeeModals}
 					{locationModals}
