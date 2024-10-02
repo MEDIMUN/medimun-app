@@ -4,7 +4,7 @@ export default function Page() {
 	return (
 		<div className="px-2 pb-8 pt-[100px] md:px-8">
 			<iframe
-				src="https://drive.google.com/file/d/1BxZN8H8TQKeBJAKKrOOz_HcoNfJ9o9DM/preview"
+				src="https://drive.google.com/file/d/1uCN5HUY_c--vxRsYjnAFtPdP0MSOHAZM/preview"
 				className="min-h-screen w-full overflow-hidden rounded-lg">
 				<h1>Prospectus</h1>
 			</iframe>
