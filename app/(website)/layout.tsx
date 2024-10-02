@@ -8,6 +8,7 @@ import { StrictMode } from "react";
 import prisma from "@/prisma/client";
 import { Footer } from "@/app/(website)/main-footer";
 import NextTopLoader from "nextjs-toploader";
+import { notFound } from "next/navigation";
 
 export const metadata = {
 	title: {
@@ -17,7 +18,8 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-	const selectedSession = await prisma.session.findFirst({ where: { isMainShown: true } });
+	const selectedSession = await prisma.session.findFirst({ where: { isMainShown: true } }).catch(notFound);
+
 	return (
 		<StrictMode>
 			<html lang="en" className="bg-content1 !scrollbar-hide">

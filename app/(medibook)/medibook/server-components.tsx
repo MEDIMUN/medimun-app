@@ -25,6 +25,12 @@ import { Topbar } from "@/app/(website)/server-components";
 const columns = ["Name", "Uploader", "Date Uploaded", "Tags"];
 
 export async function ResourcesTable({ resources, isManagement, tableColumns = columns }) {
+	function replaceMergedWords(string) {
+		string = string.replace("Seniordirectors", "Senior Directors");
+		string = string.replace("Schooldirectors", "School Directors");
+		return string;
+	}
+
 	if (!!resources.length)
 		return (
 			<Table className="showscrollbar">
@@ -66,14 +72,14 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 												if (scope.includes("SESSION")) {
 													return (
 														<Badge key={index} color="purple" className="max-w-min">
-															{capitaliseEachWord(scope.replace("SESSION", ""))} (Session {romanize(resource?.session?.number)})
+															{replaceMergedWords(capitaliseEachWord(scope.replace("SESSION", "")))} (Session {romanize(resource?.session?.number)})
 														</Badge>
 													);
 												}
 												if (scope.includes("COMMITTEE")) {
 													return (
 														<Badge key={index} color="purple" className="max-w-min">
-															{capitaliseEachWord(scope.replace("COMMITTEE", ""))} viewing{" "}
+															{replaceMergedWords(capitaliseEachWord(scope.replace("COMMITTEE", "")))} viewing{" "}
 															{resource?.committee?.shortName || resource?.committee?.name} in Session {romanize(resource?.committee?.session.number)}
 														</Badge>
 													);
@@ -81,7 +87,7 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 												if (scope.includes("DEPARTMENT")) {
 													return (
 														<Badge key={index} color="purple" className="max-w-min">
-															{capitaliseEachWord(scope.replace("DEPARTMENT", ""))} viewing{" "}
+															{replaceMergedWords(capitaliseEachWord(scope.replace("DEPARTMENT", "")))} viewing{" "}
 															{resource?.department?.shortName || resource?.department?.name} in Session{" "}
 															{romanize(resource?.department?.session.number)}
 														</Badge>
@@ -90,13 +96,13 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 												if (scope.includes("PERSONAL")) {
 													return (
 														<Badge key={index} color="purple" className="max-w-min">
-															{capitaliseEachWord(scope)}
+															{replaceMergedWords(capitaliseEachWord(scope))}
 														</Badge>
 													);
 												}
 												return (
 													<Badge key={index} color="purple" className="max-w-min">
-														{capitaliseEachWord(scope)}
+														{replaceMergedWords(capitaliseEachWord(scope))}
 													</Badge>
 												);
 											})}

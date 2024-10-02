@@ -11,38 +11,32 @@ import { notFound } from "next/navigation";
 
 const itemsPerPage = 10;
 
+//FIX
 export default async function Page({ params }: { params: { sessionNumber: string; committeeId: string; page: string } }) {
 	const authSession = await auth();
 	const currentPage = parseInt(params.page) || 1;
 	const isManagement = authorize(authSession, [s.management]);
 
-	const [selectedSession, totalItems] = await prisma.$transaction([
-		prisma.session.findFirstOrThrow({
-			where: {
-				number: params.sessionNumber,
-				...(isManagement ? {} : { isVisible: true }),
-			},
-			include: {
-				committee: {
-					where: {
-						OR: [{ id: params.committeeId }, { slug: params.committeeId }],
-					},
-					take: 1,
-					include: {
-						ExtraCountry: true,
-						delegate: {
-							take: itemsPerPage,
-							skip: (currentPage - 1) * itemsPerPage,
-							include: { user: true, },
-						},
+	const [selectedSession, totalItems] = await prisma
+		.$transaction([
+			prisma.session.findFirstOrThrow({
+				where: {
+					number: params.sessionNumber,
+					...(isManagement ? {} : { isVisible: true }),
+				},
+				include: {
+					committee: {
+						where: { OR: [{ id: params.committeeId }, { slug: params.committeeId }] },
+						take: 1,
+						include: { ExtraCountry: true, delegate: { take: itemsPerPage, skip: (currentPage - 1) * itemsPerPage, include: { user: true } } },
 					},
 				},
-			},
-		}),
-		prisma.delegate.count({
-			where: { committee: { session: { number: params.sessionNumber }, OR: [{ id: params.committeeId }, { slug: params.committeeId }] } },
-		}),
-	]);
+			}),
+			prisma.delegate.count({
+				where: { committee: { session: { number: params.sessionNumber }, OR: [{ id: params.committeeId }, { slug: params.committeeId }] } },
+			}),
+		])
+		.catch(notFound);
 
 	const selectedCommittee = selectedSession.committee[0];
 	const delegates = selectedCommittee.delegate;

@@ -18,6 +18,7 @@ export default async function Page({ params, searchParams }) {
 	const [days, rollCalls] = await prisma
 		.$transaction([
 			prisma.day.findMany({
+				where: { session: { number: params.sessionNumber } },
 				orderBy: [{ type: "asc" }, { date: "asc" }],
 				select: { id: true, date: true, type: true, name: true },
 			}),

@@ -2,6 +2,7 @@ import prisma from "@/prisma/client";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import { Topbar } from "../server-components";
 
 const stats = [
 	{ label: "Transactions every 24 hours", value: "44 million" },
@@ -70,6 +71,8 @@ export default async function Example() {
 			isMainShown: true,
 		},
 	});
+	return <Topbar title="About" />;
+
 	return <div className="absolute mt-32 w-full text-center">Page will be available on the 27th of September 2024.</div>;
 	return (
 		<div className="bg-white">

@@ -1,4 +1,6 @@
-import WhiteLogo from "@/public/assets/branding/logos/logo-black.svg";
+import { Code, Text, TextLink } from "@/components/text";
+import WhiteLogo from "@/public/assets/branding/logos/logo-medired.svg";
+import ThimunLogo from "@/public/assets/branding/thimun/thimun-logo-by-medimun-dot-org.png";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,12 +8,12 @@ const navigation = {
 	conference: [
 		{ name: "Sessions", href: "/sessions" },
 		{ name: "Announcements", href: "/announcements" },
-		{ name: "Commerce", href: "#" },
+		{ name: "Shop", href: "https://shop.medimun.org", target: "_blank" },
 	],
 	organization: [
-		{ name: "About", href: "#" },
-		{ name: "Documentation", href: "#" },
-		{ name: "Guides", href: "#" },
+		{ name: "About", href: "/about" },
+		{ name: "Documentation", href: "/resources" },
+		{ name: "Guides", href: "/resources" },
 	],
 	company: [
 		{ name: "Login", href: "/login" },
@@ -91,14 +93,28 @@ const navigation = {
 export function Footer() {
 	const currentYear = new Date().getFullYear();
 	return (
-		<footer className="bg-zinc-900 font-thin" aria-labelledby="footer-heading">
+		<footer className="absolute z-[200] w-full bg-zinc-900 font-thin" aria-labelledby="footer-heading">
 			<h2 id="footer-heading" className="sr-only">
 				Footer
 			</h2>
 			<div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
 				<div className="xl:grid xl:grid-cols-3 xl:gap-8">
 					<div className="space-y-8">
-						<Image className="w-44" src={WhiteLogo} alt="Company name" />
+						<div className="flex flex-col gap-3">
+							<div className="flex max-w-max gap-4">
+								<Image className="w-40" src={WhiteLogo} alt="MEDIMUN Logo" />
+								<Image className="w-36" src={ThimunLogo} alt="THIMUN Logo" />
+							</div>
+							<Text>
+								We are affiliated with the{" "}
+								<TextLink
+									href={"https://foundation.thimun.org/affiliation-programme/affiliated-conferences"}
+									className="!text-white no-underline duration-300 md:hover:tracking-widest">
+									THIMUN Foundation
+								</TextLink>
+								.
+							</Text>
+						</div>
 						<div className="flex space-x-6">
 							{navigation.social.map((item) => (
 								<Link target="_blank" key={item.name} href={item.href} className="text-zinc-500 hover:text-zinc-400">

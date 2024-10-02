@@ -13,6 +13,7 @@ import { Divider } from "@/components/divider";
 
 export default async function SchoolDirectorApplicationsPage({ params }: { params: { sessionNumber: string }; searchParams: any }) {
 	const authSession = await auth();
+	if (!authSession) return notFound();
 
 	const [selectedSession, selectedUserHasApplication, userIsSchoolDirectorInSession, schools, selectedUser] = await Promise.all([
 		prisma.session.findFirstOrThrow({ where: { number: params.sessionNumber } }).catch(notFound),
