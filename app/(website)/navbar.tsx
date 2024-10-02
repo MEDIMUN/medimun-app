@@ -159,6 +159,9 @@ export function WebsiteNavbar({ selectedSession }) {
 						<Link href="/contact" className={cn("text-sm font-semibold leading-6 text-gray-900", isWhite && "text-white")}>
 							Contact
 						</Link>
+						<Link href="/policies/privacy" className={cn("text-sm font-semibold leading-6 text-gray-900", isWhite && "text-white")}>
+							Policies
+						</Link>
 					</PopoverGroup>
 					<div className="hidden gap-4 lg:flex lg:flex-1 lg:justify-end">
 						{status !== "authenticated" && (
@@ -236,6 +239,12 @@ export function WebsiteNavbar({ selectedSession }) {
 										href="/contact"
 										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
 										Contact
+									</Link>
+									<Link
+										onClick={() => setMobileMenuOpen(false)}
+										href="/policies/privacy"
+										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+										Policies
 									</Link>
 								</div>
 								<div className="py-6">

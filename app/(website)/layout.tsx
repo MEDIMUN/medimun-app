@@ -4,7 +4,7 @@ import { WebsiteNavbar } from "@/app/(website)/navbar";
 
 import { NextAuthProvider } from "./providers";
 import { Toaster } from "sonner";
-import { StrictMode } from "react";
+import { StrictMode, Suspense } from "react";
 import prisma from "@/prisma/client";
 import { Footer } from "@/app/(website)/main-footer";
 import NextTopLoader from "nextjs-toploader";
@@ -28,8 +28,10 @@ export default async function RootLayout({ children }) {
 					<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
 				</head>
 				<body id="remove-scrollbar" className="m-0 bg-transparent p-0">
-					<MatomoAnalytics />
 					<NextAuthProvider>
+						<Suspense>
+							<MatomoAnalytics />
+						</Suspense>
 						<NextTopLoader
 							color="#AE2D28"
 							showSpinner={false}

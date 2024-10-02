@@ -61,17 +61,9 @@ export function AccountDropdownMenu({ anchor }: { anchor: "top start" | "bottom 
 				</DropdownLabel>
 			</DropdownItem>
 			<DropdownDivider />
-			<DropdownItem href="/privacy">
+			<DropdownItem href="/medibook/policies">
 				<ShieldCheckIcon />
-				<DropdownLabel>Privacy Policy</DropdownLabel>
-			</DropdownItem>
-			<DropdownItem href="/terms">
-				<ShieldCheckIcon />
-				<DropdownLabel>Terms & Conditions</DropdownLabel>
-			</DropdownItem>
-			<DropdownItem href="/conducts">
-				<ShieldCheckIcon />
-				<DropdownLabel>Code of Conduct</DropdownLabel>
+				<DropdownLabel>Conference Policies</DropdownLabel>
 			</DropdownItem>
 			<DropdownDivider />
 			<DropdownItem href="/home">
@@ -255,7 +247,7 @@ export function Sidebar({ sessions }) {
 								 */}
 								<img src={`/assets/branding/logos/medibook-logo-white-2.svg`} className="h-[16px]" alt="MediBook" />
 								<Badge color="red" className="ml-1 rounded-full">
-									beta v0.9
+									beta
 								</Badge>
 							</div>
 						</Link>
@@ -336,6 +328,10 @@ export function Sidebar({ sessions }) {
 									Tasks
 									<SoonBadge />
 								</SidebarLabel>
+							</SidebarItem>
+							<SidebarItem disabled href="/medibook/policies" current={pathname === "/medibook/policies"}>
+								<Icon slot="icon" icon="heroicons-solid:book-open" height={20} />
+								<SidebarLabel>Policies</SidebarLabel>
 							</SidebarItem>
 							<Popover className="w-full">
 								<PopoverButton as={SidebarItem} className="w-full">

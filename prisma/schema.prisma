@@ -492,6 +492,14 @@ model Department {
   Announcement Announcement[]
 }
 
+model Policy {
+  id          String  @id @default(nanoid())
+  title       String
+  description String?
+  slug        String?
+  markdown    String?
+}
+
 model Location {
   id       String   @id @default(nanoid())
   name     String
