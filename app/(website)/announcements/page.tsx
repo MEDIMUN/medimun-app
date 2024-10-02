@@ -21,10 +21,17 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 				session: null,
 				committeeId: null,
 				departmentId: null,
-				privacy: { not: { equals: "ANONYMOUS" } },
 				title: { contains: query, mode: "insensitive" },
 				scope: { hasSome: ["WEBSITE"] },
 				type: { has: "WEBSITE" },
+			},
+			{
+				session: { isMainShown: true },
+				committeeId: null,
+				departmentId: null,
+				title: { contains: query, mode: "insensitive" },
+				privacy: { not: { equals: "ANONYMOUS" } },
+				scope: { hasSome: ["SESSIONWEBSITE"] },
 			},
 		],
 	};

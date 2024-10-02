@@ -22,6 +22,7 @@ export function OptionsDropdown({ school }) {
 					}}>
 					Edit & View Details
 				</DropdownItem>
+				<DropdownItem href={`/medibook/schools/${school.slug || school.id}/students`}>View Students</DropdownItem>
 				<DropdownItem
 					onClick={() => {
 						updateSearchParams({ "delete-school": school.id }, router);

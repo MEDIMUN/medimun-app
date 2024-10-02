@@ -53,7 +53,7 @@ const callsToAction = [
 	{ name: "View all products", href: "#", icon: RectangleGroupIcon }, */
 ];
 
-const whitepages = /*  ["/resources", "/announcements", "/blog", "/sessions", "/about"]; */ null;
+const whitepages = /*  ["/resources", "/announcements", "/blog", "/sessions", "/about"]; */ [];
 
 const hiddenPathnames = ["/login", "/forgot-password", "/reset-password", "/verify-email", "/signup"];
 
@@ -62,9 +62,9 @@ export function WebsiteNavbar({ selectedSession }) {
 	const { data: authSession, status } = useSession();
 	const pathname = usePathname();
 
-	let isWhite = whitepages?.includes(pathname);
-	if (!pathname.includes("/medibook") && pathname.includes("/announcements")) isWhite = true;
-
+	let isWhite = whitepages.includes(pathname);
+	/* 	if (!pathname.includes("/medibook") && pathname.includes("/announcements")) isWhite = true;
+	 */
 	const ordinal = getOrdinal(selectedSession?.numberInteger);
 
 	if (!hiddenPathnames.includes(pathname))
