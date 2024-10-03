@@ -122,6 +122,7 @@ export function SettingsForm({ selectedSession }) {
 	}
 
 	async function handleSubmitThemesForm(formData) {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await updateSession(formData, selectedSession.number);
 		if (res?.ok) {
@@ -134,6 +135,7 @@ export function SettingsForm({ selectedSession }) {
 	}
 
 	async function handleSubmitTextsForm(formData) {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await updateSessionTexts(formData, selectedSession.number);
 		if (res?.ok) {
@@ -146,6 +148,7 @@ export function SettingsForm({ selectedSession }) {
 	}
 
 	async function handleSubmitPricesForm(formData) {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await updateSessionPrices(formData, selectedSession.number);
 		if (res?.ok) {
@@ -158,6 +161,7 @@ export function SettingsForm({ selectedSession }) {
 	}
 
 	async function handleSessionNumbersChange(formData) {
+		if (isLoading) return;
 		setIsLoading(true);
 		const res = await sessionNumbersChange(formData, selectedSession.number);
 		if (res?.ok) {
@@ -414,7 +418,7 @@ export function SettingsForm({ selectedSession }) {
 									max={9999}
 									type="number"
 									name="directorPrice"
-									disabled={selectedSession.isPriceLocked || !authorize(authSession, [s.admins, s.sd])}
+									disabled={!authorize(authSession, [s.admins, s.sd, s.director])}
 								/>
 							</div>
 						</section>
@@ -436,7 +440,7 @@ export function SettingsForm({ selectedSession }) {
 									max={9999}
 									type="number"
 									name="delegatePrice"
-									disabled={selectedSession.isPriceLocked || !authorize(authSession, [s.admins, s.sd])}
+									disabled={!authorize(authSession, [s.admins, s.sd, s.director])}
 								/>
 							</div>
 						</section>
@@ -446,7 +450,7 @@ export function SettingsForm({ selectedSession }) {
 						<Button form="prices" plain type="reset">
 							Cancel
 						</Button>
-						<Button type="submit" form="prices" disabled={selectedSession.isPriceLocked || !authorize(authSession, [s.admins, s.sd])}>
+						<Button type="submit" form="prices" disabled={!authorize(authSession, [s.admins, s.sd, s.director])}>
 							Save
 						</Button>
 					</div>

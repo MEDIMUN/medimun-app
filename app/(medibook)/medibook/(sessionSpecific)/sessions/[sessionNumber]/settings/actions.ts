@@ -138,8 +138,6 @@ export async function updateSessionPrices(formData: FormData, selectedSessionNum
 	});
 	if (!selectedSession) return { ok: false, message: "Session not found" };
 
-	if (selectedSession.isPriceLocked) return { ok: false, message: "You can't update the price of a current or fully published session." };
-
 	const parsedFormData = parseFormData(formData);
 
 	const { error, data } = currentPricesSchema.safeParse({
@@ -151,7 +149,7 @@ export async function updateSessionPrices(formData: FormData, selectedSessionNum
 
 	try {
 		await prisma.session.update({
-			where: { number: selectedSessionNumber },
+			where: { id: selectedSession.id },
 			data: data,
 		});
 	} catch {
