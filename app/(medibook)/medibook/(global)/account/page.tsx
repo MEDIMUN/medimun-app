@@ -17,6 +17,8 @@ import { z } from "zod";
 import { processPronouns } from "@/lib/text";
 import { CheckCircleIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
+import { Badge } from "@/components/badge";
+import { Select } from "@/components/select";
 
 export const metadata: Metadata = {
 	title: "User Settings",
@@ -57,8 +59,9 @@ export default async function Settings({ searchParams }) {
 				.nullable(),
 			nationality: z.string().optional().nullable(),
 			pronouns: z.string().max(15).trim().transform(processPronouns).optional().nullable(),
-			bio: z.string().max(250).trim().optional().nullable(),
+			bio: z.string().max(500).trim().optional().nullable(),
 			bestTimeToReach: z.string().max(50).trim().optional().nullable(),
+			gender: z.enum(genders.map((x) => x.value)),
 		});
 		const { data, error } = schema.safeParse(parseFormData(formData));
 		if (error) redirect(`?error=${error.errors[0].message}#notice`);
@@ -75,6 +78,18 @@ export default async function Settings({ searchParams }) {
 		redirect("?success=Changes saved.#notice");
 	}
 
+	function RequiredTag() {
+		return <Badge color="red">Required</Badge>;
+	}
+
+	function OptionalTag() {
+		return <Badge color="yellow">Optional</Badge>;
+	}
+
+	function RecommendedTag() {
+		return <Badge color="blue">Recommended</Badge>;
+	}
+
 	const isAllowedToEditBio = authorize(authSession, [s.management, s.chair, s.manager]);
 
 	return (
@@ -84,7 +99,9 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10 mt-6" />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Profile Picture</Subheading>
+						<Subheading>
+							Profile Picture <RecommendedTag />
+						</Subheading>
 						<Text>
 							Your profile picture will be visible to everyone. You <b>don&apos;t</b> need to click save below. You need to be currently affiliated to
 							be able to update your profile picture.
@@ -99,7 +116,9 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10" />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Official Name</Subheading>
+						<Subheading>
+							Official Name <RequiredTag />
+						</Subheading>
 						<Text>Your name as it appears on your passport to be used on your certificate.</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -110,8 +129,13 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Display Name</Subheading>
-						<Text>Your preferred name (and surname) to be used on your name tag, profile and all public places.</Text>
+						<Subheading>
+							Display Name <OptionalTag />
+						</Subheading>
+						<Text>
+							Your preferred name to be used on your name tag, profile and all public places. Leave empty for your official name to be used. This must
+							also include a surname.
+						</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1">
 						<Input maxLength={50} placeholder="Preferred Name" name="displayName" defaultValue={selectedUser?.displayName} />
@@ -122,7 +146,9 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Phone Number</Subheading>
+						<Subheading>
+							Phone Number <RecommendedTag />
+						</Subheading>
 						<Text>Will only be visible to your chair or manager and management members. Please include a country code.</Text>
 					</div>
 					<div className="my-auto">
@@ -132,7 +158,9 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Email Address</Subheading>
+						<Subheading>
+							Email Address <RequiredTag />
+						</Subheading>
 						<Text>Will only be visible to your chair or manager and management members. Contact us to get it changed.</Text>
 					</div>
 					<div className="my-auto">
@@ -142,7 +170,9 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>School</Subheading>
+						<Subheading>
+							School <RequiredTag />
+						</Subheading>
 						<Text>
 							This will be displayed on your public profile. You need to be currently affiliated with one of the schools to be able to attend.
 						</Text>
@@ -163,7 +193,9 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Date of Birth</Subheading>
+						<Subheading>
+							Date of Birth <RequiredTag />
+						</Subheading>
 						<Text>Will be visile to your chair or manager and management members. It is required to verify your eligibility to attend.</Text>
 					</div>
 					<div className="my-auto">
@@ -177,7 +209,9 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Nationality</Subheading>
+						<Subheading>
+							Nationality <RequiredTag />
+						</Subheading>
 						<Text>Your primary nationality. Will be visible to everyone.</Text>
 					</div>
 					<div className="my-auto">
@@ -194,23 +228,27 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Gender</Subheading>
+						<Subheading>
+							Gender <RequiredTag />
+						</Subheading>
 						<Text>Will be visile to management members.</Text>
 					</div>
 					<div className="my-auto">
-						<Listbox name="gender" defaultValue={selectedUser?.gender || "PREFERNOTTOANSWER"}>
+						<Select name="gender" defaultValue={selectedUser?.gender || "PREFERNOTTOANSWER"}>
 							{genders.map((gender) => (
-								<ListboxOption key={gender.value} value={gender.value}>
-									<ListboxLabel>{gender.label}</ListboxLabel>
-								</ListboxOption>
+								<option key={gender.value} value={gender.value}>
+									{gender.label}
+								</option>
 							))}
-						</Listbox>
+						</Select>
 					</div>
 				</section>
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Pronouns</Subheading>
+						<Subheading>
+							Pronouns <RecommendedTag />
+						</Subheading>
 						<Text>Will be visile to everyone and will appear on your nametag. Write up to 3 pronouns separated by slashes.</Text>
 					</div>
 					<div className="my-auto">
@@ -220,7 +258,9 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Best Time To Reach</Subheading>
+						<Subheading>
+							Best Time To Reach <Badge color="red">Required for School Directors</Badge> <Badge color="yellow">Optional</Badge>
+						</Subheading>
 						<Text>Best time to reach you over the phone for for non-emergency situations.</Text>
 					</div>
 					<div className="my-auto">
@@ -230,9 +270,11 @@ export default async function Settings({ searchParams }) {
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Biography</Subheading>
+						<Subheading>
+							Biography <OptionalTag />
+						</Subheading>
 						<Text>
-							This will be displayed on your public profile. Maximum 250 characters.
+							This will be displayed on your public profile. Maximum 500 characters.
 							{!isAllowedToEditBio && !selectedUser?.bio && <span className="text-red-500"> Your role does not allow you to add a biography.</span>}
 							{!isAllowedToEditBio && selectedUser?.bio && (
 								<span className="text-red-500"> You are no longer allowed to modify your biography, you can only remove the current one.</span>

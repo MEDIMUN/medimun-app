@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { parseOrderDirection } from "@/lib/orderDirection";
 import prisma from "@/prisma/client";
 import { AnnouncementsTable } from "@/app/(medibook)/medibook/server-components";
+import { notFound } from "next/navigation";
 
 export default async function AnnouncementsPage({ searchParams, params }) {
 	const currentPage = Number(searchParams.page) || 1;
@@ -42,15 +43,19 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		type: { has: "WEBSITE" },
 	};
 
-	const prismaAnnouncements = await prisma.announcement.findMany({
-		where: whereObject,
-		take: itemsPerPage,
-		skip: (currentPage - 1) * itemsPerPage,
-		include: { user: true, session: true, committee: { include: { session: true } }, department: { include: { session: true } } },
-		orderBy: [{ isPinned: "desc" }, { [orderBy]: orderDirection }],
-	});
+	const [prismaAnnouncements, totalItems] = await prisma
+		.$transaction([
+			prisma.announcement.findMany({
+				where: whereObject,
+				take: 10,
+				skip: (currentPage - 1) * 10,
+				include: { user: true, session: true, committee: { include: { session: true } }, department: { include: { session: true } } },
+				orderBy: [{ isPinned: "desc" }, { [orderBy]: orderDirection }],
+			}),
+			prisma.announcement.count({ where: whereObject }),
+		])
+		.catch(notFound);
 
-	const totalItems = await prisma.announcement.count({ where: whereObject });
 	return (
 		<AnnouncementsTable
 			title={"Department Announcements"}

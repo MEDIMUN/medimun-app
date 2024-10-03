@@ -173,11 +173,8 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 }
 
 export async function AnnouncementViewPage({ params, searchParams }) {
-	const authSession = await auth();
 	const selectedAnnouncement = await prisma.announcement.findUnique({
-		where: {
-			id: params.announcementId[0],
-		},
+		where: { id: params.announcementId[0] },
 		include: {
 			session: true,
 			committee: { include: { session: true } },
@@ -186,83 +183,35 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 		},
 	});
 
-	let baseUrl = "/medibook/announcements";
-	let buttonText = "";
-	let buttonHref = "";
-	let createType: "globalAnnouncement" | "sessionAnnouncement" | "committeeAnnouncement" | "departmentAnnouncement" = "globalAnnouncement";
-
-	if (params.sessionNumber && !params.committeeId && !params.departmentId) {
-		const selectedSession = await prisma.session.findUnique({
-			where: {
-				number: params.sessionNumber,
-			},
-		});
-		baseUrl = `/medibook/sessions/${selectedSession.number}/announcements`;
-		buttonText = `Session ${romanize(selectedSession.numberInteger)} Announcements`;
-		buttonHref = `/medibook/sessions/${selectedSession.number}`;
-		createType = "sessionAnnouncement";
-	}
-
-	if (params.committeeId && !params.departmentId && params.sessionNumber) {
-		const selectedCommittee = await prisma.committee.findFirstOrThrow({
-			where: {
-				OR: [
-					{ id: params.committeeId, session: { number: params.sessionNumber } },
-					{ slug: params.committeeId, session: { number: params.sessionNumber } },
-				],
-			},
-			include: { session: true },
-		});
-		baseUrl = `/medibook/sessions/${selectedCommittee.session.number}/committees/${selectedCommittee.slug || selectedCommittee.id}/announcements`;
-		buttonText = `${selectedCommittee.name} Announcements`;
-		buttonHref = `/medibook/sessions/${selectedCommittee.session.number}/committees/${selectedCommittee.slug || selectedCommittee.id}`;
-		createType = "committeeAnnouncement";
-	}
-
-	if (params.departmentId && !params.committeeId && params.sessionNumber) {
-		const selectedDepartment = await prisma.department.findFirstOrThrow({
-			where: {
-				OR: [
-					{ id: params.departmentId, session: { number: params.sessionNumber } },
-					{ slug: params.departmentId, session: { number: params.sessionNumber } },
-				],
-			},
-			include: { session: true },
-		});
-		baseUrl = `/medibook/sessions/${selectedDepartment.session.number}/departments/${selectedDepartment.slug || selectedDepartment.id}/announcements`;
-		buttonText = `${selectedDepartment.name} Announcements`;
-		buttonHref = `/medibook/sessions/${selectedDepartment.session.number}/departments/${selectedDepartment.slug || selectedDepartment.id}`;
-		createType = "departmentAnnouncement";
-	}
+	let baseUrl = "/announcements";
 
 	if (selectedAnnouncement?.slug !== params?.announcementId[1]) {
 		if (selectedAnnouncement?.slug) return redirect(`${baseUrl}/${selectedAnnouncement.id}/${selectedAnnouncement.slug}`);
-	}
-
-	if (searchParams["edit-announcement"]) {
-		return null;
 	}
 
 	if (!selectedAnnouncement) return;
 
 	return (
 		<>
-			<Suspense fallback={<div>404</div>}>
-				{/* @ts-ignore */}
-				<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedAnnouncement.markdown} />
-			</Suspense>
-			<Divider className="mt-[512px]" />
-			<Subheading className="mt-10 !font-extralight">
-				{"We are not responsible for the contents of announcements. Please refer to our "}
-				<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
-					code of conduct
-				</Link>
-				{" and "}
-				<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
-					terms of service
-				</Link>
-				{" for more information."}
-			</Subheading>
+			<Topbar title={selectedAnnouncement.title} description={selectedAnnouncement.description} />
+			<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
+				<Suspense fallback={<div>404</div>}>
+					{/* @ts-ignore */}
+					<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedAnnouncement.markdown} />
+				</Suspense>
+				<Divider className="mt-[712px]" />
+				<Subheading className="my-10 !font-extralight">
+					{"We are not responsible for the contents of announcements. Please refer to our "}
+					<Link className="underline hover:text-primary" href="/policies/conduct#announcements" target="_blank">
+						code of conduct
+					</Link>
+					{" and "}
+					<Link className="underline hover:text-primary" href="/policies/conduct#announcements" target="_blank">
+						terms of service
+					</Link>
+					{" for more information."}
+				</Subheading>
+			</div>
 		</>
 	);
 }

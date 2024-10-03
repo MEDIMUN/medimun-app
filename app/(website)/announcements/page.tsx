@@ -13,7 +13,6 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 	const query = searchParams.search || "";
 	const orderBy = searchParams.order || "title";
 	const orderDirection = parseOrderDirection(searchParams.direction);
-	const authSession = await auth();
 
 	const whereObject = {
 		OR: [
@@ -36,15 +35,16 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		],
 	};
 
-	const prismaAnnouncements = await prisma.announcement.findMany({
-		where: whereObject,
-		take: itemsPerPage,
-		skip: (currentPage - 1) * itemsPerPage,
-		include: { user: true, session: true, committee: { include: { session: true } }, department: { include: { session: true } } },
-		orderBy: [{ isPinned: "desc" }, { [orderBy]: orderDirection }],
-	});
-
-	const totalItems = await prisma.announcement.count({ where: whereObject });
+	const [prismaAnnouncements, totalItems] = await prisma.$transaction([
+		prisma.announcement.findMany({
+			where: whereObject,
+			take: itemsPerPage,
+			skip: (currentPage - 1) * itemsPerPage,
+			include: { user: true, session: true, committee: { include: { session: true } }, department: { include: { session: true } } },
+			orderBy: [{ isPinned: "desc" }, { [orderBy]: orderDirection }],
+		}),
+		prisma.announcement.count({ where: whereObject }),
+	]);
 
 	return (
 		<>

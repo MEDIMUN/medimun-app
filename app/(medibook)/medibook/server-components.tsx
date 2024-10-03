@@ -20,7 +20,6 @@ import { Suspense } from "react";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { Subheading } from "@/components/heading";
 import { PageCreateAnnouncement } from "./@announcement/pageCreateAnnouncement";
-import { Topbar } from "@/app/(website)/server-components";
 
 const columns = ["Name", "Uploader", "Date Uploaded", "Tags"];
 
@@ -239,7 +238,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 		});
 		baseUrl = `/medibook/sessions/${selectedSession.number}/announcements`;
 		buttonText = `Session ${romanize(selectedSession.numberInteger)} Announcements`;
-		buttonHref = `/medibook/sessions/${selectedSession.number}`;
+		buttonHref = `/medibook/sessions/${selectedSession.number}/announcements`;
 		createType = "sessionAnnouncement";
 	}
 
@@ -255,7 +254,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 		});
 		baseUrl = `/medibook/sessions/${selectedCommittee.session.number}/committees/${selectedCommittee.slug || selectedCommittee.id}/announcements`;
 		buttonText = `${selectedCommittee.name} Announcements`;
-		buttonHref = `/medibook/sessions/${selectedCommittee.session.number}/committees/${selectedCommittee.slug || selectedCommittee.id}`;
+		buttonHref = `/medibook/sessions/${selectedCommittee.session.number}/committees/${selectedCommittee.slug || selectedCommittee.id}/announcements`;
 		createType = "committeeAnnouncement";
 	}
 
@@ -291,27 +290,16 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 
 	return (
 		<>
-			<Topbar title={selectedAnnouncement.title} description={selectedAnnouncement.description} />
-			<div className="pt-24 sm:pt-32">
-				<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-					<Suspense fallback={<div>404</div>}>
-						{/* @ts-ignore */}
-						<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedAnnouncement.markdown} />
-					</Suspense>
-					<Divider className="mt-[712px]" />
-					<Subheading className="my-10 !font-extralight">
-						{"We are not responsible for the contents of announcements. Please refer to our "}
-						<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
-							code of conduct
-						</Link>
-						{" and "}
-						<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
-							terms of service
-						</Link>
-						{" for more information."}
-					</Subheading>
-				</div>
-			</div>
+			<TopBar
+				hideSearchBar
+				buttonHref={buttonHref}
+				buttonText={buttonText}
+				title={selectedAnnouncement.title}
+				subheading={selectedAnnouncement.description}></TopBar>
+			<Suspense fallback={<div>404</div>}>
+				{/* @ts-ignore */}
+				<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedAnnouncement.markdown} />
+			</Suspense>
 		</>
 	);
 }

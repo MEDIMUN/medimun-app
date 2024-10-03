@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { useSession } from "next-auth/react";
+import { Badge } from "@/components/badge";
 
 export function UsernameField({ initialUsername }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +56,9 @@ export function UsernameField({ initialUsername }) {
 	return (
 		<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 			<div className="space-y-1">
-				<Subheading>Username</Subheading>
+				<Subheading>
+					Username <Badge color="yellow">Optional</Badge>
+				</Subheading>
 				<Text>Your handle on the platform. Will be visible to everyone. </Text>
 			</div>
 			<div className="my-auto">

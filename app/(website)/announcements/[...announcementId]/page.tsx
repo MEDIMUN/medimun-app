@@ -1,5 +1,5 @@
-import { AnnouncementViewPage } from "@/app/(medibook)/medibook/server-components";
 import prisma from "@/prisma/client";
+import { AnnouncementViewPage } from "../../server-components";
 
 export const dynamic = "force-dynamic";
 
