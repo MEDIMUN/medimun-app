@@ -131,7 +131,7 @@ export default async function SchoolDirectorApplicationsPage({ params }: { param
 									<TextLink href="mailto:medimun.cyprus@gmail.com">medimun.cyprus@gmail.com</TextLink> to have your school added to the system.
 								</Text>
 								<Text as="li">
-									You can check the status of your application here, you willalso receive an email once your application has been reviewed.
+									You can check the status of your application here, you will also receive an email once your application has been reviewed.
 								</Text>
 							</ul>
 						</div>

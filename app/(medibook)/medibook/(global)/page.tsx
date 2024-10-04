@@ -41,6 +41,21 @@ export default async function Home() {
 			href: `/medibook/sessions/20/announcements`,
 		},
 		{
+			title: "Global Resources",
+			description: "View all global resources",
+			href: `/medibook/resources`,
+		},
+		{
+			title: "Session Resources",
+			description: "View all the resources from the latest session",
+			href: `/medibook/sessions/20/resources`,
+		},
+		{
+			title: "Policies",
+			description: "View conference rules and policies.",
+			href: `/medibook/policies`,
+		},
+		{
 			title: "Account Settings",
 			description: "Change your account settings and add personal information",
 			href: `/medibook/account`,

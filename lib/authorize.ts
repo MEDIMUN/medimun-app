@@ -211,14 +211,14 @@ export function authorizePerSession(userdata: object, scope: s[], conferenceSess
 	const allRoles = userdata?.user?.currentRoles.concat(userdata?.user?.pastRoles);
 	//filter based on conferenceSessions array
 	if (!allRoles) return false;
-	const allRoleIdentifiers = allRoles.map((role) => role.roleIdentifier);
+	/* 	const allRoleIdentifiers = allRoles.map((role) => role.roleIdentifier);
 	if (
 		allRoleIdentifiers.includes("globalAdmin") ||
 		allRoleIdentifiers.includes("admin") ||
 		allRoleIdentifiers.includes("seniorDirector") ||
 		allRoleIdentifiers.includes("director")
 	)
-		return true;
+		return true; */
 	const rolesFilteredPerSessionObjects = allRoles.filter((role) => conferenceSessions.includes(role.session));
 
 	const rolesFilteredPerSession = rolesFilteredPerSessionObjects.map((role) => role.name);

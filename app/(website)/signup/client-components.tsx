@@ -176,12 +176,17 @@ export function SignUpForm({ allowSignUp }) {
 						<Label>Email</Label>
 						<Description>
 							<span className="text-xs">
+								<b>
+									The English School Students must use their personal email accounts. You can connect your MEDIMUN Account to your school account
+									later.
+								</b>
+								<br />
 								If you’ve attended before, kindly use the same email address you registered with or the one provided by your school during your
 								previous session registration. <TextLink href="/contact">Contact us</TextLink> if you need help.
 							</span>
 						</Description>
 						<Input
-							onChange={(e) => setEmail(e.target.value)}
+							onChange={(e) => setEmail(e.target.value.replace("englishschool.ac.cy", ""))}
 							value={email}
 							className="animate-appearance-in delay-150"
 							name="email"
