@@ -470,12 +470,11 @@ export function SettingsForm({ selectedSession }) {
 					</div>
 					<div className="my-auto grid grid-cols-1">
 						<Input
-							defaultValue={selectedSession?.minimumDelegateAgeOnFirstConferenceDay || 15}
+							defaultValue={selectedSession?.minimumDelegateAgeOnFirstConferenceDay}
 							min={1}
 							max={99}
 							type="number"
 							name="minimumDelegateAgeOnFirstConferenceDay"
-							disabled={selectedSession.isPriceLocked || !authorize(authSession, [s.admins, s.sd])}
 						/>
 					</div>
 				</section>
@@ -491,12 +490,11 @@ export function SettingsForm({ selectedSession }) {
 					</div>
 					<div className="my-auto grid grid-cols-1">
 						<Input
-							defaultValue={selectedSession?.maximumDelegateAgeOnFirstConferenceDay || 19}
+							defaultValue={selectedSession?.maximumDelegateAgeOnFirstConferenceDay}
 							min={1}
 							max={99}
 							type="number"
 							name="maximumDelegateAgeOnFirstConferenceDay"
-							disabled={selectedSession.isPriceLocked || !authorize(authSession, [s.admins, s.sd])}
 						/>
 					</div>
 				</section>
@@ -514,7 +512,7 @@ export function SettingsForm({ selectedSession }) {
 					</div>
 					<div className="my-auto grid grid-cols-1 gap-6">
 						<Input
-							defaultValue={selectedSession?.maxNumberOfGeneralAssemblyDelegationsPerSchool || 2}
+							defaultValue={selectedSession?.maxNumberOfGeneralAssemblyDelegationsPerSchool}
 							min={1}
 							max={500}
 							type="number"
@@ -527,10 +525,7 @@ export function SettingsForm({ selectedSession }) {
 					<Button form="handleSessionNumbersChange" plain type="reset">
 						Cancel
 					</Button>
-					<Button
-						type="submit"
-						form="handleSessionNumbersChange"
-						disabled={selectedSession.isPriceLocked || !authorize(authSession, [s.admins, s.sd])}>
+					<Button type="submit" form="handleSessionNumbersChange">
 						Save
 					</Button>
 				</div>
