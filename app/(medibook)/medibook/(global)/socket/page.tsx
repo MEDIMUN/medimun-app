@@ -8,7 +8,7 @@ const Home = () => {
 	const [input, setInput] = useState("");
 
 	const socketInitializer = async () => {
-		await fetch("http://localhost/api/socket");
+		await fetch("/api/socket");
 		socket = io();
 
 		socket.on("connect", () => {
