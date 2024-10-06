@@ -29,6 +29,8 @@ export default async function Page({ params }) {
 	const isChairOfCommittee = false || authorizeChairCommittee(authSession?.currentRoles, selectedCommittee.id);
 	const topics = selectedCommittee?.Topic;
 
+	const howManyTOpicsHaveDescription = topics.filter((topic) => topic.description).length;
+
 	return (
 		<>
 			<TopBar
@@ -42,49 +44,52 @@ export default async function Page({ params }) {
 				<Table>
 					<TableHead>
 						<TableRow>
-							<TableHeader>
-								<span className="sr-only">Actions</span>
-							</TableHeader>
+							{!(!isManagement && !isChairOfCommittee && !howManyTOpicsHaveDescription) && (
+								<TableHeader>
+									<span className="sr-only">Actions</span>
+								</TableHeader>
+							)}
 							<TableHeader>Topic</TableHeader>
 							<TableHeader>Description</TableHeader>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{topics.map((topic) => (
-							<TableRow key={topic.id}>
-								<TableCell>
-									{isChairOfCommittee || isManagement ? (
-										<Dropdown>
-											<DropdownButton plain aria-label="More options">
-												<EllipsisVerticalIcon />
-											</DropdownButton>
-											<DropdownMenu anchor="bottom end">
-												{topic.description && (
-													<DropdownItem
-														href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
-															topic.id
-														}`}>
-														View
-													</DropdownItem>
-												)}
-												<SearchParamsDropDropdownItem searchParams={{ "edit-topic": topic.id }}>Edit Topic</SearchParamsDropDropdownItem>
-												{isManagement && (
-													<SearchParamsDropDropdownItem searchParams={{ "delete-topic": topic.id }}>Delete Topic</SearchParamsDropDropdownItem>
-												)}
-											</DropdownMenu>
-										</Dropdown>
-									) : (
-										topic.description && (
+							<TableRow className="max-w-max" key={topic.id}>
+								{!(!isManagement && !isChairOfCommittee && !topic.description) && (
+									<TableCell>
+										{isChairOfCommittee || isManagement ? (
+											<Dropdown>
+												<DropdownButton plain aria-label="More options">
+													<EllipsisVerticalIcon />
+												</DropdownButton>
+												<DropdownMenu anchor="bottom end">
+													{topic.description && (
+														<DropdownItem
+															href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
+																topic.id
+															}`}>
+															View
+														</DropdownItem>
+													)}
+													<SearchParamsDropDropdownItem searchParams={{ "edit-topic": topic.id }}>Edit Topic</SearchParamsDropDropdownItem>
+													{isManagement && (
+														<SearchParamsDropDropdownItem searchParams={{ "delete-topic": topic.id }}>Delete Topic</SearchParamsDropDropdownItem>
+													)}
+												</DropdownMenu>
+											</Dropdown>
+										) : (
 											<Button
+												disabled={!topic.description}
 												href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
 													topic.id
 												}`}
 												plain>
-												View Details
+												Details
 											</Button>
-										)
-									)}
-								</TableCell>
+										)}
+									</TableCell>
+								)}
 								<TableCell>{topic.title}</TableCell>
 								<TableCell>{topic.description ? processMarkdownPreview(topic.description) : "-"}</TableCell>
 							</TableRow>
