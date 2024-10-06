@@ -14,18 +14,20 @@ import Paginator from "@/components/pagination";
 
 export default async function Page({ params }) {
 	const authSession = await auth();
+	if (!authSession) notFound();
 	const isManagement = authorize(authSession, [s.management]);
 	const selectedCommittee = await prisma.committee
 		.findFirstOrThrow({
 			where: {
 				OR: [{ slug: params.committeeId }, { id: params.committeeId }],
-				session: { number: params.sessionNumber, ...(!isManagement ? { isVisible: true } : {}) },
+				session: { number: params.sessionNumber, ...(!isManagement ? { isPartlyVisible: true } : {}) },
+				...(isManagement ? {} : { isVisible: true }),
 			},
 			include: { Topic: true },
 		})
 		.catch(notFound);
-	const isChairOfCommittee = authorizeChairCommittee(authSession.currentRoles, selectedCommittee.id);
-	const topics = selectedCommittee.Topic;
+	const isChairOfCommittee = false || authorizeChairCommittee(authSession?.currentRoles, selectedCommittee.id);
+	const topics = selectedCommittee?.Topic;
 
 	return (
 		<>
@@ -90,7 +92,7 @@ export default async function Page({ params }) {
 					</TableBody>
 				</Table>
 			)}
-			<Paginator totalItems={topics.length} itemsOnPage={topics.length} />
+			<Paginator totalItems={topics.length} itemsPerPage={10} itemsOnPage={topics.length} />
 		</>
 	);
 }

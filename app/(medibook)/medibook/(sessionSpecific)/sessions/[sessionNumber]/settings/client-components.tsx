@@ -291,7 +291,6 @@ export function SettingsForm({ selectedSession }) {
 							minLength={10}
 							placeholder="Adapting to Today's Tomorrow..."
 							name="theme"
-							required={selectedSession.isCurrent || selectedSession.isVisible}
 						/>
 					</div>
 				</section>
@@ -321,7 +320,6 @@ export function SettingsForm({ selectedSession }) {
 							maxLength={50}
 							placeholder={"Diplomacy in a Divided World..."}
 							name="subTheme"
-							required={selectedSession.isCurrent || selectedSession.isPublished}
 						/>
 					</div>
 				</section>

@@ -10,21 +10,6 @@ import { generateUserData, generateUserDataObject } from "@/lib/user";
 import prisma from "@/prisma/client";
 import { z } from "zod";
 
-const currentSessionSchema = z.object({
-	theme: z
-		.string()
-		.trim()
-		.min(2, "Theme must be at least 2 characters long")
-		.max(50, "Theme must be at most 50 characters long")
-		.transform(entityCase),
-	subTheme: z
-		.string()
-		.trim()
-		.min(2, "Phrase must be at least 2 characters long")
-		.max(50, "Phrase must be at most 50 characters long")
-		.transform(entityCase),
-});
-
 const sessionSchema = z.object({
 	theme: z
 		.string()
@@ -65,10 +50,7 @@ export async function updateSession(formData: FormData, selectedSessionNumber) {
 	const isManagement = authorize(authSession, [s.management]);
 	if (!isManagement) return { ok: false, message: "Not Authorized" };
 
-	const { error, data } =
-		selectedSession.isVisible || selectedSession.isCurrent || selectedSession.isMainShown
-			? currentSessionSchema.safeParse(parseFormData(formData))
-			: sessionSchema.safeParse(parseFormData(formData));
+	const { error, data } = sessionSchema.safeParse(parseFormData(formData));
 
 	if (error) return { ok: false, message: "Invalid Data" };
 

@@ -14,6 +14,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 
 import { deleteDepartment } from "./actions";
 import { useState } from "react";
+import { useFlushState } from "@/hooks/useFlushState";
 
 function onClose(searchParams: ReadonlyURLSearchParams, router: any[] | AppRouterInstance) {
 	/* 	if (searchParams.has("return")) return router.push(searchParams.get("return"));
@@ -24,7 +25,7 @@ export function ModalDeleteDepartment({ selectedDepartment }) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const { data: authSession, status } = useSession();
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, , setIsLoading] = useFlushState(false);
 
 	async function deleteDepartmentHandler(formData: FormData) {
 		if (isLoading) return;

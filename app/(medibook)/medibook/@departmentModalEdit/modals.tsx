@@ -18,6 +18,7 @@ import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/comp
 
 import { editDepartment } from "./actions";
 import { useEffect, useState } from "react";
+import { useFlushState } from "@/hooks/useFlushState";
 
 function onClose(searchParams: ReadonlyURLSearchParams, router: any[] | AppRouterInstance) {
 	/* 	if (searchParams.has("return")) return router.push(searchParams.get("return"));
@@ -30,7 +31,7 @@ export function ModalEditDepartment({ selectedDepartment }) {
 	const router = useRouter();
 	const { data: authSession } = useSession();
 	const [type, setType] = useState(selectedDepartment?.type);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, , setIsLoading] = useFlushState(false);
 
 	async function editDepartmentHandler(formData: FormData) {
 		if (isLoading) return;

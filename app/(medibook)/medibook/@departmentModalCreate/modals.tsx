@@ -28,21 +28,21 @@ export function ModalCreateDepartment() {
 	const params = useParams();
 	const searchParams = useSearchParams();
 
-	const [isLoading, setIsLoading] = useFlushState(false);
+	const [isLoading, , setIsLoading] = useFlushState(false);
 
-	const addDepartmentHandler = async (formData: FormData) => {
+	async function addDepartmentHandler(formData: FormData) {
 		if (isLoading) return;
 		setIsLoading(true);
 		const res = await addDepartment(formData, params?.sessionNumber);
 		if (res?.ok) {
 			updateSearchParams({ "edit-department": res.data }, router);
 			toast.success(res?.message);
+			router.refresh();
 		} else {
 			toast.error(res?.message);
 		}
-		router.refresh();
 		setIsLoading(false);
-	};
+	}
 
 	const isOpen =
 		searchParams.has("create-department") && status === "authenticated" && authorize(authSession, [s.management]) && !!params.sessionNumber;
