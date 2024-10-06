@@ -12,7 +12,7 @@ ENV DB_USER=$DB_USER
 ENV DB_PASSWORD=$DB_PASSWORD
 ENV DB_PORT=$DB_PORT
 ENV DB_NAME=$DB_NAME
-ENV DB_HOST=$DB_BUILD_HOST
+ENV DB_HOST=$DB_HOST
 
 COPY package.json /tmp/package.json
 RUN cd /tmp && npm install --ignore-engines
