@@ -1,7 +1,17 @@
 FROM node:20-alpine as builder
 
-ARG DATABASE_URL
-ENV DATABASE_URL $DATABASE_URL
+# Define build arguments for build-time usage
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_HOST='db1.cluster.medimun.org'  # Build-time default, not used at runtime
+ARG DB_PORT
+ARG DB_NAME
+
+# Set environment variables from the build arguments
+ENV DB_USER=$DB_USER
+ENV DB_PASSWORD=$DB_PASSWORD
+ENV DB_PORT=$DB_PORT
+ENV DB_NAME=$DB_NAME
 
 COPY package.json /tmp/package.json
 RUN cd /tmp && npm install --ignore-engines
