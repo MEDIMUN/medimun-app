@@ -24,10 +24,11 @@ export default async function SchoolDirectorApplicationsPage({ params }: { param
 					number: params.sessionNumber,
 				},
 			},
-			include: { user: true, school: true },
+			include: { user: true, school: true, session: true },
 		}),
 		prisma.schoolDirector.findFirst({
 			where: { userId: authSession.user.id, session: { number: params.sessionNumber } },
+			include: { school: true, session: true },
 		}),
 		prisma.school.findMany({
 			where: { isPublic: true, name: { not: { equals: "The English School" } } },
@@ -38,8 +39,6 @@ export default async function SchoolDirectorApplicationsPage({ params }: { param
 			})
 			.catch(notFound),
 	]);
-
-	if (userIsSchoolDirectorInSession) notFound();
 
 	const applicationsOpen = areSchoolDirectorApplicationsOpen(selectedSession);
 
@@ -89,28 +88,40 @@ export default async function SchoolDirectorApplicationsPage({ params }: { param
 					</div>
 				)}
 				{selectedUserHasApplication && (
-					<div className="rounded-md bg-zinc-100 px-4">
-						<DescriptionList>
-							<DescriptionTerm>Application ID</DescriptionTerm>
-							<DescriptionDetails>{selectedUserHasApplication.id}</DescriptionDetails>
-							<DescriptionTerm>Application Status</DescriptionTerm>
-							<DescriptionDetails>
-								{selectedUserHasApplication.isApproved ? <Badge color="green">Approved</Badge> : <Badge color="yellow">Submitted & Pending</Badge>}
-							</DescriptionDetails>
-							<DescriptionTerm>Application Date</DescriptionTerm>
-							<DescriptionDetails>{selectedUserHasApplication.date.toLocaleString("en-GB").replace(",", " at ")}</DescriptionDetails>
-							<DescriptionTerm>School Name</DescriptionTerm>
-							<DescriptionDetails>{selectedUserHasApplication.school.name}</DescriptionDetails>
-							<DescriptionTerm>School Email</DescriptionTerm>
-							<DescriptionDetails>{selectedUserHasApplication.school.email || "-"}</DescriptionDetails>
-							<DescriptionTerm>Applicant Name</DescriptionTerm>
-							<DescriptionDetails>{`${selectedUserHasApplication.user.officialName} ${selectedUserHasApplication.user.officialSurname}`}</DescriptionDetails>
-							<DescriptionTerm>Applicant Phone Number</DescriptionTerm>
-							<DescriptionDetails>{selectedUserHasApplication.user.phoneNumber || "-"}</DescriptionDetails>
-							<DescriptionTerm>Applicant Email</DescriptionTerm>
-							<DescriptionDetails>{selectedUserHasApplication.user.email}</DescriptionDetails>
-						</DescriptionList>
-					</div>
+					<>
+						<Text>
+							Please visit the{" "}
+							<TextLink
+								href={`/medibook/sessions/${selectedUserHasApplication.session.number}/schools/${
+									selectedUserHasApplication.school.slug || selectedUserHasApplication.school.id
+								}/delegation`}>
+								Delegation
+							</TextLink>{" "}
+							section to complete yoour school&apos;s delegation application.
+						</Text>
+						<div className="mt-4 rounded-md bg-zinc-100 px-4">
+							<DescriptionList>
+								<DescriptionTerm>Application ID</DescriptionTerm>
+								<DescriptionDetails>{selectedUserHasApplication.id}</DescriptionDetails>
+								<DescriptionTerm>Application Status</DescriptionTerm>
+								<DescriptionDetails>
+									{selectedUserHasApplication.isApproved ? <Badge color="green">Approved</Badge> : <Badge color="yellow">Submitted & Pending</Badge>}
+								</DescriptionDetails>
+								<DescriptionTerm>Application Date</DescriptionTerm>
+								<DescriptionDetails>{selectedUserHasApplication.date.toLocaleString("en-GB").replace(",", " at ")}</DescriptionDetails>
+								<DescriptionTerm>School Name</DescriptionTerm>
+								<DescriptionDetails>{selectedUserHasApplication.school.name}</DescriptionDetails>
+								<DescriptionTerm>School Email</DescriptionTerm>
+								<DescriptionDetails>{selectedUserHasApplication.school.email || "-"}</DescriptionDetails>
+								<DescriptionTerm>Applicant Name</DescriptionTerm>
+								<DescriptionDetails>{`${selectedUserHasApplication.user.officialName} ${selectedUserHasApplication.user.officialSurname}`}</DescriptionDetails>
+								<DescriptionTerm>Applicant Phone Number</DescriptionTerm>
+								<DescriptionDetails>{selectedUserHasApplication.user.phoneNumber || "-"}</DescriptionDetails>
+								<DescriptionTerm>Applicant Email</DescriptionTerm>
+								<DescriptionDetails>{selectedUserHasApplication.user.email}</DescriptionDetails>
+							</DescriptionList>
+						</div>
+					</>
 				)}
 				{!selectedUserHasApplication && (
 					<div className="rounded-md bg-zinc-100 p-4">

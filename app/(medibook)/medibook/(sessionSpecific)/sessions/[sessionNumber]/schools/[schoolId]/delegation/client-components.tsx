@@ -47,6 +47,11 @@ export function SelectCountriesSection({ selectedSchool, filteredCountries, sele
 		setIsLoading(false);
 	}
 
+	let maxNoOfDels = selectedSession.maxNumberOfGeneralAssemblyDelegationsPerSchool;
+	if (selectedSchool.name == "The English School") {
+		maxNoOfDels = 250;
+	}
+
 	return (
 		<>
 			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
@@ -60,9 +65,11 @@ export function SelectCountriesSection({ selectedSchool, filteredCountries, sele
 				</div>
 				<div className="my-auto">
 					<Listbox disabled={isLoading} value={numberOfDelegations} onChange={(value) => setNumberOfDelegations(value)}>
-						{arrayFromNumber(selectedSession.maxNumberOfGeneralAssemblyDelegationsPerSchool).map((number) => (
+						{arrayFromNumber(maxNoOfDels).map((number) => (
 							<ListboxOption key={number + Math.random()} value={number}>
-								<ListboxLabel>{number} Delegation</ListboxLabel>
+								<ListboxLabel>
+									{number} Delegation{number > 1 && "s"}
+								</ListboxLabel>
 								<ListboxDescription>
 									{number * numberOfGACommittees - (numberOfGACommittees - 1)} to {number * numberOfGACommittees} Delegates in GAs
 								</ListboxDescription>
@@ -513,7 +520,7 @@ export function SelectStudents({ students, selectedSession, grantedDelegation, n
 												<SearchParamsDropDropdownItem searchParams={{ unafilliatestudent: student.id }}>
 													Unafilliate Student
 												</SearchParamsDropDropdownItem>
-												<DropdownItem href={`/medibook/users/${student.username || student.id}`}>View Profile</DropdownItem>
+												<DropdownItem href={`/medibook/users/${student.username || student.id}`}>Profile Page</DropdownItem>
 											</DropdownMenu>
 										</Dropdown>
 									</TableCell>

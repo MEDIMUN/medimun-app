@@ -87,7 +87,7 @@ export default function LoginForm({ allowLogin }) {
 							<Label>Password</Label>
 							<Input className="mb-5 animate-appearance-in delay-300" name="password" placeholder="At least 8 characters" type="password" />
 						</Field>
-						<Link href="/contact" className="-mx-auto ml-1 cursor-pointer text-xs text-content3-foreground hover:text-primary">
+						<Link href="/login/help" className="-mx-auto ml-1 cursor-pointer text-xs text-content3-foreground hover:text-primary">
 							Forgot Password?
 						</Link>
 						<Button disabled={allowLogin == "false" || isLoading} className={cn("mt-5 w-full")} type="submit" color="primary">

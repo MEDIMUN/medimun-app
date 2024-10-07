@@ -226,8 +226,8 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 	});
 
 	let baseUrl = "/medibook/announcements";
-	let buttonText = "";
-	let buttonHref = "";
+	let buttonText = "Global Announcements";
+	let buttonHref = "/medibook/announcements";
 	let createType: "globalAnnouncement" | "sessionAnnouncement" | "committeeAnnouncement" | "departmentAnnouncement" = "globalAnnouncement";
 
 	if (params.sessionNumber && !params.committeeId && !params.departmentId) {

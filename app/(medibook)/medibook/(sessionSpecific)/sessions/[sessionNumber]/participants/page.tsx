@@ -133,11 +133,11 @@ export default async function Page({ params, searchParams }) {
 												<EllipsisVerticalIcon />
 											</DropdownButton>
 											<DropdownMenu anchor="bottom end">
-												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit</SearchParamsDropDropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "assign-roles": user.id }}>Assign</SearchParamsDropDropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "edit-roles": user.id }}>Edit</SearchParamsDropDropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "delete-user": user.id }}>Delete</SearchParamsDropDropdownItem>
+												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>Profile Page</DropdownItem>
+												<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit User</SearchParamsDropDropdownItem>
+												<SearchParamsDropDropdownItem searchParams={{ "assign-roles": user.id }}>Assign Roles</SearchParamsDropDropdownItem>
+												<SearchParamsDropDropdownItem searchParams={{ "edit-roles": user.id }}>Edit Roles</SearchParamsDropDropdownItem>
+												<SearchParamsDropDropdownItem searchParams={{ "delete-user": user.id }}>Delete User</SearchParamsDropDropdownItem>
 											</DropdownMenu>
 										</Dropdown>
 									</TableCell>

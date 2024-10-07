@@ -65,7 +65,7 @@ export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChil
 				{sidebar}
 			</MobileSidebar>
 			<div className="h-[60px] lg:hidden"></div>
-			<div className={cn("-bg-red-500 fixed z-50 h-[60px] w-full border-b bg-white lg:hidden", !!scrollY && "shadow-md")}>
+			<div className={cn("-bg-red-500 fixed z-[10000000] h-[60px] w-full border-b bg-white lg:hidden", !!scrollY && "shadow-md")}>
 				{/* Navbar on mobile */}
 				<header className="-ring-1 mx-2 flex w-[calc(100%-16px)] items-center px-2 ring-zinc-950/5">
 					<div className="py-2.5">

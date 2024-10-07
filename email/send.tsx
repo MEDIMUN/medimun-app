@@ -3,6 +3,8 @@ import { EmailVerification } from "./templates/email-verification";
 import { RejectChairApplication } from "./templates/reject-school-director-application";
 import { AcceptChairApplication } from "./templates/accept-school-director-application";
 import { ReceivedSchoolDirectorApplicationTemplate } from "./templates/received-school-director-application";
+import { ResetPasswordEmailTemplate } from "./templates/reset-password";
+import { PasswordChangedNotification } from "./templates/password-changed-notification";
 
 export async function sendEmailVerificationEmail({ email, officialName, code }) {
 	await sendEmail({
@@ -79,5 +81,33 @@ export async function sendEmailReceivedSchoolDirectorApplication({
 				schoolName={schoolName}
 			/>
 		),
+	});
+}
+
+export async function sendEmailResetPassword({
+	officialName,
+	passwordResetLink,
+	email,
+}: {
+	officialName: string;
+	passwordResetLink: string;
+	email: string;
+}) {
+	await sendEmail({
+		to: email,
+		hideFooter: true,
+		subject: "Reset Your Password - MEDIMUN",
+		preview: `Dear ${officialName}, reset your password using the following link....`,
+		html: <ResetPasswordEmailTemplate officialName={officialName} passwordResetLink={passwordResetLink} />,
+	});
+}
+
+export async function sendEmailPasswordChangedNotification({ officialName, email }: { officialName: string; email: string }) {
+	await sendEmail({
+		to: email,
+		hideFooter: true,
+		subject: "Security Notification - MEDIMUN",
+		preview: `Dear ${officialName}, your password was recently changed.`,
+		html: <PasswordChangedNotification officialName={officialName} />,
 	});
 }

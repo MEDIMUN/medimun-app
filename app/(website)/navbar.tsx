@@ -55,7 +55,7 @@ const callsToAction = [
 
 const whitepages = /*  ["/resources", "/announcements", "/blog", "/sessions", "/about"]; */ [];
 
-const hiddenPathnames = ["/login", "/forgot-password", "/reset-password", "/verify-email", "/signup"];
+const hiddenPathnames = ["/login", "/login/help", "/reset-password", "/verify-email", "/signup"];
 
 export function WebsiteNavbar({ selectedSession }) {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -66,6 +66,8 @@ export function WebsiteNavbar({ selectedSession }) {
 	/* 	if (!pathname.includes("/medibook") && pathname.includes("/announcements")) isWhite = true;
 	 */
 	const ordinal = getOrdinal(selectedSession?.numberInteger);
+
+	if (pathname.includes("/login/help")) return null;
 
 	if (!hiddenPathnames.includes(pathname))
 		return (
@@ -156,11 +158,11 @@ export function WebsiteNavbar({ selectedSession }) {
 						<Link href="/announcements" className={cn("text-sm font-semibold leading-6 text-gray-900", isWhite && "text-white")}>
 							Announcements
 						</Link>
-						<Link href="/contact" className={cn("text-sm font-semibold leading-6 text-gray-900", isWhite && "text-white")}>
-							Contact
-						</Link>
 						<Link href="/policies/privacy" className={cn("text-sm font-semibold leading-6 text-gray-900", isWhite && "text-white")}>
 							Policies
+						</Link>
+						<Link href="/contact" className={cn("text-sm font-semibold leading-6 text-gray-900", isWhite && "text-white")}>
+							Contact
 						</Link>
 					</PopoverGroup>
 					<div className="hidden gap-4 lg:flex lg:flex-1 lg:justify-end">
@@ -236,15 +238,15 @@ export function WebsiteNavbar({ selectedSession }) {
 									</Link>
 									<Link
 										onClick={() => setMobileMenuOpen(false)}
-										href="/contact"
-										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-										Contact
-									</Link>
-									<Link
-										onClick={() => setMobileMenuOpen(false)}
 										href="/policies/privacy"
 										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
 										Policies
+									</Link>
+									<Link
+										onClick={() => setMobileMenuOpen(false)}
+										href="/contact"
+										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+										Contact
 									</Link>
 								</div>
 								<div className="py-6">

@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = ""
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -22,6 +22,15 @@ model PendingHalfUser {
   time     DateTime @default(now())
 }
 
+model ResetPassword {
+  id                String   @id @default(nanoid())
+  timeCreated       DateTime @default(now())
+  passwordResetCode String   @default(uuid())
+  //
+  user              User     @relation(fields: [userId], references: [id])
+  userId            String
+}
+
 model PendingUser {
   id              String   @id @default(nanoid())
   email           String   @unique
@@ -35,13 +44,6 @@ model PendingUser {
   //
   school          School?  @relation(fields: [schoolId], references: [id])
   schoolId        String?
-}
-
-model passwordReset {
-  id                Int      @id @default(autoincrement())
-  email             String   @unique
-  timeCreated       DateTime @default(now())
-  passwordResetCode String
 }
 
 model Account {
@@ -103,6 +105,7 @@ model User {
   Blacklist                           Blacklist?
   PendingHalfUser                     PendingHalfUser[]
   Account                             Account[]
+  ResetPassword                       ResetPassword[]
 }
 
 model Session {

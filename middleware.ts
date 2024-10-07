@@ -41,7 +41,7 @@ const managementDirectPaths = [
 	"/medibook/applications/delegate-assignment",
 	"/medibook/applications/delegation",
 ];
-const logggedInNotAllowedPaths = ["/login", "/signup", "/"];
+const logggedInNotAllowedPaths = ["/login", "/signup", "/", "/login/help"];
 
 export default auth((req) => {
 	const { nextUrl } = req;

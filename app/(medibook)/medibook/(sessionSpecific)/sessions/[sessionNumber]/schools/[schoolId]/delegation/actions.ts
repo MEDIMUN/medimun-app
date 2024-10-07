@@ -30,7 +30,7 @@ export async function submitDelegationDeclaration(selectedSchoolId: string, numb
 
 	//if the number of req delegations is bigger than allowed error
 
-	if (selectedSession.maxNumberOfGeneralAssemblyDelegationsPerSchool < numberOfGADelegations) {
+	if (selectedSession.maxNumberOfGeneralAssemblyDelegationsPerSchool < numberOfGADelegations && selectedSchool?.name !== "The English School") {
 		return { ok: false, message: "Number of delegations exceeds the session limit." };
 	}
 

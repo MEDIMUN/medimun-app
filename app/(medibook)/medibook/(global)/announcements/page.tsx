@@ -28,6 +28,18 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		authorizePerRole(authSession, [s.sd]) ? "SENIORDIRECTORS" : null,
 	].filter((x) => x);
 
+	const hasSomeArraySession = [
+		"SESSIONWEBSITE",
+		authorizePerSession(authSession, [s.management, s.chair], [params.sessionNumber]) ? "SESSIONCHAIR" : null,
+		authorizePerSession(authSession, [s.management, s.delegate], [params.sessionNumber]) ? "SESSIONDELEGATE" : null,
+		authorizePerSession(authSession, [s.management, s.manager], [params.sessionNumber]) ? "SESSIONMANAGER" : null,
+		authorizePerSession(authSession, [s.management, s.member], [params.sessionNumber]) ? "SESSIONMEMBER" : null,
+		authorizePerSession(authSession, [s.management, s.sec], [params.sessionNumber]) ? "SESSIONSECRETARIAT" : null,
+		authorizePerSession(authSession, [s.management, s.schooldirector], [params.sessionNumber]) ? "SESSIONSCHOOLDIRECTORS" : null,
+		authorizePerSession(authSession, [s.director, s.sd], [params.sessionNumber]) ? "SESSIONDIRECTORS" : null,
+		authorizePerSession(authSession, [s.sd], [params.sessionNumber]) ? "SESSIONSENIORDIRECTORS" : null,
+	].filter((x) => x);
+
 	const whereObject = {
 		OR: [
 			{
@@ -47,6 +59,29 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 				user: { id: authSession.user.id },
 				title: { contains: query, mode: "insensitive" },
 				scope: { hasSome: hasSomeArray },
+				type: { has: "WEBSITE" },
+			},
+			{
+				session: {
+					isMainShown: true,
+				},
+				committeeId: null,
+				departmentId: null,
+				privacy: { equals: "ANONYMOUS" },
+				user: { id: authSession.user.id },
+				title: { contains: query, mode: "insensitive" },
+				scope: { hasSome: hasSomeArraySession },
+				type: { has: "WEBSITE" },
+			},
+			{
+				session: {
+					isMainShown: true,
+				},
+				committeeId: null,
+				departmentId: null,
+				privacy: { not: { equals: "ANONYMOUS" } },
+				title: { contains: query, mode: "insensitive" },
+				scope: { hasSome: hasSomeArraySession },
 				type: { has: "WEBSITE" },
 			},
 		],
