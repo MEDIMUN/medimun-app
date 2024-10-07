@@ -1,17 +1,33 @@
 import Paginator from "@/components/pagination";
+import { getOrdinal } from "@/lib/ordinal";
+import Link from "next/link";
 import { Suspense } from "react";
 
-export default function Page() {
+export default function Page({ params }) {
 	return (
 		<div className="py-24 sm:py-32">
 			<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
 				<div className="mb-4 lg:px-8">
 					<div className="mx-auto max-w-2xl text-left md:text-center">
-						<h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">The 20th Annual Session</h2>
+						<h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+							The {params.sessionNumber}
+							{getOrdinal(parseInt(params.sessionNumber))} Annual Session
+						</h2>
 						<p className="mt-2 text-lg leading-6 text-gray-600 md:mt-3">
-							Global Resources and Resources from the latest session.
+							Check out our prospectus for more information until this page is updated.
 							<br />
-							This section will be made available on the 26th of September, 2024
+							<br />
+							<Link href={`/sessions/${params.sessionNumber}/prospectus`} target="_blank" className="text-primary-500 underline">
+								Prospectus
+							</Link>
+							<br />
+							<br />
+							<Link
+								href={`/announcements/XgsyO7enc0QZzp5ZwAn5x/session-20-delegation-application-deadline`}
+								target="_blank"
+								className="text-primary-500 underline">
+								Application Deadlines & Details
+							</Link>
 						</p>
 					</div>
 				</div>
