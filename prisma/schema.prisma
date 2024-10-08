@@ -609,6 +609,7 @@ model Announcement {
   markdown     String?
   time         DateTime                   @default(now())
   editTime     DateTime                   @default(now())
+  views        Int                        @default(0)
   //
   slug         String?
   //

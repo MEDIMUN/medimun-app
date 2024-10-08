@@ -173,8 +173,9 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 }
 
 export async function AnnouncementViewPage({ params, searchParams }) {
-	const selectedAnnouncement = await prisma.announcement.findUnique({
+	const selectedAnnouncement = await prisma.announcement.update({
 		where: { id: params.announcementId[0] },
+		data: { views: { increment: 1 } },
 		include: {
 			session: true,
 			committee: { include: { session: true } },
