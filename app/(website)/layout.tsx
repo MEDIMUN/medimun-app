@@ -25,6 +25,7 @@ export default async function RootLayout({ children }) {
 		<StrictMode>
 			<html lang="en" className="bg-content1 !scrollbar-hide">
 				<head>
+					<meta name="facebook-domain-verification" content="znip7rtrzxmwzw42ursabu6wfn8m7v" />
 					<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
 				</head>
 				<body id="remove-scrollbar" className="m-0 bg-transparent p-0">
