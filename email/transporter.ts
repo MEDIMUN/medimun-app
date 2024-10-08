@@ -1,5 +1,5 @@
 export default async function sendEmailTransport(options) {
-	const { to, subject, html, text, replyTo = "info@medimun.org" } = options;
+	const { to, subject, html, text, replyTo = "medimun.cyprus@gmail.com" } = options;
 
 	const nodemailer = require("nodemailer");
 	let transporter = nodemailer.createTransport({

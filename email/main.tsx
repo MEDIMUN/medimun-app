@@ -131,7 +131,7 @@ export async function sendEmail({
 	bcc,
 	subject,
 	title,
-	replyTo = "info@medimun.org",
+	replyTo = "medimun.cyprus@gmail.com",
 	html,
 	preview,
 	hideFooter = false,

@@ -64,8 +64,8 @@ export default function Page({ searchParams }) {
 									<EnvelopeIcon className="h-7 w-6 text-gray-400" aria-hidden="true" />
 								</dt>
 								<dd>
-									<a className="hover:text-gray-900" href="mailto:hello@medimun.org">
-										info@medimun.org
+									<a className="hover:text-gray-900" href="medimun.cyprus@gmail.com">
+										medimun.cyprus@gmail.com
 									</a>
 								</dd>
 							</div>
