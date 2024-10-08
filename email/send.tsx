@@ -5,6 +5,7 @@ import { AcceptChairApplication } from "./templates/accept-school-director-appli
 import { ReceivedSchoolDirectorApplicationTemplate } from "./templates/received-school-director-application";
 import { ResetPasswordEmailTemplate } from "./templates/reset-password";
 import { PasswordChangedNotification } from "./templates/password-changed-notification";
+import { AssignCountriesToSchool } from "./templates/assign-countries-to-school";
 
 export async function sendEmailVerificationEmail({ email, officialName, code }) {
 	await sendEmail({
@@ -109,5 +110,14 @@ export async function sendEmailPasswordChangedNotification({ officialName, email
 		subject: "Security Notification - MEDIMUN",
 		preview: `Dear ${officialName}, your password was recently changed.`,
 		html: <PasswordChangedNotification officialName={officialName} />,
+	});
+}
+
+export async function sendEmailSchoolHasBeenAssignedCountries({ officialName, email }: { officialName: string; email: string }) {
+	await sendEmail({
+		to: email,
+		subject: "School Country Assignment - MEDIMUN",
+		preview: `Dear ${officialName}, your school has been assigned countries.`,
+		html: <AssignCountriesToSchool officialName={officialName} />,
 	});
 }

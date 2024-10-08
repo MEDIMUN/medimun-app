@@ -2,13 +2,14 @@
 
 import { auth } from "@/auth";
 import { countries } from "@/data/countries";
+import { sendEmailSchoolHasBeenAssignedCountries } from "@/email/send";
 import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 
 export async function changeDelegateApplicationStatus(formData, selectedSessionNumber) {
 	const authSession = await auth();
 	if (!authSession) return { ok: false, message: "Unauthorized" };
-	const isSeniorDirector = authorize(authSession, [s.sd, s.admins]);
+	const isSeniorDirector = authorize(authSession, [s.sd, s.director, s.admins, s.sg, s.pga]);
 	if (!isSeniorDirector) return { ok: false, message: "Unauthorized" };
 
 	const autoOpenTime = formData.get("delegateApplicationsAutoOpenTime");
@@ -42,7 +43,7 @@ export async function changeDelegateApplicationStatus(formData, selectedSessionN
 export async function isDelegateApplicationsForceOpenChangeAction(data, selectedSessionNumber) {
 	const authSession = await auth();
 	if (!authSession) return { ok: false, message: "Unauthorized" };
-	const isSeniorDirector = authorize(authSession, [s.sd, s.admins]);
+	const isSeniorDirector = authorize(authSession, [s.sd, s.director, s.admins, s.sg, s.pga]);
 	if (!isSeniorDirector) return { ok: false, message: "Unauthorized" };
 
 	const selectedSession = await prisma.session.findUnique({
@@ -72,7 +73,7 @@ export async function isDelegateApplicationsForceOpenChangeAction(data, selected
 export async function isDelegateApplicationsAutoOpenChangeAction(data, selectedSessionNumber) {
 	const authSession = await auth();
 	if (!authSession) return { ok: false, message: "Unauthorized" };
-	const isSeniorDirector = authorize(authSession, [s.sd, s.admins]);
+	const isSeniorDirector = authorize(authSession, [s.sd, s.director, s.admins, s.sg, s.pga]);
 	if (!isSeniorDirector) return { ok: false, message: "Unauthorized" };
 
 	const selectedSession = await prisma.session.findUnique({
@@ -102,7 +103,7 @@ export async function isDelegateApplicationsAutoOpenChangeAction(data, selectedS
 export async function acceptDelegationDeclaration(schoolId: string, schoolCountries: string[], sessionId: string) {
 	const authSession = await auth();
 	if (!authSession) return { ok: false, message: "Unauthorized" };
-	const isDirector = authorize(authSession, [s.sd, s.director, s.admins]);
+	const isDirector = authorize(authSession, [s.sd, s.director, s.admins, s.sg, s.pga]);
 	if (!isDirector) return { ok: false, message: "Unauthorized" };
 
 	const allValidCountries = countries.map((c) => c.countryCode);
@@ -110,6 +111,8 @@ export async function acceptDelegationDeclaration(schoolId: string, schoolCountr
 		where: { id: sessionId },
 		include: { ApplicationGrantedDelegationCountries: true },
 	});
+
+	if (!selectedSession) return { ok: false, message: "No current session found." };
 
 	const validStringCountries = schoolCountries
 		.filter((c) => c)
@@ -119,6 +122,21 @@ export async function acceptDelegationDeclaration(schoolId: string, schoolCountr
 
 	const selectedSchool = await prisma.school.findUnique({
 		where: { id: schoolId },
+		select: {
+			director: {
+				where: {
+					sessionId: selectedSession.id,
+				},
+				select: {
+					user: {
+						select: {
+							officialName: true,
+							email: true,
+						},
+					},
+				},
+			},
+		},
 	});
 	if (!selectedSchool) return { ok: false, message: ["School not found."] };
 
@@ -146,21 +164,24 @@ export async function acceptDelegationDeclaration(schoolId: string, schoolCountr
 	const finalStateArray = [...filteredStateArray, ...newDelegations];
 
 	try {
-		await prisma.$transaction([
-			prisma.applicationGrantedDelegationCountries.create({
+		await prisma.$transaction(async (tx) => {
+			tx.applicationGrantedDelegationCountries.create({
 				data: {
 					schoolId: schoolId,
 					sessionId: selectedSession.id,
 					countries: validStringCountries,
 				},
-			}),
-			prisma.session.update({
+			});
+			await tx.session.update({
 				where: { id: selectedSession.id },
 				data: {
 					savedDelegationDeclarationState: JSON.stringify(finalStateArray),
 				},
-			}),
-		]);
+			});
+		});
+		selectedSchool.director.forEach(async (d) => {
+			await sendEmailSchoolHasBeenAssignedCountries({ officialName: d.user.officialName, email: d.user.email });
+		});
 	} catch (e) {
 		return { ok: false, message: ["Error saving delegation declaration."] };
 	}
@@ -171,7 +192,7 @@ export async function acceptDelegationDeclaration(schoolId: string, schoolCountr
 export async function saveDelegationDeclarationState(state: Array<{ schoolId: string; countries: string[] }>, sessionId: string) {
 	const authSession = await auth();
 	if (!authSession) return { ok: false, message: "Unauthorized" };
-	const isDirector = authorize(authSession, [s.sd, s.director, s.admins]);
+	const isDirector = authorize(authSession, [s.sd, s.director, s.admins, s.sg, s.pga]);
 	if (!isDirector) return { ok: false, message: "Unauthorized" };
 
 	const selectedSession = await prisma.session.findFirst({
