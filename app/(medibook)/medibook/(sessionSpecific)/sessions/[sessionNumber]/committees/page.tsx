@@ -17,29 +17,28 @@ import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 const itemsPerPage = 10;
 
 export default async function Component({ params, searchParams }) {
-	const currentPage = searchParams.page || 1;
+	const currentPage = parseInt(searchParams.page) || 1;
 	const authSession = await auth();
+	if (!authSession) return notFound();
+	const isManagement = authorize(authSession, [s.management]);
 
-	// Parallel fetching for session, isManagement, and committees
-	const [selectedSession, committees, totalItems] = await Promise.all([
-		prisma.session.findFirst({ where: { number: params.sessionNumber } }).catch(notFound),
-		prisma.committee
-			.findMany({
+	const [selectedSession, committees, totalItems] = await prisma
+		.$transaction([
+			prisma.session.findFirstOrThrow({ where: { number: params.sessionNumber } }),
+			prisma.committee.findMany({
 				where: {
 					session: { number: params.sessionNumber },
 					name: { contains: searchParams.search, mode: "insensitive" },
-					...(authorize(authSession, [s.management]) ? {} : { isVisible: true }),
+					...(isManagement ? {} : { isVisible: true }),
 				},
 				include: { chair: { include: { user: true } }, delegate: { include: { user: true } } },
 				orderBy: [{ type: "asc" }, { name: "asc" }],
 				skip: (currentPage - 1) * itemsPerPage,
 				take: itemsPerPage,
-			})
-			.catch(notFound),
-		prisma.committee.count({ where: { session: { number: params.sessionNumber } } }).catch(() => 0),
-	]);
-
-	const isManagement = authorize(authSession, [s.management]);
+			}),
+			prisma.committee.count({ where: { session: { number: params.sessionNumber } } }),
+		])
+		.catch(notFound);
 
 	const currentCommitteeIds = authSession?.user?.currentRoles
 		.concat(authSession.user.pastRoles)
@@ -47,7 +46,6 @@ export default async function Component({ params, searchParams }) {
 		.filter((role) => role.roleIdentifier == "chair" || role.roleIdentifier == "delegate")
 		.map((role) => role.committeeId);
 
-	// Sort committees based on user involvement
 	committees.sort((a: any, b: any) => {
 		if (currentCommitteeIds.includes(a.id) && !currentCommitteeIds.includes(b.id)) return -1;
 		if (currentCommitteeIds.includes(b.id) && !currentCommitteeIds.includes(a.id)) return 1;

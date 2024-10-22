@@ -1,7 +1,5 @@
 "use client";
 
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/modal";
-import { Select, SelectItem, SelectSection } from "@nextui-org/select";
 import { useSearchParams } from "next/navigation";
 import { createRollCall, deleteRollCall, editRollCall } from "./actions";
 import { useState } from "react";

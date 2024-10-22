@@ -38,22 +38,23 @@ export default async function Page({ searchParams }) {
 	const currentPage = parseInt(searchParams.page) || 1;
 	const query = searchParams.search || "";
 	const authSession = await auth();
+	if (!authSession) notFound();
 	const orderBy = searchParams.order || "name";
 	const queryObject = { where: { name: { contains: query, mode: "insensitive" } } };
 	const orderDirection = parseOrderDirection(searchParams.direction);
 
-	const [locations, numberOfSchools] = await Promise.all([
-		prisma.location
-			.findMany({
+	const [locations, numberOfSchools] = await prisma
+		.$transaction([
+			prisma.location.findMany({
 				...(queryObject as any),
 				orderBy: { [orderBy]: orderDirection },
 				include: { school: true },
 				take: locationsPerPage,
 				skip: (currentPage - 1) * locationsPerPage,
-			})
-			.catch(notFound),
-		prisma.location.count(queryObject as any).catch(notFound),
-	]);
+			}),
+			prisma.location.count(queryObject as any),
+		])
+		.catch(notFound);
 
 	return (
 		<>

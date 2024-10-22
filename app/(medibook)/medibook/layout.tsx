@@ -15,8 +15,8 @@ import NextTopLoader from "nextjs-toploader";
 
 import type { Metadata } from "next";
 import { cn } from "@/lib/cn";
-import TopFl from "./flprovider";
-import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
+/* import TopFl from "./flprovider";
+ */ import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
 import { MatomoAnalytics } from "@/components/analytics";
 import { Suspense } from "react";
 
@@ -142,11 +142,11 @@ export default async function RootLayout({
 							easing="ease"
 							speed={200}
 						/>
-						<TopFl />
+						{/*<TopFl />*/}
 						{announcement}
 						{children}
 					</SidebarLayout>
-					<Toaster richColors visibleToasts={5} closeButton />
+					<Toaster richColors visibleToasts={3} closeButton />
 				</Providers>
 			</body>
 		</html>

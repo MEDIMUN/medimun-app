@@ -4,6 +4,7 @@ import { ArrowRightIcon, CheckCircleIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { getOrdinal } from "@/lib/ordinal";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
 export const metadata = {
 	title: {
@@ -21,23 +22,19 @@ export const revalidate = 120;
 
 const benefits = ["7 - 9 Feb 2025", "7 Committees", "500 Delegates", "100s of Volunteers"];
 
-export async function HomePage(): Promise<JSX.Element> {
-	const currentSession = await prisma.session.findFirst({
-		where: { isMainShown: true },
-		include: {
-			Day: {
-				include: {
-					location: true,
+export async function HomePage() {
+	const currentSession = await prisma.session
+		.findFirstOrThrow({
+			where: { isMainShown: true },
+			include: {
+				Day: { include: { location: true } },
+				Resource: {
+					where: { scope: { hasSome: ["SESSIONPROSPECTUS"] } },
+					take: 1,
 				},
 			},
-			Resource: {
-				where: {
-					scope: { hasSome: ["SESSIONPROSPECTUS"] },
-				},
-				take: 1,
-			},
-		},
-	});
+		})
+		.catch(notFound);
 
 	const features = [
 		{
@@ -85,7 +82,7 @@ export async function HomePage(): Promise<JSX.Element> {
 				<div className="relative mt-32 sm:mt-40">
 					<div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
 						<div className="mx-auto flex max-w-2xl flex-col gap-16 bg-primary/20 px-6 py-16 ring-1 ring-black/10 sm:rounded-3xl sm:p-8 lg:mx-0 lg:max-w-none lg:flex-row lg:items-center lg:py-20 xl:gap-x-20 xl:px-20">
-							{currentSession.cover ? (
+							{currentSession?.cover ? (
 								<div
 									style={{
 										backgroundImage: `url(/api/sessions/${currentSession.id}/cover)`,

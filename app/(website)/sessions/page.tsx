@@ -21,16 +21,26 @@ export default async function Page({ searchParams }) {
 		isPartlyVisible: true,
 	};
 
-	const [sessions, numberOfSessions] = await Promise.all([
-		prisma.session.findMany({
-			where: whereObject,
-			take: 10,
-			include: { Day: { orderBy: { date: "asc" }, where: { type: "CONFERENCE" }, include: { location: true } } },
-			skip: (currentPage - 1) * 10,
-			orderBy: [{ isMainShown: "desc" }, { numberInteger: "desc" }],
-		}),
-		prisma.session.count({ where: whereObject }),
-	]).catch(notFound);
+	const [sessions, numberOfSessions] = await prisma
+		.$transaction([
+			prisma.session.findMany({
+				where: whereObject,
+				take: 10,
+				include: { Day: { orderBy: { date: "asc" }, where: { type: "CONFERENCE" }, include: { location: true } } },
+				skip: (currentPage - 1) * 10,
+				orderBy: [{ isMainShown: "desc" }, { numberInteger: "desc" }],
+			}),
+			prisma.session.count({ where: whereObject }),
+		])
+		.catch(notFound);
+
+	if (!sessions.length) {
+		return (
+			<div className="flex h-[calc(100vh-64px)] flex-col items-center justify-center">
+				<Code className="text-4xl">No sessions found</Code>
+			</div>
+		);
+	}
 
 	return (
 		<>

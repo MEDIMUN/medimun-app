@@ -3,7 +3,7 @@ import Rose from "@/public/assets/the-rose.png";
 
 import { auth } from "@/auth";
 
-const onlyIds = ["100000000001", "111111111111"];
+const onlyIds = ["100000000001"];
 
 export async function TopFl() {
 	const authSession = await auth();

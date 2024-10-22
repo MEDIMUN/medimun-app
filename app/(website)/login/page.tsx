@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import LoginForm from "./client-components";
 import { cn } from "@/lib/cn";
+import Icon from "@/components/icon";
 
 export const metadata = {
 	title: "Log In",
@@ -18,7 +19,7 @@ export default function Page() {
 				`-bg-gradient-to-tr flex min-h-dvh w-full from-zinc-300 to-white bg-cover bg-center align-middle font-[montserrat] duration-300`
 			)}>
 			<div className="mx-auto my-auto h-[640px] w-[400px] rounded-2xl bg-content1/70 p-12 shadow-lg md:ml-20">
-				<Suspense fallback={<div>Loading...</div>}>
+				<Suspense fallback={<Icon icon="line-md:loading-loop" width={22} />}>
 					<LoginForm allowLogin={process.env.ALLOW_LOGIN} />
 				</Suspense>
 			</div>

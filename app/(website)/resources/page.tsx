@@ -7,7 +7,6 @@ import { capitaliseEachWord } from "@/lib/text";
 import prisma from "@/prisma/client";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { Topbar } from "../server-components";
 
 export const dynamic = "force-dynamic";
@@ -132,17 +131,19 @@ export default async function Page({ searchParams }) {
 		],
 	};
 
-	const [resources, totalItems] = await Promise.all([
-		prisma.resource.findMany({
-			where: whereObject,
-			orderBy: {
-				time: "desc",
-			},
-			take: 20,
-			skip: (currentPage - 1) * 20,
-		}),
-		prisma.resource.count({ where: whereObject }),
-	]).catch(notFound);
+	const [resources, totalItems] = await prisma
+		.$transaction([
+			prisma.resource.findMany({
+				where: whereObject as any,
+				orderBy: {
+					time: "desc",
+				},
+				take: 20,
+				skip: (currentPage - 1) * 20,
+			}),
+			prisma.resource.count({ where: whereObject as any }),
+		])
+		.catch(notFound);
 
 	return (
 		<>

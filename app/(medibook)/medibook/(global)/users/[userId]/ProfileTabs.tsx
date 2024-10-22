@@ -2,7 +2,6 @@
 
 import { ScrollShadow } from "@nextui-org/scroll-shadow";
 import { Spacer } from "@nextui-org/spacer";
-import { Tooltip } from "@nextui-org/tooltip";
 import { Tabs, Tab } from "@nextui-org/tabs";
 import { useEffect, useState } from "react";
 import { getOrdinal } from "@/lib/ordinal";

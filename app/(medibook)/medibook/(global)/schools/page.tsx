@@ -46,18 +46,18 @@ export default async function Page({ searchParams }) {
 	const queryObject = { where: { name: { contains: query, mode: "insensitive" } } };
 	const orderDirection = parseOrderDirection(searchParams.direction);
 
-	const numberOfSchoolsPromise = prisma.school.count(queryObject as any).catch();
-	const schoolsPromise = prisma.school
-		.findMany({
-			...(queryObject as any),
-			orderBy: { [orderBy]: orderDirection },
-			include: { location: true, director: { where: { session: { isCurrent: true } }, select: { user: true } } },
-			take: itemsPerPage,
-			skip: (currentPage - 1) * itemsPerPage,
-		})
+	const [schools, numberOfSchools] = await prisma
+		.$transaction([
+			prisma.school.findMany({
+				...(queryObject as any),
+				orderBy: { [orderBy]: orderDirection },
+				include: { location: true, director: { where: { session: { isCurrent: true } }, select: { user: true } } },
+				take: itemsPerPage,
+				skip: (currentPage - 1) * itemsPerPage,
+			}),
+			prisma.school.count(queryObject as any),
+		])
 		.catch(notFound);
-
-	const [schools, numberOfSchools] = await Promise.all([schoolsPromise, numberOfSchoolsPromise]);
 
 	return (
 		<>
