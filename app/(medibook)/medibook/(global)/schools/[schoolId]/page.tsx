@@ -11,7 +11,7 @@ import { EditDeleteSchoolButtons } from "../client-components";
 import { TopBar } from "../../../client-components";
 import { ActionList } from "../../../server-components";
 
-export default async function Page(props) {
+export default async function Page(props: { params: any }) {
 	const params = await props.params;
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
@@ -43,7 +43,7 @@ export default async function Page(props) {
 		{
 			title: "Delegation",
 			description: "Manage applications and delegations",
-			href: `/medibook/schools/${school.slug || school.id}/delegation`,
+			href: `/medibook/sessions/${params.sessionNumber}/schools/${school.slug || school.id}/delegation`,
 			isVisible: isManagementOrDirector,
 		},
 	].filter((action) => action.isVisible);
