@@ -5,14 +5,16 @@ import prisma from "@/prisma/client";
 import { AnnouncementsTable } from "@/app/(medibook)/medibook/server-components";
 import { notFound } from "next/navigation";
 
-export default async function AnnouncementsPage({ searchParams, params }) {
-	const currentPage = Number(searchParams.page) || 1;
-	const query = searchParams.search || "";
-	const orderBy = searchParams.order || "title";
-	const orderDirection = parseOrderDirection(searchParams.direction);
-	const authSession = await auth();
+export default async function AnnouncementsPage(props) {
+    const params = await props.params;
+    const searchParams = await props.searchParams;
+    const currentPage = Number(searchParams.page) || 1;
+    const query = searchParams.search || "";
+    const orderBy = searchParams.order || "title";
+    const orderDirection = parseOrderDirection(searchParams.direction);
+    const authSession = await auth();
 
-	const selectedEntity = await prisma.department.findFirstOrThrow({
+    const selectedEntity = await prisma.department.findFirstOrThrow({
 		where: {
 			OR: [
 				{ id: params.departmentId, session: { number: params.sessionNumber } },
@@ -22,7 +24,7 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		include: { session: true },
 	});
 
-	const hasSomeArray = [
+    const hasSomeArray = [
 		"DEPARTMENTWEBSITE",
 		authorizeManagerDepartment([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedEntity.id) ? "DEPARTMENTMANAGER" : null,
 		authorizeMemberDepartment([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedEntity.id) ? "DEPARTMENTMEMBER" : null,
@@ -34,7 +36,7 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		authorizePerSession(authSession, [s.sd], [selectedEntity.session.number]) ? "DEPARTMENTSENIORDIRECTORS" : null,
 	].filter((x) => x);
 
-	const whereObject = {
+    const whereObject = {
 		session: null,
 		committeeId: null,
 		departmentId: null,
@@ -43,7 +45,7 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		type: { has: "WEBSITE" },
 	};
 
-	const [prismaAnnouncements, totalItems] = await prisma
+    const [prismaAnnouncements, totalItems] = await prisma
 		.$transaction([
 			prisma.announcement.findMany({
 				where: whereObject,
@@ -56,7 +58,7 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		])
 		.catch(notFound);
 
-	return (
+    return (
 		<AnnouncementsTable
 			title={"Department Announcements"}
 			baseUrl={`/medibook/sessions/${params.sessionNumber}/departments/${params.departmentId}/announcements`}

@@ -7,24 +7,26 @@ import { notFound } from "next/navigation";
 import { FinalAssignDelegates } from "./client-components";
 import { romanize } from "@/lib/romanize";
 
-export default async function Page({ params, searchParams }) {
-	const authSession = await auth();
-	const isAuthorized = authorize(authSession, [s.management]);
-	const query = searchParams.search || "";
-	const currentPage = searchParams.page || 1;
-	if (!authSession || !isAuthorized) notFound();
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const authSession = await auth();
+    const isAuthorized = authorize(authSession, [s.management]);
+    const query = searchParams.search || "";
+    const currentPage = searchParams.page || 1;
+    if (!authSession || !isAuthorized) notFound();
 
-	const selectedSession = await prisma.session.findFirst({
+    const selectedSession = await prisma.session.findFirst({
 		where: { number: params.sessionNumber },
 		include: { committee: true },
 	});
 
-	const whereObject = {
+    const whereObject = {
 		sessionId: selectedSession.id,
 		OR: [{ school: { name: { contains: query, mode: "insensitive" } } }, { id: { contains: query, mode: "insensitive" } }],
 	};
 
-	const delegateProposals = await prisma.schoolDelegationProposal.findMany({
+    const delegateProposals = await prisma.schoolDelegationProposal.findMany({
 		where: whereObject,
 		take: 10,
 		skip: currentPage * 10 - 10,
@@ -41,9 +43,9 @@ export default async function Page({ params, searchParams }) {
 		},
 	});
 
-	const totalItems = await prisma.schoolDelegationProposal.count({ where: whereObject });
+    const totalItems = await prisma.schoolDelegationProposal.count({ where: whereObject });
 
-	const parsedDelegateProposals = delegateProposals.map((proposal) => {
+    const parsedDelegateProposals = delegateProposals.map((proposal) => {
 		const { assignment, ...others } = proposal;
 		return {
 			assignment: JSON.parse(assignment),
@@ -51,14 +53,14 @@ export default async function Page({ params, searchParams }) {
 		};
 	});
 
-	const userIds = parsedDelegateProposals.reduce((acc, proposal) => {
+    const userIds = parsedDelegateProposals.reduce((acc, proposal) => {
 		const studentIds = proposal.assignment.map((a) => a.studentId);
 		return acc.concat(studentIds);
 	}, []);
 
-	const allUsers = await prisma.user.findMany({ where: { id: { in: userIds } } });
+    const allUsers = await prisma.user.findMany({ where: { id: { in: userIds } } });
 
-	return (
+    return (
 		<>
 			<TopBar
 				title="Delegate Assignments"

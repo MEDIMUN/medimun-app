@@ -1,10 +1,11 @@
 import prisma from "@/prisma/client";
 import { ApproveApplicationModal, DeleteApplicationModal } from "./modals";
 
-export default async function Default({ searchParams }) {
-	let selectedApplication;
+export default async function Default(props) {
+    const searchParams = await props.searchParams;
+    let selectedApplication;
 
-	if (searchParams["approve-school-director-application"]) {
+    if (searchParams["approve-school-director-application"]) {
 		try {
 			selectedApplication = await prisma.applicationSchoolDirector.findUnique({
 				where: {
@@ -29,7 +30,7 @@ export default async function Default({ searchParams }) {
 		}
 	}
 
-	if (searchParams["delete-school-director-application"]) {
+    if (searchParams["delete-school-director-application"]) {
 		try {
 			selectedApplication = await prisma.applicationSchoolDirector.findUnique({
 				where: {
@@ -55,9 +56,9 @@ export default async function Default({ searchParams }) {
 		if (selectedApplication?.isApproved) selectedApplication = null;
 	}
 
-	if (searchParams["delete-school-director-application"] && searchParams["approve-school-director-application"]) selectedApplication = null;
+    if (searchParams["delete-school-director-application"] && searchParams["approve-school-director-application"]) selectedApplication = null;
 
-	return (
+    return (
 		<>
 			<ApproveApplicationModal selectedApplication={selectedApplication} />
 			<DeleteApplicationModal selectedApplication={selectedApplication} />

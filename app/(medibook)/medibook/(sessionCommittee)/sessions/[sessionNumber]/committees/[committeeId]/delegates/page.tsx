@@ -12,12 +12,15 @@ import { notFound } from "next/navigation";
 const itemsPerPage = 10;
 
 //FIX
-export default async function Page({ params }: { params: { sessionNumber: string; committeeId: string; page: string } }) {
-	const authSession = await auth();
-	const currentPage = parseInt(params.page) || 1;
-	const isManagement = authorize(authSession, [s.management]);
+export default async function Page(
+    props: { params: Promise<{ sessionNumber: string; committeeId: string; page: string }> }
+) {
+    const params = await props.params;
+    const authSession = await auth();
+    const currentPage = parseInt(params.page) || 1;
+    const isManagement = authorize(authSession, [s.management]);
 
-	const [selectedSession, totalItems] = await prisma
+    const [selectedSession, totalItems] = await prisma
 		.$transaction([
 			prisma.session.findFirstOrThrow({
 				where: {
@@ -38,11 +41,11 @@ export default async function Page({ params }: { params: { sessionNumber: string
 		])
 		.catch(notFound);
 
-	const selectedCommittee = selectedSession.committee[0];
-	const delegates = selectedCommittee.delegate;
-	const allCountries = countries.push(selectedCommittee.ExtraCountry.map((c) => c.name));
+    const selectedCommittee = selectedSession.committee[0];
+    const delegates = selectedCommittee.delegate;
+    const allCountries = countries.push(selectedCommittee.ExtraCountry.map((c) => c.name));
 
-	return (
+    return (
 		<>
 			<TopBar
 				buttonHref={`/medibook/sessions/${selectedSession.number}/committees/${selectedCommittee.slug || selectedCommittee.id}`}

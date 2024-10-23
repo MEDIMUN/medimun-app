@@ -1,14 +1,11 @@
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
-import { countries } from "@/data/countries";
-import { OptionsDropdown } from "./buttons";
 import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 
 import Paginator from "@/components/pagination";
-import { Link } from "@/components/link";
 import { generateUserData, generateUserDataObject } from "@/lib/user";
 import { Avatar } from "@nextui-org/avatar";
 import { parseOrderDirection } from "@/lib/orderDirection";
@@ -51,14 +48,19 @@ const sortOptions = [
 	{ value: "username", order: "desc", label: "Username" },
 ];
 
-export default async function Page({ params, searchParams }) {
+export default async function Page(props) {
+	const searchParams = await props.searchParams;
+	const params = await props.params;
 	const currentPage = parseInt(searchParams.page) || 1;
 	const query = searchParams.search || "";
 	const authSession = await auth();
 	const orderBy = searchParams.order || "officialName";
 	if (!authorize(authSession, [s.schooldirector])) notFound();
 
-	const selectedSchool = await prisma.school.findFirst({ where: { OR: [{ id: params.schoolId }, { slug: params.schoolId }] } });
+	const selectedSchool = await prisma.school
+		.findFirstOrThrow({ where: { OR: [{ id: params.schoolId }, { slug: params.schoolId }] } })
+		.catch(notFound);
+
 	const queryObject = {
 		AND: [
 			{ Student: { id: selectedSchool.id } },
@@ -95,7 +97,14 @@ export default async function Page({ params, searchParams }) {
 	});
 	return (
 		<>
-			<TopBar sortOptions={sortOptions} title={`${selectedSchool.name} Students`} defaultSort="officialNameasc" searchText="Search students..." />
+			<TopBar
+				buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`}
+				buttonText={selectedSchool.name}
+				sortOptions={sortOptions}
+				title="School Students"
+				defaultSort="officialNameasc"
+				searchText="Search students..."
+			/>
 			{!!numberOfStudents ? (
 				<Table className="showscrollbar">
 					<TableHead>

@@ -7,12 +7,14 @@ import { authorize, s } from "@/lib/authorize";
 import { notFound } from "next/navigation";
 import { toast } from "sonner";
 
-export default async function Page({ params, searchParams }) {
-	const authSession = await auth();
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const authSession = await auth();
 
-	if (!authorize(authSession, [s.management])) notFound();
+    if (!authorize(authSession, [s.management])) notFound();
 
-	const selectedCommittee = await prisma.committee
+    const selectedCommittee = await prisma.committee
 		.findFirstOrThrow({
 			where: {
 				OR: [
@@ -24,7 +26,7 @@ export default async function Page({ params, searchParams }) {
 		})
 		.catch(notFound);
 
-	return (
+    return (
 		<>
 			<TopBar
 				title={

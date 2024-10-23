@@ -2,19 +2,21 @@ import prisma from "@/prisma/client";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 import Link from "next/link";
 
-export async function generateMetadata({ params }: { params: { policySlug: string } }) {
-	const selectedPolicy = await prisma.policy.findFirst({
+export async function generateMetadata(props: { params: Promise<{ policySlug: string }> }) {
+    const params = await props.params;
+    const selectedPolicy = await prisma.policy.findFirst({
 		where: { slug: params.policySlug },
 	});
-	return {
+    return {
 		title: `${selectedPolicy.title} - Conference Policies`,
 		description: selectedPolicy.description,
 	};
 }
 
-export default async function Page({ params }) {
-	const selectedPolicy = await prisma.policy.findFirst({ where: { slug: params.policySlug } });
-	return <MDXRemote components={{ h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={selectedPolicy.markdown} />;
+export default async function Page(props) {
+    const params = await props.params;
+    const selectedPolicy = await prisma.policy.findFirst({ where: { slug: params.policySlug } });
+    return <MDXRemote components={{ h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={selectedPolicy.markdown} />;
 }
 
 const h1 = (props) => {

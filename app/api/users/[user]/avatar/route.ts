@@ -4,11 +4,12 @@ import { notFound } from "next/navigation";
 import prisma from "@/prisma/client";
 import { NextURL } from "next/dist/server/web/next-url";
 
-export async function GET(request, { params }) {
-	/* 	return NextResponse.json({ "Not Found": "True" });
+export async function GET(request, props) {
+    const params = await props.params;
+    /* 	return NextResponse.json({ "Not Found": "True" });
 	 */
-	let userExists;
-	try {
+    let userExists;
+    try {
 		userExists = await prisma.user.findUnique({
 			where: {
 				id: params.user,
@@ -21,15 +22,15 @@ export async function GET(request, { params }) {
 		notFound();
 	}
 
-	if (!userExists) notFound();
-	if (!userExists.profilePicture) return NextResponse.json({ "Not Found": "True" });
+    if (!userExists) notFound();
+    if (!userExists.profilePicture) return NextResponse.json({ "Not Found": "True" });
 
-	let minioClient = minio();
-	let url: string | NextURL | URL;
-	try {
+    let minioClient = minio();
+    let url: string | NextURL | URL;
+    try {
 		url = await minioClient.presignedGetObject("medibook", "avatars/" + userExists.profilePicture, 30 * 60);
 	} catch (e) {
 		notFound();
 	}
-	return NextResponse.redirect(url);
+    return NextResponse.redirect(url);
 }

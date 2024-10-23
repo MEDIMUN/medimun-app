@@ -188,12 +188,13 @@ export function authorizedToEditResource(authSession, editResourceData) {
 	return true;
 }
 
-export default async function Modals({ searchParams }) {
-	const authSession = await auth();
-	let editResourceData: Resource | null = null;
-	let deleteResourceData: Resource | null = null;
+export default async function Modals(props) {
+    const searchParams = await props.searchParams;
+    const authSession = await auth();
+    let editResourceData: Resource | null = null;
+    let deleteResourceData: Resource | null = null;
 
-	if (searchParams["edit-resource"]) {
+    if (searchParams["edit-resource"]) {
 		editResourceData = await prisma.resource.findFirst({
 			where: { id: searchParams["edit-resource"] },
 			include: { session: true, committee: { include: { session: true } }, department: { include: { session: true } } },
@@ -204,7 +205,7 @@ export default async function Modals({ searchParams }) {
 		}
 	}
 
-	if (searchParams["delete-resource"]) {
+    if (searchParams["delete-resource"]) {
 		deleteResourceData = await prisma.resource.findFirst({
 			where: { id: searchParams["delete-resource"] },
 			include: { session: true, committee: { include: { session: true } }, department: { include: { session: true } } },
@@ -215,7 +216,7 @@ export default async function Modals({ searchParams }) {
 		}
 	}
 
-	return (
+    return (
 		<>
 			<ModalDeleteResource selectedResource={deleteResourceData} />
 			<ModalEditResource selectedResource={editResourceData} />

@@ -16,7 +16,9 @@ const sortOptions = [
 	{ value: "time", order: "desc", label: "Date Uploaded" },
 ];
 
-export default async function Page({ params, searchParams }) {
+export default async function Page(props) {
+	const searchParams = await props.searchParams;
+	const params = await props.params;
 	const authSession = await auth();
 	const currentPage = Number(searchParams.page) || 1;
 	const query = searchParams.search || "";
@@ -66,7 +68,7 @@ export default async function Page({ params, searchParams }) {
 		take: itemsPerPage,
 		skip: (currentPage - 1) * itemsPerPage,
 		include: { user: true },
-		orderBy: [{ [orderBy]: orderDirection }],
+		orderBy: [{ isPinned: "desc" }, { [orderBy]: orderDirection }],
 	});
 
 	const totalItems = await prisma.resource.count({ where: whereObject });

@@ -7,14 +7,16 @@ import { notFound } from "next/navigation";
 
 const itemsPerPage = 10;
 
-export default async function AnnouncementsPage({ searchParams, params }) {
-	const currentPage = Number(searchParams.page) || 1;
-	const query = searchParams.search || "";
-	const orderBy = searchParams.order || "title";
-	const orderDirection = parseOrderDirection(searchParams.direction);
-	const authSession = await auth();
+export default async function AnnouncementsPage(props) {
+    const params = await props.params;
+    const searchParams = await props.searchParams;
+    const currentPage = Number(searchParams.page) || 1;
+    const query = searchParams.search || "";
+    const orderBy = searchParams.order || "title";
+    const orderDirection = parseOrderDirection(searchParams.direction);
+    const authSession = await auth();
 
-	const selectedEntity = await prisma.committee.findFirstOrThrow({
+    const selectedEntity = await prisma.committee.findFirstOrThrow({
 		where: {
 			OR: [
 				{ id: params.committeeId, session: { number: params.sessionNumber } },
@@ -24,7 +26,7 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		include: { session: true },
 	});
 
-	const hasSomeArray = [
+    const hasSomeArray = [
 		"COMMITTEEWEBSITE",
 		authorizeChairCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedEntity.id) ? "COMMITTEECHAIR" : null,
 		authorizeDelegateCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedEntity.id) ? "COMMITTEEDELEGATE" : null,
@@ -35,7 +37,7 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		authorizePerSession(authSession, [s.sd], [selectedEntity.session.number]) ? "COMMITTEESENIORDIRECTORS" : null,
 	].filter((x) => x);
 
-	const whereObject = {
+    const whereObject = {
 		committeeId: selectedEntity.id,
 		departmentId: null,
 		title: { contains: query, mode: "insensitive" },
@@ -43,7 +45,7 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		type: { has: "WEBSITE" },
 	};
 
-	const [prismaAnnouncements, totalItems] = await prisma
+    const [prismaAnnouncements, totalItems] = await prisma
 		.$transaction([
 			prisma.announcement.findMany({
 				where: whereObject,
@@ -56,7 +58,7 @@ export default async function AnnouncementsPage({ searchParams, params }) {
 		])
 		.catch(notFound);
 
-	return (
+    return (
 		<AnnouncementsTable
 			buttonHref={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}`}
 			showPublishButton={

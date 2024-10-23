@@ -5,22 +5,24 @@ import { SearchParamsButton, TopBar } from "../../../client-components";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 
-export async function generateMetadata({ params }: { params: { policySlug: string } }) {
-	const selectedPolicy = await prisma.policy.findFirst({
+export async function generateMetadata(props: { params: Promise<{ policySlug: string }> }) {
+    const params = await props.params;
+    const selectedPolicy = await prisma.policy.findFirst({
 		where: { slug: params.policySlug },
 	});
-	return {
+    return {
 		title: `${selectedPolicy.title} - Conference Policies`,
 		description: selectedPolicy.description,
 	};
 }
 
-export default async function Page({ params }) {
-	const authSession = await auth();
-	const selectedPolicy = await prisma.policy.findFirst({ where: { slug: params.policySlug } });
-	const isManagement = authorize(authSession, [s.management]);
+export default async function Page(props) {
+    const params = await props.params;
+    const authSession = await auth();
+    const selectedPolicy = await prisma.policy.findFirst({ where: { slug: params.policySlug } });
+    const isManagement = authorize(authSession, [s.management]);
 
-	return (
+    return (
 		<>
 			<TopBar
 				hideSearchBar

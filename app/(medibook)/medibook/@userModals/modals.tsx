@@ -137,9 +137,8 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 		<Dialog open={isOpen} onClose={onClose}>
 			<DialogTitle>Edit User</DialogTitle>
 			<DialogBody>
-				<form className="flex flex-col gap-6" id="main" action={createUserHandler}>
-					<ProfileUploader user={edit} />
-
+				<ProfileUploader user={edit} />
+				<form className="mt-6 flex flex-col gap-6" id="main" action={createUserHandler}>
 					{allUpdatableFields.includes("email") && (
 						<Field className="flex flex-col gap-3">
 							<Label>Email</Label>

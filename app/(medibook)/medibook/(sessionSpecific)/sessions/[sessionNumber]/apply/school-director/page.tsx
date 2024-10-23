@@ -11,11 +11,14 @@ import { ApplySchoolDirectorForm } from "./client-components";
 import { Code, Strong, Text, TextLink } from "@/components/text";
 import { Divider } from "@/components/divider";
 
-export default async function SchoolDirectorApplicationsPage({ params }: { params: { sessionNumber: string }; searchParams: any }) {
-	const authSession = await auth();
-	if (!authSession) return notFound();
+export default async function SchoolDirectorApplicationsPage(
+    props: { params: Promise<{ sessionNumber: string }>; searchParams: Promise<any> }
+) {
+    const params = await props.params;
+    const authSession = await auth();
+    if (!authSession) return notFound();
 
-	const [selectedSession, selectedUserHasApplication, userIsSchoolDirectorInSession, schools, selectedUser] = await Promise.all([
+    const [selectedSession, selectedUserHasApplication, userIsSchoolDirectorInSession, schools, selectedUser] = await Promise.all([
 		prisma.session.findFirstOrThrow({ where: { number: params.sessionNumber } }).catch(notFound),
 		prisma.applicationSchoolDirector.findFirst({
 			where: {
@@ -40,9 +43,9 @@ export default async function SchoolDirectorApplicationsPage({ params }: { param
 			.catch(notFound),
 	]);
 
-	const applicationsOpen = areSchoolDirectorApplicationsOpen(selectedSession);
+    const applicationsOpen = areSchoolDirectorApplicationsOpen(selectedSession);
 
-	return (
+    return (
 		<>
 			<TopBar
 				hideSearchBar

@@ -10,11 +10,12 @@ import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
-export default async function Page({ params }) {
-	const authSession = await auth();
-	const isManagement = authorize(authSession, [s.management]);
+export default async function Page(props) {
+    const params = await props.params;
+    const authSession = await auth();
+    const isManagement = authorize(authSession, [s.management]);
 
-	const selectedTopic = await prisma.topic
+    const selectedTopic = await prisma.topic
 		.findUniqueOrThrow({
 			where: {
 				id: params.topicId,
@@ -26,9 +27,9 @@ export default async function Page({ params }) {
 		})
 		.catch(() => redirect(`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/topics`));
 
-	const isChairOfCommittee = authorizeChairCommittee(authSession.currentRoles, selectedTopic.committee.id);
+    const isChairOfCommittee = authorizeChairCommittee(authSession.currentRoles, selectedTopic.committee.id);
 
-	return (
+    return (
 		<>
 			<TopBar
 				buttonText={`${selectedTopic.committee.name} Topics`}

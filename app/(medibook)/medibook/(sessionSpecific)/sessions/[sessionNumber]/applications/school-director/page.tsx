@@ -43,16 +43,20 @@ export function areSchoolDirectorApplicationsOpen(selectedSession) {
 	return selectedSession.schoolDirectorApplicationsAutoOpenTime < now && selectedSession.schoolDirectorApplicationsAutoCloseTime > now;
 }
 
-export default async function SchoolDirectorApplicationsPage({ params, searchParams }: { params: { sessionNumber: string }; searchParams: any }) {
-	const authSession = await auth();
-	if (!authSession || !authorize(authSession, [s.sd])) return notFound();
+export default async function SchoolDirectorApplicationsPage(
+    props: { params: Promise<{ sessionNumber: string }>; searchParams: Promise<any> }
+) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const authSession = await auth();
+    if (!authSession || !authorize(authSession, [s.sd])) return notFound();
 
-	const currentPage = Number(searchParams.page) || 1;
-	const query = searchParams.search || "";
-	const orderBy = searchParams.order || "date";
-	const orderDirection = parseOrderDirection(searchParams.direction, "desc");
+    const currentPage = Number(searchParams.page) || 1;
+    const query = searchParams.search || "";
+    const orderBy = searchParams.order || "date";
+    const orderDirection = parseOrderDirection(searchParams.direction, "desc");
 
-	const [selectedSession, applications] = await prisma
+    const [selectedSession, applications] = await prisma
 		.$transaction([
 			prisma.session.findFirst({ where: { number: params.sessionNumber } }),
 			prisma.applicationSchoolDirector.findMany({
@@ -68,9 +72,9 @@ export default async function SchoolDirectorApplicationsPage({ params, searchPar
 		])
 		.catch(notFound);
 
-	const areApplicationsOpen = areSchoolDirectorApplicationsOpen(selectedSession);
+    const areApplicationsOpen = areSchoolDirectorApplicationsOpen(selectedSession);
 
-	return (
+    return (
 		<>
 			<TopBar
 				sortOptions={sortOptions}

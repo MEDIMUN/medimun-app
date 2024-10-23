@@ -15,19 +15,21 @@ const sortOptions = [
 	{ value: "time", order: "desc", label: "Date Uploaded" },
 ];
 
-export default async function Page({ params, searchParams }) {
-	const currentPage = Number(searchParams.page) || 1;
-	const authSession = await auth();
-	const query = searchParams.search || "";
-	const orderBy = searchParams.order || "name";
-	const orderDirection = parseOrderDirection(searchParams.direction);
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const currentPage = Number(searchParams.page) || 1;
+    const authSession = await auth();
+    const query = searchParams.search || "";
+    const orderBy = searchParams.order || "name";
+    const orderDirection = parseOrderDirection(searchParams.direction);
 
-	const whereObject = {
+    const whereObject = {
 		user: { id: authSession.user.id },
 		name: { contains: query, mode: "insensitive" },
 	};
 
-	const prismaResources = await prisma.resource.findMany({
+    const prismaResources = await prisma.resource.findMany({
 		where: whereObject,
 		take: itemsPerPage,
 		skip: (currentPage - 1) * itemsPerPage,
@@ -35,10 +37,10 @@ export default async function Page({ params, searchParams }) {
 		orderBy: [{ isPinned: "desc" }, { [orderBy]: orderDirection }],
 	});
 
-	const totalItems = await prisma.resource.count({ where: whereObject });
+    const totalItems = await prisma.resource.count({ where: whereObject });
 
-	const isManagement = authorize(authSession, [s.management]);
-	return (
+    const isManagement = authorize(authSession, [s.management]);
+    return (
 		<>
 			<TopBar sortOptions={sortOptions} buttonHref="/medibook" buttonText="Home" defaultSort="timedesc" title="Personal Files">
 				<SearchParamsButton searchParams={{ uploadresource: true }}>Upload File</SearchParamsButton>

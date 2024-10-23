@@ -4,12 +4,13 @@ import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
 import Link from "next/link";
 
-export default async function Page({ params }) {
-	const selectedSession = await prisma.session.findFirst({
+export default async function Page(props) {
+    const params = await props.params;
+    const selectedSession = await prisma.session.findFirst({
 		where: { number: params.sessionNumber },
 	});
 
-	const actions = [
+    const actions = [
 		{
 			title: "School Director Applications",
 			description: "Applications for the position of School Director.",
@@ -42,7 +43,7 @@ export default async function Page({ params }) {
 		},
 	];
 
-	return (
+    return (
 		<>
 			<TopBar
 				buttonText={`Session ${romanize(selectedSession.numberInteger)}`}

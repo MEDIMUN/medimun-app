@@ -120,9 +120,10 @@ function PublicResourcesTable({ resources }) {
 	);
 }
 
-export default async function Page({ searchParams }) {
-	const currentPage = Number(searchParams.page) || 1;
-	const whereObject = {
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const currentPage = Number(searchParams.page) || 1;
+    const whereObject = {
 		isPrivate: false,
 		OR: [
 			{ scope: { hasSome: ["WEBSITE"] } },
@@ -131,7 +132,7 @@ export default async function Page({ searchParams }) {
 		],
 	};
 
-	const [resources, totalItems] = await prisma
+    const [resources, totalItems] = await prisma
 		.$transaction([
 			prisma.resource.findMany({
 				where: whereObject as any,
@@ -145,7 +146,7 @@ export default async function Page({ searchParams }) {
 		])
 		.catch(notFound);
 
-	return (
+    return (
 		<>
 			<Topbar title={"Resources"} description={"Global Resources and Resources from the latest session."} />
 			<PublicResourcesTable resources={resources}></PublicResourcesTable>

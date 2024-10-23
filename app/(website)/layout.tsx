@@ -12,9 +12,16 @@ import { notFound } from "next/navigation";
 import { MatomoAnalytics } from "@/components/analytics";
 
 export const metadata = {
+	metadataBase: new URL("https://www.medimun.org"),
 	title: {
-		template: "%s • MEDIMUN",
+		template: "%s | MEDIMUN",
 		default: "MEDIMUN",
+	},
+	description: {
+		default: "The Mediterranean Model United Nations",
+	},
+	openGraph: {
+		images: "/assets/og-image.png",
 	},
 };
 

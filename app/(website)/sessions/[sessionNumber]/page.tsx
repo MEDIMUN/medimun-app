@@ -3,8 +3,9 @@ import { getOrdinal } from "@/lib/ordinal";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export default function Page({ params }) {
-	return (
+export default async function Page(props) {
+    const params = await props.params;
+    return (
 		<div className="py-24 sm:py-32">
 			<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
 				<div className="mb-4 lg:px-8">

@@ -17,6 +17,7 @@ import { auth } from "@/auth";
 import Paginator from "@/components/pagination";
 import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
 import { Code } from "@/components/text";
+import { Fragment } from "react";
 
 export const metadata: Metadata = {
 	title: "All Sessions",
@@ -24,7 +25,8 @@ export const metadata: Metadata = {
 
 const sessionsPerPage = 6;
 
-export default async function Sessions({ searchParams }) {
+export default async function Sessions(props) {
+	const searchParams = await props.searchParams;
 	const currentPage = parseInt(searchParams.page) || 1;
 	const query = searchParams.search || "";
 	const authSession = await auth();
@@ -78,7 +80,7 @@ export default async function Sessions({ searchParams }) {
 						const location = session?.Day[0]?.location?.name;
 						const romanized = romanize(session?.numberInteger);
 						return (
-							<>
+							<Fragment key={session.id}>
 								<li
 									className={cn("bg-cover", session?.isMainShown && "mb-6 overflow-hidden rounded-lg text-zinc-800 shadow-md duration-300")}
 									style={
@@ -152,7 +154,7 @@ export default async function Sessions({ searchParams }) {
 										</div>
 									</div>
 								</li>
-							</>
+							</Fragment>
 						);
 					})}
 				</ul>

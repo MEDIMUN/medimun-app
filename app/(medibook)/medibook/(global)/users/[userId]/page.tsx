@@ -22,24 +22,25 @@ import {
 } from "@/lib/authorize";
 import { auth } from "@/auth";
 
-export default async function Page({ params }) {
-	const authSession = await auth();
-	const selectedUser = await prisma.user.findFirst({
+export default async function Page(props) {
+    const params = await props.params;
+    const authSession = await auth();
+    const selectedUser = await prisma.user.findFirst({
 		where: { OR: [{ id: params.userId }, { username: params.userId }] },
 	});
-	const userData = await userGetter(selectedUser.id);
-	const fullName = userData?.user.displayName || `${userData?.user.officialName} ${userData?.user.officialSurname}`;
-	const randomintegerupto6 = Math.floor(Math.random() * 5) + 1;
+    const userData = await userGetter(selectedUser.id);
+    const fullName = userData?.user.displayName || `${userData?.user.officialName} ${userData?.user.officialSurname}`;
+    const randomintegerupto6 = Math.floor(Math.random() * 5) + 1;
 
-	const isChairOfUser = authorizeChairDelegate(authSession.currentRoles, userData.currentRoles);
-	const isManagerOfUser = authorizeManagerMember(authSession.currentRoles, userData.currentRoles);
-	const isSchoolDirectorOfStudent = authorizeSchoolDirectorStudent(authSession.currentRoles, userData);
-	const isManagement = authorize(authSession, [s.management]);
-	const isAuthHigherPower = authSession.user.highestRoleRank < userData.highestRoleRank;
+    const isChairOfUser = authorizeChairDelegate(authSession.currentRoles, userData.currentRoles);
+    const isManagerOfUser = authorizeManagerMember(authSession.currentRoles, userData.currentRoles);
+    const isSchoolDirectorOfStudent = authorizeSchoolDirectorStudent(authSession.currentRoles, userData);
+    const isManagement = authorize(authSession, [s.management]);
+    const isAuthHigherPower = authSession.user.highestRoleRank < userData.highestRoleRank;
 
-	const displayEditRolesButton = isAuthHigherPower && (isManagement || isChairOfUser || isManagerOfUser || isSchoolDirectorOfStudent);
+    const displayEditRolesButton = isAuthHigherPower && (isManagement || isChairOfUser || isManagerOfUser || isSchoolDirectorOfStudent);
 
-	return (
+    return (
 		<>
 			<div>
 				<div>

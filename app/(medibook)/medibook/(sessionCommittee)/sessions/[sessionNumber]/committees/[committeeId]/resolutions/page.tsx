@@ -5,10 +5,11 @@ import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 
-export default async function Page({ params }) {
-	const authSession = await auth();
-	const isManagement = authorize(authSession, [s.management]);
-	const selectedSession = await prisma.session
+export default async function Page(props) {
+    const params = await props.params;
+    const authSession = await auth();
+    const isManagement = authorize(authSession, [s.management]);
+    const selectedSession = await prisma.session
 		.findFirstOrThrow({
 			where: {
 				number: params.sessionNumber,
@@ -25,7 +26,7 @@ export default async function Page({ params }) {
 		})
 		.catch(notFound);
 
-	return (
+    return (
 		<>
 			<TopBar
 				buttonHref={`/medibook/sessions/${selectedSession.number}/committees/${selectedSession.committee[0].slug || selectedSession.committee[0].id}`}

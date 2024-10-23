@@ -4,8 +4,9 @@ import { notFound, redirect } from "next/navigation";
 import RollCallTable from "./Table";
 import { ScrollShadow } from "@nextui-org/scroll-shadow";
 
-export default async function Page({ searchParams }) {
-	const days = await prisma.day
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const days = await prisma.day
 		.findMany({
 			orderBy: [{ type: "asc" }, { date: "asc" }],
 			select: {
@@ -17,39 +18,39 @@ export default async function Page({ searchParams }) {
 		})
 		.catch(notFound);
 
-	const conferenceDays = days
+    const conferenceDays = days
 		.filter((day) => day.type === "CONFERENCE")
 		.map((day, index) => {
 			return { ...day, title: `Conference Day ${index + 1}` };
 		});
 
-	const workshopDays = days
+    const workshopDays = days
 		.filter((day) => day.type === "WORKSHOP")
 		.map((day, index) => {
 			return { ...day, title: `Workshop Day ${index + 1}` };
 		});
 
-	const today = new Date();
-	const currentDay = days.find((day) => day.date.toDateString() === today.toDateString()) || null;
-	const currentDayId = currentDay?.id || null;
+    const today = new Date();
+    const currentDay = days.find((day) => day.date.toDateString() === today.toDateString()) || null;
+    const currentDayId = currentDay?.id || null;
 
-	function dayIdExists(dayId) {
+    function dayIdExists(dayId) {
 		return days.some((day) => day.id === dayId);
 	}
 
-	if (searchParams.day) {
+    if (searchParams.day) {
 		const selectedDay = days.find((day) => day.id === searchParams.day);
 		if (!selectedDay && !currentDayId) {
 			redirect(`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/roll-call`);
 		}
 	}
 
-	if (!searchParams.day && currentDayId) {
+    if (!searchParams.day && currentDayId) {
 		redirect(`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/roll-call?day=${currentDayId}`);
 	}
 
-	let rollCalls, delegates;
-	if (searchParams.day && dayIdExists(searchParams.day)) {
+    let rollCalls, delegates;
+    if (searchParams.day && dayIdExists(searchParams.day)) {
 		rollCalls = await prisma.rollCall
 			.findMany({
 				where: {
@@ -86,7 +87,7 @@ export default async function Page({ searchParams }) {
 		});
 	}
 
-	return (
+    return (
 		<div>
 			<div className="flex w-full flex-col gap-3 rounded-xl bg-content1/60 p-4 shadow-sm md:flex-row">
 				<div className="my-auto ml-1">Select Day</div>

@@ -1,10 +1,12 @@
 import prisma from "@/prisma/client";
 import { AddExtraCountryModal, EditExtraCountryModal } from "./modals";
 
-export default async function Modals({ params, searchParams }) {
-	let selectedCommittee, selectedExtraCountry;
+export default async function Modals(props) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    let selectedCommittee, selectedExtraCountry;
 
-	if (searchParams["edit-extra-country"]) {
+    if (searchParams["edit-extra-country"]) {
 		selectedCommittee = await prisma.committee.findFirstOrThrow({
 			where: {
 				OR: [
@@ -27,7 +29,7 @@ export default async function Modals({ params, searchParams }) {
 		}
 	}
 
-	return (
+    return (
 		<>
 			<AddExtraCountryModal /> <EditExtraCountryModal selectedCommittee={selectedCommittee} selectedExtraCountry={selectedExtraCountry} />
 		</>

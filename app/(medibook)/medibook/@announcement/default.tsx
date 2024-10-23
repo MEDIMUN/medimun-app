@@ -162,7 +162,9 @@ export function authorizedToEditAnnouncement(authSession, editAnnouncementData) 
 	return true;
 }
 
-export default async function Modals({ params, searchParams }) {
+export default async function Modals(props) {
+	const searchParams = await props.searchParams;
+	const params = await props.params;
 	const authSession = await auth();
 	let editAnnouncementData: Announcement | null = null;
 	let deleteAnnouncementData: Announcement | null = null;
@@ -193,8 +195,8 @@ export default async function Modals({ params, searchParams }) {
 
 	return (
 		<>
-			<ModalDeleteAnnouncement selectedAnnouncement={deleteAnnouncementData} />
-			<ModalEditAnnouncement selectedAnnouncement={editAnnouncementData} />
+			{deleteAnnouncementData && <ModalDeleteAnnouncement selectedAnnouncement={deleteAnnouncementData} />}
+			{editAnnouncementData && <ModalEditAnnouncement selectedAnnouncement={editAnnouncementData} />}
 		</>
 	);
 }

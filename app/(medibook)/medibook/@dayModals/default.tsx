@@ -1,7 +1,8 @@
 import prisma from "@/prisma/client";
 import { CreateDayModal, DeleteDayModal, EditDayModal } from "./modals";
 
-export default async function Modals({ searchParams }) {
+export default async function Modals(props) {
+	const searchParams = await props.searchParams;
 	const locations = await prisma.location.findMany();
 	let selectedDay;
 
@@ -10,7 +11,7 @@ export default async function Modals({ searchParams }) {
 
 	return (
 		<>
-			<DeleteDayModal selectedDay={selectedDay} />
+			{selectedDay && <DeleteDayModal selectedDay={selectedDay} />}
 			<EditDayModal locations={locations} selectedDay={selectedDay} />
 			<CreateDayModal locations={locations} />
 		</>

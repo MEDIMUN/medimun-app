@@ -12,11 +12,12 @@ import { Button } from "@/components/button";
 import { processMarkdownPreview } from "@/lib/text";
 import Paginator from "@/components/pagination";
 
-export default async function Page({ params }) {
-	const authSession = await auth();
-	if (!authSession) notFound();
-	const isManagement = authorize(authSession, [s.management]);
-	const selectedCommittee = await prisma.committee
+export default async function Page(props) {
+    const params = await props.params;
+    const authSession = await auth();
+    if (!authSession) notFound();
+    const isManagement = authorize(authSession, [s.management]);
+    const selectedCommittee = await prisma.committee
 		.findFirstOrThrow({
 			where: {
 				OR: [{ slug: params.committeeId }, { id: params.committeeId }],
@@ -26,12 +27,12 @@ export default async function Page({ params }) {
 			include: { Topic: true },
 		})
 		.catch(notFound);
-	const isChairOfCommittee = false || authorizeChairCommittee(authSession?.currentRoles, selectedCommittee.id);
-	const topics = selectedCommittee?.Topic;
+    const isChairOfCommittee = false || authorizeChairCommittee(authSession?.currentRoles, selectedCommittee.id);
+    const topics = selectedCommittee?.Topic;
 
-	const howManyTOpicsHaveDescription = topics.filter((topic) => topic.description).length;
+    const howManyTOpicsHaveDescription = topics.filter((topic) => topic.description).length;
 
-	return (
+    return (
 		<>
 			<TopBar
 				hideSearchBar

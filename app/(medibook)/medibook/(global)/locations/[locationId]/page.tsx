@@ -12,19 +12,20 @@ import { ChevronLeftIcon } from "@heroicons/react/16/solid";
 import { notFound, redirect } from "next/navigation";
 import { EditDeleteLocationButtons } from "../client-components";
 
-export default async function Page({ params }) {
-	const authSession = await auth();
-	const isManagement = authorize(authSession, [s.management]);
+export default async function Page(props) {
+    const params = await props.params;
+    const authSession = await auth();
+    const isManagement = authorize(authSession, [s.management]);
 
-	const location = await prisma.location.findFirst({ where: { OR: [{ id: params.locationId }, { slug: params.locationId }] } });
+    const location = await prisma.location.findFirst({ where: { OR: [{ id: params.locationId }, { slug: params.locationId }] } });
 
-	if (!location || (!location.isPublic && !isManagement)) {
+    if (!location || (!location.isPublic && !isManagement)) {
 		return notFound();
 	}
-	if (params.locationId !== location.slug && location.slug) return redirect(`/medibook/locations/${location.slug}`);
+    if (params.locationId !== location.slug && location.slug) return redirect(`/medibook/locations/${location.slug}`);
 
-	const countryNameEn = countries.find((country) => country.countryCode === location?.country)?.countryNameEn;
-	const fullAddress = `
+    const countryNameEn = countries.find((country) => country.countryCode === location?.country)?.countryNameEn;
+    const fullAddress = `
    ${location?.name ? `${location?.name}` : ""}
 	${location.street || location?.city || location?.city || location?.zipCode || location?.state || location?.country ? "," : ""}
    ${location?.street ? `${location?.street},` : ""}
@@ -39,19 +40,19 @@ export default async function Page({ params }) {
 		.replace("&", "and")
 		.replace("  ", " ");
 
-	const isVisible =
+    const isVisible =
 		location?.email ||
 		location?.phone ||
 		location?.website ||
 		(location?.name && location?.street && location?.zipCode && location?.state && location?.country);
 
-	if (!isVisible && !authorize(authSession, [s.management])) {
+    if (!isVisible && !authorize(authSession, [s.management])) {
 		notFound();
 	}
 
-	return (
-		<main>
-			{authorize(authSession, [s.management]) && (
+    return (
+        (<main>
+            {authorize(authSession, [s.management]) && (
 				<div className="max-lg:hidden -ml-1">
 					<Link href="/medibook/locations" className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
 						<ChevronLeftIcon className="size-4 fill-zinc-400 dark:fill-zinc-500" />
@@ -59,10 +60,10 @@ export default async function Page({ params }) {
 					</Link>
 				</div>
 			)}
-			{isVisible && !location.isPublic && (
+            {isVisible && !location.isPublic && (
 				<div className="mt-4 rounded-lg border bg-zinc-100 p-2 text-center text-sm md:text-left">This page is private.</div>
 			)}
-			<div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+            <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
 				<div className="flex flex-wrap items-center gap-6">
 					{location.cover && (
 						<div className="aspect-[3/2] w-32 shrink-0 rounded-lg p-1 shadow">
@@ -81,7 +82,7 @@ export default async function Page({ params }) {
 				</div>
 				{authorize(authSession, [s.management]) && <EditDeleteLocationButtons locationId={location?.id} />}
 			</div>
-			{isVisible ? (
+            {isVisible ? (
 				<div className="mt-12">
 					<Subheading>Details</Subheading>
 					<Divider className="mt-4" />
@@ -128,7 +129,7 @@ export default async function Page({ params }) {
 					)}
 				</div>
 			)}
-			{location?.name && location?.street && location?.zipCode && location?.state && location?.country && (
+            {location?.name && location?.street && location?.zipCode && location?.state && location?.country && (
 				<div className="mt-4">
 					<Subheading>Map</Subheading>
 					<Divider className="mt-4" />
@@ -143,6 +144,6 @@ export default async function Page({ params }) {
 					/>
 				</div>
 			)}
-		</main>
-	);
+        </main>)
+    );
 }

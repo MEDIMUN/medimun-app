@@ -45,16 +45,17 @@ const sortOptions = [
 	{ label: "School", value: "Student", order: `{"name":"desc"}` },
 ];
 
-export default async function Page({ searchParams }) {
-	const maxNoOfSelected = 25;
-	const session = await auth();
-	const highestRoleRank = session?.highestRoleRank;
-	const currentPage = Number(searchParams.page) || 1;
-	const query = searchParams.search || "";
-	const orderBy = searchParams.order || "officialName";
-	const orderDirection = parseOrderDirection(searchParams.direction);
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const maxNoOfSelected = 25;
+    const session = await auth();
+    const highestRoleRank = session?.highestRoleRank;
+    const currentPage = Number(searchParams.page) || 1;
+    const query = searchParams.search || "";
+    const orderBy = searchParams.order || "officialName";
+    const orderDirection = parseOrderDirection(searchParams.direction);
 
-	const queryObject = {
+    const queryObject = {
 		where: {
 			OR: [
 				{ officialName: { contains: query, mode: "insensitive" } },
@@ -68,7 +69,7 @@ export default async function Page({ searchParams }) {
 		},
 	};
 
-	const usersPromise = prisma.user.findMany({
+    const usersPromise = prisma.user.findMany({
 		include: { ...generateUserDataObject(), Account: { select: { id: true } } },
 		...(queryObject as any),
 		skip: (currentPage - 1) * usersPerPage,
@@ -76,11 +77,11 @@ export default async function Page({ searchParams }) {
 		orderBy: { [orderBy]: orderDirection },
 	});
 
-	const numberOfUsersPromise = prisma.user.count({ ...(queryObject as any) });
+    const numberOfUsersPromise = prisma.user.count({ ...(queryObject as any) });
 
-	let [users, numberOfUsers] = await prisma.$transaction([usersPromise, numberOfUsersPromise]).catch(notFound);
+    let [users, numberOfUsers] = await prisma.$transaction([usersPromise, numberOfUsersPromise]).catch(notFound);
 
-	users = users.map((user) => {
+    users = users.map((user) => {
 		return {
 			...generateUserData(user),
 			isDisabled: user.isDisabled,
@@ -91,8 +92,8 @@ export default async function Page({ searchParams }) {
 		};
 	});
 
-	let editUsers = [];
-	if (searchParams.select) {
+    let editUsers = [];
+    if (searchParams.select) {
 		const selectedUserIds = searchParams.select.split("U").filter((id) => id);
 		if (selectedUserIds.length === 0) return;
 		editUsers = await prisma.user
@@ -105,7 +106,7 @@ export default async function Page({ searchParams }) {
 		editUsers = editUsers.filter((user) => user.highestRoleRank > highestRoleRank);
 	}
 
-	return (
+    return (
 		<>
 			<TopBar
 				buttonHref="/medibook"

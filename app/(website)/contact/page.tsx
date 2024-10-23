@@ -9,8 +9,9 @@ import { RecaptchaComp } from "./client-components";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 
-export default function Page({ searchParams }) {
-	return (
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    return (
 		<div className="relative isolate min-h-screen bg-white">
 			<div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
 				<div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-48">

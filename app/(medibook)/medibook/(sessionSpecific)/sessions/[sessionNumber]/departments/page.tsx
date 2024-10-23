@@ -24,19 +24,21 @@ const sortOptions = [
 	{ value: "type", order: "desc", label: "Type" },
 ];
 
-export default async function Page({ params, searchParams }) {
-	const currentPage = searchParams.page || 1;
-	//
-	const orderBy = searchParams.order || "name";
-	const orderDirection = parseOrderDirection(searchParams.direction);
-	//
-	const authSession = await auth();
-	const isManagement = authorize(authSession, [s.management]);
-	//
-	const selectedSession = await prisma.session.findFirstOrThrow({ where: { number: params.sessionNumber } }).catch(notFound);
-	const totalItems = await prisma.department.count({ where: { session: { number: selectedSession.number } } }).catch(notFound);
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const currentPage = searchParams.page || 1;
+    //
+    const orderBy = searchParams.order || "name";
+    const orderDirection = parseOrderDirection(searchParams.direction);
+    //
+    const authSession = await auth();
+    const isManagement = authorize(authSession, [s.management]);
+    //
+    const selectedSession = await prisma.session.findFirstOrThrow({ where: { number: params.sessionNumber } }).catch(notFound);
+    const totalItems = await prisma.department.count({ where: { session: { number: selectedSession.number } } }).catch(notFound);
 
-	const prismaDepartments = await prisma.department
+    const prismaDepartments = await prisma.department
 		.findMany({
 			where: {
 				session: { number: selectedSession.number },
@@ -51,19 +53,19 @@ export default async function Page({ params, searchParams }) {
 		})
 		.catch(notFound);
 
-	const currentDepartmentIds = authSession.user.currentRoles
+    const currentDepartmentIds = authSession.user.currentRoles
 		.concat(authSession.user.pastRoles)
 		.filter((role) => role.session == selectedSession.number)
 		.filter((role) => role.roleIdentifier == "manager" || role.roleIdentifier == "member")
 		.map((role) => role.departmentId);
 
-	const sortedDepartments = prismaDepartments.sort((a: any, b: any) => {
+    const sortedDepartments = prismaDepartments.sort((a: any, b: any) => {
 		if (currentDepartmentIds.includes(a.id) && !currentDepartmentIds.includes(b.id)) return -1;
 		if (currentDepartmentIds.includes(b.id) && !currentDepartmentIds.includes(a.id)) return 1;
 		return 0;
 	});
 
-	return (
+    return (
 		<>
 			<TopBar
 				defaultSort="nameasc"

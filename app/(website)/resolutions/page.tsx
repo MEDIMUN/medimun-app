@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { use } from "react";
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/modal";
 
@@ -8,10 +9,11 @@ import { Button } from "@/components/button";
 
 export const dynamic = "force-dynamic";
 
-export default function Page({ searchParams }) {
-	const router = useRouter();
+export default function Page(props) {
+    const searchParams = use(props.searchParams);
+    const router = useRouter();
 
-	const researchBooklets = [
+    const researchBooklets = [
 		{ slug: "GA1", name: "General Assembly 1", href: "https://drive.google.com/drive/folders/11iYQO_rwLEdxq11WoZ-mbQZTNZABv7XM?usp=sharing" },
 		{ slug: "GA2", name: "General Assembly 2", href: "https://drive.google.com/drive/folders/1eqp0hR3H7rCL3hgq2mUY-BBIRXAiSrcN?usp=sharing" },
 		{ slug: "GA3", name: "General Assembly 3", href: "https://drive.google.com/drive/folders/1Vvu1EPpx8ESmcA4CD_5wHrzUEVEhi1EW?usp=sharing" },
@@ -29,7 +31,7 @@ export default function Page({ searchParams }) {
 		},
 	];
 
-	return (
+    return (
 		<>
 			<Modal
 				onOpenChange={() => updateSearchParams({ view: searchParams.view })}

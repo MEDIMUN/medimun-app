@@ -9,13 +9,14 @@ export const metadata = {
 	description: "Reset your MediBook password.",
 };
 
-export default async function Page({ params }) {
-	const random = Math.floor(Math.random() * 6) + 1;
-	const resetPasswordId = params.resetPasswordId;
-	const selectedReset = await prisma.resetPassword
+export default async function Page(props) {
+    const params = await props.params;
+    const random = Math.floor(Math.random() * 6) + 1;
+    const resetPasswordId = params.resetPasswordId;
+    const selectedReset = await prisma.resetPassword
 		.findFirstOrThrow({ where: { passwordResetCode: resetPasswordId }, select: { passwordResetCode: true } })
 		.catch(notFound);
-	return (
+    return (
 		<section
 			style={{
 				backgroundImage: `url(/assets/gradients/${random.toString()}.jpg)`,

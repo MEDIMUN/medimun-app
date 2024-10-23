@@ -15,14 +15,16 @@ const sortOptions = [
 	{ value: "time", order: "desc", label: "Date Uploaded" },
 ];
 
-export default async function Page({ params, searchParams }) {
-	const currentPage = Number(searchParams.page) || 1;
-	const query = searchParams.search || "";
-	const orderBy = searchParams.order || "name";
-	const orderDirection = parseOrderDirection(searchParams.direction);
-	const authSession = await auth();
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const currentPage = Number(searchParams.page) || 1;
+    const query = searchParams.search || "";
+    const orderBy = searchParams.order || "name";
+    const orderDirection = parseOrderDirection(searchParams.direction);
+    const authSession = await auth();
 
-	const hasSomeArray = [
+    const hasSomeArray = [
 		"WEBSITE",
 		authorizePerRole(authSession, [s.chair, s.management]) ? "CHAIR" : null,
 		authorizePerRole(authSession, [s.manager, s.management]) ? "MANAGER" : null,
@@ -34,7 +36,7 @@ export default async function Page({ params, searchParams }) {
 		authorizePerRole(authSession, [s.sd]) ? "SENIORDIRECTORS" : null,
 	].filter((x) => x);
 
-	const whereObject = {
+    const whereObject = {
 		OR: [
 			{
 				session: null,
@@ -56,7 +58,7 @@ export default async function Page({ params, searchParams }) {
 		],
 	};
 
-	const prismaResources = await prisma.resource.findMany({
+    const prismaResources = await prisma.resource.findMany({
 		where: whereObject,
 		take: itemsPerPage,
 		skip: (currentPage - 1) * itemsPerPage,
@@ -64,10 +66,10 @@ export default async function Page({ params, searchParams }) {
 		orderBy: [{ isPinned: "desc" }, { [orderBy]: orderDirection }],
 	});
 
-	const totalItems = await prisma.resource.count({ where: whereObject });
+    const totalItems = await prisma.resource.count({ where: whereObject });
 
-	const isManagement = authorize(authSession, [s.management]);
-	return (
+    const isManagement = authorize(authSession, [s.management]);
+    return (
 		<>
 			<TopBar sortOptions={sortOptions} defaultSort="timedesc" title="Global Resources">
 				{authorize(authSession, [s.management]) && (

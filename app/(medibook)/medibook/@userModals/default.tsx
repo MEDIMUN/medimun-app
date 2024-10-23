@@ -6,7 +6,8 @@ import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 
-export default async function UserModals({ searchParams }) {
+export default async function UserModals(props) {
+	const searchParams = await props.searchParams;
 	const authSession = await auth();
 	const highestRoleRank = authSession?.user?.highestRoleRank;
 	let schools, sessions, committees, departments, editUserData, filteredAllowedEditUserData;
@@ -14,7 +15,9 @@ export default async function UserModals({ searchParams }) {
 	let editSelectedUser = null;
 	if (searchParams["edit-user"]) {
 		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(notFound);
-		editSelectedUser = prisma.user.findFirst({ where: { id: searchParams["edit-user"] }, include: { ...generateUserDataObject() } }).catch(notFound);
+		editSelectedUser = await prisma.user
+			.findFirst({ where: { id: searchParams["edit-user"] }, include: { ...generateUserDataObject() } })
+			.catch(notFound);
 		[schools, editSelectedUser] = await Promise.all([schools, editSelectedUser]);
 		editSelectedUser = { highestRoleRank: generateUserData(editSelectedUser)?.highestRoleRank, ...editSelectedUser };
 		editSelectedUser = editSelectedUser.highestRoleRank > highestRoleRank ? editSelectedUser : null;
@@ -95,7 +98,7 @@ export default async function UserModals({ searchParams }) {
 	let assignUsers = [];
 	if (searchParams["assign-roles"]) {
 		const selectedUserIds = searchParams["assign-roles"].split(",").filter((id) => id);
-		if (!selectedUserIds.length) return;
+		if (!selectedUserIds?.length) return;
 		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(notFound);
 		sessions = prisma.session.findMany({ orderBy: [{ numberInteger: "desc" }] });
 		committees = prisma.committee.findMany({ where: { session: { id: searchParams.session } } }).catch(notFound);
@@ -165,16 +168,14 @@ export default async function UserModals({ searchParams }) {
 			});
 		const userData = generateUserData(prismaUser);
 
-		console.log(userData);
-
 		if (userData && !(userData.highestRoleRank > highestRoleRank)) return;
 		selectedUser = userData;
 	}
 
 	return (
 		<>
-			<DeleteUserModal selectedUser={selectedUser} />
-			<CreateUserModal schools={schools} />
+			{selectedUser && <DeleteUserModal selectedUser={selectedUser} />}
+			{!!schools?.length && <CreateUserModal schools={schools} />}
 			<EditRolesModal selectedUser={selectedUser} highestRoleRank={highestRoleRank} />
 			<AddRolesModal selectedUsers={assignUsers} schools={schools} sessions={sessions} committees={committees} departments={departments} />
 			<EditUserModal studentSchoolId={editUserData?.schoolId} edit={filteredAllowedEditUserData} schools={schools} />

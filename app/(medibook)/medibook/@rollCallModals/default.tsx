@@ -1,7 +1,8 @@
 import prisma from "@/prisma/client";
 import { CreateRollCallModal, DeleteRollCallModal, EditRollCallModal } from "./modals";
 
-export default async function RollCallModals({ searchParams }) {
+export default async function RollCallModals(props) {
+	const searchParams = await props.searchParams;
 	let selectedRollCall, selectedDay;
 	if (searchParams?.["edit-roll-call"]) selectedRollCall = await prisma.rollCall.findUnique({ where: { id: searchParams?.["edit-roll-call"] } });
 	if (searchParams?.["delete-roll-call"]) selectedRollCall = await prisma.rollCall.findUnique({ where: { id: searchParams?.["delete-roll-call"] } });
@@ -9,9 +10,9 @@ export default async function RollCallModals({ searchParams }) {
 
 	return (
 		<>
-			<CreateRollCallModal selectedDay={selectedDay} />
-			<EditRollCallModal selectedRollCall={selectedRollCall} />
-			<DeleteRollCallModal selectedRollCall={selectedRollCall} />
+			{selectedDay && <CreateRollCallModal selectedDay={selectedDay} />}
+			{selectedRollCall && <EditRollCallModal selectedRollCall={selectedRollCall} />}
+			{selectedRollCall && <DeleteRollCallModal selectedRollCall={selectedRollCall} />}
 		</>
 	);
 }

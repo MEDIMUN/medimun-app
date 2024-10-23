@@ -1,4 +1,5 @@
 import { RoleObject } from "@/auth";
+import { Session } from "next-auth";
 
 export enum s {
 	globalAdmin = "Global Admin",
@@ -22,11 +23,11 @@ export enum s {
 	all = "Everyone",
 }
 
-export const authorize = (userdata: object, scope: s[]): boolean => {
+export const authorize = (userdata: Session | null, scope: s[]): boolean => {
 	if (!userdata) return false;
 	const currentRoleNames = userdata?.user?.currentRoleNames;
 	if (!userdata?.user) return false;
-	if (userdata?.isDisabled) return false;
+	if (userdata?.user.isDisabled) return false;
 	if (!currentRoleNames) return false;
 	if (!scope[0]) return true;
 
@@ -84,10 +85,10 @@ export const authorize = (userdata: object, scope: s[]): boolean => {
 	return false;
 };
 
-export const authorizeDirect = (userdata: object, scope: s[]): boolean => {
+export const authorizeDirect = (userdata: Session | null, scope: s[]): boolean => {
 	if (!userdata) return false;
 	const { currentRoleNames } = userdata.user;
-	if (userdata?.isDisabled) return false;
+	if (userdata?.user.isDisabled) return false;
 	if (!currentRoleNames) return false;
 	if (!scope[0]) return true;
 

@@ -1,7 +1,8 @@
 import prisma from "@/prisma/client";
 import { CreateTopicModal, DeleteTopicModal, EditTopicModal } from "./modals";
 
-export default async function TopicModals({ searchParams }) {
+export default async function TopicModals(props) {
+	const searchParams = await props.searchParams;
 	let selectedTopic, selectedCommittee;
 
 	if (searchParams?.["edit-topic"])
@@ -12,9 +13,9 @@ export default async function TopicModals({ searchParams }) {
 
 	return (
 		<>
-			<DeleteTopicModal selectedTopic={selectedTopic} />
-			<EditTopicModal selectedTopic={selectedTopic} />
-			<CreateTopicModal selectedCommittee={selectedCommittee} />
+			{selectedTopic && <DeleteTopicModal selectedTopic={selectedTopic} />}
+			{selectedTopic && <EditTopicModal selectedTopic={selectedTopic} />}
+			{selectedCommittee && <CreateTopicModal selectedCommittee={selectedCommittee} />}
 		</>
 	);
 }

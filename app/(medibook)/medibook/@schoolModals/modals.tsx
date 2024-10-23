@@ -245,7 +245,7 @@ export function DeleteSchoolModal({ school, total }) {
 	async function deleteSchoolHandler(formData: FormData) {
 		if (isLoading) return;
 		setIsLoading(true);
-		formData.append("id", school.id);
+		formData.append("id", school?.id);
 		const res = await deleteSchool(formData);
 		const isChange = (total - 1) % 10 === 0;
 		if (res?.ok) {

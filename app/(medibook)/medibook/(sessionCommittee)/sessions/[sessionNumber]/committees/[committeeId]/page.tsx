@@ -12,10 +12,12 @@ import { Avatar } from "@nextui-org/avatar";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export default async function Page({ params, searchParams }) {
-	const authSession = await auth();
-	const isManagement = authorize(authSession, [s.management]);
-	const selectedCommittee = await prisma.committee
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const authSession = await auth();
+    const isManagement = authorize(authSession, [s.management]);
+    const selectedCommittee = await prisma.committee
 		.findFirstOrThrow({
 			where: {
 				OR: [
@@ -27,9 +29,9 @@ export default async function Page({ params, searchParams }) {
 		})
 		.catch(notFound);
 
-	const basePath = `/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}`;
+    const basePath = `/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}`;
 
-	const actions = [
+    const actions = [
 		{
 			title: "Committee Announcements",
 			description: "Announcements for the committee.",
@@ -67,10 +69,10 @@ export default async function Page({ params, searchParams }) {
 		},
 	].filter((x) => x);
 
-	/* 	const assignedCountries = selectedCommittee.delegate.map((delegate) => delegate.country);
+    /* 	const assignedCountries = selectedCommittee.delegate.map((delegate) => delegate.country);
 	 */
 
-	return (
+    return (
 		<>
 			<TopBar
 				title={selectedCommittee.name}

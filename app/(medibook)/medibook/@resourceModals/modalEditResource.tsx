@@ -18,13 +18,15 @@ export function ModalEditResource({ selectedResource }) {
 	const searchParams = useSearchParams();
 	const [isLoading, setIsLoading] = useFlushState(false);
 
+	if (!selectedResource) return null;
+
 	function onClose() {
 		removeSearchParams({ "edit-resource": "" }, router);
 	}
 
 	async function handleSubmit(formData: FormData) {
 		setIsLoading(true);
-		const res = await editResourceDetails(formData, selectedResource.id);
+		const res = await editResourceDetails(formData, selectedResource?.id);
 		if (res?.ok) {
 			toast.success(res?.message);
 			onClose();

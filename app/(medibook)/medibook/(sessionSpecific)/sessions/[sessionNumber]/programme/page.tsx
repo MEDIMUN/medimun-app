@@ -22,12 +22,14 @@ export const metadata = {
 
 const itemsPerPage = 10;
 
-export default async function Page({ params, searchParams }) {
-	const currentPage = searchParams.page || 1;
-	const session = await auth();
-	const sessionNumber = params.sessionNumber;
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const currentPage = searchParams.page || 1;
+    const session = await auth();
+    const sessionNumber = params.sessionNumber;
 
-	const [selectedSession, days, totalItems] = await prisma
+    const [selectedSession, days, totalItems] = await prisma
 		.$transaction([
 			prisma.session.findFirstOrThrow({ where: { number: sessionNumber } }),
 			prisma.day.findMany({
@@ -41,11 +43,11 @@ export default async function Page({ params, searchParams }) {
 		])
 		.catch(notFound);
 
-	let conferenceIndex = 0,
+    let conferenceIndex = 0,
 		workshopIndex = 0,
 		eventIndex = 0;
 
-	return (
+    return (
 		<>
 			<TopBar
 				buttonHref={`/medibook/sessions/${sessionNumber}`}

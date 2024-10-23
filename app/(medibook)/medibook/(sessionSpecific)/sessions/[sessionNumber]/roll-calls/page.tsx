@@ -11,11 +11,13 @@ import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 import { Badge } from "@/components/badge";
 
-export default async function Page({ params, searchParams }) {
-	const authSession = await auth();
-	if (!authSession || !authorize(authSession, [s.management])) return notFound();
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const authSession = await auth();
+    if (!authSession || !authorize(authSession, [s.management])) return notFound();
 
-	const [days, rollCalls] = await prisma
+    const [days, rollCalls] = await prisma
 		.$transaction([
 			prisma.day.findMany({
 				where: { session: { number: params.sessionNumber } },
@@ -30,29 +32,29 @@ export default async function Page({ params, searchParams }) {
 		])
 		.catch(notFound);
 
-	const conferenceDays = days
+    const conferenceDays = days
 		.filter((day) => day.type === "CONFERENCE")
 		.map((day, index) => {
 			return { ...day, title: `Conference Day ${index + 1}` };
 		});
 
-	const workshopDays = days
+    const workshopDays = days
 		.filter((day) => day.type === "WORKSHOP")
 		.map((day, index) => {
 			return { ...day, title: `Workshop Day ${index + 1}` };
 		});
 
-	const currentDay = days.find((day) => day.date.toDateString() === new Date().toDateString()) || null;
-	const currentDayId = currentDay?.id || null;
+    const currentDay = days.find((day) => day.date.toDateString() === new Date().toDateString()) || null;
+    const currentDayId = currentDay?.id || null;
 
-	if (searchParams?.["selected-day"]) {
+    if (searchParams?.["selected-day"]) {
 		const selectedDay = days.find((day) => day.id === searchParams?.["selected-day"]);
 		if (!selectedDay && !currentDayId) redirect(`/medibook/sessions/${params.sessionNumber}/roll-calls`);
 	}
 
-	if (!searchParams?.["selected-day"] && currentDayId) redirect(`/medibook/sessions/${params.sessionNumber}/roll-calls?selected-day=${currentDayId}`);
+    if (!searchParams?.["selected-day"] && currentDayId) redirect(`/medibook/sessions/${params.sessionNumber}/roll-calls?selected-day=${currentDayId}`);
 
-	return (
+    return (
 		<>
 			<TopBar
 				buttonHref={`/medibook/sessions/${params.sessionNumber}`}

@@ -14,26 +14,28 @@ import { areDelegateApplicationsOpen } from "@/app/(medibook)/medibook/(sessionS
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from "@/components/description-list";
 import { Avatar } from "@nextui-org/avatar";
 
-export default async function Page({ params, searchParams }) {
-	const authSession = await auth();
-	const selectedSchool = await prisma.school.findFirst({ where: { OR: [{ id: params.schoolId }, { slug: params.schoolId }] } });
-	const selectedSession = await prisma.session.findFirst({
+export default async function Page(props) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const authSession = await auth();
+    const selectedSchool = await prisma.school.findFirst({ where: { OR: [{ id: params.schoolId }, { slug: params.schoolId }] } });
+    const selectedSession = await prisma.session.findFirst({
 		where: { number: params.sessionNumber },
 		include: { committee: { include: { ExtraCountry: true } } },
 	});
-	const grantedDelegation = await prisma.applicationGrantedDelegationCountries.findFirst({
+    const grantedDelegation = await prisma.applicationGrantedDelegationCountries.findFirst({
 		where: { sessionId: selectedSession.id, schoolId: selectedSchool.id },
 	});
-	const query = searchParams.search || "";
-	const isAuthorized = authorizeSchoolDirectorSchool(authSession.user.currentRoles, selectedSchool.id);
+    const query = searchParams.search || "";
+    const isAuthorized = authorizeSchoolDirectorSchool(authSession.user.currentRoles, selectedSchool.id);
 
-	if (!isAuthorized || !selectedSession) notFound();
+    if (!isAuthorized || !selectedSession) notFound();
 
-	const selectedSchoolHasApplication = await prisma.applicationDelegationPreferences.findFirst({
+    const selectedSchoolHasApplication = await prisma.applicationDelegationPreferences.findFirst({
 		where: { session: { number: params.sessionNumber }, schoolId: selectedSchool.id },
 	});
-	const currentPage = searchParams.page ? parseInt(searchParams.page) : 1;
-	const schoolStudents = await prisma.user.findMany({
+    const currentPage = searchParams.page ? parseInt(searchParams.page) : 1;
+    const schoolStudents = await prisma.user.findMany({
 		where: {
 			schoolId: selectedSchool.id,
 			OR: [
@@ -49,20 +51,20 @@ export default async function Page({ params, searchParams }) {
 		skip: (currentPage - 1) * 10,
 	});
 
-	const numberOfStudents = await prisma.user.count({
+    const numberOfStudents = await prisma.user.count({
 		where: { schoolId: selectedSchool.id, officialName: { contains: query } },
 	});
 
-	const delegationAssignmentProposal = await prisma.schoolDelegationProposal.findFirst({
+    const delegationAssignmentProposal = await prisma.schoolDelegationProposal.findFirst({
 		where: { schoolId: selectedSchool.id, sessionId: selectedSession.id },
 		include: { school: { include: { finalDelegation: true } } },
 	});
 
-	const numberOfGACommittees = selectedSession.committee.filter((committee) => committee.type === "GENERALASSEMBLY").length;
-	const filteredCountries = countries.filter((country) => selectedSession.countriesOfSession.includes(country.countryCode));
-	const applicationsOpen = areDelegateApplicationsOpen(selectedSession);
+    const numberOfGACommittees = selectedSession.committee.filter((committee) => committee.type === "GENERALASSEMBLY").length;
+    const filteredCountries = countries.filter((country) => selectedSession.countriesOfSession.includes(country.countryCode));
+    const applicationsOpen = areDelegateApplicationsOpen(selectedSession);
 
-	const parsedAssignment = delegationAssignmentProposal
+    const parsedAssignment = delegationAssignmentProposal
 		? JSON.parse(delegationAssignmentProposal.assignment).sort((a, b) => {
 				const committeeA = selectedSession.committee.find((committee) => committee.id === a.committeeId);
 				const committeeB = selectedSession.committee.find((committee) => committee.id === b.committeeId);
@@ -72,11 +74,11 @@ export default async function Page({ params, searchParams }) {
 		  })
 		: null;
 
-	const userIds = parsedAssignment?.map((assignment) => assignment.studentId);
+    const userIds = parsedAssignment?.map((assignment) => assignment.studentId);
 
-	const users = parsedAssignment ? await prisma.user.findMany({ where: { id: { in: parsedAssignment.map((a) => a.studentId) } } }) : [];
+    const users = parsedAssignment ? await prisma.user.findMany({ where: { id: { in: parsedAssignment.map((a) => a.studentId) } } }) : [];
 
-	const renderAssignments = (assignments) =>
+    const renderAssignments = (assignments) =>
 		assignments.map((assignment) => {
 			const student = users.find((u) => u.id === assignment.studentId);
 			const committee = selectedSession.committee.find((c) => c.id === assignment.committeeId);
@@ -105,7 +107,7 @@ export default async function Page({ params, searchParams }) {
 			);
 		});
 
-	if (delegationAssignmentProposal?.school?.finalDelegation?.length) {
+    if (delegationAssignmentProposal?.school?.finalDelegation?.length) {
 		const proposal = delegationAssignmentProposal;
 		return (
 			<>
@@ -131,7 +133,7 @@ export default async function Page({ params, searchParams }) {
 		);
 	}
 
-	if (delegationAssignmentProposal) {
+    if (delegationAssignmentProposal) {
 		return (
 			<>
 				<TopBar
@@ -156,7 +158,7 @@ export default async function Page({ params, searchParams }) {
 		);
 	}
 
-	if (!applicationsOpen && !selectedSchoolHasApplication) {
+    if (!applicationsOpen && !selectedSchoolHasApplication) {
 		return (
 			<>
 				<TopBar
@@ -179,7 +181,7 @@ export default async function Page({ params, searchParams }) {
 		);
 	}
 
-	return (
+    return (
 		<>
 			<TopBar
 				buttonText={selectedSchool.name}
