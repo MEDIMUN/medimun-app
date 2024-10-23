@@ -43,7 +43,7 @@ export default async function Page(props: { params: any }) {
 		{
 			title: "Delegation",
 			description: "Manage applications and delegations",
-			href: `/medibook/sessions/${params.sessionNumber}/schools/${school.slug || school.id}/delegation`,
+			href: `/medibook/sessions/20/schools/${school.slug || school.id}/delegation`, //FIXME: hardcoded session
 			isVisible: isManagementOrDirector,
 		},
 	].filter((action) => action.isVisible);
