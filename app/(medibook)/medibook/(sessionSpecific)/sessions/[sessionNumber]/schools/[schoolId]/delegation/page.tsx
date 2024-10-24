@@ -191,7 +191,7 @@ export default async function Page(props) {
 				hideSearchBar
 				title="Delegation Application"
 			/>
-			<div className="flex flex-col gap-4 pt-4">
+			<div className="flex flex-col gap-4">
 				{!applicationsOpen && !selectedSchoolHasApplication && (
 					<div className="rounded-md bg-red-50 p-4">
 						<div className="flex">
@@ -271,22 +271,26 @@ export default async function Page(props) {
 				{grantedDelegation && (
 					<div className="rounded-md bg-zinc-50 px-4">
 						<DescriptionList>
-							<DescriptionTerm>Application ID</DescriptionTerm>
-							<DescriptionDetails>{selectedSchoolHasApplication.id}</DescriptionDetails>
+							<DescriptionTerm>Delegation ID</DescriptionTerm>
+							<DescriptionDetails className="font-mono">{grantedDelegation.id}</DescriptionDetails>
 							<DescriptionTerm>Application Status</DescriptionTerm>
 							<DescriptionDetails>
 								<Badge color="green">Accepted</Badge>
 							</DescriptionDetails>
+							<DescriptionTerm>Number of GA Delegations</DescriptionTerm>
+							<DescriptionDetails>{grantedDelegation.countries.filter((c) => c !== "NOTGRANTED").length}</DescriptionDetails>
 							<DescriptionTerm>Assigned GA Countries</DescriptionTerm>
 							<DescriptionDetails className="flex flex-wrap gap-1">
-								{grantedDelegation.countries.map((country) => {
-									const selectedCountry = countries.find((c) => c.countryCode === country);
-									return (
-										<Badge className="max-w-max" key={country}>
-											{selectedCountry?.flag} {selectedCountry?.countryNameEn}
-										</Badge>
-									);
-								})}
+								{grantedDelegation.countries
+									.filter((c) => c !== "NOTGRANTED")
+									.map((country) => {
+										const selectedCountry = countries.find((c) => c.countryCode === country);
+										return (
+											<Badge className="max-w-max" key={country}>
+												{selectedCountry?.flag} {selectedCountry?.countryNameEn}
+											</Badge>
+										);
+									})}
 							</DescriptionDetails>
 						</DescriptionList>
 					</div>

@@ -52,7 +52,8 @@ export async function submitDelegationDeclaration(selectedSchoolId: string, numb
 
 export async function delegationPeopleAssignment(assignment, schoolId, sessId) {
 	const authSession = await auth();
-	const isAuthorized = authorizeSchoolDirectorSchool(authSession.user.currentRoles, schoolId) || authorize(authSession, [s.management]);
+	const isAuthorized =
+		(authSession && authorizeSchoolDirectorSchool(authSession.user.currentRoles, schoolId)) || authorize(authSession, [s.management]);
 
 	const selectedSchool = await prisma.school.findFirst({ where: { id: schoolId } });
 	const selectedSession = await prisma.session.findFirst({ where: { id: sessId }, include: { committee: true } });
@@ -64,6 +65,8 @@ export async function delegationPeopleAssignment(assignment, schoolId, sessId) {
 	const delegationGrantedToSchool = await prisma.applicationGrantedDelegationCountries.findFirst({
 		where: { schoolId: schoolId, sessionId: sessId },
 	});
+
+	if (!delegationGrantedToSchool) return { ok: false, message: ["No delegation granted to the school."] };
 
 	const studentIds = assignment.map((a) => a.studentId);
 	const students = await prisma.user.findMany({ where: { id: { in: studentIds } } });
@@ -109,6 +112,17 @@ export async function delegationPeopleAssignment(assignment, schoolId, sessId) {
 		if (countriesNotGranted.length > 0) {
 			return { ok: false, message: ["Some countries are not part of the granted delegation."] };
 		}
+	}
+
+	const generalAssemblyCommitties = selectedSession.committee.filter((committee) => committee.type === "GENERALASSEMBLY");
+	const specialAndSecurityCommitties = selectedSession.committee.filter((committee) => committee.type !== "GENERALASSEMBLY");
+	const generalAssemblyCountries = delegationGrantedToSchool?.countries?.filter((country) => country !== "NOTGRANTED");
+
+	const maxNumberOfDelegates = generalAssemblyCommitties?.length * generalAssemblyCountries?.length + specialAndSecurityCommitties?.length;
+	const minNumberOfDelegates = generalAssemblyCommitties.length * (generalAssemblyCountries.length - 1) + 1;
+
+	if (assignment.length < minNumberOfDelegates || assignment.length > maxNumberOfDelegates) {
+		return { ok: false, message: ["Invalid number of delegates."] };
 	}
 
 	try {

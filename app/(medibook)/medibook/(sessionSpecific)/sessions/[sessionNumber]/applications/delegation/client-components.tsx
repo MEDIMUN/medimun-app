@@ -198,6 +198,7 @@ export function CountryAssign({
 	};
 
 	async function handleAcceptDelegation() {
+		if (isLoading) return;
 		setIsLoading(true);
 		const countriesOfSchool = softAssignedCountries.filter((c) => c.schoolId === modalOptions.schoolId).map((c) => c.country);
 		const res = await acceptDelegationDeclaration(modalOptions.schoolId, countriesOfSchool, selectedSession.id);
@@ -305,10 +306,10 @@ export function CountryAssign({
 					</DescriptionList>
 				</DialogBody>
 				<DialogActions>
-					<Button onClick={() => setModalOptions(null)} plain>
+					<Button onClick={() => setModalOptions(null)} disabled={isLoading} loading={isLoading} plain>
 						Cancel
 					</Button>
-					<Button onClick={handleAcceptDelegation} color="red">
+					<Button onClick={handleAcceptDelegation} disabled={isLoading} loading={isLoading} color="red">
 						Accept
 					</Button>
 				</DialogActions>
@@ -316,7 +317,7 @@ export function CountryAssign({
 
 			<div className="rounded-lg bg-zinc-100 px-4 py-1 ring-1 ring-zinc-950/10">
 				<DescriptionList>
-					{selectedSession.countriesOfSession.map((country) => {
+					{[...new Set(selectedSession.countriesOfSession)].map((country) => {
 						const selectedCountry = countries.find((c) => c.countryCode === country);
 						return (
 							<Fragment key={country}>
@@ -328,9 +329,9 @@ export function CountryAssign({
 								<DescriptionDetails>
 									{softAssignedCountries.find(
 										(softAssignedCountry) => softAssignedCountry.country === country && softAssignedCountry.type === "HARD"
-									) && (
+									) ? (
 										<Badge color="red">
-											Taken 💔 by{" "}
+											Taken Forever 💔 by{" "}
 											{
 												schools.find(
 													(school) =>
@@ -341,17 +342,18 @@ export function CountryAssign({
 												)?.name
 											}
 										</Badge>
-									)}
-									{softAssignedCountries.find((softAssignedCountry) => softAssignedCountry.country === country) && (
-										<Text>
-											Soft Assigned to{" "}
-											{
-												schools.find(
-													(school) =>
-														school.id === softAssignedCountries.find((softAssignedCountry) => softAssignedCountry.country === country)?.schoolId
-												)?.name
-											}
-										</Text>
+									) : (
+										softAssignedCountries.find((softAssignedCountry) => softAssignedCountry.country === country) && (
+											<Text>
+												Soft Assigned to{" "}
+												{
+													schools.find(
+														(school) =>
+															school.id === softAssignedCountries.find((softAssignedCountry) => softAssignedCountry.country === country)?.schoolId
+													)?.name
+												}
+											</Text>
+										)
 									)}
 									{!softAssignedCountries.some((c) => c.country === country) && <Badge color="green">Available</Badge>}
 								</DescriptionDetails>

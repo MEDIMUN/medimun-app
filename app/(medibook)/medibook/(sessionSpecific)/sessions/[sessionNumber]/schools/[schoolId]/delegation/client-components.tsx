@@ -156,13 +156,14 @@ export function SelectStudents({ students, selectedSession, grantedDelegation, n
 	const [assignedStudents, setAssignedStudents] = useState([]);
 
 	const maxNumberOfDelegates = generalAssemblyCommitties?.length * generalAssemblyCountries?.length + specialAndSecurityCommitties?.length;
-	const minNumberOfDelegates = 1 || generalAssemblyCommitties.length * (generalAssemblyCountries.length - 1) + 1;
+	const minNumberOfDelegates = generalAssemblyCommitties.length * (generalAssemblyCountries.length - 1) + 1;
 
 	async function handleSubmit() {
 		setIsLoading(true);
 		const res = await delegationPeopleAssignment(assignedStudents, grantedDelegation.schoolId, selectedSession.id);
 		if (res?.ok) {
 			router.refresh();
+			setStage(2);
 			toast.success(...res?.message);
 		} else {
 			toast.error(...res?.message);
