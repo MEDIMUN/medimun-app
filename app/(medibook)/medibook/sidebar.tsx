@@ -401,7 +401,7 @@ export function Sidebar({ sessions }) {
 										`/medibook/sessions/${selectedSession}/schools/${schoolDirectorRole?.schoolSlug || schoolDirectorRole?.schoolId}/apply/delegation`
 									}>
 									<Icon slot="icon" icon="heroicons-solid:document-add" height={20} />
-									<SidebarLabel>Delegation</SidebarLabel>
+									<SidebarLabel>My Delegation</SidebarLabel>
 								</SidebarItem>
 								<SidebarItem
 									disabled

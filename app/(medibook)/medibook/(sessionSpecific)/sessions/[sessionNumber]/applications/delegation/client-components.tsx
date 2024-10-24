@@ -213,6 +213,7 @@ export function CountryAssign({
 
 	useEffect(() => {
 		async function saveState() {
+			if (debouncedSoftAssignedCountries.length === 0) return;
 			const res = await saveDelegationDeclarationState(debouncedSoftAssignedCountries, selectedSession.id);
 			if (res?.ok) {
 				toast.success(res?.message, {
@@ -341,21 +342,16 @@ export function CountryAssign({
 											}
 										</Badge>
 									)}
-									{softAssignedCountries.find(
-										(softAssignedCountry) => softAssignedCountry.country === country && softAssignedCountry.type === "SOFT"
-									) && (
-										<Badge color="yellow">
+									{softAssignedCountries.find((softAssignedCountry) => softAssignedCountry.country === country) && (
+										<Text>
 											Soft Assigned to{" "}
 											{
 												schools.find(
 													(school) =>
-														school.id ===
-														softAssignedCountries.find(
-															(softAssignedCountry) => softAssignedCountry.country === country && softAssignedCountry.type === "SOFT"
-														).schoolId
+														school.id === softAssignedCountries.find((softAssignedCountry) => softAssignedCountry.country === country)?.schoolId
 												)?.name
 											}
-										</Badge>
+										</Text>
 									)}
 									{!softAssignedCountries.some((c) => c.country === country) && <Badge color="green">Available</Badge>}
 								</DescriptionDetails>
@@ -418,34 +414,34 @@ export function CountryAssign({
 											disabled={isDisabled}
 											onChange={(val) => handleSoftAssignChange(application, index, val)}>
 											<ListboxOption value="NOTGRANTED">Don&apos;t Grant Delegation Request</ListboxOption>
-											{selectedSession.countriesOfSession
-												.filter((country) => {
-													const assignedToCurrentDelegation = softAssignedCountries.some(
-														(softAssignedCountry) =>
-															softAssignedCountry.schoolId === application.schoolId &&
-															softAssignedCountry.delegationNumber === index + 1 &&
-															softAssignedCountry.country === country
-													);
-													const assignedToOtherDelegation = softAssignedCountries.some(
-														(softAssignedCountry) =>
-															softAssignedCountry.country === country &&
-															(softAssignedCountry.schoolId !== application.schoolId || softAssignedCountry.delegationNumber !== index + 1)
-													);
-													return assignedToCurrentDelegation || !assignedToOtherDelegation;
-												})
-												.map((country) => {
-													const selectedCountry = countries.find((c) => c.countryCode === country);
-													return (
-														<ListboxOption key={country} value={country}>
-															<ListboxLabel>
-																{selectedCountry?.flag} {selectedCountry?.countryNameEn}
-															</ListboxLabel>
-															{selectedSession.securityCouncilCountriesOfYear.includes(country) && (
-																<ListboxDescription>UNSC Member</ListboxDescription>
-															)}
-														</ListboxOption>
-													);
-												})}
+											{[
+												...new Set(
+													selectedSession.countriesOfSession.filter((country) => {
+														const assignedToCurrentDelegation = softAssignedCountries.some(
+															(softAssignedCountry) =>
+																softAssignedCountry.schoolId === application.schoolId &&
+																softAssignedCountry.delegationNumber === index + 1 &&
+																softAssignedCountry.country === country
+														);
+														const assignedToOtherDelegation = softAssignedCountries.some(
+															(softAssignedCountry) =>
+																softAssignedCountry.country === country &&
+																(softAssignedCountry.schoolId !== application.schoolId || softAssignedCountry.delegationNumber !== index + 1)
+														);
+														return assignedToCurrentDelegation || !assignedToOtherDelegation;
+													})
+												),
+											].map((country) => {
+												const selectedCountry = countries.find((c) => c.countryCode === country);
+												return (
+													<ListboxOption key={country} value={country}>
+														<ListboxLabel>
+															{selectedCountry?.flag} {selectedCountry?.countryNameEn}
+														</ListboxLabel>
+														{selectedSession.securityCouncilCountriesOfYear.includes(country) && <ListboxDescription>UNSC Member</ListboxDescription>}
+													</ListboxOption>
+												);
+											})}
 										</Listbox>
 									</UnstyledField>
 								);

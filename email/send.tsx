@@ -113,11 +113,19 @@ export async function sendEmailPasswordChangedNotification({ officialName, email
 	});
 }
 
-export async function sendEmailSchoolHasBeenAssignedCountries({ officialName, email }: { officialName: string; email: string }) {
+export async function sendEmailSchoolHasBeenAssignedCountries({
+	officialName,
+	email,
+	delegationLink,
+}: {
+	officialName: string;
+	email: string;
+	delegationLink: string;
+}) {
 	await sendEmail({
 		to: email,
 		subject: "School Country Assignment - MEDIMUN",
 		preview: `Dear ${officialName}, your school has been assigned countries.`,
-		html: <AssignCountriesToSchool officialName={officialName} />,
+		html: <AssignCountriesToSchool delegationLink={delegationLink} officialName={officialName} />,
 	});
 }

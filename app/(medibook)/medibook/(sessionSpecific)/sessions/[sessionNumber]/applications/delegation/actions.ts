@@ -123,6 +123,9 @@ export async function acceptDelegationDeclaration(schoolId: string, schoolCountr
 	const selectedSchool = await prisma.school.findUnique({
 		where: { id: schoolId },
 		select: {
+			id: true,
+			slug: true,
+			name: true,
 			director: {
 				where: {
 					sessionId: selectedSession.id,
@@ -146,11 +149,12 @@ export async function acceptDelegationDeclaration(schoolId: string, schoolCountr
 			sessionId: selectedSession.id,
 		},
 	});
+
 	if (grantedDelegationAlredyExists) return { ok: false, message: ["The school alredy has delegations assigned."] };
 
 	const schoolIdsOfGrantedDelegations = [...selectedSession.ApplicationGrantedDelegationCountries.map((d) => d.schoolId), schoolId];
 	const parsedSate = JSON.parse(selectedSession.savedDelegationDeclarationState);
-	const filteredStateArray = parsedSate.filter((s) => !schoolIdsOfGrantedDelegations.includes(s.schoolId));
+	const filteredStateArray = parsedSate.filter((s: { schoolId: string }) => !schoolIdsOfGrantedDelegations.includes(s.schoolId));
 
 	let newDelegations = [];
 	selectedSession.ApplicationGrantedDelegationCountries.forEach((d) => {
@@ -165,7 +169,7 @@ export async function acceptDelegationDeclaration(schoolId: string, schoolCountr
 
 	try {
 		await prisma.$transaction(async (tx) => {
-			tx.applicationGrantedDelegationCountries.create({
+			await tx.applicationGrantedDelegationCountries.create({
 				data: {
 					schoolId: schoolId,
 					sessionId: selectedSession.id,
@@ -178,9 +182,13 @@ export async function acceptDelegationDeclaration(schoolId: string, schoolCountr
 					savedDelegationDeclarationState: JSON.stringify(finalStateArray),
 				},
 			});
-		});
-		selectedSchool.director.forEach(async (d) => {
-			await sendEmailSchoolHasBeenAssignedCountries({ officialName: d.user.officialName, email: d.user.email });
+			selectedSchool.director.forEach(async (d) => {
+				await sendEmailSchoolHasBeenAssignedCountries({
+					officialName: d.user.officialName,
+					email: d.user.email,
+					delegationLink: `https://www.medimun.org/medibook/sessions/${selectedSession.number}/schools/${selectedSchool.slug || selectedSchool.id}/delegation`,
+				});
+			});
 		});
 	} catch (e) {
 		return { ok: false, message: ["Error saving delegation declaration."] };
@@ -195,10 +203,14 @@ export async function saveDelegationDeclarationState(state: Array<{ schoolId: st
 	const isDirector = authorize(authSession, [s.sd, s.director, s.admins, s.sg, s.pga]);
 	if (!isDirector) return { ok: false, message: "Unauthorized" };
 
+	if (state.length == 0) return { ok: true, message: ["State not saved."] };
+
 	const selectedSession = await prisma.session.findFirst({
 		where: { id: sessionId },
 		include: { ApplicationGrantedDelegationCountries: true },
 	});
+
+	if (!selectedSession) return { ok: false, message: "No current session found." };
 
 	const schoolIdsOfGrantedDelegations = selectedSession.ApplicationGrantedDelegationCountries.map((d) => d.schoolId);
 	const filteredStateArray = state.filter((s) => !schoolIdsOfGrantedDelegations.includes(s.schoolId));
