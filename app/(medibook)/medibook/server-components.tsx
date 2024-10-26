@@ -15,7 +15,7 @@ import { announcementWebsitecomponents, authorizedToEditAnnouncement } from "./@
 import Paginator from "@/components/pagination";
 import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { Subheading } from "@/components/heading";
@@ -214,16 +214,21 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 
 export async function AnnouncementViewPage({ params, searchParams }) {
 	const authSession = await auth();
-	const selectedAnnouncement = await prisma.announcement.update({
-		where: { id: params.announcementId[0] },
-		data: { views: { increment: 1 } },
-		include: {
-			session: true,
-			committee: { include: { session: true } },
-			department: { include: { session: true } },
-			user: true,
-		},
-	});
+	let selectedAnnouncement;
+	try {
+		selectedAnnouncement = await prisma.announcement.update({
+			where: { id: params.announcementId[0] },
+			data: { views: { increment: 1 } },
+			include: {
+				session: true,
+				committee: { include: { session: true } },
+				department: { include: { session: true } },
+				user: true,
+			},
+		});
+	} catch (e) {
+		if (!(params.announcementId[0] === "publish")) notFound();
+	}
 
 	let baseUrl = "/medibook/announcements";
 	let buttonText = "Global Announcements";
@@ -288,6 +293,8 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 
 	if (!selectedAnnouncement) return;
 
+	const authorizedToEdit = authorizedToEditAnnouncement(authSession, selectedAnnouncement);
+
 	return (
 		<>
 			<TopBar
@@ -295,7 +302,14 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 				buttonHref={buttonHref}
 				buttonText={buttonText}
 				title={selectedAnnouncement.title}
-				subheading={selectedAnnouncement.description}></TopBar>
+				subheading={selectedAnnouncement.description}>
+				{authorizedToEdit && (
+					<SearchParamsButton color="red" searchParams={{ "delete-announcement": selectedAnnouncement.id }}>
+						Delete
+					</SearchParamsButton>
+				)}
+				{authorizedToEdit && <SearchParamsButton searchParams={{ "edit-announcement": selectedAnnouncement.id }}>Edit</SearchParamsButton>}
+			</TopBar>
 			<Suspense fallback={<div>404</div>}>
 				{/* @ts-ignore */}
 				<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedAnnouncement.markdown} />

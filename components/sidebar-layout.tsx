@@ -57,14 +57,14 @@ export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChil
 	}, []);
 
 	return (
-		<div className="relative isolate flex min-h-svh w-full flex-col bg-white dark:bg-zinc-900 lg:bg-zinc-100 dark:lg:bg-zinc-950">
+		<div className="relative isolate flex h-full min-h-svh w-full flex-col bg-white dark:bg-zinc-900 lg:bg-zinc-100 dark:lg:bg-zinc-950">
 			{/* Sidebar on desktop */}
 			<div className="fixed inset-y-0 left-0 hidden w-64 lg:block">{sidebar}</div>
 			{/* Sidebar on mobile */}
 			<MobileSidebar open={showSidebar} close={() => setShowSidebar(false)}>
 				{sidebar}
 			</MobileSidebar>
-			<div className="h-[60px] lg:hidden"></div>
+			<div className="min-h-[60px] lg:hidden"></div>
 			<div className={cn("-bg-red-500 fixed z-[10000000] h-[60px] w-full border-b bg-white lg:hidden", !!scrollY && "shadow-md")}>
 				{/* Navbar on mobile */}
 				<header className="-ring-1 mx-2 flex w-[calc(100%-16px)] items-center px-2 ring-zinc-950/5">
@@ -77,11 +77,7 @@ export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChil
 				</header>
 			</div>
 			{/* Content */}
-			<main className="flex flex-1 flex-col pb-2 lg:min-w-0 lg:pl-64 lg:pr-2 lg:pt-2">
-				<div className="grow p-6 lg:rounded-lg lg:bg-white lg:p-10 lg:shadow-sm lg:ring-1 lg:ring-zinc-950/5 dark:lg:bg-zinc-900 dark:lg:ring-white/10">
-					<div className="mx-auto flex max-w-6xl flex-col gap-6">{children}</div>
-				</div>
-			</main>
+			<main className="flex h-full flex-1 flex-col pb-2 lg:min-w-0 lg:pl-64 lg:pr-2 lg:pt-2">{children}</main>
 		</div>
 	);
 }

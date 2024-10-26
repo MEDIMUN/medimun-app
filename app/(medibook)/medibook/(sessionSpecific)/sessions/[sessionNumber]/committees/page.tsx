@@ -17,14 +17,14 @@ import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 const itemsPerPage = 10;
 
 export default async function Component(props) {
-    const searchParams = await props.searchParams;
-    const params = await props.params;
-    const currentPage = parseInt(searchParams.page) || 1;
-    const authSession = await auth();
-    if (!authSession) return notFound();
-    const isManagement = authorize(authSession, [s.management]);
+	const searchParams = await props.searchParams;
+	const params = await props.params;
+	const currentPage = parseInt(searchParams.page) || 1;
+	const authSession = await auth();
+	if (!authSession) return notFound();
+	const isManagement = authorize(authSession, [s.management]);
 
-    const [selectedSession, committees, totalItems] = await prisma
+	const [selectedSession, committees, totalItems] = await prisma
 		.$transaction([
 			prisma.session.findFirstOrThrow({ where: { number: params.sessionNumber } }),
 			prisma.committee.findMany({
@@ -42,19 +42,19 @@ export default async function Component(props) {
 		])
 		.catch(notFound);
 
-    const currentCommitteeIds = authSession?.user?.currentRoles
+	const currentCommitteeIds = authSession?.user?.currentRoles
 		.concat(authSession.user.pastRoles)
 		.filter((role) => role.session == params.sessionNumber)
 		.filter((role) => role.roleIdentifier == "chair" || role.roleIdentifier == "delegate")
 		.map((role) => role.committeeId);
 
-    committees.sort((a: any, b: any) => {
+	committees.sort((a: any, b: any) => {
 		if (currentCommitteeIds.includes(a.id) && !currentCommitteeIds.includes(b.id)) return -1;
 		if (currentCommitteeIds.includes(b.id) && !currentCommitteeIds.includes(a.id)) return 1;
 		return 0;
 	});
 
-    return (
+	return (
 		<>
 			<TopBar
 				buttonHref={`/medibook/sessions/${params.sessionNumber}`}
@@ -106,7 +106,7 @@ export default async function Component(props) {
 															? displayNameShortened
 															: user?.officialName.split(" ")[0] + " " + user?.officialSurname[0] + ".";
 														return (
-															<Fragment key={index}>
+															<Fragment key={chair.id}>
 																{fullName}
 																{chairsLength - 1! > index + 1 && ", "}
 																{chairsLength - 1 == index + 1 && " & "}

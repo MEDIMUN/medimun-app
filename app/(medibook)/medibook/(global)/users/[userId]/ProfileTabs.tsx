@@ -1,7 +1,6 @@
 "use client";
 
 import { ScrollShadow } from "@nextui-org/scroll-shadow";
-import { Spacer } from "@nextui-org/spacer";
 import { Tabs, Tab } from "@nextui-org/tabs";
 import { useEffect, useState } from "react";
 import { getOrdinal } from "@/lib/ordinal";
@@ -130,7 +129,6 @@ export function ProfileTabs({ user }) {
 					<Tab key="awards" title="Awards" />
 				</Tabs>
 			</ScrollShadow>
-			<Spacer y={1} />
 			<Tabs
 				aria-label="Navigation Tabs"
 				selectedKey={selectedTab}

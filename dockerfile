@@ -3,7 +3,7 @@ FROM node:20-alpine as builder
 # Define build arguments for build-time usage
 ARG DB_USER
 ARG DB_PASSWORD
-ARG DB_HOST  # Build-time default, not used at runtime
+ARG DB_HOST
 ARG DB_PORT
 ARG DB_NAME
 
@@ -15,7 +15,7 @@ ENV DB_NAME=$DB_NAME
 ENV DB_HOST='db1.cluster.medimun.org'
 
 COPY package.json /tmp/package.json
-RUN cd /tmp && npm install --ignore-engines
+RUN cd /tmp && npm install --ignore-engines --legacy-peer-deps
 RUN mkdir -p /usr/src/app && cp -a /tmp/node_modules /usr/src/app/
 
 WORKDIR /usr/src/app

@@ -33,6 +33,7 @@ import { Field as UnstyledField } from "@headlessui/react";
 import Link from "next/link";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { flushSync } from "react-dom";
+import { getOrdinal } from "@/lib/ordinal";
 
 export function ApplicationOptions({ selectedSession }) {
 	const formRef = useRef(null);
@@ -331,7 +332,7 @@ export function CountryAssign({
 										(softAssignedCountry) => softAssignedCountry.country === country && softAssignedCountry.type === "HARD"
 									) ? (
 										<Badge color="red">
-											Taken Forever 💔 by{" "}
+											Taken 💔 by{" "}
 											{
 												schools.find(
 													(school) =>
@@ -386,11 +387,15 @@ export function CountryAssign({
 								<DescriptionDetails>{application.numberOfGACountries}</DescriptionDetails>
 
 								<DescriptionTerm>Country Preferences</DescriptionTerm>
-								<DescriptionDetails className="flex flex-wrap gap-2">
-									{application.countyPreferences.map((country) => {
+								<DescriptionDetails className="flex flex-wrap gap-1">
+									{application.countyPreferences.map((country, index) => {
 										const selectedCountry = countries.find((c) => c.countryCode === country);
 										return (
 											<Badge color={softAssignedCountries.some((c) => c.country === country) ? "yellow" : "red"} key={country}>
+												<span>
+													{index + 1}
+													<sup>{getOrdinal(index + 1)}</sup>
+												</span>
 												{selectedCountry?.flag} {selectedCountry?.countryNameEn}
 											</Badge>
 										);

@@ -3,11 +3,20 @@
 import sendEmailTransport from "@/email/transporter";
 /* import { verifyServerCaptcha } from "@/lib/captcha";
  */ import { parseFormData } from "@/lib/form";
+import axios from "axios";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 export async function contactUs(formData: FormData) {
 	const parsedFormData = parseFormData(formData);
+
+	const token = parsedFormData["g-recaptcha-response"];
+
+	const response = await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`);
+
+	const isValid = response.data.success;
+
+	if (!isValid) redirect("/contact?error=invalid-captcha");
 
 	const schema = z.object({
 		name: z.string().min(3).max(50),

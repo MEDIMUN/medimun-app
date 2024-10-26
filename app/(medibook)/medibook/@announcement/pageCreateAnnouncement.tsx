@@ -94,176 +94,178 @@ export function PageCreateAnnouncement({
 	if (authBooleanMap.includes(false)) return notFound();
 
 	return (
-		<form id="publishAnnouncement" action={handleSubmit}>
-			<TopBar title="Publish Announcement" hideSearchBar />
-			<Divider className="mb-10 mt-4" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Scope</Subheading>
-					<Text>Select where the announcement will be shared in.</Text>
-				</div>
-				<div className="my-auto flex flex-col gap-4">
-					<Listbox disabled={isLoading} onChange={(val) => setGreaterScope(val)}>
-						{typeGreaterScopeMapList[type].map((scope) => (
-							<ListboxOption key={scope.value} value={scope.value}>
-								<ListboxLabel>{scope.text}</ListboxLabel>
+		<div className="mx-auto flex max-w-6xl h-full flex-col gap-6">
+			<form id="publishAnnouncement" action={handleSubmit}>
+				<TopBar title="Publish Announcement" hideSearchBar />
+				<Divider className="mb-10 mt-4" soft />
+				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+					<div className="space-y-1">
+						<Subheading>Scope</Subheading>
+						<Text>Select where the announcement will be shared in.</Text>
+					</div>
+					<div className="my-auto flex flex-col gap-4">
+						<Listbox disabled={isLoading} onChange={(val) => setGreaterScope(val)}>
+							{typeGreaterScopeMapList[type].map((scope) => (
+								<ListboxOption key={scope.value} value={scope.value}>
+									<ListboxLabel>{scope.text}</ListboxLabel>
+								</ListboxOption>
+							))}
+						</Listbox>
+						<Listbox disabled={isLoading || !greaterScope} multiple value={innerScope} onChange={(val) => setInnerScope(val)}>
+							{innerAnnouncementScopeList[greaterScope]?.map((scope) => (
+								<ListboxOption key={scope.value} value={scope.value} disabled={scope.disabled}>
+									<ListboxLabel>{scope.text}</ListboxLabel>
+									<ListboxDescription>{scope.description}</ListboxDescription>
+								</ListboxOption>
+							))}
+						</Listbox>
+					</div>
+				</section>
+				<Divider className="my-10" soft />
+				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+					<div className="space-y-1">
+						<Subheading>Distribution Type</Subheading>
+						<Text>
+							Select wheter the announcement will be shown on the website and MediBook, will be emailed or both.
+							<br />
+							<em>
+								The email option is not available yet.
+								<Link className="cursor-pointer text-primary hover:underline" href={`/medibook/users/111111111111`}>
+									{" Berzan "}
+								</Link>
+								is working on it but he may have forgotten, please ask him if you really need this.
+							</em>
+						</Text>
+					</div>
+					<div className="my-auto">
+						<Listbox multiple value={typeInput} onChange={(val) => setTypeInput(val)} disabled={true || isLoading}>
+							<ListboxOption value="WEBSITE">Website and/or MediBook</ListboxOption>
+							<ListboxOption disabled value="EMAIL">
+								<ListboxLabel>Email</ListboxLabel>
+								<ListboxDescription>Not Available</ListboxDescription>
 							</ListboxOption>
-						))}
-					</Listbox>
-					<Listbox disabled={isLoading || !greaterScope} multiple value={innerScope} onChange={(val) => setInnerScope(val)}>
-						{innerAnnouncementScopeList[greaterScope]?.map((scope) => (
-							<ListboxOption key={scope.value} value={scope.value} disabled={scope.disabled}>
-								<ListboxLabel>{scope.text}</ListboxLabel>
-								<ListboxDescription>{scope.description}</ListboxDescription>
-							</ListboxOption>
-						))}
-					</Listbox>
+						</Listbox>
+					</div>
+				</section>
+				<Divider className="my-10" soft />
+				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+					<div className="space-y-1">
+						<Subheading>Privacy</Subheading>
+						<Text>
+							Select whether to display your name on the announcement or not. The management can see who shared an announcement even if you hide your
+							name.
+						</Text>
+					</div>
+					<div className="my-auto">
+						<Listbox name="privacy" defaultValue="NORMAL" disabled={isLoading}>
+							<ListboxOption value="NORMAL">{fullName}</ListboxOption>
+							<ListboxOption value="ANONYMOUS">Anonymous</ListboxOption>
+							{authorize(authSession, [s.management]) && <ListboxOption value="SECRETARIAT">Secretariat</ListboxOption>}
+							{authorize(authSession, [s.director, s.sd, s.admins]) && <ListboxOption value="BOARD">Board of Directors</ListboxOption>}
+						</Listbox>
+					</div>
+				</section>
+				<Divider className="my-10" soft />
+				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+					<div className="space-y-1">
+						<Subheading>Pin Announcement</Subheading>
+						<Text>Pinned announcements are shown at the top of the list.</Text>
+					</div>
+					<div className="my-auto">
+						<Listbox name="isPinned" defaultValue="false" disabled={isLoading}>
+							<ListboxOption value="true">Pinned</ListboxOption>
+							<ListboxOption value="false">Not Pinned</ListboxOption>
+						</Listbox>
+					</div>
+				</section>
+				<Divider className="my-10" soft />
+				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+					<div className="space-y-1">
+						<Subheading>Title</Subheading>
+						<Text>
+							Title of the announcement and subject of emails.
+							<br />
+							<em>Min 10, Max 100 characters.</em>
+						</Text>
+					</div>
+					<div className="my-auto flex flex-col gap-4 md:flex-row">
+						<Input required type="text" minLength={10} maxLength={100} name="title" />
+					</div>
+				</section>
+				<Divider className="my-10" soft />
+				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+					<div className="space-y-1">
+						<Subheading>Slug</Subheading>
+						<Text>
+							A friendly title to appear in the URL.
+							<br />
+							<em>Min 10, Max 100 characters.</em>
+						</Text>
+					</div>
+					<div className="my-auto flex flex-col gap-4 md:flex-row">
+						<SlugInput separator="-" minLength={10} maxLength={100} name="slug" />
+					</div>
+				</section>
+				<Divider className="my-10" soft />
+				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+					<div className="space-y-1">
+						<Subheading>Description</Subheading>
+						<Text>
+							The text which will appear below the announcement before it&apos;s opened or the text which will appear below the email before it&apos;s
+							opened.
+							<br />
+							<em>Max 500 characters.</em>
+						</Text>
+					</div>
+					<div className="my-auto flex flex-col gap-4 md:flex-row">
+						<Textarea maxLength={100} name="description" />
+					</div>
+				</section>
+				<Divider className="my-10" soft />
+				<section className="grid gap-x-8 gap-y-6">
+					<div className="space-y-1">
+						<Subheading>Announcement Content (Markdown)</Subheading>
+						<Text>
+							The content of the announcement in markdown format. Learn more about <Link href={"/wiki/markdown"}>markdown</Link>
+							<br />
+							<em>Max 25,000 characters.</em>
+						</Text>
+					</div>
+					<div className="my-auto flex flex-col gap-4 md:flex-row">
+						<Textarea
+							className="max-h-[500px] min-h-64"
+							required
+							value={markDown}
+							onChange={(e) => {
+								setMarkDown(e.target.value);
+							}}
+							type="text"
+							minLength={5}
+							maxLength={25000}
+							name="markdown"
+						/>
+					</div>
+				</section>
+				<Divider className="my-10" soft />
+				<div id="notice" className="flex justify-end gap-4">
+					<Button type="reset" form="publishAnnouncement" disabled={isLoading} plain onClick={() => router.push(returnUrl)}>
+						Cancel
+					</Button>
+					<Button loading={isLoading} disabled={isLoading} form="publishAnnouncement" type="submit">
+						Publish
+					</Button>
 				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Distribution Type</Subheading>
-					<Text>
-						Select wheter the announcement will be shown on the website and MediBook, will be emailed or both.
-						<br />
-						<em>
-							The email option is not available yet.
-							<Link className="cursor-pointer text-primary hover:underline" href={`/medibook/users/111111111111`}>
-								{" Berzan "}
-							</Link>
-							is working on it but he may have forgotten, please ask him if you really need this.
-						</em>
-					</Text>
-				</div>
-				<div className="my-auto">
-					<Listbox multiple value={typeInput} onChange={(val) => setTypeInput(val)} disabled={true || isLoading}>
-						<ListboxOption value="WEBSITE">Website and/or MediBook</ListboxOption>
-						<ListboxOption disabled value="EMAIL">
-							<ListboxLabel>Email</ListboxLabel>
-							<ListboxDescription>Not Available</ListboxDescription>
-						</ListboxOption>
-					</Listbox>
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Privacy</Subheading>
-					<Text>
-						Select whether to display your name on the announcement or not. The management can see who shared an announcement even if you hide your
-						name.
-					</Text>
-				</div>
-				<div className="my-auto">
-					<Listbox name="privacy" defaultValue="NORMAL" disabled={isLoading}>
-						<ListboxOption value="NORMAL">{fullName}</ListboxOption>
-						<ListboxOption value="ANONYMOUS">Anonymous</ListboxOption>
-						{authorize(authSession, [s.management]) && <ListboxOption value="SECRETARIAT">Secretariat</ListboxOption>}
-						{authorize(authSession, [s.director, s.sd, s.admins]) && <ListboxOption value="BOARD">Board of Directors</ListboxOption>}
-					</Listbox>
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Pin Announcement</Subheading>
-					<Text>Pinned announcements are shown at the top of the list.</Text>
-				</div>
-				<div className="my-auto">
-					<Listbox name="isPinned" defaultValue="false" disabled={isLoading}>
-						<ListboxOption value="true">Pinned</ListboxOption>
-						<ListboxOption value="false">Not Pinned</ListboxOption>
-					</Listbox>
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Title</Subheading>
-					<Text>
-						Title of the announcement and subject of emails.
-						<br />
-						<em>Min 10, Max 100 characters.</em>
-					</Text>
-				</div>
-				<div className="my-auto flex flex-col gap-4 md:flex-row">
-					<Input required type="text" minLength={10} maxLength={100} name="title" />
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Slug</Subheading>
-					<Text>
-						A friendly title to appear in the URL.
-						<br />
-						<em>Min 10, Max 100 characters.</em>
-					</Text>
-				</div>
-				<div className="my-auto flex flex-col gap-4 md:flex-row">
-					<SlugInput separator="-" minLength={10} maxLength={100} name="slug" />
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Description</Subheading>
-					<Text>
-						The text which will appear below the announcement before it&apos;s opened or the text which will appear below the email before it&apos;s
-						opened.
-						<br />
-						<em>Max 500 characters.</em>
-					</Text>
-				</div>
-				<div className="my-auto flex flex-col gap-4 md:flex-row">
-					<Textarea maxLength={100} name="description" />
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6">
-				<div className="space-y-1">
-					<Subheading>Announcement Content (Markdown)</Subheading>
-					<Text>
-						The content of the announcement in markdown format. Learn more about <Link href={"/wiki/markdown"}>markdown</Link>
-						<br />
-						<em>Max 25,000 characters.</em>
-					</Text>
-				</div>
-				<div className="my-auto flex flex-col gap-4 md:flex-row">
-					<Textarea
-						className="max-h-[500px] min-h-64"
-						required
-						value={markDown}
-						onChange={(e) => {
-							setMarkDown(e.target.value);
-						}}
-						type="text"
-						minLength={5}
-						maxLength={25000}
-						name="markdown"
-					/>
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<div id="notice" className="flex justify-end gap-4">
-				<Button type="reset" form="publishAnnouncement" disabled={isLoading} plain onClick={() => router.push(returnUrl)}>
-					Cancel
-				</Button>
-				<Button loading={isLoading} disabled={isLoading} form="publishAnnouncement" type="submit">
-					Publish
-				</Button>
-			</div>
-			<Divider className={cn("mt-10", serializedMarkDown && debouncedMarkDown && "invisible")} soft />
-			{serializedMarkDown && debouncedMarkDown && (
-				<div className="max-w-full overflow-hidden bg-zinc-100 p-4">
-					<Text className="">Preview</Text>
-					<Suspense fallback={<div>Error</div>}>
-						<MDXClient onError={<div>Error</div>} components={announcementWebsitecomponents} {...serializedMarkDown} />
-					</Suspense>
-				</div>
-			)}
-		</form>
+				<Divider className={cn("mt-10", serializedMarkDown && debouncedMarkDown && "invisible")} soft />
+				{serializedMarkDown && debouncedMarkDown && (
+					<div className="max-w-full overflow-hidden bg-zinc-100 p-4">
+						<Text className="">Preview</Text>
+						<Suspense fallback={<div>Error</div>}>
+							<MDXClient onError={<div>Error</div>} components={announcementWebsitecomponents} {...serializedMarkDown} />
+						</Suspense>
+					</div>
+				)}
+			</form>
+		</div>
 	);
 }
 

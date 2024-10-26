@@ -81,125 +81,129 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 	if (!searchParams.has("edit-announcement")) return null;
 	if (!selectedAnnouncement) return null;
 	return (
-		<form id="publishAnnouncement" action={handleSubmit}>
-			<TopBar title="Edit Announcement" hideSearchBar />
-			<Divider className="mb-10 mt-4" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Privacy</Subheading>
-					<Text>
-						Select whether to display your name on the announcement or not. The management can see who shared an announcement even if you hide your
-						name.
-					</Text>
-				</div>
-				<div className="my-auto">
-					<Listbox name="privacy" defaultValue={selectedAnnouncement.privacy} disabled={isLoading}>
-						<ListboxOption value="NORMAL">{fullName}</ListboxOption>
-						<ListboxOption value="ANONYMOUS">Anonymous</ListboxOption>
-						{authorize(authSession, [s.management]) && <ListboxOption value="SECRETARIAT">Secretariat</ListboxOption>}
-						{authorize(authSession, [s.director, s.sd, s.admins]) && <ListboxOption value="BOARD">Board of Directors</ListboxOption>}
-					</Listbox>
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Pin Announcement</Subheading>
-					<Text>Pinned announcements are shown at the top of the list.</Text>
-				</div>
-				<div className="my-auto">
-					<Listbox name="isPinned" defaultValue={selectedAnnouncement.isPinned ? "true" : "false"} disabled={isLoading}>
-						<ListboxOption value="true">Pinned</ListboxOption>
-						<ListboxOption value="false">Not Pinned</ListboxOption>
-					</Listbox>
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Title</Subheading>
-					<Text>
-						Title of the announcement and subject of emails.
-						<br />
-						<em>Min 10, Max 100 characters.</em>
-					</Text>
-				</div>
-				<div className="my-auto flex flex-col gap-4 md:flex-row">
-					<Input defaultValue={selectedAnnouncement.title} required type="text" minLength={10} maxLength={100} name="title" />
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Slug</Subheading>
-					<Text>
-						A friendly title to appear in the URL.
-						<br />
-						<em>Min 10, Max 100 characters.</em>
-					</Text>
-				</div>
-				<div className="my-auto flex flex-col gap-4 md:flex-row">
-					<SlugInput separator="-" defaultValue={selectedAnnouncement.slug} minLength={10} maxLength={100} name="slug" />
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-				<div className="space-y-1">
-					<Subheading>Description</Subheading>
-					<Text>
-						The text which will appear below the announcement before it&apos;s opened or the text which will appear below the email before it&apos;s
-						opened.
-						<br />
-						<em>Max 500 characters.</em>
-					</Text>
-				</div>
-				<div className="my-auto flex flex-col gap-4 md:flex-row">
-					<Textarea defaultValue={selectedAnnouncement.description} type="text" maxLength={100} name="description" />
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<section className="grid gap-x-8 gap-y-6">
-				<div className="space-y-1">
-					<Subheading>Announcement Content (Markdown)</Subheading>
-					<Text>
-						The content of the announcement in markdown format. Learn more about <Link href={"/wiki/markdown"}>markdown</Link>
-						<br />
-						<em>Max 25,000 characters.</em>
-					</Text>
-				</div>
-				<div className="my-auto flex flex-col gap-4 md:flex-row">
-					<Textarea
-						className="max-h-[500px] min-h-64"
-						required
-						value={markDown}
-						onChange={(e) => {
-							setMarkDown(e.target.value);
-						}}
-						type="text"
-						minLength={5}
-						maxLength={25000}
-						name="markdown"
-					/>
-				</div>
-			</section>
-			<Divider className="my-10" soft />
-			<div id="notice" className="flex justify-end gap-4">
-				<Button type="reset" form="publishAnnouncement" disabled={isLoading} plain onClick={onClose}>
-					Cancel
-				</Button>
-				<Button loading={isLoading} disabled={isLoading} form="publishAnnouncement" type="submit">
-					Save
-				</Button>
+		<div className="grow p-6 lg:rounded-lg lg:bg-white lg:p-10 lg:shadow-sm lg:ring-1 lg:ring-zinc-950/5 dark:lg:bg-zinc-900 dark:lg:ring-white/10">
+			<div className="mx-auto flex max-w-6xl h-full flex-col gap-6">
+				<form id="publishAnnouncement" action={handleSubmit}>
+					<TopBar title="Edit Announcement" hideSearchBar />
+					<Divider className="mb-10 mt-4" soft />
+					<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+						<div className="space-y-1">
+							<Subheading>Privacy</Subheading>
+							<Text>
+								Select whether to display your name on the announcement or not. The management can see who shared an announcement even if you hide
+								your name.
+							</Text>
+						</div>
+						<div className="my-auto">
+							<Listbox name="privacy" defaultValue={selectedAnnouncement.privacy} disabled={isLoading}>
+								<ListboxOption value="NORMAL">{fullName}</ListboxOption>
+								<ListboxOption value="ANONYMOUS">Anonymous</ListboxOption>
+								{authorize(authSession, [s.management]) && <ListboxOption value="SECRETARIAT">Secretariat</ListboxOption>}
+								{authorize(authSession, [s.director, s.sd, s.admins]) && <ListboxOption value="BOARD">Board of Directors</ListboxOption>}
+							</Listbox>
+						</div>
+					</section>
+					<Divider className="my-10" soft />
+					<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+						<div className="space-y-1">
+							<Subheading>Pin Announcement</Subheading>
+							<Text>Pinned announcements are shown at the top of the list.</Text>
+						</div>
+						<div className="my-auto">
+							<Listbox name="isPinned" defaultValue={selectedAnnouncement.isPinned ? "true" : "false"} disabled={isLoading}>
+								<ListboxOption value="true">Pinned</ListboxOption>
+								<ListboxOption value="false">Not Pinned</ListboxOption>
+							</Listbox>
+						</div>
+					</section>
+					<Divider className="my-10" soft />
+					<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+						<div className="space-y-1">
+							<Subheading>Title</Subheading>
+							<Text>
+								Title of the announcement and subject of emails.
+								<br />
+								<em>Min 10, Max 100 characters.</em>
+							</Text>
+						</div>
+						<div className="my-auto flex flex-col gap-4 md:flex-row">
+							<Input defaultValue={selectedAnnouncement.title} required type="text" minLength={10} maxLength={100} name="title" />
+						</div>
+					</section>
+					<Divider className="my-10" soft />
+					<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+						<div className="space-y-1">
+							<Subheading>Slug</Subheading>
+							<Text>
+								A friendly title to appear in the URL.
+								<br />
+								<em>Min 10, Max 100 characters.</em>
+							</Text>
+						</div>
+						<div className="my-auto flex flex-col gap-4 md:flex-row">
+							<SlugInput separator="-" defaultValue={selectedAnnouncement.slug} minLength={10} maxLength={100} name="slug" />
+						</div>
+					</section>
+					<Divider className="my-10" soft />
+					<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+						<div className="space-y-1">
+							<Subheading>Description</Subheading>
+							<Text>
+								The text which will appear below the announcement before it&apos;s opened or the text which will appear below the email before
+								it&apos;s opened.
+								<br />
+								<em>Max 500 characters.</em>
+							</Text>
+						</div>
+						<div className="my-auto flex flex-col gap-4 md:flex-row">
+							<Textarea defaultValue={selectedAnnouncement.description} type="text" maxLength={100} name="description" />
+						</div>
+					</section>
+					<Divider className="my-10" soft />
+					<section className="grid gap-x-8 gap-y-6">
+						<div className="space-y-1">
+							<Subheading>Announcement Content (Markdown)</Subheading>
+							<Text>
+								The content of the announcement in markdown format. Learn more about <Link href={"/wiki/markdown"}>markdown</Link>
+								<br />
+								<em>Max 25,000 characters.</em>
+							</Text>
+						</div>
+						<div className="my-auto flex flex-col gap-4 md:flex-row">
+							<Textarea
+								className="max-h-[500px] min-h-64"
+								required
+								value={markDown}
+								onChange={(e) => {
+									setMarkDown(e.target.value);
+								}}
+								type="text"
+								minLength={5}
+								maxLength={25000}
+								name="markdown"
+							/>
+						</div>
+					</section>
+					<Divider className="my-10" soft />
+					<div id="notice" className="flex justify-end gap-4">
+						<Button type="reset" form="publishAnnouncement" disabled={isLoading} plain onClick={onClose}>
+							Cancel
+						</Button>
+						<Button loading={isLoading} disabled={isLoading} form="publishAnnouncement" type="submit">
+							Save
+						</Button>
+					</div>
+					<Divider className={cn("mt-10", serializedMarkDown && debouncedMarkDown && "invisible")} soft />
+					{serializedMarkDown && debouncedMarkDown && (
+						<div className="max-w-full overflow-hidden bg-zinc-100 p-4">
+							<Text className="">Preview</Text>
+							<Suspense fallback={<div>Error</div>}>
+								<MDXClient onError={<div>Error</div>} components={announcementWebsitecomponents} {...serializedMarkDown} />
+							</Suspense>
+						</div>
+					)}
+				</form>
 			</div>
-			<Divider className={cn("mt-10", serializedMarkDown && debouncedMarkDown && "invisible")} soft />
-			{serializedMarkDown && debouncedMarkDown && (
-				<div className="max-w-full overflow-hidden bg-zinc-100 p-4">
-					<Text className="">Preview</Text>
-					<Suspense fallback={<div>Error</div>}>
-						<MDXClient onError={<div>Error</div>} components={announcementWebsitecomponents} {...serializedMarkDown} />
-					</Suspense>
-				</div>
-			)}
-		</form>
+		</div>
 	);
 }

@@ -15,10 +15,11 @@ import NextTopLoader from "nextjs-toploader";
 
 import type { Metadata } from "next";
 import { cn } from "@/lib/cn";
-/* import TopFl from "./flprovider";
- */ import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
+import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
 import { MatomoAnalytics } from "@/components/analytics";
-import { Suspense } from "react";
+import { JSX, Suspense } from "react";
+/* import TopFl from "./flprovider";
+ */
 
 export const metadata: Metadata = {
 	title: {
@@ -56,7 +57,7 @@ export default async function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={cn("text-zinc-950 antialiased !scrollbar-hide dark:bg-zinc-900 dark:text-white lg:bg-zinc-100")}
+			className={cn("text-zinc-950 antialiased !scrollbar-hide h-full dark:bg-zinc-900 dark:text-white lg:bg-zinc-100")}
 			suppressHydrationWarning>
 			<head>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -64,7 +65,7 @@ export default async function RootLayout({
 				<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
 				<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
 			</head>
-			<body className="overflow-x-hidden">
+			<body className="overflow-x-hidden h-full">
 				<noscript className="fixed z-[1000] flex min-h-[100vh] w-full flex-col bg-primary text-white">
 					<div className="mx-auto my-auto w-full max-w-lg p-4 text-center">
 						<Link href="/home">

@@ -1,8 +1,6 @@
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { authorize, s } from "@/lib/authorize";
-import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
-import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Link } from "@nextui-org/link";
 import Paginator from "@/components/pagination";
 import { DayTypeMap } from "@/data/constants";
@@ -23,13 +21,13 @@ export const metadata = {
 const itemsPerPage = 10;
 
 export default async function Page(props) {
-    const searchParams = await props.searchParams;
-    const params = await props.params;
-    const currentPage = searchParams.page || 1;
-    const session = await auth();
-    const sessionNumber = params.sessionNumber;
+	const searchParams = await props.searchParams;
+	const params = await props.params;
+	const currentPage = searchParams.page || 1;
+	const session = await auth();
+	const sessionNumber = params.sessionNumber;
 
-    const [selectedSession, days, totalItems] = await prisma
+	const [selectedSession, days, totalItems] = await prisma
 		.$transaction([
 			prisma.session.findFirstOrThrow({ where: { number: sessionNumber } }),
 			prisma.day.findMany({
@@ -43,11 +41,11 @@ export default async function Page(props) {
 		])
 		.catch(notFound);
 
-    let conferenceIndex = 0,
+	let conferenceIndex = 0,
 		workshopIndex = 0,
 		eventIndex = 0;
 
-    return (
+	return (
 		<>
 			<TopBar
 				buttonHref={`/medibook/sessions/${sessionNumber}`}

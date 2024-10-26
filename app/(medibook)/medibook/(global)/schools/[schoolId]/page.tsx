@@ -11,7 +11,7 @@ import { EditDeleteSchoolButtons } from "../client-components";
 import { TopBar } from "../../../client-components";
 import { ActionList } from "../../../server-components";
 
-export default async function Page(props: { params: any }) {
+export default async function Page(props: { params: Promise<any> }) {
 	const params = await props.params;
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
@@ -82,7 +82,7 @@ export default async function Page(props: { params: any }) {
 				buttonText={isManagement ? "Schools" : "Home"}
 				buttonHref={isManagement ? "/medibook/schools" : "/medibook"}
 				subheading={`${location?.state || location?.city || ""}
-                        ${`${location?.state || location?.city ? "," : ""}`} ${countryNameEn || "No Address Set"}`}>
+                    ${`${location?.state || location?.city ? "," : ""}`} ${countryNameEn || "No Address Set"}`}>
 				{isManagement && (
 					<EditDeleteSchoolButtons
 						isManagement={isManagement}
@@ -127,7 +127,7 @@ export default async function Page(props: { params: any }) {
 				</div>
 			) : (
 				<div className="rounded-xl border bg-zinc-100 p-4 text-center text-sm md:text-left">
-					This is the public profile page of this school. It's not available yet as address details haven&apos;t been added.
+					This is the public profile page of this school. It&apos;s not available yet as address details haven&apos;t been added.
 					{fullAddress && (
 						<>
 							<br />

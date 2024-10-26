@@ -136,7 +136,7 @@ export default async function Page(props) {
 						{schools.map((school, index) => {
 							const country = countries.find((country) => country.countryCode === school?.location?.country);
 							const directors = school.director.map((director, index) => (
-								<Fragment key={director.id}>
+								<Fragment key={index}>
 									<Link className="text-primary hover:underline" href={`/medibook/users/${director.user.username || director.user.id}`}>
 										{director.user.displayName || `${director.user.officialName} ${director.user.officialSurname}`}
 									</Link>

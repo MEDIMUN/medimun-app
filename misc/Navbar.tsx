@@ -3,7 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { use, useRef, useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
-import { Input } from "@nextui-org/input";
+import { Input } from "@/components/input";
 import { updateSearchParams, removeSearchParams } from "@/lib/searchParams";
 import { useEffect } from "react";
 import { Button } from "@/components/button";

@@ -1,5 +1,6 @@
 const { nextui } = require( "@nextui-org/theme" );
 const svgToDataUri = require( "mini-svg-data-uri" );
+const defaultTheme = require( 'tailwindcss/defaultTheme' );
 
 const { default: flattenColorPalette } = require( "tailwindcss/lib/util/flattenColorPalette" );
 
@@ -18,6 +19,7 @@ const config = {
       extend: {
          fontFamily: {
             sans: [ 'Inter, sans-serif', { fontFeatureSettings: '"cv11"' } ],
+            sans: [ 'Inter', ...defaultTheme.fontFamily.sans ],
          },
          screens: {
             pwa: { raw: "(display-mode: standalone)" },

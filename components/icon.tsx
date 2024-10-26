@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon as Iconify } from "@iconify/react";
+import React from "react";
 
 export function Icon({
 	icon,
@@ -13,7 +14,7 @@ export function Icon({
 	className?: string;
 	width?: number | string | undefined;
 	height?: number | string | undefined;
-	props?: any;
+	props?: React.ComponentProps<typeof Iconify>;
 }) {
 	return <Iconify icon={icon} height={height} className={className} width={width} {...props} />;
 }
