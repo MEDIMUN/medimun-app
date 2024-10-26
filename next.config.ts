@@ -34,7 +34,7 @@ const nextConfig = {
 
 	experimental: {
 		serverActions: {
-			allowedOrigins: ["https://www.medimun.org", "www.medimun.org"],
+			allowedOrigins: ["https://www.medimun.org", "www.medimun.org", "www.medimun.org.", "https://www.medimun.org."],
 		},
 		reactCompiler: true,
 	},

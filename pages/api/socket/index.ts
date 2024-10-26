@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
-import { createClient } from "redis";
+import { Redis } from "ioredis";
 
-const SocketHandler = async (req, res) => {
+const SocketHandler = (req, res) => {
 	if (res?.socket?.server?.io) {
 		console.log("Socket is already running");
 	} else {
@@ -13,12 +13,13 @@ const SocketHandler = async (req, res) => {
 			addTrailingSlash: false,
 		});
 
-		// Redis clients for pub/sub
-		const pubClient = createClient({ url: process.env.REDIS_URL });
+		// Create Redis clients with ioredis for pub/sub
+		const pubClient = new Redis(process.env.REDIS_URL);
 		const subClient = pubClient.duplicate();
 
-		await pubClient.connect();
-		await subClient.connect();
+		pubClient.on("error", (error) => {
+			console.error(error);
+		});
 
 		// Set up the Redis adapter with the clients
 		io.adapter(createAdapter(pubClient, subClient));
