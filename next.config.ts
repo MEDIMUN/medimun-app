@@ -31,7 +31,11 @@ const nextConfig = {
 	compiler: {
 		removeConsole: process.env.NODE_ENV === "production",
 	},
+
 	experimental: {
+		serverActions: {
+			allowedOrigins,
+		},
 		reactCompiler: true,
 	},
 	reactStrictMode: true,

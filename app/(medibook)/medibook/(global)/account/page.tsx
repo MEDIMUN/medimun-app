@@ -33,18 +33,18 @@ const genders = [
 ];
 
 export default async function Settings(props) {
-    const searchParams = await props.searchParams;
-    const authSession = await auth();
-    const selectedUser = await prisma.user
+	const searchParams = await props.searchParams;
+	const authSession = await auth();
+	const selectedUser = await prisma.user
 		.findUnique({
 			where: {
 				id: authSession.user.id,
 			},
 		})
 		.catch(notFound);
-    const schools = await prisma.school.findMany({});
+	const schools = await prisma.school.findMany({});
 
-    async function handleSubmit(formData: FormData) {
+	async function handleSubmit(formData: FormData) {
 		"use server";
 		const schema = z.object({
 			officialName: z.string({ required_error: "Official Name is required." }).max(25).trim(),
@@ -74,26 +74,26 @@ export default async function Settings(props) {
 				data,
 			});
 		} catch (error) {
-			redirect("?error=There was a problem updating your details.#notice");
+			redirect("/medibook/account?error=There was a problem updating your details.#notice");
 		}
-		redirect("?success=Changes saved.#notice");
+		redirect("/medibook/account?success=Changes saved.#notice");
 	}
 
-    function RequiredTag() {
+	function RequiredTag() {
 		return <Badge color="red">Required</Badge>;
 	}
 
-    function OptionalTag() {
+	function OptionalTag() {
 		return <Badge color="yellow">Optional</Badge>;
 	}
 
-    function RecommendedTag() {
+	function RecommendedTag() {
 		return <Badge color="blue">Recommended</Badge>;
 	}
 
-    const isAllowedToEditBio = authorize(authSession, [s.management, s.chair, s.manager]);
+	const isAllowedToEditBio = authorize(authSession, [s.management, s.chair, s.manager]);
 
-    return (
+	return (
 		<>
 			<div className="mx-auto max-w-4xl">
 				<Heading>User Settings</Heading>
