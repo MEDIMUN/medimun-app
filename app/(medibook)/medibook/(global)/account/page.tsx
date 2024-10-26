@@ -76,7 +76,7 @@ export default async function Settings(props) {
 		} catch (error) {
 			redirect("/medibook/account?error=There was a problem updating your details.#notice");
 		}
-		redirect("/medibook/account?success=Changes saved.#notice");
+		redirect("/medibook/account?success=Changes saved.#notice"); //FIXME TO INCLUDE THE HASH and MAKE THIS CLIENT SIDE
 	}
 
 	function RequiredTag() {
