@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { permamentSCMembers } from "@/data/constants";
 import { countries } from "@/data/countries";
 import { authorize, authorizePerSession, s } from "@/lib/authorize";
-import { parseFormData } from "@/lib/form";
+import { parseFormData } from "@/lib/parse-form-data";
 import { entityCase } from "@/lib/text";
 import { generateUserData, generateUserDataObject } from "@/lib/user";
 import prisma from "@/prisma/client";

@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
 import { ResourcesTable } from "@/app/(medibook)/medibook/server-components";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { parseOrderDirection } from "@/lib/order-direction";
 import { authorize, authorizeManagerDepartment, authorizeMemberDepartment, authorizePerSession, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import Paginator from "@/components/pagination";
@@ -18,18 +18,18 @@ const sortOptions = [
 ];
 
 export default async function Page(props) {
-    const searchParams = await props.searchParams;
-    const params = await props.params;
-    const currentPage = Number(searchParams.page) || 1;
-    const authSession = await auth();
-    const query = searchParams.search || "";
-    const orderBy = searchParams.order || "name";
-    const orderDirection = parseOrderDirection(searchParams.direction);
-    const selectedDepartment = await prisma.department
+	const searchParams = await props.searchParams;
+	const params = await props.params;
+	const currentPage = Number(searchParams.page) || 1;
+	const authSession = await auth();
+	const query = searchParams.search || "";
+	const orderBy = searchParams.order || "name";
+	const orderDirection = parseOrderDirection(searchParams.direction);
+	const selectedDepartment = await prisma.department
 		.findFirstOrThrow({ where: { OR: [{ id: params.departmentId }, { slug: params.departmentId }], session: { number: params.sessionNumber } } })
 		.catch(notFound);
 
-    const hasSomeArray: ResourcePrivacyTypes[] = [
+	const hasSomeArray: ResourcePrivacyTypes[] = [
 		"DEPARTMENTWEBSITE",
 		authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], selectedDepartment.id) ? "DEPARTMENTMANAGER" : null,
 		authorizeMemberDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], selectedDepartment.id) ? "DEPARTMENTMEMBER" : null,
@@ -38,7 +38,7 @@ export default async function Page(props) {
 		authorizePerSession(authSession, [s.sd], [params.sessionNumber]) ? "DEPARTMENTSENIORDIRECTORS" : null,
 	].filter((x) => x);
 
-    const whereObject = {
+	const whereObject = {
 		OR: [
 			{
 				session: null,
@@ -60,7 +60,7 @@ export default async function Page(props) {
 		],
 	};
 
-    const prismaResources = await prisma.resource.findMany({
+	const prismaResources = await prisma.resource.findMany({
 		where: whereObject,
 		take: itemsPerPage,
 		skip: (currentPage - 1) * itemsPerPage,
@@ -68,10 +68,10 @@ export default async function Page(props) {
 		orderBy: [{ isPinned: "desc" }, { [orderBy]: orderDirection }],
 	});
 
-    const totalItems = await prisma.resource.count({ where: whereObject });
+	const totalItems = await prisma.resource.count({ where: whereObject });
 
-    const isManagement = authorize(authSession, [s.management]);
-    return (
+	const isManagement = authorize(authSession, [s.management]);
+	return (
 		<>
 			<TopBar
 				buttonHref={`/medibook/sessions/${params.sessionNumber}/departments/${selectedDepartment.slug || selectedDepartment.id}`}

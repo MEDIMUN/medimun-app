@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { updateSearchParams } from "@/lib/searchParams";
+import { updateSearchParams } from "@/lib/search-params";
 import { Dropdown, DropdownButton, DropdownHeading, DropdownItem, DropdownLabel, DropdownMenu } from "@/components/dropdown";
 import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
 import { Button } from "@/components/button";

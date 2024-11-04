@@ -15,12 +15,12 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useDebouncedValue } from "@mantine/hooks";
-import { useUpdateEffect } from "@/hooks/useUpdateEffect";
+import { useUpdateEffect } from "@/hooks/use-update-effect";
 import { cn } from "@/lib/cn";
 import { Subheading } from "@/components/heading";
 import { Text } from "@/components/text";
 import { Textarea } from "@/components/textarea";
-import { arrayFromNumber } from "@/lib/arrayFromNumber";
+import { arrayFromNumber } from "@/lib/array-from-number";
 import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/listbox";
 import { countries } from "@/data/countries";
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from "@/components/description-list";
@@ -33,7 +33,7 @@ import { Field as UnstyledField } from "@headlessui/react";
 import Link from "next/link";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { flushSync } from "react-dom";
-import { getOrdinal } from "@/lib/ordinal";
+import { getOrdinal } from "@/lib/get-ordinal";
 
 export function ApplicationOptions({ selectedSession }) {
 	const formRef = useRef(null);

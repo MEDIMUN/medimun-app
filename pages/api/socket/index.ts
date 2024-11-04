@@ -1,39 +1,16 @@
-import { Server } from "socket.io";
-import { createAdapter } from "@socket.io/redis-adapter";
-import { Redis } from "ioredis";
+// pages/api/socket.js
+import { initializeSocket } from "@/socket/server";
+import { NextApiResponse } from "next";
 
-const SocketHandler = (req, res) => {
-	if (res?.socket?.server?.io) {
-		console.log("Socket is already running");
+export default function handler(req, res: NextApiResponse) {
+	// Ensure Socket.IO is only initialized once
+	if (!res.socket.server.io) {
+		console.log("Initializing Socket.IO...");
+		const io = initializeSocket(res.socket.server); // Initialize and attach to the server
+		res.socket.server.io = io; // Attach to Next.js server object for persistence
 	} else {
-		console.log("Socket is initializing");
-
-		// Initialize Socket.IO server
-		const io = new Server(res.socket.server, {
-			addTrailingSlash: false,
-		});
-
-		// Create Redis clients with ioredis for pub/sub
-		const pubClient = new Redis(process.env.REDIS_URL);
-		const subClient = pubClient.duplicate();
-
-		pubClient.on("error", (error) => {
-			console.error(error);
-		});
-
-		// Set up the Redis adapter with the clients
-		io.adapter(createAdapter(pubClient, subClient));
-
-		// Attach the socket instance to the server
-		res.socket.server.io = io;
-
-		io.on("connection", (socket) => {
-			socket.on("input-change", (msg) => {
-				socket.broadcast.emit("update-input", msg);
-			});
-		});
+		console.log("Socket.IO is already running");
 	}
-	res.end();
-};
 
-export default SocketHandler;
+	res.end();
+}

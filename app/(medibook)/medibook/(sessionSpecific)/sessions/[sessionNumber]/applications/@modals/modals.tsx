@@ -7,7 +7,7 @@ import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } fro
 import { Dropdown, DropdownButton, DropdownDescription, DropdownItem, DropdownLabel, DropdownMenu } from "@/components/dropdown";
 import { authorize, s } from "@/lib/authorize";
 import { romanize } from "@/lib/romanize";
-import { removeSearchParams } from "@/lib/searchParams";
+import { removeSearchParams } from "@/lib/search-params";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";

@@ -2,7 +2,7 @@
 
 import { Pagination } from "@nextui-org/pagination";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { updateSearchParams } from "@/lib/searchParams";
+import { updateSearchParams } from "@/lib/search-params";
 import { useEffect } from "react";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 

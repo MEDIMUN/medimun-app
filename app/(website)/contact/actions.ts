@@ -2,7 +2,7 @@
 
 import sendEmailTransport from "@/email/transporter";
 /* import { verifyServerCaptcha } from "@/lib/captcha";
- */ import { parseFormData } from "@/lib/form";
+ */ import { parseFormData } from "@/lib/parse-form-data";
 import axios from "axios";
 import { redirect } from "next/navigation";
 import { z } from "zod";

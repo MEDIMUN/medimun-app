@@ -9,7 +9,7 @@ import { Divider } from "@/components/divider";
 import { Badge } from "@/components/badge";
 import Paginator from "@/components/pagination";
 import { Link } from "@/components/link";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { parseOrderDirection } from "@/lib/order-direction";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu, DropdownSection } from "@/components/dropdown";
 import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 
@@ -25,20 +25,20 @@ const sortOptions = [
 ];
 
 export default async function Page(props) {
-    const searchParams = await props.searchParams;
-    const params = await props.params;
-    const currentPage = searchParams.page || 1;
-    //
-    const orderBy = searchParams.order || "name";
-    const orderDirection = parseOrderDirection(searchParams.direction);
-    //
-    const authSession = await auth();
-    const isManagement = authorize(authSession, [s.management]);
-    //
-    const selectedSession = await prisma.session.findFirstOrThrow({ where: { number: params.sessionNumber } }).catch(notFound);
-    const totalItems = await prisma.department.count({ where: { session: { number: selectedSession.number } } }).catch(notFound);
+	const searchParams = await props.searchParams;
+	const params = await props.params;
+	const currentPage = searchParams.page || 1;
+	//
+	const orderBy = searchParams.order || "name";
+	const orderDirection = parseOrderDirection(searchParams.direction);
+	//
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
+	//
+	const selectedSession = await prisma.session.findFirstOrThrow({ where: { number: params.sessionNumber } }).catch(notFound);
+	const totalItems = await prisma.department.count({ where: { session: { number: selectedSession.number } } }).catch(notFound);
 
-    const prismaDepartments = await prisma.department
+	const prismaDepartments = await prisma.department
 		.findMany({
 			where: {
 				session: { number: selectedSession.number },
@@ -53,19 +53,19 @@ export default async function Page(props) {
 		})
 		.catch(notFound);
 
-    const currentDepartmentIds = authSession.user.currentRoles
+	const currentDepartmentIds = authSession.user.currentRoles
 		.concat(authSession.user.pastRoles)
 		.filter((role) => role.session == selectedSession.number)
 		.filter((role) => role.roleIdentifier == "manager" || role.roleIdentifier == "member")
 		.map((role) => role.departmentId);
 
-    const sortedDepartments = prismaDepartments.sort((a: any, b: any) => {
+	const sortedDepartments = prismaDepartments.sort((a: any, b: any) => {
 		if (currentDepartmentIds.includes(a.id) && !currentDepartmentIds.includes(b.id)) return -1;
 		if (currentDepartmentIds.includes(b.id) && !currentDepartmentIds.includes(a.id)) return 1;
 		return 0;
 	});
 
-    return (
+	return (
 		<>
 			<TopBar
 				defaultSort="nameasc"
@@ -82,7 +82,7 @@ export default async function Page(props) {
 						const chairsLength = managers?.length;
 						const isInvolved = currentDepartmentIds?.includes(department.id);
 						return (
-							<>
+							<Fragment key={department.id}>
 								<li key={department.id}>
 									<Divider soft={index > 0} />
 									<div className="flex items-center justify-between">
@@ -153,7 +153,7 @@ export default async function Page(props) {
 										</div>
 									</div>
 								</li>
-							</>
+							</Fragment>
 						);
 					})}
 				</ul>

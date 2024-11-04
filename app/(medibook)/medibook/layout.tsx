@@ -18,6 +18,7 @@ import { cn } from "@/lib/cn";
 import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
 import { MatomoAnalytics } from "@/components/analytics";
 import { JSX, Suspense } from "react";
+import { SocketHandler } from "./client-components";
 /* import TopFl from "./flprovider";
  */
 
@@ -57,7 +58,7 @@ export default async function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={cn("text-zinc-950 antialiased !scrollbar-hide h-full dark:bg-zinc-900 dark:text-white lg:bg-zinc-100")}
+			className={cn("text-zinc-950 antialiased !scrollbar-hide h-full", "dark:bg-zinc-900 dark:text-white lg:bg-zinc-100")}
 			suppressHydrationWarning>
 			<head>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -85,6 +86,9 @@ export default async function RootLayout({
 					</div>
 				</noscript>
 				<Providers>
+					<Suspense fallback={null}>
+						<SocketHandler />
+					</Suspense>
 					<Suspense>
 						<MatomoAnalytics />
 					</Suspense>

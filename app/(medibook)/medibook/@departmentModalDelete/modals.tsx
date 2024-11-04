@@ -4,7 +4,7 @@ import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { authorize, s } from "@/lib/authorize";
 import { useSession } from "next-auth/react";
-import { removeSearchParams } from "@/lib/searchParams";
+import { removeSearchParams } from "@/lib/search-params";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { Button } from "@/components/button";
 import { Field, Label } from "@/components/fieldset";
@@ -14,7 +14,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 
 import { deleteDepartment } from "./actions";
 import { useState } from "react";
-import { useFlushState } from "@/hooks/useFlushState";
+import { useFlushState } from "@/hooks/use-flush-state";
 
 function onClose(searchParams: ReadonlyURLSearchParams, router: any[] | AppRouterInstance) {
 	/* 	if (searchParams.has("return")) return router.push(searchParams.get("return"));

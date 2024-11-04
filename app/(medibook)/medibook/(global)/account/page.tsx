@@ -12,7 +12,7 @@ import { countries } from "@/data/countries";
 import { notFound, redirect } from "next/navigation";
 import { authorize, s } from "@/lib/authorize";
 import { ClearBioButton, UsernameField, PrivateProfilePictureUploader } from "./client-components";
-import { parseFormData } from "@/lib/form";
+import { parseFormData } from "@/lib/parse-form-data";
 import { z } from "zod";
 import { processPronouns } from "@/lib/text";
 import { CheckCircleIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/16/solid";
@@ -104,8 +104,7 @@ export default async function Settings(props) {
 							Profile Picture <RecommendedTag />
 						</Subheading>
 						<Text>
-							Your profile picture will be visible to everyone. You <b>don&apos;t</b> need to click save below. You need to be currently affiliated to
-							be able to update your profile picture.
+							Your profile picture will be visible to everyone. You <b>don&apos;t</b> need to click save.
 						</Text>
 					</div>
 					<div className="my-auto grid gap-6">

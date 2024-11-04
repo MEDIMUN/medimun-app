@@ -12,14 +12,14 @@ import { useState } from "react";
 /* import { signIn } from "./action";
  */ import { toast } from "sonner";
 import { Button } from "@/components/button";
-import { updateSearchParams } from "@/lib/searchParams";
+import { updateSearchParams } from "@/lib/search-params";
 import { Description, Field, Label } from "@/components/fieldset";
 import { Text, TextLink } from "@/components/text";
 import { approveHalfUser, checkEmail, createNewUser, createPendingUser } from "./actions";
 import { OTPInput, SlotProps } from "input-otp";
 import { Checkbox, CheckboxField } from "@/components/checkbox";
 import Confetti from "react-confetti";
-import useWindowDimensions from "@/hooks/useWIndowDimensions";
+import useWindowDimensions from "@/hooks/use-window-dimentions";
 import { Badge } from "@/components/badge";
 import { Select } from "@/components/select";
 
@@ -210,7 +210,7 @@ export function SignUpForm({ allowSignUp }) {
 						{allowSignUp == "false" ? "Sign Up is disabled" : "Continue"}
 					</Button>
 					<div className="mt-auto flex w-full  animate-appearance-in justify-between rounded-small bg-content2 p-3">
-						<p className="text-xs">Alredy have an account?</p>
+						<p className="text-xs">Already have an account?</p>
 						<Link href="/login" className="text-xs text-primary">
 							Log In
 						</Link>

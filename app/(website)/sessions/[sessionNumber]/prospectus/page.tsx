@@ -1,7 +1,7 @@
 import prisma from "@/prisma/client";
 import { minio } from "@/minio/client";
 import { Topbar } from "@/app/(website)/server-components";
-import { getOrdinal } from "@/lib/ordinal";
+import { getOrdinal } from "@/lib/get-ordinal";
 import { ArrowDownCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -9,8 +9,8 @@ import { notFound } from "next/navigation";
 export const revalidate = 60;
 
 export async function generateMetadata(props) {
-    const params = await props.params;
-    return {
+	const params = await props.params;
+	return {
 		title: `${params.sessionNumber}${getOrdinal(parseInt(params.sessionNumber))} Annual Session Prospectus`,
 		description: `View the prospectus for the ${params.sessionNumber}${getOrdinal(
 			parseInt(params.sessionNumber)
@@ -18,17 +18,17 @@ export async function generateMetadata(props) {
 	};
 }
 export default async function Page(props: { params: Promise<{ sessionNumber: string }> }) {
-    const params = await props.params;
-    const minioClient = minio();
+	const params = await props.params;
+	const minioClient = minio();
 
-    const selectedSession = await prisma.session
+	const selectedSession = await prisma.session
 		.findFirstOrThrow({
 			where: { number: params.sessionNumber },
 			include: { Resource: { where: { scope: { hasSome: ["SESSIONPROSPECTUS"] } } } },
 		})
 		.catch(notFound);
 
-    if (!selectedSession.Resource.length) {
+	if (!selectedSession.Resource.length) {
 		return (
 			<>
 				<Topbar
@@ -55,14 +55,14 @@ export default async function Page(props: { params: Promise<{ sessionNumber: str
 		);
 	}
 
-    const selectedResource = selectedSession.Resource[0];
+	const selectedResource = selectedSession.Resource[0];
 
-    const presignedFileUrl = await minioClient
+	const presignedFileUrl = await minioClient
 		.presignedGetObject(process.env.BUCKETNAME, `resources/${selectedResource.fileId}`, 60 * 60)
 		.catch(notFound);
-    const presignedFileUrlHttps = presignedFileUrl.replace("http://", "https://");
+	const presignedFileUrlHttps = presignedFileUrl.replace("http://", "https://");
 
-    return (
+	return (
 		<>
 			<Topbar
 				title={

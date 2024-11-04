@@ -24,7 +24,7 @@ import { cn } from "@/lib/cn";
 import { usePathname } from "next/navigation";
 import { FolderIcon, HashtagIcon, SpeakerXMarkIcon } from "@heroicons/react/16/solid";
 import Icon from "@/components/icon";
-import { getOrdinal } from "@/lib/ordinal";
+import { getOrdinal } from "@/lib/get-ordinal";
 
 const products = [
 	{

@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, s } from "@/lib/authorize";
-import { parseFormData } from "@/lib/form";
+import { parseFormData } from "@/lib/parse-form-data";
 import prisma from "@/prisma/client";
 import { z } from "zod";
 

@@ -11,13 +11,13 @@ import { Textarea } from "@/components/textarea";
 import { ReadonlyURLSearchParams, useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { editCommittee } from "./actions";
-import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
+import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { EllipsisVerticalIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { Badge } from "@/components/badge";
 import { SearchParamsButton } from "@/app/(medibook)/medibook/client-components";
 import { deleteExtraCountry } from "./@extraCountryModal/actions";
-import { useFlushState } from "@/hooks/useFlushState";
+import { useFlushState } from "@/hooks/use-flush-state";
 
 export function CommitteeSettingsForm({ selectedCommittee }) {
 	const router = useRouter();

@@ -66,12 +66,13 @@ export default async function Page(props) {
 	const filteredCountries = countries.filter((country) => selectedSession.countriesOfSession.includes(country.countryCode));
 	const applicationsOpen = areDelegateApplicationsOpen(selectedSession);
 
+	//FIXME: cant handle 4 SC proposals
 	const parsedAssignment = delegationAssignmentProposal
 		? JSON.parse(delegationAssignmentProposal.assignment).sort((a, b) => {
 				const committeeA = selectedSession.committee.find((committee) => committee.id === a.committeeId);
 				const committeeB = selectedSession.committee.find((committee) => committee.id === b.committeeId);
-				if (committeeA.name !== committeeB.name) return committeeA.name.localeCompare(committeeB.name);
-				if (committeeA.type !== committeeB.type) return committeeA.type.localeCompare(committeeB.type);
+				if (committeeA.name !== committeeB.name) return committeeA.name.localeCompare(committeeB?.name);
+				if (committeeA.type !== committeeB.type) return committeeA.type.localeCompare(committeeB?.type);
 				return a.countryCode.localeCompare(b.countryCode);
 			})
 		: null;

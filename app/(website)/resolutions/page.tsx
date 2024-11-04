@@ -4,7 +4,7 @@ import { use } from "react";
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/modal";
 
-import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
+import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/button";
 

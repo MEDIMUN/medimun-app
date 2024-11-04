@@ -4,9 +4,9 @@ import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { auth } from "@/auth";
 import { z } from "zod";
-import { parseFormData } from "@/lib/form";
+import { parseFormData } from "@/lib/parse-form-data";
 import { entityCase } from "@/lib/text";
-import { verifyPassword } from "@/lib/password";
+import { verifyPassword } from "@/lib/password-hash";
 /*@ts-ignore*/
 import { minio } from "@/minio/client";
 import { nanoid } from "nanoid";

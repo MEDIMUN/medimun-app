@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import { s, authorize } from "@/lib/authorize";
 import { capitalize } from "@/lib/text";
-import { parseFormData } from "@/lib/form";
+import { parseFormData } from "@/lib/parse-form-data";
 import prisma from "@/prisma/client";
 import { z } from "zod";
 

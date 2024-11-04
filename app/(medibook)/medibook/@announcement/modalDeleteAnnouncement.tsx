@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { removeSearchParams } from "@/lib/searchParams";
+import { removeSearchParams } from "@/lib/search-params";
 import { Button } from "@/components/button";
 import { Dialog, DialogActions, DialogTitle } from "@/components/dialog";
 import { Description } from "@/components/fieldset";
-import { useFlushState } from "@/hooks/useFlushState";
+import { useFlushState } from "@/hooks/use-flush-state";
 import { deleteAnnouncementAction } from "./actions";
 import { toast } from "sonner";
 

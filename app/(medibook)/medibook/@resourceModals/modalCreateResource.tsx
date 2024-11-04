@@ -9,10 +9,10 @@ import { Input } from "@/components/input";
 import { Link } from "@/components/link";
 import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/listbox";
 import { Select } from "@/components/select";
-import { useFlushState } from "@/hooks/useFlushState";
+import { useFlushState } from "@/hooks/use-flush-state";
 import { authorize, authorizeChairCommittee, authorizeManagerDepartment, s } from "@/lib/authorize";
 import { cn } from "@/lib/cn";
-import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
+import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -89,7 +89,7 @@ export function ModalUploadResource() {
 						searchParams.get("uploaddepartmentresource"),
 					uploadresource: true,
 					uploadsystemresource: authorize(authSession, [s.admins, s.sd]),
-			  }
+				}
 			: {};
 
 	const allSearchParams = Object.fromEntries(searchParams?.entries() || []);

@@ -3,8 +3,8 @@
 import prisma from "@/prisma/client";
 import { s, authorize } from "@/lib/authorize";
 import { auth } from "@/auth";
-import { parseFormData } from "@/lib/form";
-import { verifyPassword } from "@/lib/password";
+import { parseFormData } from "@/lib/parse-form-data";
+import { verifyPassword } from "@/lib/password-hash";
 
 export async function deleteDepartment(formData: FormData, departmentId) {
 	const authSession = await auth();

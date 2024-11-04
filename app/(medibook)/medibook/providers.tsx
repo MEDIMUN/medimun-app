@@ -7,6 +7,7 @@ import { SessionProvider } from "next-auth/react";
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { Alert, AlertActions, AlertDescription, AlertTitle } from "@/components/alert";
 import { Button } from "@/components/button";
+import { SocketProvider } from "@/contexts/socket";
 
 const ConfirmContext = createContext(null);
 
@@ -96,17 +97,19 @@ export function SidebarContextProvider({ children }) {
 export function Providers({ children }) {
 	const router = useRouter();
 	return (
-		<ConfirmProvider>
-			<SidebarContextProvider>
-				<SessionProvider>
-					<NUIP className="h-full" navigate={router.push}>
-						<NextThemesProvider attribute="class" enableSystem defaultTheme="light">
-							{children}
-						</NextThemesProvider>
-					</NUIP>
-				</SessionProvider>
-			</SidebarContextProvider>
-		</ConfirmProvider>
+		<SocketProvider>
+			<ConfirmProvider>
+				<SidebarContextProvider>
+					<SessionProvider>
+						<NUIP className="h-full" navigate={router.push}>
+							<NextThemesProvider attribute="class" enableSystem defaultTheme="light">
+								{children}
+							</NextThemesProvider>
+						</NUIP>
+					</SessionProvider>
+				</SidebarContextProvider>
+			</ConfirmProvider>
+		</SocketProvider>
 	);
 }
 

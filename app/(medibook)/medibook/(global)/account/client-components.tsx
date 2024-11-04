@@ -157,10 +157,7 @@ export function PrivateProfilePictureUploader({ user }) {
 				<input accept=".jpg,.jpeg,.gif,.png" name="file" ref={inputRef} type="file" className="hidden" onChange={onImageUpdate} />
 			</form>
 			<div className="my-auto flex w-full flex-col gap-4">
-				<Button
-					className="min-w-max cursor-pointer"
-					disabled={isLoading || !authorize(authSession, [s.admins, s.board, s.chair, s.manager, s.delegate, s.member, s.sec])}
-					onClick={() => (inputRef.current as HTMLInputElement)?.click()}>
+				<Button className="min-w-max cursor-pointer" disabled={isLoading} onClick={() => (inputRef.current as HTMLInputElement)?.click()}>
 					Select {user?.profilePicture && "new"} image
 				</Button>
 				{(user?.profilePicture || isLoading) && (

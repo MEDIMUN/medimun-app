@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { SearchParamsButton, TopBar } from "../../client-components";
 import { ResourcesTable } from "../../server-components";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { parseOrderDirection } from "@/lib/order-direction";
 import { authorize, authorizePerSession, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import Paginator from "@/components/pagination";
@@ -16,20 +16,20 @@ const sortOptions = [
 ];
 
 export default async function Page(props) {
-    const searchParams = await props.searchParams;
-    const params = await props.params;
-    const currentPage = Number(searchParams.page) || 1;
-    const authSession = await auth();
-    const query = searchParams.search || "";
-    const orderBy = searchParams.order || "name";
-    const orderDirection = parseOrderDirection(searchParams.direction);
+	const searchParams = await props.searchParams;
+	const params = await props.params;
+	const currentPage = Number(searchParams.page) || 1;
+	const authSession = await auth();
+	const query = searchParams.search || "";
+	const orderBy = searchParams.order || "name";
+	const orderDirection = parseOrderDirection(searchParams.direction);
 
-    const whereObject = {
+	const whereObject = {
 		user: { id: authSession.user.id },
 		name: { contains: query, mode: "insensitive" },
 	};
 
-    const prismaResources = await prisma.resource.findMany({
+	const prismaResources = await prisma.resource.findMany({
 		where: whereObject,
 		take: itemsPerPage,
 		skip: (currentPage - 1) * itemsPerPage,
@@ -37,10 +37,10 @@ export default async function Page(props) {
 		orderBy: [{ isPinned: "desc" }, { [orderBy]: orderDirection }],
 	});
 
-    const totalItems = await prisma.resource.count({ where: whereObject });
+	const totalItems = await prisma.resource.count({ where: whereObject });
 
-    const isManagement = authorize(authSession, [s.management]);
-    return (
+	const isManagement = authorize(authSession, [s.management]);
+	return (
 		<>
 			<TopBar sortOptions={sortOptions} buttonHref="/medibook" buttonText="Home" defaultSort="timedesc" title="Personal Files">
 				<SearchParamsButton searchParams={{ uploadresource: true }}>Upload File</SearchParamsButton>

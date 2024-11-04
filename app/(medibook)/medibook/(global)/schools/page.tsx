@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 import Paginator from "@/components/pagination";
 import { Link } from "@/components/link";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { parseOrderDirection } from "@/lib/order-direction";
 import { Badge } from "@/components/badge";
 import { Fragment } from "react";
 

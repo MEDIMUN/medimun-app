@@ -10,10 +10,10 @@ import { roleRanks } from "@/data/constants";
 
 import { editUser, addRole, removeRole, unafilliateStudent, createUser, deleteUser } from "./actions";
 
-import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
-import formatDateForInput from "@/lib/formatDateForInput";
+import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
+import formatDateForInput from "@/lib/format-date-for-input";
 import { authorize, authorizeChairDelegate, authorizeManagerMember, authorizeSchoolDirectorStudent, s } from "@/lib/authorize";
-import { getOrdinal } from "@/lib/ordinal";
+import { getOrdinal } from "@/lib/get-ordinal";
 import { romanize } from "@/lib/romanize";
 
 import { Description, Field, Label } from "@/components/fieldset";

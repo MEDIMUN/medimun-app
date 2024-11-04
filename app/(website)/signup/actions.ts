@@ -1,8 +1,8 @@
 "use server";
 
 import { sendEmailVerificationEmail } from "@/email/send";
-import { parseFormData } from "@/lib/form";
-import { hashPassword } from "@/lib/password";
+import { parseFormData } from "@/lib/parse-form-data";
+import { hashPassword } from "@/lib/password-hash";
 import { nameCase } from "@/lib/text";
 import prisma from "@/prisma/client";
 import { redirect } from "next/navigation";
@@ -159,7 +159,7 @@ export async function createNewUser(id, password, verificationCode) {
 										id: selectedPendingUser.schoolId,
 									},
 								},
-						  }
+							}
 						: {}),
 				},
 			});

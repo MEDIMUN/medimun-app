@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import { updateSearchParams } from "@/lib/searchParams";
+import { updateSearchParams } from "@/lib/search-params";
 import { Chip } from "@nextui-org/chip";
 import { Select, SelectItem, SelectSection } from "@nextui-org/select";
 import { useRouter, useSearchParams } from "next/navigation";

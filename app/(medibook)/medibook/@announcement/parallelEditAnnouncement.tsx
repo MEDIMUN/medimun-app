@@ -1,14 +1,14 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
+import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
 import { Dropdown, DropdownButton, DropdownHeading, DropdownItem, DropdownLabel, DropdownMenu } from "@/components/dropdown";
 import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
 import { Button } from "@/components/button";
 import { Dialog, DialogActions, DialogBody, DialogTitle } from "@/components/dialog";
 import { Description, Field, Label } from "@/components/fieldset";
 import { Input } from "@/components/input";
-import { useFlushState } from "@/hooks/useFlushState";
+import { useFlushState } from "@/hooks/use-flush-state";
 import { Select } from "@/components/select";
 import { toast } from "sonner";
 import { TopBar } from "../client-components";

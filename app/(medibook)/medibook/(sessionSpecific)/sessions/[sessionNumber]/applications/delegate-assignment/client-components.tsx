@@ -21,10 +21,7 @@ export function FinalAssignDelegates({ users, delegateProposals, selectedSession
 
 	async function handleSubmit(assignments, schoolId) {
 		const filteredAssignments = assignments.filter((a) => !rejectedNominations.includes(a.studentId));
-		if (filteredAssignments.length === 0) {
-			toast.error("You cannot assign 0 delegates.");
-			return;
-		}
+		if (filteredAssignments.length === 0) return toast.error("You cannot assign 0 delegates.");
 		setIsLoading(true);
 		const res = await handleFinalAssignDelegates(filteredAssignments, selectedSession.id, schoolId);
 		if (res?.ok) {
@@ -105,7 +102,7 @@ export function FinalAssignDelegates({ users, delegateProposals, selectedSession
 									<DescriptionDetails>{proposal.id}</DescriptionDetails>
 
 									<DescriptionTerm>Delegates Proposed</DescriptionTerm>
-									<DescriptionDetails>{`${proposal.assignment.filter((a) => a.countryCode).length} GA Delegates and ${proposal.assignment.filter((a) => !a.countryCode).length} Experienced Delegates`}</DescriptionDetails>
+									<DescriptionDetails>{`${proposal.assignment.filter((a) => a.countryCode).length + proposal.assignment.filter((a) => !a.countryCode).length} Delegates (${proposal.assignment.filter((a) => a.countryCode).length} GA and ${proposal.assignment.filter((a) => !a.countryCode).length} Special Committee)`}</DescriptionDetails>
 
 									<DescriptionTerm>General Assembly Assignments</DescriptionTerm>
 									<DescriptionDetails>
@@ -150,12 +147,16 @@ export function FinalAssignDelegates({ users, delegateProposals, selectedSession
 														<li
 															key={index + Math.random()}
 															className="flex flex-col gap-2 rounded-lg bg-zinc-50 p-3 ring-1 ring-zinc-950/10 md:flex-col">
-															<Text>{committee.name}</Text>
-															<Badge color="" className="m-0 my-auto !p-0">
-																<Avatar showFallback className="h-4 max-h-max w-4 bg-primary text-white" src={`/api/users/${student.id}/avatar`} />
-																{student.displayName || `${student.officialName} ${student.officialSurname}`}{" "}
-																<span className="font-light">{a.studentId}</span>
-															</Badge>
+															<div className="grid grid-cols-1 xl:grid-cols-2 lg:gap-2">
+																<Badge color="" className="!px-0">
+																	{committee.name}
+																</Badge>
+																<Badge className="max-w-max">
+																	<Avatar showFallback className="h-4 w-4 bg-primary text-white" src={`/api/users/${student.id}/avatar`} />
+																	{student.displayName || `${student.officialName} ${student.officialSurname}`}{" "}
+																	<span className="font-light">{a.studentId}</span>
+																</Badge>
+															</div>
 															<Button
 																onClick={() => {
 																	if (!isRejected) {
@@ -165,7 +166,7 @@ export function FinalAssignDelegates({ users, delegateProposals, selectedSession
 																	}
 																}}
 																className={cn("h-8 w-full", "")}
-																color={isRejected ? "green" : ("red" as "green" | "red")}>
+																color={isRejected ? "green" : ("primary" as "green" | "medired")}>
 																{isRejected ? "Undo Rejection" : "Reject Nomination"}
 															</Button>
 														</li>

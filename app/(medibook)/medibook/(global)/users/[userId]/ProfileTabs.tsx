@@ -3,7 +3,7 @@
 import { ScrollShadow } from "@nextui-org/scroll-shadow";
 import { Tabs, Tab } from "@nextui-org/tabs";
 import { useEffect, useState } from "react";
-import { getOrdinal } from "@/lib/ordinal";
+import { getOrdinal } from "@/lib/get-ordinal";
 import { Button } from "@/components/button";
 
 function RoleDisplay({ roles }) {

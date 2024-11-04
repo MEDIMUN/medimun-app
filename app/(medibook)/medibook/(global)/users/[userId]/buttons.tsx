@@ -1,7 +1,7 @@
 "use client";
 
 import Icon from "@/components/icon";
-import { updateSearchParams } from "@/lib/searchParams";
+import { updateSearchParams } from "@/lib/search-params";
 import { Button, ButtonGroup } from "@nextui-org/button";
 import { useRouter } from "next/navigation";
 

@@ -1,11 +1,11 @@
 import Paginator from "@/components/pagination";
-import { getOrdinal } from "@/lib/ordinal";
+import { getOrdinal } from "@/lib/get-ordinal";
 import Link from "next/link";
 import { Suspense } from "react";
 
 export default async function Page(props) {
-    const params = await props.params;
-    return (
+	const params = await props.params;
+	return (
 		<div className="py-24 sm:py-32">
 			<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
 				<div className="mb-4 lg:px-8">

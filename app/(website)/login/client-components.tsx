@@ -12,7 +12,7 @@ import { useState } from "react";
 import { signIn } from "./action";
 import { toast } from "sonner";
 import { Button } from "@/components/button";
-import { updateSearchParams } from "@/lib/searchParams";
+import { updateSearchParams } from "@/lib/search-params";
 import { Field, Label } from "@/components/fieldset";
 
 function OrSpacer() {

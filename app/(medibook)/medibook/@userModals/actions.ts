@@ -8,7 +8,7 @@ import { countries } from "@/data/countries";
 import prisma from "@/prisma/client";
 import { auth } from "@/auth";
 import { generateUserData, generateUserDataObject, userData } from "@/lib/user";
-import { parseFormData } from "@/lib/form";
+import { parseFormData } from "@/lib/parse-form-data";
 import { z } from "zod";
 import { nameCase, postProcessUsername, processPronouns } from "@/lib/text";
 import { minio } from "@/minio/client";

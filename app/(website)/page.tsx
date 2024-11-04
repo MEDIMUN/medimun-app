@@ -2,9 +2,10 @@ import prisma from "@/prisma/client";
 import HeroImage from "./hero-image";
 import { ArrowRightIcon, CheckCircleIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
-import { getOrdinal } from "@/lib/ordinal";
+import { getOrdinal } from "@/lib/get-ordinal";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { JSX } from "react";
 
 export const metadata = {
 	title: {
@@ -147,25 +148,45 @@ export async function HomePage() {
 						</div>
 						<div className="flex flex-wrap items-start justify-end gap-6 sm:gap-8 lg:contents">
 							<div className="w-0 flex-auto lg:ml-auto lg:w-auto lg:flex-none lg:self-end">
-								<img alt="" src="/placeholders/delegates-2.jpg" className="aspect-[7/5] w-[37rem] max-w-none rounded-2xl bg-gray-50 object-cover" />
+								<Image
+									width={1000}
+									height={1000}
+									quality={80}
+									alt="Delegates lined up"
+									src="/placeholders/delegates-2.jpg"
+									className="aspect-[7/5] w-[37rem] max-w-none rounded-2xl bg-gray-50 object-cover"
+								/>
 							</div>
 							<div className="contents lg:col-span-2 lg:col-end-2 lg:ml-auto lg:flex lg:w-[37rem] lg:items-start lg:justify-end lg:gap-x-8">
 								<div className="order-first flex w-64 flex-none justify-end self-end lg:w-auto">
-									<img
-										alt=""
+									<Image
+										width={1000}
+										height={1000}
+										quality={80}
+										alt="Delegates lined up for the plenary session"
 										src="/placeholders/delegates-3.jpg"
 										className="aspect-[4/3] w-[24rem] max-w-none flex-none rounded-2xl bg-gray-50 object-cover"
 									/>
 								</div>
 								<div className="flex w-96 flex-auto justify-end lg:w-auto lg:flex-none">
-									<img
-										alt=""
+									<Image
+										width={1000}
+										height={1000}
+										quality={80}
+										alt="Delegates and the committee chairs in session"
 										src="/placeholders/delegates-and-chairs.JPG"
 										className="aspect-[7/5] w-[37rem] max-w-none flex-none rounded-2xl bg-gray-50 object-cover"
 									/>
 								</div>
 								<div className="hidden sm:block sm:w-0 sm:flex-auto lg:w-auto lg:flex-none">
-									<img alt="" src="/assets/delegates-indoors.jpg" className="aspect-[4/3] w-[24rem] max-w-none rounded-2xl bg-gray-50 object-cover" />
+									<Image
+										width={1000}
+										height={1000}
+										quality={80}
+										alt="Delegates indoors lifting their placards"
+										src="/assets/delegates-indoors.jpg"
+										className="aspect-[4/3] w-[24rem] max-w-none rounded-2xl bg-gray-50 object-cover"
+									/>
 								</div>
 							</div>
 						</div>
@@ -195,7 +216,7 @@ export async function HomePage() {
 								</dl>
 							</div>
 						</div>
-						<img
+						<Image
 							alt="Product screenshot"
 							src="/assets/app-preview.png"
 							width={2432}

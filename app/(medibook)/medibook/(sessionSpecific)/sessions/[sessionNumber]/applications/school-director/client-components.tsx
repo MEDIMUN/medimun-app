@@ -13,7 +13,7 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useDebouncedValue } from "@mantine/hooks";
-import { useUpdateEffect } from "@/hooks/useUpdateEffect";
+import { useUpdateEffect } from "@/hooks/use-update-effect";
 import { cn } from "@/lib/cn";
 
 export function ApplicationOptions({ selectedSession }) {

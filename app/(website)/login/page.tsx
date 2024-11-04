@@ -16,7 +16,7 @@ export default function Page() {
 				backgroundImage: `url(/assets/gradients/${random.toString()}.jpg)`,
 			}}
 			className={cn(
-				`-bg-gradient-to-tr flex min-h-dvh w-full from-zinc-300 to-white bg-cover bg-center align-middle font-[montserrat] duration-300`
+				`-bg-gradient-to-tr flex min-h-svh w-full from-zinc-300 to-white bg-cover bg-center align-middle font-[montserrat] duration-300`
 			)}>
 			<div className="mx-auto my-auto h-[640px] w-[400px] rounded-2xl bg-content1/70 p-12 shadow-lg md:ml-20">
 				<Suspense fallback={<Icon icon="line-md:loading-loop" width={22} />}>

@@ -1,6 +1,6 @@
 import { authorize, authorizePerSession, s } from "@/lib/authorize";
 import { auth } from "@/auth";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { parseOrderDirection } from "@/lib/order-direction";
 import prisma from "@/prisma/client";
 import { AnnouncementsTable } from "@/app/(medibook)/medibook/server-components";
 import { notFound } from "next/navigation";
@@ -9,16 +9,16 @@ import { romanize } from "@/lib/romanize";
 const itemsPerPage = 10;
 
 export default async function AnnouncementsPage(props) {
-    const params = await props.params;
-    const searchParams = await props.searchParams;
-    const currentPage = Number(searchParams.page) || 1;
-    const query = searchParams.search || "";
-    const orderBy = searchParams.order || "title";
-    const orderDirection = parseOrderDirection(searchParams.direction);
-    const authSession = await auth();
-    const isManagement = authorize(authSession, [s.management]);
+	const params = await props.params;
+	const searchParams = await props.searchParams;
+	const currentPage = Number(searchParams.page) || 1;
+	const query = searchParams.search || "";
+	const orderBy = searchParams.order || "title";
+	const orderDirection = parseOrderDirection(searchParams.direction);
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
 
-    const hasSomeArray = [
+	const hasSomeArray = [
 		"SESSIONWEBSITE",
 		authorizePerSession(authSession, [s.management, s.chair], [params.sessionNumber]) ? "SESSIONCHAIR" : null,
 		authorizePerSession(authSession, [s.management, s.delegate], [params.sessionNumber]) ? "SESSIONDELEGATE" : null,
@@ -30,7 +30,7 @@ export default async function AnnouncementsPage(props) {
 		authorizePerSession(authSession, [s.sd], [params.sessionNumber]) ? "SESSIONSENIORDIRECTORS" : null,
 	].filter((x) => x);
 
-    const whereObject = {
+	const whereObject = {
 		OR: [
 			{
 				session: { number: params.sessionNumber },
@@ -54,7 +54,7 @@ export default async function AnnouncementsPage(props) {
 		],
 	};
 
-    const [prismaAnnouncements, totalItems] = await prisma
+	const [prismaAnnouncements, totalItems] = await prisma
 		.$transaction([
 			prisma.announcement.findMany({
 				where: whereObject,
@@ -67,7 +67,7 @@ export default async function AnnouncementsPage(props) {
 		])
 		.catch(notFound);
 
-    return (
+	return (
 		<AnnouncementsTable
 			title={"Session Announcements"}
 			baseUrl={`/medibook/sessions/${params.sessionNumber}/announcements`}

@@ -1,7 +1,7 @@
 import { authorize, authorizePerRole, authorizePerSession, s } from "@/lib/authorize";
 import { AnnouncementsTable } from "../../server-components";
 import { auth } from "@/auth";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { parseOrderDirection } from "@/lib/order-direction";
 import prisma from "@/prisma/client";
 import { TopBar } from "../../client-components";
 import { Button } from "@/components/button";
@@ -10,15 +10,15 @@ import Paginator from "@/components/pagination";
 const itemsPerPage = 10;
 
 export default async function AnnouncementsPage(props) {
-    const params = await props.params;
-    const searchParams = await props.searchParams;
-    const currentPage = Number(searchParams.page) || 1;
-    const query = searchParams.search || "";
-    const orderBy = searchParams.order || "title";
-    const orderDirection = parseOrderDirection(searchParams.direction);
-    const authSession = await auth();
+	const params = await props.params;
+	const searchParams = await props.searchParams;
+	const currentPage = Number(searchParams.page) || 1;
+	const query = searchParams.search || "";
+	const orderBy = searchParams.order || "title";
+	const orderDirection = parseOrderDirection(searchParams.direction);
+	const authSession = await auth();
 
-    const hasSomeArray = [
+	const hasSomeArray = [
 		"WEBSITE",
 		authorizePerRole(authSession, [s.chair, s.management]) ? "CHAIR" : null,
 		authorizePerRole(authSession, [s.manager, s.management]) ? "MANAGER" : null,
@@ -30,7 +30,7 @@ export default async function AnnouncementsPage(props) {
 		authorizePerRole(authSession, [s.sd]) ? "SENIORDIRECTORS" : null,
 	].filter((x) => x);
 
-    const hasSomeArraySession = [
+	const hasSomeArraySession = [
 		"SESSIONWEBSITE",
 		authorizePerSession(authSession, [s.management, s.chair], [params.sessionNumber]) ? "SESSIONCHAIR" : null,
 		authorizePerSession(authSession, [s.management, s.delegate], [params.sessionNumber]) ? "SESSIONDELEGATE" : null,
@@ -42,7 +42,7 @@ export default async function AnnouncementsPage(props) {
 		authorizePerSession(authSession, [s.sd], [params.sessionNumber]) ? "SESSIONSENIORDIRECTORS" : null,
 	].filter((x) => x);
 
-    const whereObject = {
+	const whereObject = {
 		OR: [
 			{
 				session: null,
@@ -89,7 +89,7 @@ export default async function AnnouncementsPage(props) {
 		],
 	};
 
-    const prismaAnnouncements = await prisma.announcement.findMany({
+	const prismaAnnouncements = await prisma.announcement.findMany({
 		where: whereObject,
 		take: itemsPerPage,
 		skip: (currentPage - 1) * itemsPerPage,
@@ -97,10 +97,10 @@ export default async function AnnouncementsPage(props) {
 		orderBy: [{ isPinned: "desc" }, { [orderBy]: orderDirection }],
 	});
 
-    const totalItems = await prisma.announcement.count({ where: whereObject });
+	const totalItems = await prisma.announcement.count({ where: whereObject });
 
-    const isManagement = authorize(authSession, [s.management]);
-    return (
+	const isManagement = authorize(authSession, [s.management]);
+	return (
 		<AnnouncementsTable
 			buttonHref="/medibook"
 			buttonText="Home"

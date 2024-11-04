@@ -1,6 +1,6 @@
 import { authorize, authorizePerRole, authorizePerSession, s } from "@/lib/authorize";
 import { auth } from "@/auth";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { parseOrderDirection } from "@/lib/order-direction";
 import prisma from "@/prisma/client";
 import { Button } from "@/components/button";
 import Paginator from "@/components/pagination";
@@ -9,14 +9,14 @@ import { AnnouncementsTable, Topbar } from "../server-components";
 const itemsPerPage = 10;
 
 export default async function AnnouncementsPage(props) {
-    const params = await props.params;
-    const searchParams = await props.searchParams;
-    const currentPage = Number(searchParams.page) || 1;
-    const query = searchParams.search || "";
-    const orderBy = searchParams.order || "title";
-    const orderDirection = parseOrderDirection(searchParams.direction);
+	const params = await props.params;
+	const searchParams = await props.searchParams;
+	const currentPage = Number(searchParams.page) || 1;
+	const query = searchParams.search || "";
+	const orderBy = searchParams.order || "title";
+	const orderDirection = parseOrderDirection(searchParams.direction);
 
-    const whereObject = {
+	const whereObject = {
 		OR: [
 			{
 				session: null,
@@ -37,7 +37,7 @@ export default async function AnnouncementsPage(props) {
 		],
 	};
 
-    const [prismaAnnouncements, totalItems] = await prisma.$transaction([
+	const [prismaAnnouncements, totalItems] = await prisma.$transaction([
 		prisma.announcement.findMany({
 			where: whereObject,
 			take: itemsPerPage,
@@ -48,7 +48,7 @@ export default async function AnnouncementsPage(props) {
 		prisma.announcement.count({ where: whereObject }),
 	]);
 
-    return (
+	return (
 		<>
 			<Topbar title={"Announcements"} description={"Global Announcements and Announcements from the latest session."} />
 			<div className="py-12 sm:py-12">

@@ -7,8 +7,8 @@ import { s, authorize } from "@/lib/authorize";
 import { useSession } from "next-auth/react";
 import { addLocation, deleteCoverImage, deleteLocation, editLocation, updateCoverImage } from "./actions";
 import { toast } from "sonner";
-import { useFlushState } from "@/hooks/useFlushState";
-import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
+import { useFlushState } from "@/hooks/use-flush-state";
+import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { Field, Label } from "@/components/fieldset";
 

@@ -2,7 +2,6 @@ import React from "react";
 import prisma from "@/prisma/client";
 import { EditUserModal, EditRolesModal, AddRolesModal, UnafilliateStudentModal, CreateUserModal, DeleteUserModal } from "./modals";
 import { generateUserData, generateUserDataObject } from "@/lib/user";
-import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 
@@ -14,10 +13,8 @@ export default async function UserModals(props) {
 
 	let editSelectedUser = null;
 	if (searchParams["edit-user"]) {
-		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(notFound);
-		editSelectedUser = await prisma.user
-			.findFirst({ where: { id: searchParams["edit-user"] }, include: { ...generateUserDataObject() } })
-			.catch(notFound);
+		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch();
+		editSelectedUser = await prisma.user.findFirst({ where: { id: searchParams["edit-user"] }, include: { ...generateUserDataObject() } }).catch();
 		[schools, editSelectedUser] = await Promise.all([schools, editSelectedUser]);
 		editSelectedUser = { highestRoleRank: generateUserData(editSelectedUser)?.highestRoleRank, ...editSelectedUser };
 		editSelectedUser = editSelectedUser.highestRoleRank > highestRoleRank ? editSelectedUser : null;
@@ -99,10 +96,10 @@ export default async function UserModals(props) {
 	if (searchParams["assign-roles"]) {
 		const selectedUserIds = searchParams["assign-roles"].split(",").filter((id) => id);
 		if (!selectedUserIds?.length) return;
-		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(notFound);
+		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch();
 		sessions = prisma.session.findMany({ orderBy: [{ numberInteger: "desc" }] });
-		committees = prisma.committee.findMany({ where: { session: { id: searchParams.session } } }).catch(notFound);
-		departments = prisma.department.findMany({ where: { session: { id: searchParams.session } } }).catch(notFound);
+		committees = prisma.committee.findMany({ where: { session: { id: searchParams.session } } }).catch();
+		departments = prisma.department.findMany({ where: { session: { id: searchParams.session } } }).catch();
 		[schools, sessions, committees, departments] = await Promise.all([schools, sessions, committees, departments]);
 
 		assignUsers = await prisma.user
@@ -110,7 +107,7 @@ export default async function UserModals(props) {
 				where: { id: { in: selectedUserIds } },
 				include: { ...generateUserDataObject() },
 			})
-			.catch(notFound);
+			.catch();
 		assignUsers = assignUsers.map((user) => generateUserData(user));
 		assignUsers = assignUsers.filter((user) => user.highestRoleRank > highestRoleRank);
 	}
@@ -156,7 +153,7 @@ export default async function UserModals(props) {
 	}
 
 	if (searchParams?.["create-user"]) {
-		schools = await prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch(notFound);
+		schools = await prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch();
 	}
 
 	if (searchParams?.["delete-user"]) {

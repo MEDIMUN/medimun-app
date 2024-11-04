@@ -5,7 +5,7 @@ import { createRollCall, deleteRollCall, editRollCall } from "./actions";
 import { useState } from "react";
 import { toast } from "sonner";
 import { flushSync as flush } from "react-dom";
-import { removeSearchParams } from "@/lib/searchParams";
+import { removeSearchParams } from "@/lib/search-params";
 import { useRouter } from "next/navigation";
 import { authorize, s } from "@/lib/authorize";
 import { useSession } from "next-auth/react";

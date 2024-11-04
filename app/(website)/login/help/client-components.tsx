@@ -11,11 +11,11 @@ import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/button";
-import { updateSearchParams } from "@/lib/searchParams";
+import { updateSearchParams } from "@/lib/search-params";
 import { Field, Label } from "@/components/fieldset";
 import { resetPassword } from "./actions";
 import { Text } from "@/components/text";
-import { useFlushState } from "@/hooks/useFlushState";
+import { useFlushState } from "@/hooks/use-flush-state";
 
 function OrSpacer() {
 	return (

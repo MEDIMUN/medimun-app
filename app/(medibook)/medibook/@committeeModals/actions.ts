@@ -5,8 +5,8 @@ import { s, authorize } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { z } from "zod";
 import { entityCase, processSlug } from "@/lib/text";
-import { parseFormData } from "@/lib/form";
-import { verifyPassword } from "@/lib/password";
+import { parseFormData } from "@/lib/parse-form-data";
+import { verifyPassword } from "@/lib/password-hash";
 
 export async function editCommittee(formData, committeeId) {
 	const schema = z.object({

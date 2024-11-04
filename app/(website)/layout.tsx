@@ -51,7 +51,7 @@ export default async function RootLayout({ children }) {
 							speed={200}
 						/>
 						<WebsiteNavbar selectedSession={selectedSession} />
-						<main className="min-h-screen">
+						<main className="min-h-svh">
 							<div
 								className="absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu overflow-hidden blur-3xl lg:ml-24 xl:ml-48"
 								aria-hidden="true">

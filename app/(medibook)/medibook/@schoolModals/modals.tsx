@@ -9,8 +9,8 @@ import { addSchool, deleteCoverImage, deleteSchool, editSchool, updateCoverImage
 import { countries } from "@/data/countries";
 import { SlugInput } from "@/components/slugInput";
 import { toast } from "sonner";
-import { useFlushState } from "@/hooks/useFlushState";
-import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
+import { useFlushState } from "@/hooks/use-flush-state";
+import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { Description, Field, Label } from "@/components/fieldset";
 import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/listbox";

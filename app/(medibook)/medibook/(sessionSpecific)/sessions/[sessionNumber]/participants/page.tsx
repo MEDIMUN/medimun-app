@@ -7,9 +7,9 @@ import Paginator from "@/components/pagination";
 import { auth } from "@/auth";
 import { SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
-import { UserIdDisplay } from "@/lib/displayName";
-import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/displayRoles";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { UserIdDisplay } from "@/lib/display-name";
+import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/display-roles";
+import { parseOrderDirection } from "@/lib/order-direction";
 import { romanize } from "@/lib/romanize";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
@@ -50,19 +50,19 @@ const rows = [
 ];
 
 export default async function Page(props) {
-    const searchParams = await props.searchParams;
-    const params = await props.params;
-    const authSession = await auth();
-    const isManagement = authorize(authSession, [s.management]);
-    if (!isManagement) notFound();
-    const currentPage = Number(searchParams.page) || 1;
-    const query = searchParams.search || "";
+	const searchParams = await props.searchParams;
+	const params = await props.params;
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
+	if (!isManagement) notFound();
+	const currentPage = Number(searchParams.page) || 1;
+	const query = searchParams.search || "";
 
-    const orderBy = searchParams.order || "officialName";
-    const orderDirection = parseOrderDirection(searchParams.direction);
-    const selectedSession = await prisma.session.findFirst({ where: { number: params.sessionNumber } }).catch(notFound);
+	const orderBy = searchParams.order || "officialName";
+	const orderDirection = parseOrderDirection(searchParams.direction);
+	const selectedSession = await prisma.session.findFirst({ where: { number: params.sessionNumber } }).catch(notFound);
 
-    const queryObject = {
+	const queryObject = {
 		AND: [
 			{
 				OR: [
@@ -90,7 +90,7 @@ export default async function Page(props) {
 		],
 	};
 
-    const prismaUsers = await prisma.user
+	const prismaUsers = await prisma.user
 		.findMany({
 			where: { ...(queryObject as any) },
 			include: { ...generateUserDataObject() },
@@ -100,13 +100,13 @@ export default async function Page(props) {
 		})
 		.catch(notFound);
 
-    const totalItems = await prisma.user.count({ where: { ...(queryObject as any) } }).catch(notFound);
+	const totalItems = await prisma.user.count({ where: { ...(queryObject as any) } }).catch(notFound);
 
-    const usersWithData = prismaUsers.map((user) => {
+	const usersWithData = prismaUsers.map((user) => {
 		return { ...generateUserData(user), username: user.username };
 	});
 
-    return (
+	return (
 		<>
 			<TopBar
 				buttonText={`Session ${romanize(selectedSession.numberInteger)}`}

@@ -1,5 +1,5 @@
 import prisma from "@/prisma/client";
-import { getOrdinal } from "@/lib/ordinal";
+import { getOrdinal } from "@/lib/get-ordinal";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Avatar } from "@nextui-org/avatar";

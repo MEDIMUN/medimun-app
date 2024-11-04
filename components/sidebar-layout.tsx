@@ -4,6 +4,7 @@ import * as Headless from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import { NavbarItem } from "./navbar";
 import { cn } from "@/lib/cn";
+import { usePathname } from "next/navigation";
 
 function OpenMenuIcon() {
 	return (
@@ -47,6 +48,8 @@ function MobileSidebar({ open, close, children }: React.PropsWithChildren<{ open
 export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChildren<{ navbar: React.ReactNode; sidebar: React.ReactNode }>) {
 	let [showSidebar, setShowSidebar] = useState(false);
 	const [scrollY, setScrollY] = useState(0);
+	const hiddenPaths = ["/medibook/messaging"];
+	const pathname = usePathname();
 
 	useEffect(() => {
 		function handleScroll() {
@@ -77,7 +80,10 @@ export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChil
 				</header>
 			</div>
 			{/* Content */}
-			<main className="flex h-full flex-1 flex-col pb-2 lg:min-w-0 lg:pl-64 lg:pr-2 lg:pt-2">{children}</main>
+			<main className="flex h-full flex-1 flex-col pb-2 lg:min-w-0 lg:pl-64 lg:pr-2 lg:pt-2">
+				{children}
+				<div className={cn("min-h-2 h-2 hidden md:block w-full", hiddenPaths.includes(pathname) && "!hidden")}></div>
+			</main>
 		</div>
 	);
 }

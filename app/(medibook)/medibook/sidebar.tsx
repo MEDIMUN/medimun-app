@@ -311,6 +311,12 @@ export function Sidebar({ sessions }) {
 					</SidebarHeader>
 					<SidebarBody>
 						<SidebarSection>
+							<SidebarItem href="/medibook/register" className="bg-primary rounded-lg !text-white" current={pathname === "/medibook/register"}>
+								<Icon slot="icon" className="text-white" icon="heroicons-solid:qrcode" height={20} />
+								<SidebarLabel className="text-white">Registration</SidebarLabel>
+							</SidebarItem>
+						</SidebarSection>
+						<SidebarSection>
 							<SidebarItem href="/medibook" current={pathname === "/medibook"}>
 								<Icon slot="icon" icon="heroicons-solid:home" height={20} />
 								<SidebarLabel>Home</SidebarLabel>

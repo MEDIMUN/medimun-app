@@ -1,7 +1,7 @@
 "use server";
 
 import { sendEmailPasswordChangedNotification, sendEmailResetPassword } from "@/email/send";
-import { hashPassword } from "@/lib/password";
+import { hashPassword } from "@/lib/password-hash";
 import prisma from "@/prisma/client";
 
 export async function resetPasswordFinal(formData: FormData) {

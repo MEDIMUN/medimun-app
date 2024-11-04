@@ -13,7 +13,7 @@ import { Switch, SwitchField } from "@/components/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Text } from "@/components/text";
 import { authorize, s } from "@/lib/authorize";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { parseOrderDirection } from "@/lib/order-direction";
 import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
 import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
@@ -43,20 +43,18 @@ export function areSchoolDirectorApplicationsOpen(selectedSession) {
 	return selectedSession.schoolDirectorApplicationsAutoOpenTime < now && selectedSession.schoolDirectorApplicationsAutoCloseTime > now;
 }
 
-export default async function SchoolDirectorApplicationsPage(
-    props: { params: Promise<{ sessionNumber: string }>; searchParams: Promise<any> }
-) {
-    const searchParams = await props.searchParams;
-    const params = await props.params;
-    const authSession = await auth();
-    if (!authSession || !authorize(authSession, [s.sd])) return notFound();
+export default async function SchoolDirectorApplicationsPage(props: { params: Promise<{ sessionNumber: string }>; searchParams: Promise<any> }) {
+	const searchParams = await props.searchParams;
+	const params = await props.params;
+	const authSession = await auth();
+	if (!authSession || !authorize(authSession, [s.sd])) return notFound();
 
-    const currentPage = Number(searchParams.page) || 1;
-    const query = searchParams.search || "";
-    const orderBy = searchParams.order || "date";
-    const orderDirection = parseOrderDirection(searchParams.direction, "desc");
+	const currentPage = Number(searchParams.page) || 1;
+	const query = searchParams.search || "";
+	const orderBy = searchParams.order || "date";
+	const orderDirection = parseOrderDirection(searchParams.direction, "desc");
 
-    const [selectedSession, applications] = await prisma
+	const [selectedSession, applications] = await prisma
 		.$transaction([
 			prisma.session.findFirst({ where: { number: params.sessionNumber } }),
 			prisma.applicationSchoolDirector.findMany({
@@ -72,9 +70,9 @@ export default async function SchoolDirectorApplicationsPage(
 		])
 		.catch(notFound);
 
-    const areApplicationsOpen = areSchoolDirectorApplicationsOpen(selectedSession);
+	const areApplicationsOpen = areSchoolDirectorApplicationsOpen(selectedSession);
 
-    return (
+	return (
 		<>
 			<TopBar
 				sortOptions={sortOptions}

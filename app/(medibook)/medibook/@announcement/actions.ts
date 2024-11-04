@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, authorizeManagerDepartment, s } from "@/lib/authorize";
-import { parseFormData } from "@/lib/form";
+import { parseFormData } from "@/lib/parse-form-data";
 import { z } from "zod";
 import { authorizedToEditAnnouncementMap } from "./default";
 import prisma from "@/prisma/client";

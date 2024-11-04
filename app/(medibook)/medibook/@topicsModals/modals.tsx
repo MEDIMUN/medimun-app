@@ -7,7 +7,7 @@ import { Description, Field, Label } from "@/components/fieldset";
 import { Input } from "@/components/input";
 import { Textarea } from "@/components/textarea";
 import { authorize, authorizeChairCommittee, s } from "@/lib/authorize";
-import { removeSearchParams } from "@/lib/searchParams";
+import { removeSearchParams } from "@/lib/search-params";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";

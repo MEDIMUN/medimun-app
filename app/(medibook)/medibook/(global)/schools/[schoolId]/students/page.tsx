@@ -8,9 +8,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Paginator from "@/components/pagination";
 import { generateUserData, generateUserDataObject } from "@/lib/user";
 import { Avatar } from "@nextui-org/avatar";
-import { parseOrderDirection } from "@/lib/orderDirection";
-import { UserIdDisplay } from "@/lib/displayName";
-import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/displayRoles";
+import { parseOrderDirection } from "@/lib/order-direction";
+import { UserIdDisplay } from "@/lib/display-name";
+import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/display-roles";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
 

@@ -1,6 +1,6 @@
 "use server";
 
-import { parseFormData } from "@/lib/form";
+import { parseFormData } from "@/lib/parse-form-data";
 import { z } from "zod";
 import {
 	authorizedToEdit,

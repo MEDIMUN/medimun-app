@@ -106,6 +106,59 @@ model User {
   PendingHalfUser                     PendingHalfUser[]
   Account                             Account[]
   ResetPassword                       ResetPassword[]
+  MorningCode                         MorningCode[]
+
+  GroupMember     GroupMember[]
+  MorningPresent  MorningPresent[]
+  Message         Message[]
+  MessageReaction MessageReaction[]
+}
+
+model Group {
+  id        String   @id @default(nanoid())
+  name      String
+  createdAt DateTime @default(now())
+
+  GroupMember GroupMember[]
+  Message     Message[]
+}
+
+model GroupMember {
+  id      String  @id @default(nanoid())
+  user    User    @relation(fields: [userId], references: [id])
+  userId  String
+  group   Group   @relation(fields: [groupId], references: [id])
+  groupId String
+  isAdmin Boolean @default(false)
+
+  @@unique([userId, groupId])
+}
+
+model Message {
+  id              String            @id @default(nanoid())
+  markdown        String
+  resources       Resource[]
+  createdAt       DateTime          @default(now())
+  user            User              @relation(fields: [userId], references: [id])
+  userId          String
+  group           Group             @relation(fields: [groupId], references: [id])
+  groupId         String
+  MessageReaction MessageReaction[]
+  //replies
+  replies         Message[]         @relation("MessageReplies")
+  replyTo         Message?          @relation("MessageReplies", fields: [replyToId], references: [id])
+  replyToId       String?
+}
+
+model MessageReaction {
+  id        String  @id @default(nanoid())
+  reaction  String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  message   Message @relation(fields: [messageId], references: [id])
+  messageId String
+
+  @@unique([userId, messageId])
 }
 
 model Session {
@@ -262,16 +315,20 @@ model SchoolDelegationProposal {
 }
 
 model Day {
-  id          String     @id @default(nanoid())
-  type        DayType
-  name        String?
-  description String?
-  date        DateTime?  @unique
-  location    Location?  @relation(fields: [locationId], references: [id])
-  locationId  String?
-  session     Session    @relation(fields: [sessionId], references: [id])
-  sessionId   String
-  RollCall    RollCall[]
+  id             String           @id @default(nanoid())
+  type           DayType
+  name           String?
+  description    String?
+  date           DateTime?        @unique
+  location       Location?        @relation(fields: [locationId], references: [id])
+  locationId     String?
+  session        Session          @relation(fields: [sessionId], references: [id])
+  sessionId      String
+  RollCall       RollCall[]
+  MorningCode    MorningCode[]
+  MorningPresent MorningPresent[]
+
+  @@unique([sessionId, date])
 }
 
 model GlobalAdmin {
@@ -571,6 +628,30 @@ model CommitteeRollCall {
   rollCallId  String?
 }
 
+model MorningCode {
+  code   String @id @default(uuid())
+  //
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  //
+  day    Day    @relation(fields: [dayId], references: [id])
+  dayId  String
+
+  @@unique([userId, dayId])
+}
+
+model MorningPresent {
+  id     String @id @default(nanoid())
+  //
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  //
+  day    Day    @relation(fields: [dayId], references: [id])
+  dayId  String
+
+  @@unique([userId, dayId])
+}
+
 // RESOURCES ///////////////////////////////////////////////////////////
 
 model Resource {
@@ -597,6 +678,8 @@ model Resource {
   committeeId  String?
   department   Department?            @relation(fields: [departmentId], references: [id])
   departmentId String?
+  Message      Message?               @relation(fields: [messageId], references: [id])
+  messageId    String?
 }
 
 // ANNOUNCEMENT ///////////////////////////////////////////////////////////

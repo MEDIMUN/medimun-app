@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
 import { authorize, authorizePerSession, s } from "@/lib/authorize";
 import { romanize } from "@/lib/romanize";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { parseOrderDirection } from "@/lib/order-direction";
 import { Paginator } from "@/components/pagination";
 import { ResourcesTable } from "@/app/(medibook)/medibook/server-components";
 

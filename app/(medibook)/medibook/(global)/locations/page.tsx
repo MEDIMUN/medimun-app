@@ -8,7 +8,7 @@ import { auth } from "@/auth";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 
 import Paginator from "@/components/pagination";
-import { parseOrderDirection } from "@/lib/orderDirection";
+import { parseOrderDirection } from "@/lib/order-direction";
 
 const locationsPerPage = 10;
 
@@ -35,16 +35,16 @@ const sortOptions = [
 ];
 
 export default async function Page(props) {
-    const searchParams = await props.searchParams;
-    const currentPage = parseInt(searchParams.page) || 1;
-    const query = searchParams.search || "";
-    const authSession = await auth();
-    if (!authSession) notFound();
-    const orderBy = searchParams.order || "name";
-    const queryObject = { where: { name: { contains: query, mode: "insensitive" } } };
-    const orderDirection = parseOrderDirection(searchParams.direction);
+	const searchParams = await props.searchParams;
+	const currentPage = parseInt(searchParams.page) || 1;
+	const query = searchParams.search || "";
+	const authSession = await auth();
+	if (!authSession) notFound();
+	const orderBy = searchParams.order || "name";
+	const queryObject = { where: { name: { contains: query, mode: "insensitive" } } };
+	const orderDirection = parseOrderDirection(searchParams.direction);
 
-    const [locations, numberOfSchools] = await prisma
+	const [locations, numberOfSchools] = await prisma
 		.$transaction([
 			prisma.location.findMany({
 				...(queryObject as any),
@@ -57,7 +57,7 @@ export default async function Page(props) {
 		])
 		.catch(notFound);
 
-    return (
+	return (
 		<>
 			<TopBar
 				buttonHref="/medibook"

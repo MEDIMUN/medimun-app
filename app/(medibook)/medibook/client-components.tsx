@@ -8,18 +8,20 @@ import { Input, InputGroup } from "@/components/input";
 import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/listbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Text } from "@/components/text";
-import { useUpdateEffect } from "@/hooks/useUpdateEffect";
+import { useUpdateEffect } from "@/hooks/use-update-effect";
 import { cn } from "@/lib/cn";
-import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
+import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
 import { EllipsisVerticalIcon, MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import { useDebouncedValue } from "@mantine/hooks";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect, useRouter as useNextRouter, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "sonner";
 import { authorizedToEditResource } from "./@resourceModals/default";
 import { Divider } from "@/components/divider";
+import { useSocket } from "@/contexts/socket";
+import { Spinner } from "@nextui-org/spinner";
 
 export function DirectionDropdown({ defaultValue, items }) {
 	const router = useNextRouter();
@@ -50,7 +52,7 @@ export function DirectionDropdown({ defaultValue, items }) {
 	);
 }
 
-export function SearchBar({ placeholder = "Search...", debounceDelay = 500, defaultValue = "" }) {
+export function SearchBar({ placeholder = "Search...", debounceDelay = 500, defaultValue = "", className = "" }) {
 	const router = useNextRouter();
 	const [search, setSearch] = useState(defaultValue);
 	const [debouncedSearch] = useDebouncedValue(search, debounceDelay);
@@ -66,7 +68,7 @@ export function SearchBar({ placeholder = "Search...", debounceDelay = 500, defa
 	return (
 		<InputGroup className="w-full">
 			<MagnifyingGlassIcon />
-			<Input onChange={(e) => setSearch(e.target.value)} value={search} name="search" type="search" placeholder={placeholder} />
+			<Input className={className} onChange={(e) => setSearch(e.target.value)} value={search} name="search" type="search" placeholder={placeholder} />
 		</InputGroup>
 	);
 }
@@ -115,7 +117,7 @@ export function TopBar({
 						</Link>
 					)}
 					<Heading>{title}</Heading>
-					<Subheading level={6} className="line-clamp-1 cursor-help !font-light duration-250 hover:line-clamp-none">
+					<Subheading level={6} className="!font-light">
 						{subheading}
 					</Subheading>
 					<div className={cn("flex flex-col gap-4 md:flex-row", (!hideSearchBar || sortOptions) && "mt-4")}>
@@ -148,6 +150,94 @@ export function SearchParamsButton({ searchParams, useRouter = true, ...params }
 
 	// @ts-ignore
 	return <Button onClick={() => handleOnClick()} {...params} />;
+}
+
+export function SocketHandler() {
+	const socket = useSocket();
+	const router = useRouter();
+	const [isConnected, setIsConnected] = useState(false);
+	const [notConnectedFor5Seconds, setNotConnectedFor5Seconds] = useState(false);
+
+	useEffect(() => {
+		if (!socket) return;
+		socket.on("toast", (args) => toast(args));
+		socket.on("toast.success", (args) => toast.success(args));
+		socket.on("toast.error", (args) => toast.error(args));
+		socket.on("toast.info", (args) => toast.info(args));
+		socket.on("toast.loading", (args) => toast.loading(args));
+		socket.on("toast.dismiss", (args) => toast.dismiss(args));
+		//
+		socket.on("router.refresh", () => router.refresh());
+		socket.on("router.push", (args) => router.push(args));
+		socket.on("router.replace", (args) => router.replace(args));
+		socket.on("router.back", () => router.back());
+		//
+		socket.on("signout", () => signOut);
+
+		socket.on("disconnect", (reason) => {
+			setIsConnected(false);
+			if (socket.active) {
+				toast.loading("You are not connected to the internet.", {
+					description: "Trying to reconnect...",
+					id: "internet-connection",
+					dismissible: false,
+				});
+			} else {
+				toast.error("You have been disconnected from the internet.", {
+					description: "Trying to reconnect...",
+					id: "internet-connection",
+					dismissible: false,
+				});
+			}
+		});
+		socket.on("connect", () => {
+			setIsConnected(true);
+			if (notConnectedFor5Seconds) {
+				toast.success("Reconnected to the internet.");
+			}
+			setNotConnectedFor5Seconds(false);
+			toast.dismiss("internet-connection");
+		});
+	}, [socket]);
+
+	//disable scroll when!isConnected
+	useLayoutEffect(() => {
+		if (notConnectedFor5Seconds) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "auto";
+		}
+	}, [notConnectedFor5Seconds]);
+
+	useLayoutEffect(() => {
+		const timer = setTimeout(() => {
+			if (!isConnected) {
+				toast.dismiss("internet-connection");
+				setNotConnectedFor5Seconds(true);
+			}
+		}, 5000);
+		return () => clearTimeout(timer);
+	}, [isConnected]);
+
+	if (notConnectedFor5Seconds)
+		return (
+			<div className="w-full h-screen fixed z-[100] text-left bg-zinc-900/50 backdrop-blur-sm">
+				<div className="mx-auto  flex w-full max-w-7xl flex-auto flex-col justify-center px-6 py-24 sm:py-64 lg:px-8">
+					<h1 className="mt-5 text-pretty text-5xl font-semibold tracking-tight text-white sm:text-6xl max-w-max p-2 -ml-2 rounded-md bg-primary">
+						No Internet Connection
+					</h1>
+					<p className="mt-6 text-pretty text-lg font-medium text-white sm:text-xl/8">MediBook requires an active internet connection.</p>
+					<p className="mt-6 text-pretty text-lg font-medium text-white sm:text-xl/8">
+						This error may be due to a recent update. If you think this is the case please refresh the page.
+					</p>
+					<div className="fixed p-4 w-full left-0 top-0 bg-white gap-4 flex">
+						<Spinner size="sm" />
+						Trying to reconnect...
+					</div>
+				</div>
+			</div>
+		);
+	return null;
 }
 
 const FileDownloader = ({ resourceId, fileName }) => {

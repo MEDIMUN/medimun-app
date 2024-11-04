@@ -1,37 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
-let socket;
+import React, { useEffect, useState } from "react";
+import { useSocket } from "@/contexts/socket";
 
-const Home = () => {
+const InputUpdater = () => {
+	const socket = useSocket();
 	const [input, setInput] = useState("");
 
-	const socketInitializer = async () => {
-		await fetch("/api/socket");
-		socket = io({
-			transports: ["websocket"],
-		});
+	useEffect(() => {
+		if (!socket) return;
 
-		socket.on("connect", () => {
-			console.log("connected");
-		});
-
+		// Listen for input updates
 		socket.on("update-input", (msg) => {
 			setInput(msg);
 		});
-	};
 
-	useEffect(() => {
-		socketInitializer();
-	}, []);
+		// Cleanup event listener on component unmount
+		return () => {
+			socket.off("update-input");
+		};
+	}, [socket]);
 
 	const onChangeHandler = (e) => {
 		setInput(e.target.value);
-		socket.emit("input-change", e.target.value);
+		if (socket) {
+			socket.emit("input-change", e.target.value);
+		}
 	};
 
 	return <input placeholder="Type something" value={input} onChange={onChangeHandler} />;
 };
 
-export default Home;
+export default InputUpdater;

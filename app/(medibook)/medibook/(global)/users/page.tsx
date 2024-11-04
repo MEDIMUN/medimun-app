@@ -13,9 +13,9 @@ import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar } from "@/app/
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Avatar } from "@nextui-org/avatar";
 import { Badge } from "@/components/badge";
-import { parseOrderDirection } from "@/lib/orderDirection";
-import { UserIdDisplay } from "@/lib/displayName";
-import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/displayRoles";
+import { parseOrderDirection } from "@/lib/order-direction";
+import { UserIdDisplay } from "@/lib/display-name";
+import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/display-roles";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
 
@@ -46,16 +46,16 @@ const sortOptions = [
 ];
 
 export default async function Page(props) {
-    const searchParams = await props.searchParams;
-    const maxNoOfSelected = 25;
-    const session = await auth();
-    const highestRoleRank = session?.highestRoleRank;
-    const currentPage = Number(searchParams.page) || 1;
-    const query = searchParams.search || "";
-    const orderBy = searchParams.order || "officialName";
-    const orderDirection = parseOrderDirection(searchParams.direction);
+	const searchParams = await props.searchParams;
+	const maxNoOfSelected = 25;
+	const session = await auth();
+	const highestRoleRank = session?.highestRoleRank;
+	const currentPage = Number(searchParams.page) || 1;
+	const query = searchParams.search || "";
+	const orderBy = searchParams.order || "officialName";
+	const orderDirection = parseOrderDirection(searchParams.direction);
 
-    const queryObject = {
+	const queryObject = {
 		where: {
 			OR: [
 				{ officialName: { contains: query, mode: "insensitive" } },
@@ -69,7 +69,7 @@ export default async function Page(props) {
 		},
 	};
 
-    const usersPromise = prisma.user.findMany({
+	const usersPromise = prisma.user.findMany({
 		include: { ...generateUserDataObject(), Account: { select: { id: true } } },
 		...(queryObject as any),
 		skip: (currentPage - 1) * usersPerPage,
@@ -77,11 +77,11 @@ export default async function Page(props) {
 		orderBy: { [orderBy]: orderDirection },
 	});
 
-    const numberOfUsersPromise = prisma.user.count({ ...(queryObject as any) });
+	const numberOfUsersPromise = prisma.user.count({ ...(queryObject as any) });
 
-    let [users, numberOfUsers] = await prisma.$transaction([usersPromise, numberOfUsersPromise]).catch(notFound);
+	let [users, numberOfUsers] = await prisma.$transaction([usersPromise, numberOfUsersPromise]).catch(notFound);
 
-    users = users.map((user) => {
+	users = users.map((user) => {
 		return {
 			...generateUserData(user),
 			isDisabled: user.isDisabled,
@@ -92,8 +92,8 @@ export default async function Page(props) {
 		};
 	});
 
-    let editUsers = [];
-    if (searchParams.select) {
+	let editUsers = [];
+	if (searchParams.select) {
 		const selectedUserIds = searchParams.select.split("U").filter((id) => id);
 		if (selectedUserIds.length === 0) return;
 		editUsers = await prisma.user
@@ -106,7 +106,7 @@ export default async function Page(props) {
 		editUsers = editUsers.filter((user) => user.highestRoleRank > highestRoleRank);
 	}
 
-    return (
+	return (
 		<>
 			<TopBar
 				buttonHref="/medibook"

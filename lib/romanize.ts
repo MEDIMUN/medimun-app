@@ -15,7 +15,7 @@ export function romanize(num: Number): String {
 			I: 1,
 		},
 		roman = "",
-		i;
+		i: string;
 	for (i in lookup) {
 		while (num >= lookup[i]) {
 			roman += i;

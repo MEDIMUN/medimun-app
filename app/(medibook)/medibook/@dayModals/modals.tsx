@@ -9,7 +9,7 @@ import { Link } from "@/components/link";
 import { Select } from "@/components/select";
 import { Textarea } from "@/components/textarea";
 import { authorize, s } from "@/lib/authorize";
-import { removeSearchParams } from "@/lib/searchParams";
+import { removeSearchParams } from "@/lib/search-params";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";

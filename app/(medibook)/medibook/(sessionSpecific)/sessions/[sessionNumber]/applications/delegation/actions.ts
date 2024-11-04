@@ -127,30 +127,21 @@ export async function acceptDelegationDeclaration(schoolId: string, schoolCountr
 			slug: true,
 			name: true,
 			director: {
-				where: {
-					sessionId: selectedSession.id,
-				},
-				select: {
-					user: {
-						select: {
-							officialName: true,
-							email: true,
-						},
-					},
-				},
+				where: { sessionId: selectedSession.id },
+				select: { user: { select: { officialName: true, email: true } } },
 			},
 		},
 	});
 	if (!selectedSchool) return { ok: false, message: ["School not found."] };
 
-	const grantedDelegationAlredyExists = await prisma.applicationGrantedDelegationCountries.findFirst({
+	const grantedDelegationAlreadyExists = await prisma.applicationGrantedDelegationCountries.findFirst({
 		where: {
 			schoolId: schoolId,
 			sessionId: selectedSession.id,
 		},
 	});
 
-	if (grantedDelegationAlredyExists) return { ok: false, message: ["The school alredy has delegations assigned."] };
+	if (grantedDelegationAlreadyExists) return { ok: false, message: ["The school already has delegations assigned."] };
 
 	const schoolIdsOfGrantedDelegations = [...selectedSession.ApplicationGrantedDelegationCountries.map((d) => d.schoolId), schoolId];
 	const parsedSate = JSON.parse(selectedSession.savedDelegationDeclarationState);

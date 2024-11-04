@@ -14,8 +14,8 @@ export function generateUserDataObject(obj = {}) {
 		Student: true,
 		delegate: { include: { committee: { select: { session: true, name: true, id: true, slug: true } } } },
 		chair: { include: { committee: { select: { session: true, name: true, id: true, slug: true } } } },
-		member: { include: { department: { select: { session: true, name: true, id: true, slug: true } } } },
-		manager: { include: { department: { select: { session: true, name: true, id: true, slug: true } } } },
+		member: { include: { department: { select: { session: true, name: true, id: true, slug: true, type: true } } } },
+		manager: { include: { department: { select: { session: true, name: true, id: true, slug: true, type: true } } } },
 		schoolDirector: { include: { school: true, session: { select: { isCurrent: true, number: true, id: true } } } },
 		secretaryGeneral: { include: { session: { select: { isCurrent: true, number: true, id: true } } } },
 		presidentOfTheGeneralAssembly: { include: { session: { select: { isCurrent: true, number: true, id: true } } } },
@@ -77,6 +77,7 @@ export function generateUserData(userObject) {
 			department: member.department.name,
 			departmentId: member.department.id,
 			deparmentSlug: member.department.slug,
+			departmentType: member.department.type,
 			isCurrent: member.department.session.isCurrent,
 			session: member.department.session.number,
 			sessionId: member.department.session.id,
@@ -94,6 +95,7 @@ export function generateUserData(userObject) {
 			department: manager.department.name,
 			departmentId: manager.department.id,
 			deparmentSlug: manager.department.slug,
+			departmentType: manager.department.type,
 			isCurrent: manager.department.session.isCurrent,
 			session: manager.department.session.number,
 			sessionId: manager.department.session.id,
@@ -142,9 +144,9 @@ export function generateUserData(userObject) {
 		};
 	});
 	let dpgaRole = userObject.deputyPresidentOfTheGeneralAssembly.map((dpga) => {
-		const roleName = "Deputy President of the General Assembly";
-		const shortRoleName = "DPGA";
-		const roleIdentifier = "deputyPresidentOfTheGeneralAssembly";
+		const roleName = "Vice President of the General Assembly";
+		const shortRoleName = "VPGA";
+		const roleIdentifier = "vicePresidentOfTheGeneralAssembly";
 		if (dpga.session.isCurrent) allCurrentRoleranks.push(roleRanks[roleName]);
 		return {
 			role: roleName,
@@ -244,12 +246,18 @@ export function generateUserData(userObject) {
 			roleIdentifier: role.roleIdentifier,
 			shortRole: role.shortRole,
 			name: role.role,
-			sessionId: role.sessionId,
 			session: role.session,
-			committeeId: role.committeeId,
+			sessionId: role.sessionId,
+			//
 			committee: role.committee,
-			departmentId: role.departmentId,
+			committeeId: role.committeeId,
+			committeeSlug: role.committeeSlug,
+			//
 			department: role.department,
+			departmentId: role.departmentId,
+			deparmentSlug: role.departmentSlug,
+			departmentTypes: role.departmentType,
+			//
 			schoolId: role.schoolId,
 			school: role.school,
 			schoolSlug: role.schoolSlug,
@@ -261,14 +269,18 @@ export function generateUserData(userObject) {
 			roleIdentifier: role.roleIdentifier,
 			shortRole: role.shortRole,
 			name: role.role,
-			sessionId: role.sessionId,
 			session: role.session,
-			committeeId: role.committeeId,
+			sessionId: role.sessionId,
+			//
 			committee: role.committee,
+			committeeId: role.committeeId,
 			committeeSlug: role.committeeSlug,
-			departmentId: role.departmentId,
+			//
 			department: role.department,
-			departmentSlug: role.departmentSlug,
+			departmentId: role.departmentId,
+			deparmentSlug: role.departmentSlug,
+			departmentTypes: role.departmentType,
+			//
 			schoolId: role.schoolId,
 			school: role.school,
 			schoolSlug: role.schoolSlug,
@@ -314,8 +326,8 @@ export async function userData(user) {
 			Student: true,
 			delegate: { include: { committee: { select: { session: true, name: true, id: true, slug: true } } } },
 			chair: { include: { committee: { select: { session: true, name: true, id: true, slug: true } } } },
-			member: { include: { department: { select: { session: true, name: true, id: true, slug: true } } } },
-			manager: { include: { department: { select: { session: true, name: true, id: true, slug: true } } } },
+			member: { include: { department: { select: { session: true, name: true, id: true, slug: true, type: true } } } },
+			manager: { include: { department: { select: { session: true, name: true, id: true, slug: true, type: true } } } },
 			schoolDirector: { include: { school: true, session: { select: { isCurrent: true, number: true, id: true } } } },
 			secretaryGeneral: { include: { session: { select: { isCurrent: true, number: true, id: true } } } },
 			presidentOfTheGeneralAssembly: { include: { session: { select: { isCurrent: true, number: true, id: true } } } },
@@ -375,6 +387,7 @@ export async function userData(user) {
 			department: member.department.name,
 			departmentId: member.department.id,
 			deparmentSlug: member.department.slug,
+			departmentType: member.department.type,
 			isCurrent: member.department.session.isCurrent,
 			session: member.department.session.number,
 			sessionId: member.department.session.id,
@@ -392,6 +405,7 @@ export async function userData(user) {
 			department: manager.department.name,
 			departmentId: manager.department.id,
 			deparmentSlug: manager.department.slug,
+			deparmentTypes: manager.department.type,
 			isCurrent: manager.department.session.isCurrent,
 			session: manager.department.session.number,
 			sessionId: manager.department.session.id,
@@ -440,9 +454,9 @@ export async function userData(user) {
 		};
 	});
 	let dpgaRole = roles.deputyPresidentOfTheGeneralAssembly.map((dpga) => {
-		const roleName = "Deputy President of the General Assembly";
-		const shortRoleName = "DPGA";
-		const roleIdentifier = "deputyPresidentOfTheGeneralAssembly";
+		const roleName = "Vice President of the General Assembly";
+		const shortRoleName = "VPGA";
+		const roleIdentifier = "vicePresidentOfTheGeneralAssembly";
 		if (dpga.session.isCurrent) allCurrentRoleranks.push(roleRanks[roleName]);
 		return {
 			role: roleName,
@@ -542,12 +556,18 @@ export async function userData(user) {
 			roleIdentifier: role.roleIdentifier,
 			shortRole: role.shortRole,
 			name: role.role,
-			sessionId: role.sessionId,
 			session: role.session,
-			committeeId: role.committeeId,
+			sessionId: role.sessionId,
+			//
 			committee: role.committee,
-			departmentId: role.departmentId,
+			committeeId: role.committeeId,
+			committeeSlug: role.committeeSlug,
+			//
 			department: role.department,
+			departmentId: role.departmentId,
+			deparmentSlug: role.departmentSlug,
+			departmentTypes: role.departmentType,
+			//
 			schoolId: role.schoolId,
 			school: role.school,
 			schoolSlug: role.schoolSlug,
@@ -559,14 +579,18 @@ export async function userData(user) {
 			roleIdentifier: role.roleIdentifier,
 			shortRole: role.shortRole,
 			name: role.role,
-			sessionId: role.sessionId,
 			session: role.session,
-			committeeId: role.committeeId,
+			sessionId: role.sessionId,
+			//
 			committee: role.committee,
+			committeeId: role.committeeId,
 			committeeSlug: role.committeeSlug,
-			departmentId: role.departmentId,
+			//
 			department: role.department,
-			departmentSlug: role.departmentSlug,
+			departmentId: role.departmentId,
+			deparmentSlug: role.departmentSlug,
+			departmentTypes: role.departmentType,
+			//
 			schoolId: role.schoolId,
 			school: role.school,
 			schoolSlug: role.schoolSlug,

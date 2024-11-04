@@ -4,13 +4,13 @@ import { ReadonlyURLSearchParams, useParams, useSearchParams } from "next/naviga
 import { useRouter } from "next/navigation";
 import { authorize, s } from "@/lib/authorize";
 import { useSession } from "next-auth/react";
-import { removeSearchParams, updateSearchParams } from "@/lib/searchParams";
+import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { Button } from "@/components/button";
 import { Field, Label } from "@/components/fieldset";
 import { Input } from "@/components/input";
 import { toast } from "sonner";
-import { useFlushState } from "@/hooks/useFlushState";
+import { useFlushState } from "@/hooks/use-flush-state";
 import { romanize } from "@/lib/romanize";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 

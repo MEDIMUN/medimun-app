@@ -3,7 +3,7 @@
 import { useSelectedContext } from "./StateStateProvider";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
-import { updateSearchParams } from "@/lib/searchParams";
+import { updateSearchParams } from "@/lib/search-params";
 import { toggleDisableOrEnableUsers } from "../../../@userModals/actions";
 import { CheckCircleIcon } from "@heroicons/react/16/solid";
 import { Badge } from "@/components/badge";

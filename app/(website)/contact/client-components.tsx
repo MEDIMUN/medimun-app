@@ -11,7 +11,7 @@ import { Link } from "@/components/link";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import { useSearchParams } from "next/navigation";
 import { contactUs } from "./actions";
-import { useFlushState } from "@/hooks/useFlushState";
+import { useFlushState } from "@/hooks/use-flush-state";
 
 export function RecaptchaComp({ className, sitekey }: { className?: string; sitekey: string }) {
 	const recaptchaRef = useRef<ReCAPTCHA>(null);
