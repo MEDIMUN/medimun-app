@@ -54,7 +54,7 @@ export default async function SchoolDirectorApplicationsPage(props: { params: Pr
 	const orderBy = searchParams.order || "date";
 	const orderDirection = parseOrderDirection(searchParams.direction, "desc");
 
-	const [selectedSession, applications] = await prisma
+	const [selectedSession, applications, totalItems] = await prisma
 		.$transaction([
 			prisma.session.findFirst({ where: { number: params.sessionNumber } }),
 			prisma.applicationSchoolDirector.findMany({
@@ -67,9 +67,16 @@ export default async function SchoolDirectorApplicationsPage(props: { params: Pr
 				skip: (currentPage - 1) * itemsPerPage,
 				take: itemsPerPage,
 			}),
+			prisma.applicationSchoolDirector.groupBy({
+				by: ["isApproved"],
+				where: { session: { number: params.sessionNumber } },
+				_count: { id: true },
+			}),
 		])
 		.catch(notFound);
 
+	const approvedCount = totalItems.find((item) => item.isApproved === true)?._count?.id || 0;
+	const pendingCount = totalItems.find((item) => item.isApproved === false)?._count?.id || 0;
 	const areApplicationsOpen = areSchoolDirectorApplicationsOpen(selectedSession);
 
 	return (
@@ -80,6 +87,7 @@ export default async function SchoolDirectorApplicationsPage(props: { params: Pr
 				buttonText={`Session ${romanize(parseInt(params.sessionNumber))} Applications`}
 				buttonHref={`/medibook/sessions/${params.sessionNumber}/applications`}
 				title="School Director Applications"
+				subheading={`${approvedCount || "None"} Approved, ${pendingCount || "None"} Pending`}
 			/>
 			<div className="rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
 				<Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
@@ -165,11 +173,7 @@ export default async function SchoolDirectorApplicationsPage(props: { params: Pr
 					</TableBody>
 				</Table>
 			)}
-			<Paginator
-				itemsOnPage={applications.length}
-				itemsPerPage={itemsPerPage}
-				totalItems={await prisma.applicationSchoolDirector.count({ where: { session: { number: params.sessionNumber } } })}
-			/>
+			<Paginator itemsOnPage={applications.length} itemsPerPage={itemsPerPage} totalItems={pendingCount + approvedCount} />
 		</>
 	);
 }

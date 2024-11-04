@@ -54,7 +54,9 @@ export function DirectionDropdown({ defaultValue, items }) {
 
 export function SearchBar({ placeholder = "Search...", debounceDelay = 500, defaultValue = "", className = "" }) {
 	const router = useNextRouter();
-	const [search, setSearch] = useState(defaultValue);
+	const searchParams = useSearchParams();
+	const currentSearch = searchParams && searchParams.get("search");
+	const [search, setSearch] = useState(currentSearch || defaultValue);
 	const [debouncedSearch] = useDebouncedValue(search, debounceDelay);
 
 	useEffect(() => {
@@ -218,6 +220,8 @@ export function SocketHandler() {
 		}, 5000);
 		return () => clearTimeout(timer);
 	}, [isConnected]);
+
+	return null; //FIXME
 
 	if (notConnectedFor5Seconds)
 		return (

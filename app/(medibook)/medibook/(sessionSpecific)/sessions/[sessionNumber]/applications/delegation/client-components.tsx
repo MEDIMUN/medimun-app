@@ -25,7 +25,7 @@ import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/comp
 import { countries } from "@/data/countries";
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from "@/components/description-list";
 import { Badge } from "@/components/badge";
-import { DelegationDeclaration, School, Session } from "@prisma/client";
+import { School, Session } from "@prisma/client";
 import { Button } from "@/components/button";
 import Paginator from "@/components/pagination";
 import { Pagination } from "@nextui-org/pagination";
@@ -156,7 +156,7 @@ export function CountryAssign({
 	selectedSession,
 	schools,
 }: {
-	applicationsOfSession: DelegationDeclaration[];
+	applicationsOfSession: any[];
 	selectedSession: Session;
 	schools: School[];
 }) {

@@ -13,6 +13,7 @@ import Link from "next/link";
 import { areDelegateApplicationsOpen } from "@/app/(medibook)/medibook/(sessionSpecific)/sessions/[sessionNumber]/applications/delegation/page";
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from "@/components/description-list";
 import { Avatar } from "@nextui-org/avatar";
+import { Fragment } from "react";
 
 export default async function Page(props) {
 	const searchParams = await props.searchParams;
@@ -67,46 +68,29 @@ export default async function Page(props) {
 	const applicationsOpen = areDelegateApplicationsOpen(selectedSession);
 
 	//FIXME: cant handle 4 SC proposals
-	const parsedAssignment = delegationAssignmentProposal
-		? JSON.parse(delegationAssignmentProposal.assignment).sort((a, b) => {
-				const committeeA = selectedSession.committee.find((committee) => committee.id === a.committeeId);
-				const committeeB = selectedSession.committee.find((committee) => committee.id === b.committeeId);
-				if (committeeA.name !== committeeB.name) return committeeA.name.localeCompare(committeeB?.name);
-				if (committeeA.type !== committeeB.type) return committeeA.type.localeCompare(committeeB?.type);
-				return a.countryCode.localeCompare(b.countryCode);
-			})
-		: null;
+	const parsedAssignment = delegationAssignmentProposal ? JSON.parse(delegationAssignmentProposal.assignment) : null;
 
 	const userIds = parsedAssignment?.map((assignment) => assignment.studentId);
 
 	const users = parsedAssignment ? await prisma.user.findMany({ where: { id: { in: parsedAssignment.map((a) => a.studentId) } } }) : [];
 
 	const renderAssignments = (assignments) =>
-		assignments.map((assignment) => {
+		assignments.map((assignment, index) => {
 			const student = users.find((u) => u.id === assignment.studentId);
 			const committee = selectedSession.committee.find((c) => c.id === assignment.committeeId);
 			const country = countries.find((c) => c.countryCode === assignment.countryCode);
+			if (!student || !committee) return <Text key={Math.random()}>Error: Student or Committee not found</Text>;
 			return (
-				<>
-					<DescriptionTerm className="space-x-2">
-						<Badge>{committee.name}</Badge>
-						{country && (
-							<Badge>
-								{country.flag} {country.countryNameEn}
-							</Badge>
-						)}
-					</DescriptionTerm>
-					<DescriptionDetails>
-						{student?.id ? (
-							<Badge className="!p-0" color="">
-								<Avatar showFallback className="h-4 w-4 bg-primary text-white" src={`/api/users/${student.id}/avatar`} />
-								{student.displayName || `${student.officialName} ${student.officialSurname}`}
-							</Badge>
-						) : (
-							<Badge color="red">Deleted User</Badge>
-						)}
-					</DescriptionDetails>
-				</>
+				<Fragment key={Math.random()}>
+					<Badge color="" className="!px-0">
+						{committee.name} {country && country.flag} {country && country.countryNameEn}
+					</Badge>
+					<Badge className="max-w-max">
+						<Avatar showFallback className="h-4 w-4" src={`/api/users/${student.id}/avatar`} />
+						{student.displayName || `${student.officialName} ${student.officialSurname}`} <span className="font-light">{student.id}</span>
+					</Badge>
+					{index !== assignments.length - 1 && <Divider soft className="col-span-1-1 xl:col-span-2" />}
+				</Fragment>
 			);
 		});
 
@@ -129,7 +113,9 @@ export default async function Page(props) {
 					</DescriptionDetails>
 					<DescriptionTerm>Assignments</DescriptionTerm>
 					<DescriptionDetails>
-						<DescriptionList>{renderAssignments(JSON.parse(proposal.school.finalDelegation[0].delegation))}</DescriptionList>
+						<div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
+							{renderAssignments(JSON.parse(proposal.school.finalDelegation[0].delegation))}
+						</div>
 					</DescriptionDetails>
 				</DescriptionList>
 			</>
@@ -154,7 +140,7 @@ export default async function Page(props) {
 					</DescriptionDetails>
 					<DescriptionTerm>Student Assignment Proposal</DescriptionTerm>
 					<DescriptionDetails>
-						<DescriptionList>{renderAssignments(parsedAssignment)}</DescriptionList>
+						<div className="grid grid-cols-1 xl:grid-cols-2 gap-2">{renderAssignments(parsedAssignment)}</div>
 					</DescriptionDetails>
 				</DescriptionList>
 			</>
@@ -274,10 +260,6 @@ export default async function Page(props) {
 						<DescriptionList>
 							<DescriptionTerm>Delegation ID</DescriptionTerm>
 							<DescriptionDetails className="font-mono">{grantedDelegation.id}</DescriptionDetails>
-							<DescriptionTerm>Application Status</DescriptionTerm>
-							<DescriptionDetails>
-								<Badge color="green">Accepted</Badge>
-							</DescriptionDetails>
 							<DescriptionTerm>Number of GA Delegations</DescriptionTerm>
 							<DescriptionDetails>{grantedDelegation.countries.filter((c) => c !== "NOTGRANTED").length}</DescriptionDetails>
 							<DescriptionTerm>Assigned GA Countries</DescriptionTerm>

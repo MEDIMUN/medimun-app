@@ -4,9 +4,9 @@ import { notFound } from "next/navigation";
 import prisma from "@/prisma/client";
 
 export async function GET(request, props) {
-    const params = await props.params;
-    let location;
-    try {
+	const params = await props.params;
+	let location;
+	try {
 		location = await prisma.location.findFirst({
 			where: {
 				id: params.locationId,
@@ -19,15 +19,15 @@ export async function GET(request, props) {
 		notFound();
 	}
 
-    if (!location) notFound();
-    if (!location.cover) notFound();
+	if (!location) notFound();
+	if (!location.cover) notFound();
 
-    let minioClient = minio();
-    let url;
-    try {
-		url = await minioClient.presignedGetObject("medibook", "covers/locations/" + location.cover, 30 * 60);
+	let minioClient = minio();
+	let url;
+	try {
+		url = await minioClient.presignedGetObject(process.env.BUCKETNAME, "covers/locations/" + location.cover, 30 * 60);
 	} catch (e) {
 		notFound();
 	}
-    return NextResponse.redirect(url);
+	return NextResponse.redirect(url);
 }

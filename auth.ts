@@ -119,6 +119,7 @@ interface UserObject {
 	currentRoleNames: string[];
 	pastRoles: RoleObject[];
 	pastRoleNames: string[];
+	highestRoleRank: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | typeof Infinity;
 }
 
 declare module "next-auth/jwt" {

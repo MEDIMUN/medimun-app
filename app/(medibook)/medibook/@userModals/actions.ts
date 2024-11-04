@@ -639,7 +639,7 @@ export async function updateProfilePictureForUser(targetUserId: string, formData
 		await prisma.$transaction(
 			async (tx) => {
 				await deleteProfilePictureForUser(targetUserId);
-				await minioClient.putObject("medibook", `avatars/${randomName}`, buffer, null, {
+				await minioClient.putObject(process.env.BUCKETNAME, `avatars/${randomName}`, buffer, null, {
 					"Content-Type": file.type,
 				});
 				await tx.user.update({ where: { id: targetUserId }, data: { profilePicture: randomName } });
@@ -693,7 +693,7 @@ export async function deleteProfilePictureForUser(targetUserId: string) {
 				const candidateAvatar = await tx.user.findUnique({ where: { id: targetUserId }, select: { profilePicture: true } });
 				if (!candidateAvatar) return { ok: false, message: "User not found." };
 				const avatar = candidateAvatar.profilePicture;
-				await minioClient.removeObject("medibook", `avatars/${avatar}`);
+				await minioClient.removeObject(process.env.BUCKETNAME, `avatars/${avatar}`);
 				await tx.user.update({ where: { id: targetUserId }, data: { profilePicture: null } });
 			},
 			{ maxWait: 5000, timeout: 900000 }

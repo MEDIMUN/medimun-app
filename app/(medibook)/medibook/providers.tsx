@@ -73,7 +73,7 @@ export function SidebarContextProvider({ children }) {
 	const [selectedSession, setSelectedSession] = useState();
 	const [selectedSessionData, setSelectedSessionData] = useState();
 	const [isLoading, setIsLoading] = useState(false);
-	const [schoolDirectorRole, setSchoolDirectorRole] = useState({});
+	const [schoolDirectorRoles, setSchoolDirectorRoles] = useState({});
 
 	return (
 		<SidebarContext.Provider
@@ -86,8 +86,8 @@ export function SidebarContextProvider({ children }) {
 				setSelectedSessionData,
 				isLoading,
 				setIsLoading,
-				schoolDirectorRole,
-				setSchoolDirectorRole,
+				schoolDirectorRoles,
+				setSchoolDirectorRoles,
 			}}>
 			{children}
 		</SidebarContext.Provider>

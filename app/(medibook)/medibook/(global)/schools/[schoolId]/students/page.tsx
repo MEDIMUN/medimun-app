@@ -78,15 +78,18 @@ export default async function Page(props) {
 	};
 	const orderDirection = parseOrderDirection(searchParams.direction);
 
-	const selectedSchoolStudents = await prisma.user.findMany({
-		orderBy: { [orderBy]: orderDirection },
-		take: itemsPerPage,
-		skip: (currentPage - 1) * itemsPerPage,
-		where: { ...queryObject },
-		include: { ...generateUserDataObject() },
-	});
-
-	const numberOfStudents = await prisma.user.count({ where: { ...queryObject } });
+	const [selectedSchoolStudents, totalItems] = await prisma
+		.$transaction([
+			prisma.user.findMany({
+				orderBy: { [orderBy]: orderDirection },
+				take: itemsPerPage,
+				skip: (currentPage - 1) * itemsPerPage,
+				where: { ...(queryObject as any) },
+				include: { ...generateUserDataObject() },
+			}),
+			prisma.user.count({ where: { ...(queryObject as any) } }),
+		])
+		.catch(notFound);
 
 	const usersWithData = selectedSchoolStudents.map((user) => {
 		return {
@@ -102,10 +105,11 @@ export default async function Page(props) {
 				buttonText={selectedSchool.name}
 				sortOptions={sortOptions}
 				title="School Students"
+				subheading={`${totalItems || "No"} Students`}
 				defaultSort="officialNameasc"
 				searchText="Search students..."
 			/>
-			{!!numberOfStudents ? (
+			{!!totalItems && (
 				<Table className="showscrollbar">
 					<TableHead>
 						<TableRow>
@@ -154,12 +158,8 @@ export default async function Page(props) {
 						})}
 					</TableBody>
 				</Table>
-			) : (
-				<div className="my-10 text-center">
-					<h3 className="mt-2 text-sm font-semibold text-gray-900">No Students Found</h3>
-				</div>
 			)}
-			<Paginator itemsPerPage={itemsPerPage} totalItems={numberOfStudents} />
+			<Paginator itemsPerPage={itemsPerPage} totalItems={totalItems} itemsOnPage={usersWithData.length} />
 		</>
 	);
 }

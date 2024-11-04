@@ -6,6 +6,7 @@ import { getSocketInstance } from "@/socket/server";
 export async function deleteRegUser() {
 	const io = getSocketInstance();
 	await prisma.morningPresent.deleteMany({ where: { userId: "784101271349" } });
-	io?.to("private-user-784101271349").emit("router.refresh");
+	//console log connected users
+	io?.to("private-user-216897945544").emit("toast.success", "websockets");
 	//repeat 10 times
 }

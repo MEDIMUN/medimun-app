@@ -93,8 +93,8 @@ export function Sidebar({ sessions }) {
 		setSelectedSessionData,
 		isLoading,
 		setIsLoading,
-		schoolDirectorRole,
-		setSchoolDirectorRole,
+		schoolDirectorRoles,
+		setSchoolDirectorRoles,
 	} = useSidebarContext();
 
 	useEffect(() => {
@@ -132,7 +132,7 @@ export function Sidebar({ sessions }) {
 		handleSessionChange();
 	}, [selectedSession]);
 
-	let allCurrentAndPastRoles, schoolDirectorRoles;
+	let allCurrentAndPastRoles;
 
 	async function handleSessionChange() {
 		let sessionData = await getSessionData(selectedSession);
@@ -142,8 +142,9 @@ export function Sidebar({ sessions }) {
 		});
 
 		allCurrentAndPastRoles = [].concat(currentRoles).concat(pastRoles);
-		schoolDirectorRoles = allCurrentAndPastRoles.filter((role) => role?.roleIdentifier === "schoolDirector");
-		setSchoolDirectorRole(schoolDirectorRoles?.find((role) => role?.session === selectedSession));
+		setSchoolDirectorRoles(
+			allCurrentAndPastRoles.filter((role) => role?.roleIdentifier === "schoolDirector")?.filter((role) => role?.session === selectedSession)
+		);
 
 		if (!sessionData?.committee) return;
 		sessionData.committee = sortedCommittees;
@@ -233,7 +234,6 @@ export function Sidebar({ sessions }) {
 		handleSessionChange();
 	}, [status]);
 
-	const schoolDirectorBasePath = `/medibook/schools/${schoolDirectorRole?.schoolSlug || schoolDirectorRole?.schoolId}`;
 	const SoonBadge = () => <Badge className="ml-1 !rounded-full">Coming Soon</Badge>;
 
 	if (status === "authenticated")
@@ -281,7 +281,7 @@ export function Sidebar({ sessions }) {
 												<DropdownItem onClick={() => setSelectedSession(session.number)}>
 													<Avatar
 														slot="icon"
-														initials={session.number}
+														initials={session.number.toString()}
 														className={cn("bg-primary text-white", !index && "bg-[url(/assets/gradients/1.jpg)] bg-cover")}
 													/>
 													<DropdownLabel className="flex">Session {romanize(session.number)}</DropdownLabel>
@@ -362,15 +362,15 @@ export function Sidebar({ sessions }) {
 							<SidebarHeading>General</SidebarHeading>
 							{isManagement && (
 								<>
-									<SidebarItem href="/medibook/schools" current={pathname.startsWith("/medibook/schools")}>
+									<SidebarItem href="/medibook/schools" current={pathname?.startsWith("/medibook/schools")}>
 										<Icon slot="icon" icon="heroicons-solid:academic-cap" height={20} />
 										<SidebarLabel>Schools</SidebarLabel>
 									</SidebarItem>
-									<SidebarItem href="/medibook/locations" current={pathname.startsWith("/medibook/locations")}>
+									<SidebarItem href="/medibook/locations" current={pathname?.startsWith("/medibook/locations")}>
 										<Icon slot="icon" icon="heroicons-solid:location-marker" height={20} />
 										<SidebarLabel>Locations</SidebarLabel>
 									</SidebarItem>
-									<SidebarItem href="/medibook/users" current={pathname.startsWith("/medibook/users")}>
+									<SidebarItem href="/medibook/users" current={pathname?.startsWith("/medibook/users")}>
 										<Icon icon="heroicons-solid:users" height={20} />
 										<SidebarLabel>All Users</SidebarLabel>
 									</SidebarItem>
@@ -380,79 +380,69 @@ export function Sidebar({ sessions }) {
 								<Icon slot="icon" icon="heroicons-solid:hashtag" height={20} />
 								<SidebarLabel>Sessions</SidebarLabel>
 							</SidebarItem>
-							<SidebarItem href="/medibook/announcements" current={pathname.startsWith("/medibook/announcements")}>
+							<SidebarItem href="/medibook/announcements" current={pathname?.startsWith("/medibook/announcements")}>
 								<Icon slot="icon" icon="heroicons-solid:speakerphone" height={19} />
 								<SidebarLabel>Announcements</SidebarLabel>
 							</SidebarItem>
-							<SidebarItem href="/medibook/resources" current={pathname.startsWith("/medibook/resources")}>
+							<SidebarItem href="/medibook/resources" current={pathname?.startsWith("/medibook/resources")}>
 								<Icon slot="icon" icon="heroicons-solid:folder" height={20} />
 								<SidebarLabel>Resources</SidebarLabel>
 							</SidebarItem>
 						</SidebarSection>
-						{schoolDirectorRole && status === "authenticated" && schoolDirectorRole?.schoolId && (
-							<SidebarSection>
-								<SidebarHeading>School Management</SidebarHeading>
-								<SidebarItem href={`${schoolDirectorBasePath}`} current={pathname == `${schoolDirectorBasePath}`}>
-									<Icon slot="icon" icon="heroicons-solid:academic-cap" height={20} />
-									<SidebarLabel>My School</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem href={`${schoolDirectorBasePath}/students`} current={pathname == `${schoolDirectorBasePath}/students`}>
-									<Icon icon="heroicons-solid:users" height={20} />
-									<SidebarLabel>My Students</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem
-									href={`/medibook/sessions/${selectedSession}/schools/${schoolDirectorRole?.schoolSlug || schoolDirectorRole?.schoolId}/delegation`}
-									current={
-										pathname ==
-										`/medibook/sessions/${selectedSession}/schools/${schoolDirectorRole?.schoolSlug || schoolDirectorRole?.schoolId}/apply/delegation`
-									}>
-									<Icon slot="icon" icon="heroicons-solid:document-add" height={20} />
-									<SidebarLabel>My Delegation</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem
-									disabled
-									href={`${schoolDirectorBasePath}/request-changes`}
-									current={pathname == `${schoolDirectorBasePath}/request-changes`}>
-									<Icon slot="icon" icon="heroicons-solid:pencil-alt" height={20} />
-									<SidebarLabel>
-										Changes <SoonBadge />
-									</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem
-									disabled
-									href={`${schoolDirectorBasePath}/request-changes`}
-									current={pathname == `${schoolDirectorBasePath}/request-changes`}>
-									<Icon slot="icon" icon="heroicons-solid:newspaper" height={20} />
-									<SidebarLabel>
-										Certificates <SoonBadge />
-									</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem
-									disabled
-									href={`${schoolDirectorBasePath}/request-changes`}
-									current={pathname == `${schoolDirectorBasePath}/request-changes`}>
-									<Icon slot="icon" icon="heroicons-solid:thumb-up" height={20} />
-									<SidebarLabel>
-										Awards <SoonBadge />
-									</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem
-									disabled
-									href={`${schoolDirectorBasePath}/request-changes`}
-									current={pathname == `${schoolDirectorBasePath}/request-changes`}>
-									<Icon slot="icon" icon="heroicons-solid:presentation-chart-line" height={20} />
-									<SidebarLabel>
-										Reports <SoonBadge />
-									</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem disabled href={`${schoolDirectorBasePath}/invoices`} current={pathname == `${schoolDirectorBasePath}/invoices`}>
-									<Icon slot="icon" icon="heroicons-solid:currency-euro" height={20} />
-									<SidebarLabel>
-										Invoices <SoonBadge />
-									</SidebarLabel>
-								</SidebarItem>
-							</SidebarSection>
-						)}
+						{!!schoolDirectorRoles.length &&
+							status === "authenticated" &&
+							schoolDirectorRoles.map((role) => {
+								const sdBasePath = `/medibook/schools/${role?.schoolSlug || role?.schoolId}`;
+								return (
+									<SidebarSection key={role.id}>
+										<SidebarHeading className="line-clamp-1">{schoolDirectorRoles.length == 1 ? "School Management" : role.school}</SidebarHeading>
+										<SidebarItem href={`${sdBasePath}`} current={pathname == `${sdBasePath}`}>
+											<Icon slot="icon" icon="heroicons-solid:academic-cap" height={20} />
+											<SidebarLabel>My School</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem href={`${sdBasePath}/students`} current={pathname == `${sdBasePath}/students`}>
+											<Icon icon="heroicons-solid:users" height={20} />
+											<SidebarLabel>My Students</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem
+											href={`/medibook/sessions/${selectedSession}/schools/${role?.schoolSlug || role?.schoolId}/delegation`}
+											current={pathname == `/medibook/sessions/${selectedSession}/schools/${role?.schoolSlug || role?.schoolId}/delegation`}>
+											<Icon slot="icon" icon="heroicons-solid:document-add" height={20} />
+											<SidebarLabel>My Delegation</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem disabled href={`${sdBasePath}/request-changes`} current={pathname == `${sdBasePath}/request-changes`}>
+											<Icon slot="icon" icon="heroicons-solid:pencil-alt" height={20} />
+											<SidebarLabel>
+												Changes <SoonBadge />
+											</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem disabled href={`${sdBasePath}/request-changes`} current={pathname == `${sdBasePath}/request-changes`}>
+											<Icon slot="icon" icon="heroicons-solid:newspaper" height={20} />
+											<SidebarLabel>
+												Certificates <SoonBadge />
+											</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem disabled href={`${sdBasePath}/request-changes`} current={pathname == `${sdBasePath}/request-changes`}>
+											<Icon slot="icon" icon="heroicons-solid:thumb-up" height={20} />
+											<SidebarLabel>
+												Awards <SoonBadge />
+											</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem disabled href={`${sdBasePath}/request-changes`} current={pathname == `${sdBasePath}/request-changes`}>
+											<Icon slot="icon" icon="heroicons-solid:presentation-chart-line" height={20} />
+											<SidebarLabel>
+												Reports <SoonBadge />
+											</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem disabled href={`${sdBasePath}/invoices`} current={pathname == `${sdBasePath}/invoices`}>
+											<Icon slot="icon" icon="heroicons-solid:currency-euro" height={20} />
+											<SidebarLabel>
+												Invoices <SoonBadge />
+											</SidebarLabel>
+										</SidebarItem>
+									</SidebarSection>
+								);
+							})}
 						{selectedSessionData?.applicationsOpen && !authorizePerSession(authSession, [s.schooldirector], [selectedSession]) && (
 							<SidebarSection>
 								<SidebarHeading>Individual Applications</SidebarHeading>
@@ -499,7 +489,7 @@ export function Sidebar({ sessions }) {
 											<Icon icon="heroicons-solid:document-download" height={20} />
 											<SidebarLabel>Applications</SidebarLabel>
 										</SidebarItem>
-										{pathname.includes(`${basePath}/applications`) && <ApplicationOptions basePath={basePath} />}
+										{pathname?.includes(`${basePath}/applications`) && <ApplicationOptions basePath={basePath} />}
 									</>
 								)}
 								<SidebarItem href={`${basePath}/resources`} current={pathname == `${basePath}/resources`}>
@@ -534,7 +524,7 @@ export function Sidebar({ sessions }) {
 											</div>
 											<SidebarLabel>{committee.name}</SidebarLabel>
 										</SidebarItem>
-										{pathname.includes(`${basePath}/committees/${committee.slug || committee.id}`) && (
+										{pathname?.includes(`${basePath}/committees/${committee.slug || committee.id}`) && (
 											<CommitteeOptions basePath={`${basePath}/committees/${committee.slug || committee.id}`} />
 										)}
 									</Fragment>

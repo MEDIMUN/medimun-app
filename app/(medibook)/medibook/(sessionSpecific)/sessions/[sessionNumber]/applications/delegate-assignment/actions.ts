@@ -4,6 +4,7 @@ import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
 
 export async function handleFinalAssignDelegates(filteredAssignments, selectedSessionId, schoolId) {
+	return { ok: false, message: ["Not implemented."] }; //FIXME: Implement this function
 	const selectedSession = await prisma.session.findFirst({ where: { id: selectedSessionId } });
 
 	if (!selectedSession) return { ok: false, message: ["Session not found."] };

@@ -134,7 +134,7 @@ export async function updateCoverImage(formData: FormData) {
 		await prisma.$transaction(
 			async (tx) => {
 				await deleteCoverImage(schoolId);
-				await minioClient.putObject("medibook", `covers/schools/${randomName}`, buffer, null, {
+				await minioClient.putObject(process.env.BUCKETNAME, `covers/schools/${randomName}`, buffer, null, {
 					"Content-Type": file.type,
 				});
 				await tx.school.update({ where: { id: schoolId }, data: { cover: randomName } });
@@ -158,7 +158,7 @@ export async function deleteCoverImage(schoolId: string) {
 				const school = await tx.school.findUnique({ where: { id: schoolId }, select: { cover: true } });
 				if (!school) return { ok: false, message: "School not found." };
 				const { cover } = school;
-				await minioClient.removeObject("medibook", `covers/schools/${cover}`);
+				await minioClient.removeObject(process.env.BUCKETNAME, `covers/schools/${cover}`);
 				await tx.school.update({ where: { id: schoolId }, data: { cover: null } });
 			},
 			{ maxWait: 5000, timeout: 900000 }

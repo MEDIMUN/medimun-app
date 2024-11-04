@@ -88,7 +88,7 @@ export function SignUpForm({ allowSignUp }) {
 		setIsLoading(true);
 		const res = await checkEmail(email);
 
-		const data = res.data;
+		const data = res?.data;
 		if (data.stage == "USER_WITH_ACCOUNT") {
 			toast.info(...res?.message);
 			router.push("/login");

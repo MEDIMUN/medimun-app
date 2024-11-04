@@ -48,8 +48,9 @@ const sortOptions = [
 export default async function Page(props) {
 	const searchParams = await props.searchParams;
 	const maxNoOfSelected = 25;
-	const session = await auth();
-	const highestRoleRank = session?.highestRoleRank;
+	const authSession = await auth();
+	if (!authSession) return notFound();
+	const highestRoleRank = authSession.user.highestRoleRank;
 	const currentPage = Number(searchParams.page) || 1;
 	const query = searchParams.search || "";
 	const orderBy = searchParams.order || "officialName";
@@ -69,19 +70,22 @@ export default async function Page(props) {
 		},
 	};
 
-	const usersPromise = prisma.user.findMany({
-		include: { ...generateUserDataObject(), Account: { select: { id: true } } },
-		...(queryObject as any),
-		skip: (currentPage - 1) * usersPerPage,
-		take: usersPerPage,
-		orderBy: { [orderBy]: orderDirection },
-	});
+	const userDataQueryObject = generateUserDataObject();
 
-	const numberOfUsersPromise = prisma.user.count({ ...(queryObject as any) });
+	let [users, numberOfUsers] = await prisma
+		.$transaction([
+			prisma.user.findMany({
+				include: { ...userDataQueryObject, Account: { select: { id: true } } },
+				...(queryObject as any),
+				skip: (currentPage - 1) * usersPerPage,
+				take: usersPerPage,
+				orderBy: { [orderBy]: orderDirection },
+			}),
+			prisma.user.count({ ...(queryObject as any) }),
+		])
+		.catch(notFound);
 
-	let [users, numberOfUsers] = await prisma.$transaction([usersPromise, numberOfUsersPromise]).catch(notFound);
-
-	users = users.map((user) => {
+	const processedUsers = users.map((user) => {
 		return {
 			...generateUserData(user),
 			isDisabled: user.isDisabled,
@@ -92,14 +96,14 @@ export default async function Page(props) {
 		};
 	});
 
-	let editUsers = [];
+	let editUsers: any[] = [];
 	if (searchParams.select) {
 		const selectedUserIds = searchParams.select.split("U").filter((id) => id);
 		if (selectedUserIds.length === 0) return;
 		editUsers = await prisma.user
 			.findMany({
 				where: { id: { in: selectedUserIds } },
-				include: { ...generateUserDataObject() },
+				include: { ...userDataQueryObject },
 			})
 			.catch(notFound);
 		editUsers = editUsers.map((user) => ({ ...user, highestRoleRank: generateUserData(user).highestRoleRank }));
@@ -120,7 +124,7 @@ export default async function Page(props) {
 			</TopBar>
 			<SelectedContextProvider defaultUserData={editUsers}>
 				<SelectedUsersWindow />
-				<div>
+				<div className="relative">
 					<Table className="showscrollbar">
 						<TableHead>
 							<TableRow>
@@ -145,7 +149,7 @@ export default async function Page(props) {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{users.map((user) => {
+							{processedUsers.map((user) => {
 								return (
 									<TableRow key={user.id}>
 										<TableCell>
@@ -157,18 +161,11 @@ export default async function Page(props) {
 											/>
 										</TableCell>
 										<TableCell className="pl-20 md:pl-4">
-											<Tooltip
-												placement="right"
-												delay={0}
-												isDisabled={!user.hasPfp}
-												classNames={{ content: "p-0 select-none" }}
-												content={<Image alt="User avatar" src={`/api/users/${user.id}/avatar`} className="h-[13rem] w-[13rem] object-cover" />}>
-												<Avatar className="my-auto ml-1 mr-8 h-10 min-w-10" showFallback src={`/api/users/${user.id}/avatar`} />
-											</Tooltip>
+											<Avatar radius="md" className="my-auto ml-10" showFallback src={`/api/users/${user.id}/avatar`} />
 										</TableCell>
 										<TableCell>{user.officialName}</TableCell>
 										<TableCell>{user.officialSurname}</TableCell>
-										<TableCell className="invisible min-w-16 md:visible"></TableCell>
+										<TableCell className="invisible md:min-w-20 min-w-0 md:visible"></TableCell>
 										<TableCell>{user.displayName || "-"}</TableCell>
 										<TableCell>{user.schoolName || "-"}</TableCell>
 										<TableCell>
@@ -193,13 +190,11 @@ export default async function Page(props) {
 							})}
 						</TableBody>
 					</Table>
-					<Table className="showscrollbar -md:block absolute z-[100] -hidden -translate-y-[calc(100%+1px)] border-r-1 bg-white md:-translate-y-[calc(100%+11px)]">
+					<Table className="showscrollbar absolute z-50 top-0 border-r-1 bg-white">
 						<TableHead>
 							<TableRow>
-								<TableHeader className="hidden md:table-cell">
-									<span className="sr-only">Select</span>
-								</TableHeader>
-								<TableHeader className="hidden md:table-cell">
+								<TableHeader className="text-white select-none">S</TableHeader>
+								<TableHeader>
 									<span className="sr-only">Actions</span>
 								</TableHeader>
 								<TableHeader className="hidden md:table-cell">
@@ -224,7 +219,7 @@ export default async function Page(props) {
 											officialName={user.officialName}
 										/>
 									</TableCell>
-									<TableCell className="h-[73px]">
+									<TableCell>
 										<Dropdown>
 											<DropdownButton plain aria-label="More options">
 												<EllipsisHorizontalIcon />
@@ -242,10 +237,10 @@ export default async function Page(props) {
 										<Tooltip
 											placement="right"
 											delay={0}
-											isDisabled={!user.hasPfp}
+											isDisabled={!user.profilePicture}
 											classNames={{ content: "p-0 select-none" }}
 											content={<Image alt="User avatar" src={`/api/users/${user.id}/avatar`} className="h-[13rem] w-[13rem] object-cover" />}>
-											<Avatar className="text-primary" showFallback src={`/api/users/${user.id}/avatar`} />
+											<Avatar radius="md" showFallback src={`/api/users/${user.id}/avatar`} />
 										</Tooltip>
 									</TableCell>
 									<TableCell className="hidden md:table-cell">{user.officialName}</TableCell>
