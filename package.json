@@ -9,6 +9,9 @@
 		"lint": "next lint",
 		"postinstall": "prisma generate"
 	},
+	"prisma": {
+		"schema": "prisma/schema.prisma"
+	},
 	"dependencies": {
 		"@headlessui/react": "0.0.0-insiders.d71fb9c",
 		"@heroicons/react": "^2.1.5",
