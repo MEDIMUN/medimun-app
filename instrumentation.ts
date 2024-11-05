@@ -1,3 +1,3 @@
 export async function register() {
-	await fetch("/api/socket");
+	await fetch("https://www.medimun.org/api/socket");
 }

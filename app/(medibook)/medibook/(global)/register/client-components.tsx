@@ -64,7 +64,7 @@ export function QRReader() {
 			<div className="border shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] md:p-4 rounded-xl bg-content1/60 flex flex-col gap-1 text-center">
 				{error ? (
 					<div className="w-full  md:w-64 flex flex-col gap-2 p-4 mx-auto rounded-lg overflow-hidden">
-						<Text className="!text-white !text-lg">We couldn't access your camera. Please make sure you have granted camera permissions.</Text>
+						<Text className="!text-white !text-lg">We couldn&apos;t access your camera. Please make sure you have granted camera permissions.</Text>
 						<Text className="text-zinc-200 !text-xs">
 							<i>Check your settings and try again.</i>
 						</Text>
