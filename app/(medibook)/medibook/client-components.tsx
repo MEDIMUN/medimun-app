@@ -221,8 +221,6 @@ export function SocketHandler() {
 		return () => clearTimeout(timer);
 	}, [isConnected]);
 
-	return null; //FIXME
-
 	if (notConnectedFor5Seconds)
 		return (
 			<div className="w-full h-screen fixed z-[100] text-left bg-zinc-900/50 backdrop-blur-sm">

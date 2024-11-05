@@ -36,7 +36,7 @@ const nextConfig = {
 	transpilePackages: ["next-auth"],
 	experimental: {
 		serverActions: {
-			bodySizeLimit: "5mb",
+			bodySizeLimit: "50mb",
 			allowedOrigins: ["https://www.medimun.org", "www.medimun.org", "www.medimun.org.", "https://www.medimun.org."],
 		},
 		reactCompiler: true,

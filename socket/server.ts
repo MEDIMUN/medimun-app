@@ -20,6 +20,7 @@ declare global {
 
 export const initializeSocket = (server: any): Server => {
 	if (!global.io) {
+		console.log("Initializing Socket.IO...");
 		global.io = new Server(server, {
 			transports: ["websocket"],
 			addTrailingSlash: false,
