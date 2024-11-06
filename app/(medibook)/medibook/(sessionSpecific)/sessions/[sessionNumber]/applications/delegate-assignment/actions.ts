@@ -4,12 +4,25 @@ import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
 
 export async function handleFinalAssignDelegates(filteredAssignments, selectedSessionId, schoolId) {
-	return { ok: false, message: ["Not implemented."] }; //FIXME: Implement this function
 	const selectedSession = await prisma.session.findFirst({ where: { id: selectedSessionId } });
 
 	if (!selectedSession) return { ok: false, message: ["Session not found."] };
 
-	const selectedSchool = await prisma.school.findFirst({ where: { id: schoolId } });
+	const selectedSchool = await prisma.school.findFirst({
+		where: { id: schoolId },
+		include: {
+			_count: {
+				select: {
+					ApplicationSchoolDirector: {
+						where: {
+							session: { id: selectedSession.id },
+							isApproved: true,
+						},
+					},
+				},
+			},
+		},
+	});
 
 	if (!selectedSchool) return { ok: false, message: ["School not found."] };
 
@@ -43,8 +56,26 @@ export async function handleFinalAssignDelegates(filteredAssignments, selectedSe
 		return { ok: false, message: ["Delegation already exists."] };
 	}
 
-	const amount = filteredAssignments.length * selectedSession.delegatePrice;
-	const description = `Delegate fee for ${filteredAssignments.length} delegates for Session ${romanize(selectedSession.numberInteger)}`;
+	const itemsObject = [
+		{
+			description: "Delegate Fee",
+			amount: selectedSession.delegatePrice,
+			quantity: filteredAssignments.length,
+		},
+		{
+			description: "School Director Fee",
+			amount: selectedSession.directorPrice,
+			quantity: selectedSchool._count.ApplicationSchoolDirector,
+		},
+	];
+
+	const itemsJson = JSON.stringify(itemsObject);
+
+	console.log(itemsJson);
+
+	//totalAmount should be .toFixed(2) to ensure it is a string with 2 decimal places
+
+	return { ok: false, message: ["School not found."] };
 
 	try {
 		await prisma.$transaction([
@@ -86,8 +117,8 @@ export async function handleFinalAssignDelegates(filteredAssignments, selectedSe
 				data: {
 					schoolId: selectedSchool.id,
 					sessionId: selectedSessionId,
-					description: description,
-					amount: amount,
+					items: itemsJson,
+					description: "Delegation Fee",
 				},
 			}),
 		]);

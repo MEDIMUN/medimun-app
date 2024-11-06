@@ -249,10 +249,11 @@ model Session {
 
 model Invoice {
   id          String    @id @default(nanoid())
+  number      Int       @unique @default(autoincrement())
   date        DateTime  @default(now())
   dueDate     DateTime?
-  amount      Float
-  description String
+  items       String
+  description String?
   isPaid      Boolean   @default(false)
   //
   user        User?     @relation(fields: [userId], references: [id])

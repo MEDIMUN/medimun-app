@@ -107,36 +107,30 @@ export default async function RootLayout({
 					{topicsModals}
 					<SidebarLayout
 						navbar={
-							<SidebarContextProvider>
-								<Navbar>
-									<Link href="/medibook" className="ml-1">
-										<img src={`/assets/branding/logos/medibook-logo-white-2.svg`} className="h-[18px]" alt="MediBook" />
-									</Link>
-									<NavbarSpacer />
-									<div className="rounded-full border bg-content1/80 px-6 py-1 text-sm font-light shadow-md">Upcoming</div>
-									<NavbarSection>
-										<Dropdown>
-											<DropdownButton className="p-0" as={NavbarItem}>
-												<Avatar
-													src={`/api/users/${authSession?.user?.id}/avatar`}
-													className="m-0 h-6 w-6 rounded-sm bg-primary"
-													showFallback
-													isBordered
-													size="sm"
-													radius="none"
-												/>
-											</DropdownButton>
-											<AccountDropdownMenu anchor="bottom end" />
-										</Dropdown>
-									</NavbarSection>
-								</Navbar>
-							</SidebarContextProvider>
+							<Navbar>
+								<Link href="/medibook" className="ml-1">
+									<img src={`/assets/branding/logos/medibook-logo-white-2.svg`} className="h-[18px]" alt="MediBook" />
+								</Link>
+								<NavbarSpacer />
+								<div className="rounded-full border bg-content1/80 px-6 py-1 text-sm font-light shadow-md">Upcoming</div>
+								<NavbarSection>
+									<Dropdown>
+										<DropdownButton className="p-0" as={NavbarItem}>
+											<Avatar
+												src={`/api/users/${authSession?.user?.id}/avatar`}
+												className="m-0 h-6 w-6 rounded-sm bg-primary"
+												showFallback
+												isBordered
+												size="sm"
+												radius="none"
+											/>
+										</DropdownButton>
+										<AccountDropdownMenu anchor="bottom end" />
+									</Dropdown>
+								</NavbarSection>
+							</Navbar>
 						}
-						sidebar={
-							<SidebarContextProvider>
-								<Sidebar sessions={sessions} />
-							</SidebarContextProvider>
-						}>
+						sidebar={<Sidebar sessions={sessions} />}>
 						<NextTopLoader
 							color="#AE2D28"
 							showSpinner={false}

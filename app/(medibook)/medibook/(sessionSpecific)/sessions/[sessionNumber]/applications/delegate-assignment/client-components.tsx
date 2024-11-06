@@ -181,7 +181,7 @@ export function FinalAssignDelegates({ users, delegateProposals, selectedSession
 									}}
 									className="mb-4"
 									color="green">
-									Confirm
+									Confirm & Send Invoice
 								</Button>
 							</li>
 						);

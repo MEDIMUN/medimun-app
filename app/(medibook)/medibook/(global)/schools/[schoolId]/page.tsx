@@ -10,6 +10,7 @@ import { notFound, redirect } from "next/navigation";
 import { EditDeleteSchoolButtons } from "../client-components";
 import { TopBar } from "../../../client-components";
 import { ActionList } from "../../../server-components";
+import { SchoolSessionActionsList } from "./client-components";
 
 export default async function Page(props: { params: Promise<any> }) {
 	const params = await props.params;
@@ -32,21 +33,6 @@ export default async function Page(props: { params: Promise<any> }) {
 	if (params.schoolId !== school.slug && school.slug) return redirect(`/medibook/schools/${school.slug}`);
 
 	const isManagementOrDirector = isManagement || !!userSchoolDirectorRole;
-
-	const actions = [
-		{
-			title: "School Students",
-			description: "View all students in this school",
-			href: `/medibook/schools/${school.slug || school.id}/students`,
-			isVisible: isManagementOrDirector,
-		},
-		{
-			title: "Delegation",
-			description: "Manage applications and delegations",
-			href: `/medibook/sessions/20/schools/${school.slug || school.id}/delegation`, //FIXME: hardcoded session
-			isVisible: isManagementOrDirector,
-		},
-	].filter((action) => action.isVisible);
 
 	const countryNameEn = countries.find((country) => country.countryCode === school?.location?.country)?.countryNameEn;
 	const location = school.location;
@@ -160,7 +146,7 @@ export default async function Page(props: { params: Promise<any> }) {
 					/>
 				</div>
 			)}
-			<ActionList actions={actions} />
+			<SchoolSessionActionsList school={school} isManagementOrDirector={isManagementOrDirector} />
 		</>
 	);
 }

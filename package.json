@@ -10,6 +10,7 @@
 		"postinstall": "prisma generate"
 	},
 	"dependencies": {
+		"@alexandernanberg/react-pdf-renderer": "^4.0.0-canary-4",
 		"@headlessui/react": "0.0.0-insiders.d71fb9c",
 		"@heroicons/react": "^2.1.5",
 		"@mantine/hooks": "^7.13.4",
@@ -66,6 +67,7 @@
 		"react-confetti": "^6.1.0",
 		"react-dom": "19.0.0-rc-69d4b800-20241021",
 		"react-google-recaptcha": "^3.1.0",
+		"react-pdf-tailwind": "^2.3.0",
 		"react-qr-code": "^2.0.15",
 		"redis": "^4.7.0",
 		"sharp": "^0.33.5",

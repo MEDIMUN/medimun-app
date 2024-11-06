@@ -33,7 +33,7 @@ import {
 } from "@heroicons/react/16/solid";
 import { signOut, useSession } from "next-auth/react";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { AwaitedReactNode, Fragment, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react";
+import { Fragment, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react";
 import { getMoreSessions } from "./actions";
 import MediBookLogo from "@/public/assets/branding/logos/medibook-logo-white-2.svg";
 import Image from "next/image";
@@ -180,7 +180,7 @@ export function Sidebar({ sessions }) {
 	function CommitteeOptions({ basePath }) {
 		return visibleCommitteeOptions.map((committee, index) => (
 			<SidebarItem
-				key={index}
+				key={"committee-options-" + index}
 				className={cn("h-8", index + 1 == visibleCommitteeOptions.length && "mb-2")}
 				href={basePath + committee.href}
 				current={pathname == basePath + committee.href}>
@@ -201,7 +201,7 @@ export function Sidebar({ sessions }) {
 	function ApplicationOptions({ basePath }) {
 		return visibleApplicationOptions.map((committee, index) => (
 			<SidebarItem
-				key={index}
+				key={"application-options-" + index}
 				disabled={committee.isDisabled}
 				className={cn("h-8", index + 1 == visibleApplicationOptions.length && "mb-2")}
 				href={basePath + committee.href}
@@ -243,12 +243,8 @@ export function Sidebar({ sessions }) {
 					<SidebarHeader>
 						<Link href="/medibook" className="hidden md:block">
 							<div className="mb-4 ml-[8px] mt-[4px] flex h-[16px] max-w-max drop-shadow hover:grayscale">
-								{/* 							<Image src={MediBookLogo} alt="MediBook" fill className="!relative" />
-								 */}
 								<img src={`/assets/branding/logos/medibook-logo-white-2.svg`} className="h-[16px]" alt="MediBook" />
-								<Badge color="red" className="ml-1 rounded-full">
-									beta
-								</Badge>
+								<Badge className="ml-1 rounded-bl-full rounded-tr-full px-3">beta</Badge>
 							</div>
 						</Link>
 						<Dropdown>
@@ -259,38 +255,20 @@ export function Sidebar({ sessions }) {
 							</DropdownButton>
 							<DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
 								{!!sessionsData?.length &&
-									sessionsData.map(
-										(
-											session: {
-												id: Key;
-												number: string | Number;
-												theme:
-													| string
-													| number
-													| bigint
-													| boolean
-													| ReactElement<any, string | JSXElementConstructor<any>>
-													| Iterable<ReactNode>
-													| ReactPortal
-													| Promise<AwaitedReactNode>
-													| ((bag: {}) => ReactElement);
-											},
-											index: any
-										) => (
-											<Fragment key={session.id}>
-												<DropdownItem onClick={() => setSelectedSession(session.number)}>
-													<Avatar
-														slot="icon"
-														initials={session.number.toString()}
-														className={cn("bg-primary text-white", !index && "bg-[url(/assets/gradients/1.jpg)] bg-cover")}
-													/>
-													<DropdownLabel className="flex">Session {romanize(session.number)}</DropdownLabel>
-													<DropdownDescription>{session.theme}</DropdownDescription>
-												</DropdownItem>
-												{!index && <DropdownDivider />}
-											</Fragment>
-										)
-									)}
+									sessionsData.map((session: any, index: number) => (
+										<Fragment key={"session-" + session.id}>
+											<DropdownItem onClick={() => setSelectedSession(session.number)}>
+												<Avatar
+													slot="icon"
+													initials={session.number.toString()}
+													className={cn("bg-primary text-white", !index && "bg-[url(/assets/gradients/1.jpg)] bg-cover")}
+												/>
+												<DropdownLabel className="flex">Session {romanize(session.number)}</DropdownLabel>
+												<DropdownDescription>{session.theme}</DropdownDescription>
+											</DropdownItem>
+											{!index && <DropdownDivider />}
+										</Fragment>
+									))}
 								<DropdownDivider />
 								{!(sessionsData?.filter((session) => session.numberInteger == 1).length > 0) && (
 									<DropdownItem
@@ -394,7 +372,7 @@ export function Sidebar({ sessions }) {
 							schoolDirectorRoles.map((role) => {
 								const sdBasePath = `/medibook/schools/${role?.schoolSlug || role?.schoolId}`;
 								return (
-									<SidebarSection key={role.id}>
+									<SidebarSection key={"school-director-role" + role.id}>
 										<SidebarHeading className="line-clamp-1">{schoolDirectorRoles.length == 1 ? "School Management" : role.school}</SidebarHeading>
 										<SidebarItem href={`${sdBasePath}`} current={pathname == `${sdBasePath}`}>
 											<Icon slot="icon" icon="heroicons-solid:academic-cap" height={20} />
@@ -434,11 +412,11 @@ export function Sidebar({ sessions }) {
 												Reports <SoonBadge />
 											</SidebarLabel>
 										</SidebarItem>
-										<SidebarItem disabled href={`${sdBasePath}/invoices`} current={pathname == `${sdBasePath}/invoices`}>
+										<SidebarItem
+											href={`/medibook/sessions/${selectedSession}/schools/${role?.schoolSlug || role?.schoolId}/invoices`}
+											current={pathname == `/medibook/sessions/${selectedSession}/schools/${role?.schoolSlug || role?.schoolId}/invoices`}>
 											<Icon slot="icon" icon="heroicons-solid:currency-euro" height={20} />
-											<SidebarLabel>
-												Invoices <SoonBadge />
-											</SidebarLabel>
+											<SidebarLabel>Invoices</SidebarLabel>
 										</SidebarItem>
 									</SidebarSection>
 								);
@@ -514,7 +492,7 @@ export function Sidebar({ sessions }) {
 							<SidebarSection>
 								<SidebarHeading>Session {romanize(selectedSession)} Committees</SidebarHeading>
 								{selectedSessionData?.committee?.map((committee, index: number) => (
-									<Fragment key={index}>
+									<Fragment key={"session-committee-" + committee.id}>
 										<SidebarItem href={`${basePath}/committees/${committee.slug || committee.id}`}>
 											<div
 												style={{ background: `url(/assets/gradients/${(index % 6) + 1}.jpg)` }}
@@ -535,7 +513,10 @@ export function Sidebar({ sessions }) {
 							<SidebarSection>
 								<SidebarHeading>Session {romanize(selectedSession)} Departments</SidebarHeading>
 								{selectedSessionData?.department?.map((department, index: number) => (
-									<SidebarItem key={index} href={`${basePath}/departments/${department.slug || department.id}`} className="line-clamp-2">
+									<SidebarItem
+										key={"session-department-" + department.id}
+										href={`${basePath}/departments/${department.slug || department.id}`}
+										className="line-clamp-2">
 										<div
 											style={{ background: `url(/assets/gradients/${(index % 6) + 1}.jpg)` }}
 											className={`flex min-h-[23px] min-w-[23px] rounded-md !bg-cover text-center`}

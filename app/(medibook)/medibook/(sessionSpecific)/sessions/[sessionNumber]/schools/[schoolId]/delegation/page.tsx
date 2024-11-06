@@ -67,7 +67,6 @@ export default async function Page(props) {
 	const filteredCountries = countries.filter((country) => selectedSession.countriesOfSession.includes(country.countryCode));
 	const applicationsOpen = areDelegateApplicationsOpen(selectedSession);
 
-	//FIXME: cant handle 4 SC proposals
 	const parsedAssignment = delegationAssignmentProposal ? JSON.parse(delegationAssignmentProposal.assignment) : null;
 
 	const userIds = parsedAssignment?.map((assignment) => assignment.studentId);
