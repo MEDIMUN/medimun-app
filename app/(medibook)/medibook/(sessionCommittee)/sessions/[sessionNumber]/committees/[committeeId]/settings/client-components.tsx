@@ -164,8 +164,8 @@ export function CommitteeSettingsForm({ selectedCommittee }) {
 
 			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 				<div className="space-y-1">
-					<Subheading>Session Visibility</Subheading>
-					<Text>If the session is set as visible </Text>
+					<Subheading>Committee Visibility</Subheading>
+					<Text>If the committee is set as visible </Text>
 				</div>
 				<div className="flex">
 					<Select className="my-auto" defaultValue={selectedCommittee?.isVisible ? "true" : "false"} required name="isVisible">

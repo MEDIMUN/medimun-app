@@ -44,7 +44,7 @@ export default async function InvoicesPage({ params, searchParams }) {
 
 	const subText = (
 		<>
-			Check out the <TextLink href={`/medibook/sessions/${sessionNumber}/resources`}>Resources</TextLink> for payment instructions.
+			Check out the <TextLink href={`/medibook/sessions/${sessionNumber}/resources`}>Session Resources</TextLink> for payment instructions.
 		</>
 	);
 

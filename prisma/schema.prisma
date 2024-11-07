@@ -232,6 +232,7 @@ model Session {
   data                                           String?
   //
   savedDelegationDeclarationState                String?
+  savedState                                     String?
   //
   securityCouncilCountriesOfYear                 String[]                                @default(["CN", "FR", "RU", "GB", "US"])
   countriesOfSession                             String[]                                @default(["CN", "FR", "RU", "GB", "US"])
@@ -307,6 +308,7 @@ model SchoolDelegationProposal {
   date       DateTime @default(now())
   //
   assignment String
+  changes    String?
   //
   school     School   @relation(fields: [schoolId], references: [id])
   schoolId   String

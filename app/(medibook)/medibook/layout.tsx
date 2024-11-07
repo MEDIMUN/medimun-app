@@ -66,7 +66,7 @@ export default async function RootLayout({
 				<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
 				<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
 			</head>
-			<body className="overflow-x-hidden h-full">
+			<body className="h-full">
 				<noscript className="fixed z-[1000] flex min-h-[100vh] w-full flex-col bg-primary text-white">
 					<div className="mx-auto my-auto w-full max-w-lg p-4 text-center">
 						<Link href="/home">

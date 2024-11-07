@@ -36,7 +36,7 @@ export function PdfDownloadButton({ invoice }) {
 				<DropdownItem
 					target="_blank"
 					disabled={instance.loading}
-					{...(instance.url ? { href: instance.url, download: `MEDIMUN-Invoice-#${invoice.number.toString().padStart(10, "0")}` } : {})}>
+					{...(instance.url ? { href: instance.url, download: `MEDIMUN-Payment-Notice-#${invoice.number.toString().padStart(10, "0")}` } : {})}>
 					{instance.loading ? "Loading Download..." : "Download Printable PDF"}
 				</DropdownItem>
 			</>

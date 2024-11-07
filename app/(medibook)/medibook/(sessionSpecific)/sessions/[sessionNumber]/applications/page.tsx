@@ -5,12 +5,12 @@ import prisma from "@/prisma/client";
 import Link from "next/link";
 
 export default async function Page(props) {
-    const params = await props.params;
-    const selectedSession = await prisma.session.findFirst({
+	const params = await props.params;
+	const selectedSession = await prisma.session.findFirst({
 		where: { number: params.sessionNumber },
 	});
 
-    const actions = [
+	const actions = [
 		{
 			title: "School Director Applications",
 			description: "Applications for the position of School Director.",
@@ -24,7 +24,7 @@ export default async function Page(props) {
 		{
 			title: "Delegate Assignments",
 			description: "Assign delegates to their respective committees",
-			href: `/medibook/sessions/${selectedSession.number}/applications/delegate-assignment`,
+			href: `/medibook/sessions/${selectedSession.number}/applications/assignment`,
 		},
 		{
 			title: "Chair Applications",
@@ -43,7 +43,7 @@ export default async function Page(props) {
 		},
 	];
 
-    return (
+	return (
 		<>
 			<TopBar
 				buttonText={`Session ${romanize(selectedSession.numberInteger)}`}

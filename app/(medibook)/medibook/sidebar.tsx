@@ -169,7 +169,7 @@ export function Sidebar({ sessions }) {
 	const applicationOptionsList = [
 		{ name: "School Director", href: `/applications/school-director`, isVisible: true },
 		{ name: "Delegation", href: `/applications/delegation`, isVisible: true },
-		{ name: "Delegate Assignment", href: `/applications/delegate-assignment`, isVisible: true },
+		{ name: "Delegate Assignment", href: `/applications/assignment`, isVisible: true },
 		{ name: "Chair", href: `/applications/chair`, isVisible: isManagement, isDisabled: true },
 		{ name: "Manager", href: `/applications/manager`, isVisible: isManagement, isDisabled: true },
 		{ name: "Member", href: `/applications/member`, isVisible: isManagement, isDisabled: true },
@@ -244,7 +244,7 @@ export function Sidebar({ sessions }) {
 						<Link href="/medibook" className="hidden md:block">
 							<div className="mb-4 ml-[8px] mt-[4px] flex h-[16px] max-w-max drop-shadow hover:grayscale">
 								<img src={`/assets/branding/logos/medibook-logo-white-2.svg`} className="h-[16px]" alt="MediBook" />
-								<Badge className="ml-1 rounded-bl-full rounded-tr-full px-3">beta</Badge>
+								<Badge className="ml-1 !rounded-full !bg-primary !text-white">beta</Badge>
 							</div>
 						</Link>
 						<Dropdown>

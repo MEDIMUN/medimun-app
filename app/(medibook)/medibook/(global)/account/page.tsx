@@ -2,7 +2,7 @@ import { Button } from "@/components/button";
 import { Divider } from "@/components/divider";
 import { Heading, Subheading } from "@/components/heading";
 import { Input } from "@/components/input";
-import { Text } from "@/components/text";
+import { Code, Text } from "@/components/text";
 import { Textarea } from "@/components/textarea";
 import type { Metadata } from "next";
 import prisma from "@/prisma/client";
@@ -14,11 +14,12 @@ import { authorize, s } from "@/lib/authorize";
 import { ClearBioButton, UsernameField, PrivateProfilePictureUploader } from "./client-components";
 import { parseFormData } from "@/lib/parse-form-data";
 import { z } from "zod";
-import { processPronouns } from "@/lib/text";
+import { nameCase, processPronouns } from "@/lib/text";
 import { CheckCircleIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { Badge } from "@/components/badge";
 import { Select } from "@/components/select";
+import { TopBar } from "../../client-components";
 
 export const metadata: Metadata = {
 	title: "User Settings",
@@ -47,9 +48,9 @@ export default async function Settings(props) {
 	async function handleSubmit(formData: FormData) {
 		"use server";
 		const schema = z.object({
-			officialName: z.string({ required_error: "Official Name is required." }).max(25).trim(),
-			officialSurname: z.string({ required_error: "Official Surname is required." }).max(25).trim(),
-			displayName: z.string().max(50).trim().optional().nullable(),
+			officialName: z.string({ required_error: "Official Name is required." }).max(25).trim().transform(nameCase),
+			officialSurname: z.string({ required_error: "Official Surname is required." }).max(25).trim().transform(nameCase),
+			displayName: z.string().max(50).trim().transform(nameCase).optional().nullable(),
 			username: z.string().max(50).trim().optional().nullable(),
 			phoneNumber: z.string().max(50).trim().optional().nullable(),
 			schoolId: z.string().optional().nullable(),
@@ -68,9 +69,7 @@ export default async function Settings(props) {
 		if (error) redirect(`?error=${error.errors[0].message}#notice`);
 		try {
 			await prisma.user.update({
-				where: {
-					id: authSession.user.id,
-				},
+				where: { id: authSession.user.id },
 				data,
 			});
 		} catch (error) {
@@ -80,39 +79,37 @@ export default async function Settings(props) {
 	}
 
 	function RequiredTag() {
-		return <Badge color="red">Required</Badge>;
+		return <Code color="red">Required</Code>;
 	}
 
 	function OptionalTag() {
-		return <Badge color="yellow">Optional</Badge>;
+		return <Code color="yellow">Optional</Code>;
 	}
 
 	function RecommendedTag() {
-		return <Badge color="blue">Recommended</Badge>;
+		return <Code color="blue">Recommended</Code>;
 	}
 
 	const isAllowedToEditBio = authorize(authSession, [s.management, s.chair, s.manager]);
 
 	return (
 		<>
-			<div className="mx-auto max-w-4xl">
-				<Heading>User Settings</Heading>
-				<Divider className="my-10 mt-6" />
-				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-					<div className="space-y-1">
-						<Subheading>
-							Profile Picture <RecommendedTag />
-						</Subheading>
-						<Text>
-							Your profile picture will be visible to everyone. You <b>don&apos;t</b> need to click save.
-						</Text>
-					</div>
-					<div className="my-auto grid gap-6">
-						<PrivateProfilePictureUploader user={selectedUser} />
-					</div>
-				</section>
-			</div>
-			<form action={handleSubmit} className="mx-auto max-w-4xl">
+			<TopBar title="User Settings" hideSearchBar showDivider buttonHref="/medibook" buttonText="Home" />
+			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+				<div className="space-y-1">
+					<Subheading>
+						Profile Picture <RecommendedTag />
+					</Subheading>
+					<Text>
+						Inappropriate photos that don&apos;t show your face will be removed. Your profile picture will be visible to everyone. You{" "}
+						<b>don&apos;t</b> need to click save.
+					</Text>
+				</div>
+				<div className="my-auto grid gap-6">
+					<PrivateProfilePictureUploader user={selectedUser} />
+				</div>
+			</section>
+			<form action={handleSubmit}>
 				<Divider className="my-10" />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
@@ -130,7 +127,7 @@ export default async function Settings(props) {
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
 						<Subheading>
-							Display Name <OptionalTag />
+							Preferred Name & Surname <OptionalTag />
 						</Subheading>
 						<Text>
 							Your preferred name to be used on your name tag, profile and all public places. Leave empty for your official name to be used. This must
@@ -138,7 +135,7 @@ export default async function Settings(props) {
 						</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1">
-						<Input maxLength={50} placeholder="Preferred Name" name="displayName" defaultValue={selectedUser?.displayName} />
+						<Input maxLength={50} placeholder="Preferred Name" pattern="(^$|.*\s+.*)" name="displayName" defaultValue={selectedUser?.displayName} />
 					</div>
 				</section>
 				<Divider className="my-10" soft />
@@ -149,7 +146,11 @@ export default async function Settings(props) {
 						<Subheading>
 							Phone Number <RecommendedTag />
 						</Subheading>
-						<Text>Will only be visible to your chair or manager and management members. Please include a country code.</Text>
+						<Text>
+							Will only be visible to your chair or manager and management members.
+							<br />
+							<b>Please include a country code.</b>
+						</Text>
 					</div>
 					<div className="my-auto">
 						<Input pattern="^\+?[0-9]{0,15}$" maxLength={50} placeholder="Phone Number" name="phoneNumber" defaultValue={selectedUser?.phoneNumber} />
@@ -259,7 +260,7 @@ export default async function Settings(props) {
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
 						<Subheading>
-							Best Time To Reach <Badge color="red">Required for School Directors</Badge> <Badge color="yellow">Optional</Badge>
+							Best Time To Reach <Code color="red">Required for School Directors</Code>
 						</Subheading>
 						<Text>Best time to reach you over the phone for for non-emergency situations.</Text>
 					</div>

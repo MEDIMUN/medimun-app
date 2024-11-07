@@ -38,7 +38,7 @@ const managementDirectPaths = [
 	"/medibook/locations",
 	"/medibook/applications",
 	"/medibook/applications/school-director",
-	"/medibook/applications/delegate-assignment",
+	"/medibook/applications/assignment",
 	"/medibook/applications/delegation",
 ];
 const logggedInNotAllowedPaths = ["/login", "/signup", "/", "/login/help"];

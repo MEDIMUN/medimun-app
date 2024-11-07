@@ -257,8 +257,6 @@ export default async function Page(props) {
 				{grantedDelegation && (
 					<div className="rounded-md bg-zinc-50 px-4">
 						<DescriptionList>
-							<DescriptionTerm>Delegation ID</DescriptionTerm>
-							<DescriptionDetails className="font-mono">{grantedDelegation.id}</DescriptionDetails>
 							<DescriptionTerm>Number of GA Delegations</DescriptionTerm>
 							<DescriptionDetails>{grantedDelegation.countries.filter((c) => c !== "NOTGRANTED").length}</DescriptionDetails>
 							<DescriptionTerm>Assigned GA Countries</DescriptionTerm>

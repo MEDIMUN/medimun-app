@@ -1,4 +1,4 @@
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
 import { auth } from "@/auth";
 import Paginator from "@/components/pagination";
 import { authorize, s } from "@/lib/authorize";
@@ -6,6 +6,23 @@ import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { FinalAssignDelegates } from "./client-components";
 import { romanize } from "@/lib/romanize";
+import { Button } from "@/components/button";
+
+export function sortProposal(proposal, committees) {
+	return proposal
+		.sort((a: { committeeId: string }, b: { committeeId: string }) => {
+			const selectedCommitteeA = committees.find((c) => c.id === a.committeeId);
+			const selectedCommitteeB = committees.find((c) => c.id === b.committeeId);
+			if (!selectedCommitteeA || !selectedCommitteeB) return 0;
+			if (selectedCommitteeA.name < selectedCommitteeB.name) return -1;
+			if (selectedCommitteeA.name > selectedCommitteeB.name) return 1;
+			return 0;
+		})
+		.sort((a: { countryCode: number }, b: { countryCode: number }) => {
+			if (a.countryCode < b.countryCode) return -1;
+			if (a.countryCode > b.countryCode) return 1;
+		});
+}
 
 export default async function Page(props) {
 	const searchParams = await props.searchParams;
@@ -35,11 +52,8 @@ export default async function Page(props) {
 		include: {
 			school: {
 				include: {
-					finalDelegation: {
-						where: {
-							sessionId: selectedSession.id,
-						},
-					},
+					ApplicationGrantedDelegationCountries: { where: { sessionId: selectedSession.id } },
+					finalDelegation: { where: { sessionId: selectedSession.id } },
 				},
 			},
 		},
@@ -48,15 +62,17 @@ export default async function Page(props) {
 	const totalItems = await prisma.schoolDelegationProposal.count({ where: whereObject as any });
 
 	const parsedDelegateProposals = delegateProposals.map((proposal) => {
-		const { assignment, ...others } = proposal;
+		const { assignment, changes, ...others } = proposal;
 		return {
 			assignment: JSON.parse(assignment),
+			changes: changes ? JSON.parse(changes) : [],
 			...others,
 		};
 	});
 
 	const userIds = parsedDelegateProposals.reduce((acc, proposal) => {
-		const studentIds = proposal.assignment.map((a) => a.studentId);
+		const studentIds2 = proposal.changes.map((a) => a.studentId);
+		const studentIds = proposal.assignment.map((a) => a.studentId).concat(studentIds2);
 		return acc.concat(studentIds);
 	}, []);
 
@@ -65,12 +81,14 @@ export default async function Page(props) {
 	return (
 		<>
 			<TopBar
-				title="Delegate Assignments"
+				title="Delegate Assignment"
 				buttonText={`Session ${romanize(selectedSession.numberInteger)} Applications`}
-				buttonHref={`/medibook/sessions/${selectedSession.number}/applications`}
-				hideSearchBar
-			/>
-			<FinalAssignDelegates selectedSession={selectedSession} users={allUsers} delegateProposals={parsedDelegateProposals} />
+				buttonHref={`/medibook/sessions/${selectedSession.number}/applications`}>
+				<SearchParamsButton searchParams={{ "add-delegation-proposal": true }}>Add Proposal</SearchParamsButton>
+			</TopBar>
+			{!!delegateProposals.length && (
+				<FinalAssignDelegates selectedSession={selectedSession} users={allUsers} delegateProposals={parsedDelegateProposals} />
+			)}
 			<Paginator totalItems={totalItems} itemsPerPage={10} itemsOnPage={delegateProposals.length} />
 		</>
 	);

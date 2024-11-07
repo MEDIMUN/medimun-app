@@ -4,7 +4,7 @@ import { Description, ErrorMessage, Field } from "@/components/fieldset";
 import { Subheading } from "@/components/heading";
 import Icon from "@/components/icon";
 import { Input, InputGroup } from "@/components/input";
-import { Text } from "@/components/text";
+import { Code, Text } from "@/components/text";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 import { checkUsername, clearBio, deletePrivateProfilePicture, updatePrivateProfilePicture } from "./actions";
@@ -57,7 +57,7 @@ export function UsernameField({ initialUsername }) {
 		<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 			<div className="space-y-1">
 				<Subheading>
-					Username <Badge color="yellow">Optional</Badge>
+					Username <Code color="yellow">Optional</Code>
 				</Subheading>
 				<Text>Your handle on the platform. Will be visible to everyone. </Text>
 			</div>
@@ -68,7 +68,6 @@ export function UsernameField({ initialUsername }) {
 						<Input
 							name="username"
 							type="search"
-							defaultValue={initialUsername}
 							value={query}
 							onChange={(e) => handleOnChange(e)}
 							disabled={isLoading}

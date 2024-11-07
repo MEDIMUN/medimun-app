@@ -80,9 +80,9 @@ export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChil
 				</header>
 			</div>
 			{/* Content */}
-			<main className="flex h-full flex-1 flex-col pb-2 lg:min-w-0 lg:pl-64 lg:pr-2 lg:pt-2">
+			<main className="flex h-full flex-1 flex-col lg:min-w-0 lg:pl-64 lg:pr-2 lg:pt-2">
 				{children}
-				<div className={cn("min-h-2 h-2 hidden md:block w-full", hiddenPaths.includes(pathname) && "!hidden")}></div>
+				<div className="min-h-2" />
 			</main>
 		</div>
 	);

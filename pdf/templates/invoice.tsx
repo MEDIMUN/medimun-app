@@ -88,12 +88,12 @@ export const MyDocument = ({ invoice }) => {
 							<Image src={base64Logo} />
 						</View>
 						<View style={tw("ml-auto my-auto text-right mr-6 font-[Inter]")}>
-							<Text style={tw("font-normal ml-auto")}>Invoice</Text>
+							<Text style={tw("font-normal ml-auto")}>Payment Notice</Text>
 							<Text style={tw("font-thin text-xs")}>ID #{invoice.number.toString().padStart(10, "0")}</Text>
 						</View>
 					</View>
 					<View style={tw("py-2 px-5")}>
-						<Text style={tw("text-sm font-thin")}>Invoice to</Text>
+						<Text style={tw("text-sm font-thin")}>Notice for</Text>
 						<Text>
 							{invoice.school ? invoice.school.name : invoice?.user ? `${invoice?.user?.officialName} ${invoice?.user?.officialSurname}` : "N/A"}
 						</Text>
@@ -217,7 +217,7 @@ export const MyDocument = ({ invoice }) => {
 							</Link>
 						</Text>
 						<Text style={tw("text-xs font-light font-[Inter] leading-5")}>
-							We have the right to modify the information on this invoice. Please check the MediBook App for the most up-to-date invoice.
+							We have the right to modify the information on this document. Please check the MediBook App for the most up-to-date document.
 						</Text>
 						<Text style={tw("text-xs font-light font-[Inter] leading-5")}>
 							This document is a representation for billing purposes and not an official invoice. For an official invoice and any legally binding
