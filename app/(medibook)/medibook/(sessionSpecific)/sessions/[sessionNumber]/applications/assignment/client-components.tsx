@@ -84,7 +84,7 @@ export function FinalAssignDelegates({ users, delegateProposals, selectedSession
 							<span className="sr-only">Actions</span>
 						</TableHeader>
 						<TableHeader>School</TableHeader>
-						<TableHeader>Granted Delegations</TableHeader>
+						<TableHeader>Granted GA Delegations</TableHeader>
 						<TableHeader>GA Delegates Proposed</TableHeader>
 						<TableHeader>Non-GA Delegates Proposed</TableHeader>
 						<TableHeader>Modifications</TableHeader>

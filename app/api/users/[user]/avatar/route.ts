@@ -2,35 +2,53 @@ import { NextResponse } from "next/server";
 import { minio } from "@/minio/client";
 import { notFound } from "next/navigation";
 import prisma from "@/prisma/client";
-import { NextURL } from "next/dist/server/web/next-url";
+import sharp from "sharp";
 
 export async function GET(request, props) {
+	// Await `params` directly
 	const params = await props.params;
-	/* 	return NextResponse.json({ "Not Found": "True" });
-	 */
+
 	let userExists;
 	try {
-		userExists = await prisma.user.findUnique({
-			where: {
-				id: params.user,
-			},
-			select: {
-				profilePicture: true,
-			},
+		userExists = await prisma.user.findUniqueOrThrow({
+			where: { id: params.user, profilePicture: { not: null } },
+			select: { profilePicture: true },
 		});
 	} catch (e) {
-		notFound();
+		return notFound();
 	}
-
-	if (!userExists) notFound();
-	if (!userExists.profilePicture) return NextResponse.json({ "Not Found": "True" });
 
 	let minioClient = minio();
-	let url: string | NextURL | URL;
+	let imageBuffer;
+
 	try {
-		url = await minioClient.presignedGetObject(process.env.BUCKETNAME, "avatars/" + userExists.profilePicture, 30 * 60);
+		const stream = await minioClient.getObject(process.env.BUCKETNAME, "avatars/" + userExists.profilePicture);
+
+		// Buffer the stream data
+		imageBuffer = await new Promise((resolve, reject) => {
+			const chunks = [];
+			stream.on("data", (chunk) => chunks.push(chunk));
+			stream.on("end", () => resolve(Buffer.concat(chunks)));
+			stream.on("error", (err) => reject(err));
+		});
 	} catch (e) {
-		notFound();
+		return notFound();
 	}
-	return NextResponse.redirect(url);
+
+	// Use sharp to optimize and make the image a square
+	const optimizedImage = await sharp(imageBuffer)
+		.resize(500, 500, {
+			fit: sharp.fit.cover,
+			position: sharp.strategy.entropy, // Smart crop
+		})
+		.jpeg({ quality: 60 }) // Adjust quality as needed
+		.toBuffer();
+
+	// Return the optimized image
+	return new Response(optimizedImage, {
+		headers: {
+			"Content-Type": "image/jpeg",
+			"Cache-Control": "public, max-age=1800", // Optional client-side caching
+		},
+	});
 }
