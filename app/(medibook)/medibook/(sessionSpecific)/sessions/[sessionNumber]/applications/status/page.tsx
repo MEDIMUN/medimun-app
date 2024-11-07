@@ -12,6 +12,8 @@ import { parseOrderDirection } from "@/lib/order-direction";
 import { Badge } from "@/components/badge";
 import { Fragment } from "react";
 import { romanize } from "@/lib/romanize";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
+import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 
 const itemsPerPage = 10;
 
@@ -118,7 +120,16 @@ export default async function Page(props) {
 							));
 							return (
 								<TableRow href={!school.director.length ? `/medibook/schools/${school.slug || school.id}` : null} key={school.id}>
-									<TableCell></TableCell>
+									<TableCell>
+										<Dropdown>
+											<DropdownButton plain>
+												<EllipsisVerticalIcon />
+											</DropdownButton>
+											<DropdownMenu anchor="right">
+												<DropdownItem href={`/medibook/schools/${school.slug || school.id}`}>View School</DropdownItem>
+											</DropdownMenu>
+										</Dropdown>
+									</TableCell>
 									<TableCell>{school.name}</TableCell>
 									<TableCell>{directors}</TableCell>
 									<TableCell>

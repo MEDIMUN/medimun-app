@@ -76,16 +76,16 @@ export async function delegationAssignmentChanges(proposalId, newAssignment) {
 		}
 	}
 
-	const generalAssemblyCommitties = selectedSession.committee.filter((committee) => committee.type === "GENERALASSEMBLY");
+	/* 	const generalAssemblyCommitties = selectedSession.committee.filter((committee) => committee.type === "GENERALASSEMBLY");
 	const specialAndSecurityCommitties = selectedSession.committee.filter((committee) => committee.type !== "GENERALASSEMBLY");
-	const generalAssemblyCountries = delegationGrantedToSchool?.countries?.filter((country) => country !== "NOTGRANTED");
+	const generalAssemblyCountries = delegationGrantedToSchool?.countries?.filter((country) => country !== "NOTGRANTED"); */
 
-	const maxNumberOfDelegates = generalAssemblyCommitties?.length * generalAssemblyCountries?.length + specialAndSecurityCommitties?.length;
-	const minNumberOfDelegates = generalAssemblyCommitties.length * (generalAssemblyCountries.length - 1) + 1;
+	/* 	const maxNumberOfDelegates = generalAssemblyCommitties?.length * generalAssemblyCountries?.length + specialAndSecurityCommitties?.length;
+	const minNumberOfDelegates = generalAssemblyCommitties.length * (generalAssemblyCountries.length - 1) + 1; */
 
-	if (newAssignment.length < minNumberOfDelegates || newAssignment.length > maxNumberOfDelegates) {
+	/* 	if (newAssignment.length < minNumberOfDelegates || newAssignment.length > maxNumberOfDelegates) {
 		return { ok: false, message: ["Invalid number of delegates."] };
-	}
+	} */
 
 	const validatedNewAssignment = sortProposal(
 		newAssignment.map((a: { countryCode: any; studentId: any; committeeId: any }) => {

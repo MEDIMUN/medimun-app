@@ -161,9 +161,12 @@ function ConfirmModal({ users, visibleProposal, setVisibleProposal, selectedSess
 				Any changes you make here are saved as a draft and won&apos;t take effect until the proposal is approved and returned.
 			</DialogDescription>
 			<DialogBody>
-				<Table>
+				<Table className="showscrollbar">
 					<TableHead>
 						<TableRow>
+							<TableHeader>
+								<span className="sr-only">Actions</span>
+							</TableHeader>
 							<TableHeader>
 								<span className="sr-only">#</span>
 							</TableHeader>
@@ -173,9 +176,6 @@ function ConfirmModal({ users, visibleProposal, setVisibleProposal, selectedSess
 							<TableHeader>Name</TableHeader>
 							<TableHeader>Committee</TableHeader>
 							<TableHeader>Country</TableHeader>
-							<TableHeader>
-								<span className="sr-only">Actions</span>
-							</TableHeader>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -185,19 +185,6 @@ function ConfirmModal({ users, visibleProposal, setVisibleProposal, selectedSess
 							const selectedCountry = countries.find((c) => c.countryCode === student.countryCode);
 							return (
 								<TableRow key={`student-${selectedStudent?.id}`}>
-									<TableCell>{index + 1}</TableCell>
-									<TableCell>
-										{selectedStudent?.profilePicture ? (
-											<Avatar showFallback size="sm" radius="sm" src={`/api/users/${selectedStudent.id}/avatar`} />
-										) : (
-											<Avatar showFallback size="sm" radius="sm" />
-										)}
-									</TableCell>
-									<TableCell>{selectedStudent?.displayName || `${selectedStudent?.officialName} ${selectedStudent?.officialSurname}`}</TableCell>
-									<TableCell>{selectedCommittee?.name}</TableCell>
-									<TableCell>
-										{selectedCountry?.flag} {selectedCountry?.countryNameEn || "N/A"}
-									</TableCell>
 									<TableCell>
 										<Dropdown>
 											<DropdownButton plain>
@@ -223,6 +210,19 @@ function ConfirmModal({ users, visibleProposal, setVisibleProposal, selectedSess
 												</DropdownItem>
 											</DropdownMenu>
 										</Dropdown>
+									</TableCell>
+									<TableCell>{index + 1}</TableCell>
+									<TableCell>
+										{selectedStudent?.profilePicture ? (
+											<Avatar showFallback size="sm" radius="sm" src={`/api/users/${selectedStudent.id}/avatar`} />
+										) : (
+											<Avatar showFallback size="sm" radius="sm" />
+										)}
+									</TableCell>
+									<TableCell>{selectedStudent?.displayName || `${selectedStudent?.officialName} ${selectedStudent?.officialSurname}`}</TableCell>
+									<TableCell>{selectedCommittee?.name}</TableCell>
+									<TableCell>
+										{selectedCountry?.flag} {selectedCountry?.countryNameEn || "N/A"}
 									</TableCell>
 								</TableRow>
 							);
@@ -307,11 +307,11 @@ function ViewEditDelegateProposal({
 				Any changes you make here are automatically saved as a draft and won&apos;t take effect until the proposal is approved and returned.
 			</DialogDescription>
 			<DialogBody>
-				<Table>
+				<Table className="showscrollbar">
 					<TableHead>
 						<TableRow>
 							<TableHeader>
-								<span className="sr-only">#</span>
+								<span className="sr-only">Actions</span>
 							</TableHeader>
 							<TableHeader>
 								<span className="sr-only">Profile Picture</span>
@@ -319,9 +319,7 @@ function ViewEditDelegateProposal({
 							<TableHeader>Name</TableHeader>
 							<TableHeader>Committee</TableHeader>
 							<TableHeader>Country</TableHeader>
-							<TableHeader>
-								<span className="sr-only">Actions</span>
-							</TableHeader>
+							<TableHeader>Index</TableHeader>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -331,19 +329,6 @@ function ViewEditDelegateProposal({
 							const selectedCountry = countries.find((c) => c.countryCode === student.countryCode);
 							return (
 								<TableRow key={`student-${selectedStudent?.id}`}>
-									<TableCell>{index + 1}</TableCell>
-									<TableCell>
-										{selectedStudent?.profilePicture ? (
-											<Avatar showFallback size="sm" radius="sm" src={`/api/users/${selectedStudent.id}/avatar`} />
-										) : (
-											<Avatar showFallback size="sm" radius="sm" />
-										)}
-									</TableCell>
-									<TableCell>{selectedStudent?.displayName || `${selectedStudent?.officialName} ${selectedStudent?.officialSurname}`}</TableCell>
-									<TableCell>{selectedCommittee?.name}</TableCell>
-									<TableCell>
-										{selectedCountry?.flag} {selectedCountry?.countryNameEn || "N/A"}
-									</TableCell>
 									<TableCell>
 										<Dropdown>
 											<DropdownButton plain>
@@ -370,6 +355,19 @@ function ViewEditDelegateProposal({
 											</DropdownMenu>
 										</Dropdown>
 									</TableCell>
+									<TableCell>
+										{selectedStudent?.profilePicture ? (
+											<Avatar showFallback size="sm" radius="sm" src={`/api/users/${selectedStudent.id}/avatar`} />
+										) : (
+											<Avatar showFallback size="sm" radius="sm" />
+										)}
+									</TableCell>
+									<TableCell>{selectedStudent?.displayName || `${selectedStudent?.officialName} ${selectedStudent?.officialSurname}`}</TableCell>
+									<TableCell>{selectedCommittee?.name}</TableCell>
+									<TableCell>
+										{selectedCountry?.flag} {selectedCountry?.countryNameEn || "N/A"}
+									</TableCell>
+									<TableCell>{index + 1}</TableCell>
 								</TableRow>
 							);
 						})}

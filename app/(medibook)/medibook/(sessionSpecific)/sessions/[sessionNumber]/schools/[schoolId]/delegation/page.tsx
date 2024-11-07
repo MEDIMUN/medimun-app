@@ -4,7 +4,7 @@ import { Badge } from "@/components/badge";
 import { Divider } from "@/components/divider";
 import { Text } from "@/components/text";
 import { countries } from "@/data/countries";
-import { authorizeSchoolDirectorSchool } from "@/lib/authorize";
+import { authorize, authorizeSchoolDirectorSchool, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { SelectCountriesSection, SelectStudents } from "./client-components";
@@ -19,7 +19,12 @@ export default async function Page(props) {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 	const authSession = await auth();
-	const selectedSchool = await prisma.school.findFirst({ where: { OR: [{ id: params.schoolId }, { slug: params.schoolId }] } });
+	if (!authSession) notFound();
+
+	const selectedSchool = await prisma.school
+		.findFirstOrThrow({ where: { OR: [{ id: params.schoolId }, { slug: params.schoolId }] } })
+		.catch(notFound);
+
 	const selectedSession = await prisma.session
 		.findFirstOrThrow({
 			where: { number: params.sessionNumber },
@@ -30,7 +35,8 @@ export default async function Page(props) {
 		where: { sessionId: selectedSession.id, schoolId: selectedSchool.id },
 	});
 	const query = searchParams.search || "";
-	const isAuthorized = authorizeSchoolDirectorSchool(authSession.user.currentRoles, selectedSchool.id);
+	const isManagement = authorize(authSession, [s.management]);
+	const isAuthorized = isManagement || authorizeSchoolDirectorSchool(authSession.user.currentRoles, selectedSchool.id);
 
 	if (!isAuthorized || !selectedSession) notFound();
 
@@ -51,7 +57,7 @@ export default async function Page(props) {
 		},
 		orderBy: [{ officialName: "asc" }, { officialSurname: "asc" }, { displayName: "asc" }],
 		take: 10,
-		skip: (currentPage - 1) * 10,
+		skip: ((currentPage || 1) - 1) * 10,
 	});
 
 	const numberOfStudents = await prisma.user.count({

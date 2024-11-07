@@ -501,7 +501,7 @@ export function SelectStudents({ students, selectedSession, grantedDelegation, n
 										/>
 									</TableCell>
 									<TableCell>
-										<Avatar showFallback className="bg-primary text-white" src={`/api/users/${student.id}/avatar`} />
+										<Avatar showFallback radius="md" className="" src={`/api/users/${student.id}/avatar`} />
 									</TableCell>
 									<TableCell className="font-mono">{student.id}</TableCell>
 
