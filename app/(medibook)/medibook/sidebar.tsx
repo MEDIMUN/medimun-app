@@ -167,6 +167,7 @@ export function Sidebar({ sessions }) {
 	const visibleCommitteeOptions = committeeOptionsList.filter((option) => option.isVisible);
 
 	const applicationOptionsList = [
+		{ name: "Status", href: `/applications/status`, isVisible: true },
 		{ name: "School Director", href: `/applications/school-director`, isVisible: true },
 		{ name: "Delegation", href: `/applications/delegation`, isVisible: true },
 		{ name: "Delegate Assignment", href: `/applications/assignment`, isVisible: true },

@@ -12,6 +12,11 @@ export default async function Page(props) {
 
 	const actions = [
 		{
+			title: "Schools Application Status",
+			description: "View the status of all school applications",
+			href: `/medibook/sessions/${selectedSession.number}/applications/status`,
+		},
+		{
 			title: "School Director Applications",
 			description: "Applications for the position of School Director.",
 			href: `/medibook/sessions/${selectedSession.number}/applications/school-director`,

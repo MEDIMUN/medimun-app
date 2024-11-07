@@ -101,7 +101,7 @@ export function ContactUsForm({ sitekey }) {
 								<Label>
 									Name<span className="text-red-500">*</span>
 								</Label>
-								<Input disabled={isLoading} name="name" type="text" required autoComplete="given-name" />
+								<Input disabled={isLoading} name="name" minLength={3} maxLength={50} type="text" required autoComplete="given-name" />
 							</Field>
 							<Field>
 								<Label>
@@ -117,7 +117,7 @@ export function ContactUsForm({ sitekey }) {
 								<Label>
 									Message<span className="text-red-500">*</span>
 								</Label>
-								<Textarea disabled={isLoading} className="max-h-[500px]" required name="message" />
+								<Textarea disabled={isLoading} minLength={10} maxLength={500} className="max-h-[500px]" required name="message" />
 							</Field>
 						</div>
 						<div className="mt-8 flex w-full justify-end">
