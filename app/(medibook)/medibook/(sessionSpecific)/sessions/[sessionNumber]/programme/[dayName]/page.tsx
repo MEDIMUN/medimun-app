@@ -6,11 +6,10 @@ export default async function SpecificDaySchedulePage(props) {
 	//conference-day-n or workshop-day-n
 	const dayNameLower = dayName.toLowerCase();
 	const dayNameParts = dayNameLower.split("-");
-	const dayNumber;
 
 	return (
 		<>
-			<TopBar title=""></TopBar>
+			<TopBar title="Day"></TopBar>
 		</>
 	);
 }
