@@ -83,7 +83,7 @@ export function SearchBar({ placeholder = "Search...", debounceDelay = 500, defa
 
 export function TopBar({
 	className = "",
-	title = "Title" as any,
+	title = "" as any,
 	sortOptions,
 	defaultSort = "nameasc",
 	children,
@@ -95,7 +95,7 @@ export function TopBar({
 	showDivider = false,
 }: {
 	className?: string;
-	title: string;
+	title?: string;
 	sortOptions?: { value: string; order: string; label: string; description?: string }[];
 	defaultSort?: string;
 	children?: React.ReactNode;
@@ -124,7 +124,7 @@ export function TopBar({
 							</div>
 						</Link>
 					)}
-					<Heading>{title}</Heading>
+					{title && <Heading>{title}</Heading>}
 					<Subheading level={6} className="!font-light">
 						{subheading}
 					</Subheading>

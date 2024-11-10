@@ -4,7 +4,7 @@ import { Avatar } from "@nextui-org/avatar";
 import ProfileTabs from "./ProfileTabs";
 import { Dropdown, DropdownButton, DropdownMenu } from "@/components/dropdown";
 import { Button } from "@/components/button";
-import { SearchParamsDropDropdownItem } from "../../../client-components";
+import { SearchParamsDropDropdownItem, TopBar } from "../../../client-components";
 import { authorize, authorizeChairDelegate, authorizeManagerMember, authorizeSchoolDirectorStudent, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 
@@ -27,31 +27,26 @@ export default async function Page(props) {
 	const displayEditRolesButton = isAuthHigherPower && (isManagement || isChairOfUser || isManagerOfUser || isSchoolDirectorOfStudent);
 
 	return (
-		<>
+		<div className="grow h-full overflow-scroll lg:rounded-lg lg:bg-white lg:p-0 lg:shadow-sm lg:ring-1 lg:ring-zinc-950/5 dark:lg:bg-zinc-900 dark:lg:ring-white/10">
+			<TopBar
+				hideSearchBar
+				buttonHref={isManagement ? "/medibook/users" : "/mediboook"}
+				className="absolute p-5 !text-white"
+				buttonText={isManagement ? "All Users" : "Home"}
+			/>
 			<div>
 				<div>
-					<img alt="" src={`/assets/gradients/${randomintegerupto6}.jpg`} className="h-32 w-full rounded-2xl object-cover lg:h-48" />
+					<img alt="" src={`/assets/gradients/${2}.jpg`} className="h-48 w-full object-cover lg:h-56" />
 				</div>
 				<div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
 					<div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
 						<div className="flex">
-							{/* <Badge
-								classNames={{ badge: "w-8 h-4" }}
-								content={
-									<Tooltip content="Edit Details">
-										<EditRolesButton userId={userData.user.id} />
-									</Tooltip>
-								}
-								placement="bottom-right"
-								shape="circle"> */}
 							<Avatar
 								showFallback
-								className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
+								className="h-24 w-24 rounded-xl ring-4 ring-white sm:h-32 sm:w-32"
 								isBordered
 								src={`/api/users/${userData.user.id}/avatar`}
 							/>
-							{/* 							</Badge>
-							 */}
 						</div>
 						<div className="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
 							<div className="mt-6 min-w-0 flex-1 sm:hidden md:block">
@@ -99,12 +94,16 @@ export default async function Page(props) {
 					</div>
 				</div>
 			</div>
-			<div className="rounded-lg p-5 text-center">
-				<p>{selectedUser.bio}</p>
+			<div className="flex m-4 md:m-8 flex-1 h-full b flex-col">
+				<div className="w-full h-full flex-1 bg-zinc-100 rounded-xl mx-auto">
+					<section className="mx-auto mb-auto h-full flex max-w-5xl flex-col p-4">
+						<div className="rounded-lg font-[montserrat] p-5 text-left md:text-center">
+							<p>{selectedUser.bio}</p>
+						</div>
+						<ProfileTabs user={{ ...userData, bio: selectedUser.bio }} />
+					</section>
+				</div>
 			</div>
-			<section className="mx-auto flex max-w-5xl flex-col p-4">
-				<ProfileTabs user={{ ...userData, bio: selectedUser.bio }} />
-			</section>
-		</>
+		</div>
 	);
 }

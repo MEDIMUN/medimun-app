@@ -102,7 +102,7 @@ export default async function Page(props: { params: Promise<{ sessionNumber: str
 										</UserTooltip>
 									</TableCell>
 									<TableCell>{user.displayName || `${user.officialName} ${user.officialSurname}`}</TableCell>
-									<TableCell>{selectedCountry.countryNameEn}</TableCell>
+									<TableCell>{selectedCountry?.countryNameEn || "Not Assigned"}</TableCell>
 								</TableRow>
 							);
 						})}
