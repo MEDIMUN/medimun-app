@@ -22,6 +22,12 @@ import { authorizedToEditResource } from "./@resourceModals/default";
 import { Divider } from "@/components/divider";
 import { useSocket } from "@/contexts/socket";
 import { Spinner } from "@nextui-org/spinner";
+import { Tooltip } from "@nextui-org/tooltip";
+import { Card } from "@nextui-org/card";
+import { User } from "@nextui-org/user";
+import { fetchUserForTooltip } from "./actions";
+import { countries } from "@/data/countries";
+import { Badge } from "@/components/badge";
 
 export function DirectionDropdown({ defaultValue, items }) {
 	const router = useNextRouter();
@@ -158,7 +164,7 @@ export function SocketHandler() {
 	const socket = useSocket();
 	const router = useRouter();
 	const [isConnected, setIsConnected] = useState(false);
-	const [notConnectedFor5Seconds, setNotConnectedFor5Seconds] = useState(false);
+	const [notConnectedFor30Seconds, setNotConnectedFor30Seconds] = useState(false);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -194,34 +200,35 @@ export function SocketHandler() {
 		});
 		socket.on("connect", () => {
 			setIsConnected(true);
-			if (notConnectedFor5Seconds) {
+			if (notConnectedFor30Seconds) {
 				toast.success("Reconnected to the internet.");
 			}
-			setNotConnectedFor5Seconds(false);
+			setNotConnectedFor30Seconds(false);
 			toast.dismiss("internet-connection");
 		});
 	}, [socket]);
 
 	//disable scroll when!isConnected
 	useLayoutEffect(() => {
-		if (notConnectedFor5Seconds) {
+		if (notConnectedFor30Seconds) {
 			document.body.style.overflow = "hidden";
 		} else {
 			document.body.style.overflow = "auto";
 		}
-	}, [notConnectedFor5Seconds]);
+	}, [notConnectedFor30Seconds]);
 
 	useLayoutEffect(() => {
 		const timer = setTimeout(() => {
 			if (!isConnected) {
 				toast.dismiss("internet-connection");
-				setNotConnectedFor5Seconds(true);
+				setNotConnectedFor30Seconds(true);
 			}
-		}, 5000);
+		}, 30000);
 		return () => clearTimeout(timer);
 	}, [isConnected]);
 
-	if (notConnectedFor5Seconds)
+	if (notConnectedFor30Seconds && 0)
+		//FIXME: remove 0
 		return (
 			<div className="w-full h-screen fixed z-[100] text-left bg-zinc-900/50 backdrop-blur-sm">
 				<div className="mx-auto  flex w-full max-w-7xl flex-auto flex-col justify-center px-6 py-24 sm:py-64 lg:px-8">
@@ -230,7 +237,7 @@ export function SocketHandler() {
 					</h1>
 					<p className="mt-6 text-pretty text-lg font-medium text-white sm:text-xl/8">MediBook requires an active internet connection.</p>
 					<p className="mt-6 text-pretty text-lg font-medium text-white sm:text-xl/8">
-						This error may be due to a recent update. If you think this is the case please refresh the page.
+						This also happens after app updates, please refresh the page to reconnect if you are sure you have an active internet connection.
 					</p>
 					<div className="fixed p-4 w-full left-0 top-0 bg-white gap-4 flex">
 						<Spinner size="sm" />
@@ -240,6 +247,88 @@ export function SocketHandler() {
 			</div>
 		);
 	return null;
+}
+
+export function UserTooltip({ userId, children }) {
+	const [isOpen, setIsOpen] = useState(false);
+	const [user, setUser] = useState(null);
+	const [isFetching, setIsFetching] = useState(false);
+
+	async function handleFetchUser() {
+		if (!userId) return;
+		if (isFetching) return;
+		setIsFetching(true);
+		const res = await fetchUserForTooltip(userId);
+		if (!res?.ok) {
+			setUser(null);
+			setIsOpen(false);
+			return;
+		}
+		setUser(res.data.user);
+		setIsFetching(false);
+	}
+
+	useEffect(() => {
+		if (!isOpen) return;
+		handleFetchUser();
+	}, [isOpen]);
+
+	const fullName = user?.displayName || `${user?.officialName} ${user?.officialSurname}`;
+
+	const nationalityCountry = countries.find((c) => c.countryCode == user?.nationality);
+
+	function Inside() {
+		if (isFetching)
+			return (
+				<Text>
+					<i>Loading...</i>
+				</Text>
+			);
+		return (
+			<div className="min-w-[380px] max-w-[500px] flex flex-col p-1 py-2 gap-1">
+				<div className="flex p-1 gap-5">
+					<User
+						name={fullName}
+						description={user?.currentRoleNames[0] || "No role"}
+						avatarProps={{ src: `/api/users/${userId}/avatar`, showFallback: true, isBordered: true, size: "sm", radius: "md" }}
+					/>
+					<div className="gap-2 flex ml-auto">
+						<Button disabled color="primary" className="h-8 my-auto" onClick={() => setIsOpen(false)}>
+							Message
+						</Button>
+						<Button href={`/medibook/users/${user?.username || user?.id}`} className="h-8 my-auto" onClick={() => setIsOpen(false)}>
+							Profile
+						</Button>
+					</div>
+				</div>
+				<div className="flex gap-2 flex-wrap">
+					<Badge>{user?.schoolName}</Badge>
+					<Badge>
+						{nationalityCountry?.flag} {nationalityCountry?.countryNameEn}
+					</Badge>
+					<Badge>{user?.isProfilePrivate ? "Private" : "Public"}</Badge>
+				</div>
+				<div>
+					<Text>{user?.bio}</Text>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<Tooltip
+			shouldCloseOnInteractOutside={true}
+			shouldCloseOnBlur={true}
+			delay={1000}
+			showArrow
+			isOpen={isOpen}
+			onOpenChange={(open) => setIsOpen(open)}
+			placement="top-start"
+			className={cn("max-w-max cursor-pointer")}
+			content={<Inside />}>
+			{children}
+		</Tooltip>
+	);
 }
 
 const FileDownloader = ({ resourceId, fileName }) => {

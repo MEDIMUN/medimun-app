@@ -2,9 +2,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import { romanize } from "./romanize";
 
 export function DisplayCurrentRoles({ user }) {
+	if (!user?.currentRoles?.length) return "-";
+	const firstRole = user.currentRoles[0];
 	return (
 		<div className="flex gap-2">
-			{user?.currentRoleNames[0]}
+			{firstRole.name} {(firstRole.department || firstRole.committee || firstRole.school) && "of"}{" "}
+			{firstRole.department || firstRole.committee || firstRole.school}
 			<Popover>
 				<PopoverTrigger>
 					<span className="cursor-pointer">
@@ -30,9 +33,12 @@ export function DisplayCurrentRoles({ user }) {
 }
 
 export function DisplayPastRoles({ user }) {
+	const firstRole = user.pastRoles[0];
+	if (!user?.pastRoles?.length) return "-";
 	return (
 		<div className="flex gap-2">
-			{user?.pastRoleNames[0]}
+			{firstRole?.name} {(firstRole?.department || firstRole?.committee || firstRole?.school) && "of"}{" "}
+			{firstRole?.department || firstRole?.committee || firstRole?.school}
 			<Popover>
 				<PopoverTrigger>
 					<span className="cursor-pointer">

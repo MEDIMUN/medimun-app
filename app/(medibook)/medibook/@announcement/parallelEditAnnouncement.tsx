@@ -28,6 +28,7 @@ import { Link } from "@/components/link";
 import { announcementWebsitecomponents } from "./default";
 import { editAnnouncement } from "./actions";
 import { SlugInput } from "@/components/slugInput";
+import { MDXRemoteOptions } from "next-mdx-remote-client/rsc";
 
 export function ModalEditAnnouncement({ selectedAnnouncement }) {
 	const router = useRouter();
@@ -80,6 +81,7 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 
 	if (!searchParams.has("edit-announcement")) return null;
 	if (!selectedAnnouncement) return null;
+
 	return (
 		<div className="grow p-6 lg:rounded-lg lg:bg-white lg:p-10 lg:shadow-sm lg:ring-1 lg:ring-zinc-950/5 dark:lg:bg-zinc-900 dark:lg:ring-white/10">
 			<div className="mx-auto flex max-w-6xl h-full flex-col gap-6">

@@ -10,9 +10,10 @@ import { romanize } from "@/lib/romanize";
 import { removeSearchParams } from "@/lib/search-params";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { approveSchoolDirectorApplication, deleteSchoolDirectorApplication } from "./actions";
+import { Fragment, useState } from "react";
+import { approveSchoolDelegateAssignmentProposal, approveSchoolDirectorApplication, deleteSchoolDirectorApplication } from "./actions";
 import { toast } from "sonner";
+import { Link } from "@/components/link";
 
 export function ApproveApplicationModal({ selectedApplication }) {
 	const { data: authSession, status } = useSession();
@@ -224,6 +225,107 @@ export function DeleteApplicationModal({ selectedApplication }) {
 				</Button>
 				<Button disabled={isLoading || selectedApplication.isApproved} onClick={approveApplicationHandler} color="red">
 					Delete
+				</Button>
+			</DialogActions>
+		</Dialog>
+	);
+}
+
+export function ApproveSchoolDelegateAssignmentProposalModal({ selectedAssignmentProposal, selectedUsers }) {
+	const { data: authSession, status } = useSession();
+	const [isLoading, setIsLoading] = useState(false);
+	const searchParams = useSearchParams();
+	const router = useRouter();
+
+	if (!searchParams) return null;
+	if (!selectedAssignmentProposal) return null;
+
+	function onClose() {
+		removeSearchParams({ "approve-school-delegate-assignment-proposal": "" }, router);
+	}
+
+	async function aproveDelegateAssignmentProposal() {
+		if (isLoading) return;
+		setIsLoading(true);
+		const res = await approveSchoolDelegateAssignmentProposal(selectedAssignmentProposal.id);
+		if (res?.ok) {
+			toast.success(...res?.message);
+			router.refresh();
+			onClose();
+		} else {
+			toast.error(...res?.message);
+		}
+		setIsLoading(false);
+	}
+
+	const isopen =
+		!!searchParams.get("approve-school-delegate-assignment-proposal") &&
+		!!selectedAssignmentProposal &&
+		status === "authenticated" &&
+		authorize(authSession, [s.management]);
+
+	const selectedAssignment = selectedAssignmentProposal.changes.length ? selectedAssignmentProposal.changes : selectedAssignmentProposal.assignment;
+
+	return (
+		<Dialog open={isopen} onClose={onClose}>
+			<DialogTitle>
+				Confirm <i>{selectedAssignmentProposal.school.name}</i> Delegate Assignment
+			</DialogTitle>
+			<DialogDescription>
+				All delegates will be assigned to their respective committees and countries. The school will be given an invoice.
+			</DialogDescription>
+			<DialogBody>
+				<DescriptionList>
+					<DescriptionTerm>School</DescriptionTerm>
+					<DescriptionDetails>{selectedAssignmentProposal.school.name}</DescriptionDetails>
+					<DescriptionTerm>Application ID</DescriptionTerm>
+					<DescriptionDetails>{selectedAssignmentProposal.id}</DescriptionDetails>
+					<DescriptionTerm>School Director{selectedAssignmentProposal.school.director.length > 1 && "s"}</DescriptionTerm>
+					<DescriptionDetails>
+						{selectedAssignmentProposal.school.director.map((director, index) => {
+							return (
+								<Fragment key={`confirm-modal-${director.id}-${index}`}>
+									<Link className="text-primary hover:underline" href={`/medibook/users/${director.user.username || director.user.id}`}>
+										{director.user.displayName || `${director.user.officialName} ${director.user.officialSurname}`}
+									</Link>
+									<span>{index < selectedAssignmentProposal.school.director.length - 1 ? ", " : ""}</span>
+								</Fragment>
+							);
+						})}
+					</DescriptionDetails>
+					<DescriptionTerm>Modifications</DescriptionTerm>
+					<DescriptionDetails>
+						{selectedAssignmentProposal.changes.length ? (
+							<Badge color="yellow">{selectedAssignmentProposal.assignment.length - selectedAssignmentProposal.changes.length} Delegate</Badge>
+						) : (
+							<Badge>None</Badge>
+						)}
+					</DescriptionDetails>
+					<DescriptionTerm>Number of Delegates</DescriptionTerm>
+					<DescriptionDetails>{selectedAssignment.length}</DescriptionDetails>
+					<DescriptionTerm>Delegates</DescriptionTerm>
+					<DescriptionDetails>
+						{selectedAssignment.map((delegate, index) => {
+							const selectedStudent = selectedUsers.find((user) => user.id === delegate.studentId);
+							const fullName = selectedStudent?.displayName || `${selectedStudent?.officialName} ${selectedStudent?.officialSurname}`;
+							return (
+								<Fragment key={`confirm-delegates-${selectedStudent.id}-${index}`}>
+									<Link className="text-primary hover:underline" href={`/medibook/users/${delegate.studentId}`}>
+										{fullName}
+									</Link>
+									<span>{index < selectedAssignment.length - 1 ? ", " : ""}</span>
+								</Fragment>
+							);
+						})}
+					</DescriptionDetails>
+				</DescriptionList>
+			</DialogBody>
+			<DialogActions>
+				<Button disabled={isLoading} onClick={onClose} plain>
+					Cancel
+				</Button>
+				<Button disabled={isLoading} onClick={aproveDelegateAssignmentProposal} color="green">
+					Approve
 				</Button>
 			</DialogActions>
 		</Dialog>

@@ -54,20 +54,13 @@ export default async function Page(props) {
 	const queryObject = {
 		where: {
 			name: { contains: query, mode: "insensitive" },
-			ApplicationSchoolDirector: { some: { isApproved: true, session: { number: props.sessionNumber } } },
+			OR: [
+				{ ApplicationSchoolDirector: { some: { isApproved: true, session: { number: props.sessionNumber } } } },
+				{ name: query ? "" : "The English School" },
+			],
 		},
 	};
 	const orderDirection = parseOrderDirection(searchParams.direction);
-
-	/* 	ApplicationDelegationPreferences: { _count: "desc" }
-			ApplicationDelegationPreferences: { _count: "asc" }
-			ApplicationGrantedDelegationCountries: { _count: "desc" }
-			ApplicationGrantedDelegationCountries: { _count: "asc" }
-			SchoolDelegationProposal: { _count: "desc" }
-			SchoolDelegationProposal: { _count: "asc" }
-			finalDelegation: { _count: "desc" }
-			finalDelegation: { _count: "asc" }
- */
 	const [schools, numberOfSchools] = await prisma
 		.$transaction([
 			prisma.school.findMany({

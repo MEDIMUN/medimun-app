@@ -36,6 +36,12 @@ export default async function Page(props) {
 		})
 		.catch(notFound);
 
+	const isManagement = authorize(authSession, [s.management]);
+	const isChairOrDelegate =
+		authorizeChairCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedCommittee.id) ||
+		authorizeDelegateCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedCommittee.id);
+	if (!isManagement && !isChairOrDelegate) notFound();
+
 	const hasSomeArray: ResourcePrivacyTypes[] = [
 		"COMMITTEEWEBSITE",
 		authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], selectedCommittee.id) ? "COMMITTEECHAIR" : null,
@@ -79,7 +85,6 @@ export default async function Page(props) {
 
 	const totalItems = await prisma.resource.count({ where: whereObject });
 
-	const isManagement = authorize(authSession, [s.management]);
 	return (
 		<>
 			<TopBar

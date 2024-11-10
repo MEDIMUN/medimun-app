@@ -1,6 +1,6 @@
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
-import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
@@ -137,7 +137,9 @@ export default async function Page(props) {
 										</Dropdown>
 									</TableCell>
 									<TableCell>
-										<Avatar size="md" showFallback src={`/api/users/${student.id}/avatar`} alt={student.displayName} />
+										<UserTooltip userId={student.id} key={student.id}>
+											<Avatar size="md" radius="md" showFallback src={`/api/users/${student.id}/avatar`} alt={student.displayName} />
+										</UserTooltip>
 									</TableCell>
 									<TableCell>{student.officialName}</TableCell>
 									<TableCell>{student.officialSurname}</TableCell>

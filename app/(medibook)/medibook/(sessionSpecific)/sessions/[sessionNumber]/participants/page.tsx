@@ -1,11 +1,11 @@
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { generateUserData, userData, generateUserDataObject } from "@/lib/user";
-import { authorize, s } from "@/lib/authorize";
+import { authorize, authorizeChairDelegate, authorizeManagerMember, authorizeSchoolDirectorStudent, s } from "@/lib/authorize";
 import { Avatar } from "@nextui-org/avatar";
 import Paginator from "@/components/pagination";
 import { auth } from "@/auth";
-import { SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsDropDropdownItem, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { UserIdDisplay } from "@/lib/display-name";
 import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/display-roles";
@@ -13,48 +13,25 @@ import { parseOrderDirection } from "@/lib/order-direction";
 import { romanize } from "@/lib/romanize";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
+import { Link } from "@/components/link";
 
-export const metadata = {
-	title: "Users",
-	description: "See all users",
-};
+export async function generateMetadata({ params }) {
+	const { sessionNumber } = await params;
+	const romanized = romanize(parseInt(sessionNumber));
+	return {
+		title: `Session ${romanized} Participants`,
+		description: `View all fellow delegates, student officers and directors in the session.`,
+	};
+}
 
 const itemsPerPage = 10;
-
-const sortOptions = [
-	{ value: "officialName", order: "asc", label: "Name" },
-	{ value: "officialName", order: "desc", label: "Name" },
-	{ value: "officialSurname", order: "asc", label: "Surname" },
-	{ value: "officialSurname", order: "desc", label: "Surname" },
-	{ value: "displayName", order: "asc", label: "Display Name" },
-	{ value: "displayName", order: "desc", label: "Display Name" },
-	{ value: "id", order: "asc", label: "User ID" },
-	{ value: "id", order: "desc", label: "User ID" },
-	{ value: "email", order: "asc", label: "Email" },
-	{ value: "email", order: "desc", label: "Email" },
-	{ value: "username", order: "asc", label: "Username" },
-	{ value: "username", order: "desc", label: "Username" },
-];
-
-const rows = [
-	<span key="actions" className="sr-only">
-		Actions
-	</span>,
-	<span key="avatar" className="sr-only">
-		Profile Picture
-	</span>,
-	"Name",
-	"Username",
-	"Current Roles",
-	"Other Roles",
-];
 
 export default async function Page(props) {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 	const authSession = await auth();
+	if (!authSession) notFound();
 	const isManagement = authorize(authSession, [s.management]);
-	if (!isManagement) notFound();
 	const currentPage = Number(searchParams.page) || 1;
 	const query = searchParams.search || "";
 
@@ -66,6 +43,8 @@ export default async function Page(props) {
 		AND: [
 			{
 				OR: [
+					{ Director: { some: {} } },
+					{ seniorDirecor: { some: {} } },
 					{ delegate: { some: { committee: { session: { number: params.sessionNumber } } } } },
 					{ chair: { some: { committee: { session: { number: params.sessionNumber } } } } },
 					{ member: { some: { department: { session: { number: params.sessionNumber } } } } },
@@ -90,21 +69,47 @@ export default async function Page(props) {
 		],
 	};
 
-	const prismaUsers = await prisma.user
-		.findMany({
-			where: { ...(queryObject as any) },
-			include: { ...generateUserDataObject() },
-			orderBy: { [orderBy]: orderDirection },
-			skip: (currentPage - 1) * itemsPerPage,
-			take: itemsPerPage,
-		})
-		.catch(notFound);
+	const sortOptions = [
+		{ value: "officialName", order: "asc", label: "Name", isVisible: true },
+		{ value: "officialName", order: "desc", label: "Name", isVisible: true },
+		{ value: "officialSurname", order: "asc", label: "Surname", isVisible: true },
+		{ value: "officialSurname", order: "desc", label: "Surname", isVisible: true },
+		{ value: "displayName", order: "asc", label: "Display Name", isVisible: true },
+		{ value: "displayName", order: "desc", label: "Display Name", isVisible: true },
+		{ value: "id", order: "asc", label: "User ID", isVisible: true },
+		{ value: "id", order: "desc", label: "User ID", isVisible: true },
+		{ value: "email", order: "asc", label: "Email" },
+		{ value: "email", order: "desc", label: "Email" },
+		{ value: "username", order: "asc", label: "Username", isVisible: true },
+		{ value: "username", order: "desc", label: "Username", isVisible: true },
+		{ label: "School", value: "Student", order: `{"name":"asc"}`, isVisible: true },
+		{ label: "School", value: "Student", order: `{"name":"desc"}`, isVisible: true },
+	];
 
-	const totalItems = await prisma.user.count({ where: { ...(queryObject as any) } }).catch(notFound);
+	const [users, totalItems] = await prisma
+		.$transaction([
+			prisma.user.findMany({
+				where: { ...(queryObject as any) },
+				include: { ...generateUserDataObject() },
+				orderBy: { [orderBy]: orderDirection },
+				skip: (currentPage - 1) * itemsPerPage,
+				take: itemsPerPage,
+			}),
+			prisma.user.count({ where: { ...(queryObject as any) } }),
+		])
+		.catch((e) => console.log(e));
 
-	const usersWithData = prismaUsers.map((user) => {
-		return { ...generateUserData(user), username: user.username };
+	const usersWithData = users.map((user) => {
+		return {
+			...generateUserData(user),
+			username: user.username,
+			isProfilePrivate: user.isProfilePrivate,
+			schoolSlug: user?.Student?.slug,
+			email: user.email,
+		};
 	});
+
+	const isMaangementChairMemberSchoolDirector = isManagement || authorize(authSession, [s.schooldirector, s.chair, s.manager]);
 
 	return (
 		<>
@@ -112,7 +117,7 @@ export default async function Page(props) {
 				buttonText={`Session ${romanize(selectedSession.numberInteger)}`}
 				buttonHref={`/medibook/sessions/${selectedSession.number}`}
 				sortOptions={sortOptions}
-				title={`Session ${romanize(selectedSession.numberInteger)} Participants`}
+				title={`Participants`}
 				defaultSort="officialNameasc"
 				searchText="Search students..."
 			/>
@@ -120,13 +125,54 @@ export default async function Page(props) {
 				<Table className="showscrollbar">
 					<TableHead>
 						<TableRow>
-							{rows.map((row, i) => (
-								<TableHeader key={i}>{row}</TableHeader>
-							))}
+							<TableHeader>
+								<span key="actions" className="sr-only">
+									Actions
+								</span>
+							</TableHeader>
+							<TableHeader>
+								<span key="avatar" className="sr-only">
+									Profile Picture
+								</span>
+							</TableHeader>
+							{isMaangementChairMemberSchoolDirector ? (
+								<>
+									<TableHeader>Full Name</TableHeader>
+									<TableHeader>Name</TableHeader>
+									<TableHeader>Surname</TableHeader>
+									<TableHeader>Display Name</TableHeader>
+								</>
+							) : (
+								<TableHeader>Full Name</TableHeader>
+							)}
+							{isMaangementChairMemberSchoolDirector && <TableHeader>Email</TableHeader>}
+							<TableHeader>School</TableHeader>
+							<TableHeader>Username</TableHeader>
+							<TableHeader>Current Roles</TableHeader>
+							<TableHeader>Other Roles</TableHeader>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{usersWithData.map((user) => {
+							let publicUsername = user.displayName;
+
+							if (user.displayName && user.displayName.includes(" ")) {
+								const split = publicUsername.split(" ");
+								publicUsername = `${split[0]} ${split[1][0]}.`;
+							}
+
+							const fullName = user.displayName || `${user.officialName} ${user.officialSurname}`;
+							const preferredPublicName = user.isProfilePrivate ? publicUsername || `${user.officialName} ${user.officialSurname[0]}.` : fullName;
+
+							const isChairOfUser = authorizeChairDelegate(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
+							const isManagerOfUser = authorizeManagerMember(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
+							const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
+							const isAbove = authSession.user.highestRoleRank < user.highestRoleRank;
+
+							const isAuthorizedToEdit = isAbove && (isChairOfUser || isManagerOfUser || isDirectorOfStudent || isManagement);
+							const isIsIsIs = isChairOfUser || isManagerOfUser || isDirectorOfStudent || isManagement;
+							const isHigherAndManagement = isAbove && isManagement;
+
 							return (
 								<TableRow key={user.id}>
 									<TableCell>
@@ -135,19 +181,56 @@ export default async function Page(props) {
 												<EllipsisVerticalIcon />
 											</DropdownButton>
 											<DropdownMenu anchor="bottom end">
-												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>Profile Page</DropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit User</SearchParamsDropDropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "assign-roles": user.id }}>Assign Roles</SearchParamsDropDropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "edit-roles": user.id }}>Edit Roles</SearchParamsDropDropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "delete-user": user.id }}>Delete User</SearchParamsDropDropdownItem>
+												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
+												{isAuthorizedToEdit && (
+													<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit User</SearchParamsDropDropdownItem>
+												)}
+												{isHigherAndManagement && (
+													<>
+														<SearchParamsDropDropdownItem searchParams={{ "assign-roles": user.id }}>Assign Roles</SearchParamsDropDropdownItem>
+														<SearchParamsDropDropdownItem searchParams={{ "edit-roles": user.id }}>Edit Roles</SearchParamsDropDropdownItem>
+														<SearchParamsDropDropdownItem searchParams={{ "delete-user": user.id }}>Delete User</SearchParamsDropDropdownItem>
+													</>
+												)}
 											</DropdownMenu>
 										</Dropdown>
 									</TableCell>
 									<TableCell>
-										<Avatar showFallback className="bg-primary text-white" src={`/api/users/${user.id}/avatar`} alt={user.displayName} />
+										<UserTooltip userId={user.id}>
+											<Avatar showFallback radius="md" src={`/api/users/${user.id}/avatar`} alt={user.displayName} />
+										</UserTooltip>
 									</TableCell>
-									<TableCell>{user.displayName || `${user.officialName} ${user.officialSurname}`}</TableCell>
-									<TableCell>{user.username || "-"}</TableCell>
+									{isMaangementChairMemberSchoolDirector ? (
+										isIsIsIs ? (
+											<>
+												<TableCell>{"-"}</TableCell>
+												<TableCell>{user.officialName}</TableCell>
+												<TableCell>{user.officialSurname}</TableCell>
+												<TableCell>{user.displayName || "-"}</TableCell>
+											</>
+										) : (
+											<>
+												<TableCell>{preferredPublicName}</TableCell>
+												<TableCell>{"-"}</TableCell>
+												<TableCell>{"-"}</TableCell>
+												<TableCell>{"-"}</TableCell>
+											</>
+										)
+									) : (
+										<TableCell>{preferredPublicName}</TableCell>
+									)}
+
+									{isMaangementChairMemberSchoolDirector ? isIsIsIs ? <TableCell>{user.email}</TableCell> : <TableCell>-</TableCell> : null}
+									<TableCell>
+										{user.schoolId ? (
+											<Link className="underline text-primary" href={`/medibook/schools/${user.schoolSlug || user.schoolId}`}>
+												{user.schoolName}
+											</Link>
+										) : (
+											"-"
+										)}
+									</TableCell>
+									<TableCell>{user.username ? `@${user.username}` : "-"}</TableCell>
 									<TableCell>
 										<DisplayCurrentRoles user={user} />
 									</TableCell>
@@ -160,7 +243,7 @@ export default async function Page(props) {
 					</TableBody>
 				</Table>
 			)}
-			<Paginator itemsOnPage={prismaUsers.length} itemsPerPage={itemsPerPage} totalItems={totalItems} />
+			<Paginator itemsOnPage={users.length} itemsPerPage={itemsPerPage} totalItems={totalItems} />
 		</>
 	);
 }

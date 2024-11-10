@@ -89,7 +89,7 @@ export const MyDocument = ({ invoice }) => {
 						</View>
 						<View style={tw("ml-auto my-auto text-right mr-6 font-[Inter]")}>
 							<Text style={tw("font-normal ml-auto")}>Payment Notice</Text>
-							<Text style={tw("font-thin text-xs")}>ID #{invoice.number.toString().padStart(10, "0")}</Text>
+							<Text style={tw("font-thin text-xs ml-auto")}>ID #{invoice.number.toString().padStart(10, "0")}</Text>
 						</View>
 					</View>
 					<View style={tw("py-2 px-5")}>
@@ -210,6 +210,9 @@ export const MyDocument = ({ invoice }) => {
 						</View>
 					</View>
 					<View style={tw("w-full bg-zinc-300 p-5 pt-6")}>
+						<Text style={tw("text-xs font-light font-[Inter] leading-5")}>
+							Please include the Document ID (noted on the top right) and entity name in any payment made as reference.
+						</Text>
 						<Text style={tw("text-xs font-light font-[Inter] leading-5")}>
 							Please check out our terms and conditions and legal information about this invoice at{" "}
 							<Link style={tw("text-black")} href="https://www.medimun.org/policies">

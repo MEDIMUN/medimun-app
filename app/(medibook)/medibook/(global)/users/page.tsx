@@ -9,7 +9,7 @@ import { Tooltip } from "@nextui-org/tooltip";
 import { Image } from "@nextui-org/image";
 import { SelectedContextProvider } from "./components/StateStateProvider";
 import { SelectedUsersWindow } from "./components/SelectedUsersWindow";
-import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Avatar } from "@nextui-org/avatar";
 import { Badge } from "@/components/badge";
@@ -243,7 +243,9 @@ export default async function Page(props) {
 											<Avatar radius="md" showFallback src={`/api/users/${user.id}/avatar`} />
 										</Tooltip>
 									</TableCell>
-									<TableCell className="hidden md:table-cell">{user.officialName}</TableCell>
+									<TableCell className="hidden md:table-cell">
+										<UserTooltip userId={user.id}>{user.officialName}</UserTooltip>
+									</TableCell>
 									<TableCell className="hidden md:table-cell">{user.officialSurname}</TableCell>
 									<TableCell className="hidden md:table-cell">
 										<span className="sr-only">Space</span>

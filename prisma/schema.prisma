@@ -138,6 +138,8 @@ model Message {
   id              String            @id @default(nanoid())
   markdown        String
   resources       Resource[]
+  isDeleted       Boolean           @default(false)
+  isPinned        Boolean           @default(false)
   createdAt       DateTime          @default(now())
   user            User              @relation(fields: [userId], references: [id])
   userId          String
@@ -249,28 +251,32 @@ model Session {
 }
 
 model Invoice {
-  id          String    @id @default(nanoid())
-  number      Int       @unique @default(autoincrement())
-  date        DateTime  @default(now())
-  dueDate     DateTime?
-  items       String
-  description String?
-  isPaid      Boolean   @default(false)
+  id                 String    @id @default(nanoid())
+  number             Int       @unique @default(autoincrement())
+  date               DateTime  @default(now())
+  dueDate            DateTime?
+  items              String
+  description        String?
+  isPaid             Boolean   @default(false)
   //
-  user        User?     @relation(fields: [userId], references: [id])
-  userId      String?
+  user               User?     @relation(fields: [userId], references: [id])
+  userId             String?
   //
-  session     Session   @relation(fields: [sessionId], references: [id])
-  sessionId   String
+  receiptUrl         String?
+  originalReceiptUrl String?
   //
-  school      School?   @relation(fields: [schoolId], references: [id])
-  schoolId    String?
+  session            Session   @relation(fields: [sessionId], references: [id])
+  sessionId          String
+  //
+  school             School?   @relation(fields: [schoolId], references: [id])
+  schoolId           String?
 }
 
 model finalDelegation {
   id         String  @id @default(nanoid())
   //
   delegation String
+  proposal   String?
   school     School  @relation(fields: [schoolId], references: [id])
   schoolId   String
   session    Session @relation(fields: [sessionId], references: [id])
@@ -475,25 +481,24 @@ enum RoleType {
 }
 
 model Committee {
-  id                String              @id @unique @default(uuid())
-  name              String
-  description       String?
-  shortName         String?
-  slug              String?
-  isVisible         Boolean             @default(false)
+  id           String         @id @unique @default(uuid())
+  name         String
+  description  String?
+  shortName    String?
+  slug         String?
+  isVisible    Boolean        @default(false)
   //
-  type              CommitteeType       @default(GENERALASSEMBLY)
+  type         CommitteeType  @default(GENERALASSEMBLY)
   //
-  session           Session             @relation(fields: [sessionId], references: [id])
-  sessionId         String
+  session      Session        @relation(fields: [sessionId], references: [id])
+  sessionId    String
   //
-  delegate          Delegate[]
-  chair             Chair[]
-  Announcement      Announcement[]
-  CommitteeRollCall CommitteeRollCall[]
-  Resource          Resource[]
-  ExtraCountry      ExtraCountry[]
-  Topic             Topic[]
+  delegate     Delegate[]
+  chair        Chair[]
+  Announcement Announcement[]
+  Resource     Resource[]
+  ExtraCountry ExtraCountry[]
+  Topic        Topic[]
 
   @@unique([sessionId, name])
   @@unique([sessionId, shortName])
@@ -622,13 +627,19 @@ model RollCall {
 }
 
 model CommitteeRollCall {
-  id          String     @id @default(uuid())
-  user        User       @relation(fields: [userId], references: [id])
-  userId      String
-  committee   Committee? @relation(fields: [committeeId], references: [id])
-  committeeId String?
-  rollCall    RollCall?  @relation(fields: [rollCallId], references: [id])
-  rollCallId  String?
+  id         String       @id @default(uuid())
+  type       RollCallType
+  user       User         @relation(fields: [userId], references: [id])
+  userId     String
+  rollCall   RollCall?    @relation(fields: [rollCallId], references: [id])
+  rollCallId String?
+
+  @@unique([userId, rollCallId])
+}
+
+enum RollCallType {
+  PRESENT
+  PRESENTANDVOTING
 }
 
 model MorningCode {

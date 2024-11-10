@@ -15,7 +15,7 @@ import {
 	SidebarSection,
 	SidebarSpacer,
 } from "@/components/sidebar";
-import { authorize, authorizePerSession, s } from "@/lib/authorize";
+import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, authorizePerSession, s } from "@/lib/authorize";
 import { cn } from "@/lib/cn";
 import { romanize } from "@/lib/romanize";
 import { getSessionData } from "./actions";
@@ -83,6 +83,7 @@ export function Sidebar({ sessions }) {
 	const { data: authSession, status } = useSession();
 	const pathname = usePathname();
 	const router = useRouter();
+	const isManagement = authorize(authSession, [s.management]);
 
 	const {
 		sessionsData,
@@ -151,21 +152,6 @@ export function Sidebar({ sessions }) {
 		setSelectedSessionData(sessionData);
 	}
 
-	const isManagement = authorize(authSession, [s.management]);
-
-	const committeeOptionsList = [
-		{ name: "Overview", href: ``, isVisible: true, icon: "heroicons-solid:home" },
-		{ name: "Announcements", href: `/announcements`, isVisible: true, icon: "heroicons-solid:speakerphone" },
-		{ name: "Topics", href: `/topics`, isVisible: true, icon: "heroicons-solid:library" },
-		{ name: "Resolutions", href: `/resolutions`, isVisible: true, icon: "heroicons-solid:document-text" },
-		{ name: "Participants", href: `/participants`, isVisible: true, icon: "heroicons-solid:user-group" },
-		{ name: "Resources", href: `/resources`, isVisible: true, icon: "heroicons-solid:folder" },
-		{ name: "Roll Calls", href: `/roll-calls`, isVisible: isManagement, icon: "heroicons-solid:clipboard-list" },
-		{ name: "Settings", href: `/settings`, isVisible: isManagement, icon: "heroicons-solid:cog" },
-	];
-
-	const visibleCommitteeOptions = committeeOptionsList.filter((option) => option.isVisible);
-
 	const applicationOptionsList = [
 		{ name: "Status", href: `/applications/status`, isVisible: true },
 		{ name: "School Director", href: `/applications/school-director`, isVisible: true },
@@ -178,23 +164,40 @@ export function Sidebar({ sessions }) {
 
 	const visibleApplicationOptions = applicationOptionsList.filter((option) => option.isVisible);
 
-	function CommitteeOptions({ basePath }) {
-		return visibleCommitteeOptions.map((committee, index) => (
+	function CommitteeOptions({ basePath, committeeId }) {
+		const isChairOrDelegate =
+			authorizeChairCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], committeeId) ||
+			authorizeDelegateCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], committeeId);
+
+		const isManagementOrChairOrDelegate = isManagement || isChairOrDelegate;
+
+		const committeeOptionsList = [
+			{ name: "Overview", href: ``, isVisible: true, icon: "heroicons-solid:home" },
+			{ name: "Announcements", href: `/announcements`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:speakerphone" },
+			{ name: "Topics", href: `/topics`, isVisible: true, icon: "heroicons-solid:library" },
+			{ name: "Resolutions", href: `/resolutions`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
+			{ name: "Delegates", href: `/delegates`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:user-group" },
+			{ name: "Resources", href: `/resources`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:folder" },
+			{ name: "Roll Calls", href: `/roll-calls`, isVisible: isManagement, icon: "heroicons-solid:clipboard-list" },
+			{ name: "Settings", href: `/settings`, isVisible: isManagement, icon: "heroicons-solid:cog" },
+		].filter((option) => option.isVisible);
+
+		return committeeOptionsList.map((item, index) => (
 			<SidebarItem
 				key={"committee-options-" + index}
-				className={cn("h-8", index + 1 == visibleCommitteeOptions.length && "mb-2")}
-				href={basePath + committee.href}
-				current={pathname == basePath + committee.href}>
+				className={cn("h-8", index + 1 == committeeOptionsList.length && "mb-2")}
+				href={basePath + item.href}
+				current={pathname == basePath + item.href}>
 				<div slot="icon" className="flex min-w-[23px]">
 					<div
 						className={cn(
 							"-my-[19px] mx-auto min-h-full w-[4px] bg-zinc-500 dark:bg-white",
-							index + 1 == visibleCommitteeOptions.length && "rounded-b-full",
+							index + 1 == committeeOptionsList.length && "rounded-b-full",
 							index == 0 && "rounded-t-full"
 						)}
 					/>
 				</div>
-				<SidebarLabel>{committee.name}</SidebarLabel>
+				<SidebarLabel>{item.name}</SidebarLabel>
 			</SidebarItem>
 		));
 	}
@@ -367,7 +370,12 @@ export function Sidebar({ sessions }) {
 								<Icon slot="icon" icon="heroicons-solid:folder" height={20} />
 								<SidebarLabel>Resources</SidebarLabel>
 							</SidebarItem>
+							<SidebarItem href={`/medibook/invoices`} current={pathname == `/medibook/invoices`}>
+								<Icon icon="heroicons-solid:currency-euro" height={20} />
+								<SidebarLabel>Individual Invoices</SidebarLabel>
+							</SidebarItem>
 						</SidebarSection>
+
 						{!!schoolDirectorRoles.length &&
 							status === "authenticated" &&
 							schoolDirectorRoles.map((role) => {
@@ -456,10 +464,14 @@ export function Sidebar({ sessions }) {
 									<Icon icon="heroicons-solid:calendar" height={20} />
 									<SidebarLabel>Programme</SidebarLabel>
 								</SidebarItem>
+								<SidebarItem href={`${basePath}/participants`} current={pathname == `${basePath}/participants`}>
+									<Icon icon="heroicons-solid:user-group" height={20} />
+									<SidebarLabel>Participants</SidebarLabel>
+								</SidebarItem>
 								{isManagement && (
-									<SidebarItem href={`${basePath}/participants`} current={pathname == `${basePath}/participants`}>
-										<Icon icon="heroicons-solid:user-group" height={20} />
-										<SidebarLabel>Participants</SidebarLabel>
+									<SidebarItem href={`${basePath}/invoices`} current={pathname == `${basePath}/invoices`}>
+										<Icon icon="heroicons-solid:currency-euro" height={20} />
+										<SidebarLabel>Invoices</SidebarLabel>
 									</SidebarItem>
 								)}
 								{isManagement && (
@@ -504,7 +516,7 @@ export function Sidebar({ sessions }) {
 											<SidebarLabel>{committee.name}</SidebarLabel>
 										</SidebarItem>
 										{pathname?.includes(`${basePath}/committees/${committee.slug || committee.id}`) && (
-											<CommitteeOptions basePath={`${basePath}/committees/${committee.slug || committee.id}`} />
+											<CommitteeOptions committeeId={committee.id} basePath={`${basePath}/committees/${committee.slug || committee.id}`} />
 										)}
 									</Fragment>
 								))}

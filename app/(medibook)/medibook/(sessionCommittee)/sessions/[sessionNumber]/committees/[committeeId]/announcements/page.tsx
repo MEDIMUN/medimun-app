@@ -26,6 +26,12 @@ export default async function AnnouncementsPage(props) {
 		include: { session: true },
 	});
 
+	const isManagement = authorize(authSession, [s.management]);
+	const isChairOrDelegate =
+		authorizeChairCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedEntity.id) ||
+		authorizeDelegateCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedEntity.id);
+	if (!isManagement && !isChairOrDelegate) notFound();
+
 	const hasSomeArray = [
 		"COMMITTEEWEBSITE",
 		authorizeChairCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedEntity.id) ? "COMMITTEECHAIR" : null,

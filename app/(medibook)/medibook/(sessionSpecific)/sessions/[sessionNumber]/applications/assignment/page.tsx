@@ -52,6 +52,7 @@ export default async function Page(props) {
 		include: {
 			school: {
 				include: {
+					director: { where: { sessionId: selectedSession.id }, select: { user: true } },
 					ApplicationGrantedDelegationCountries: { where: { sessionId: selectedSession.id } },
 					finalDelegation: { where: { sessionId: selectedSession.id } },
 				},
@@ -87,7 +88,7 @@ export default async function Page(props) {
 				<SearchParamsButton searchParams={{ "add-delegation-proposal": true }}>Add Proposal</SearchParamsButton>
 			</TopBar>
 			{!!delegateProposals.length && (
-				<FinalAssignDelegates selectedSession={selectedSession} users={allUsers} delegateProposals={parsedDelegateProposals} />
+				<FinalAssignDelegates selectedSession={selectedSession} users={allUsers} delegateProposalsInitial={parsedDelegateProposals} />
 			)}
 			<Paginator totalItems={totalItems} itemsPerPage={10} itemsOnPage={delegateProposals.length} />
 		</>

@@ -155,7 +155,7 @@ export async function sendEmail({
 		);
 	} catch (error) {}
 
-	await sendEmailTransport({
+	return sendEmailTransport({
 		to,
 		bcc,
 		replyTo,

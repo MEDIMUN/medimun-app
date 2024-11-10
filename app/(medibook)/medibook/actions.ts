@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import prisma from "@/prisma/client";
 import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
 import { authorize, s } from "@/lib/authorize";
+import { generateUserData, generateUserDataObject } from "@/lib/user";
 
 export async function getMoreSessions(skip = 5) {
 	const authSession = await auth();
@@ -16,6 +17,36 @@ export async function getMoreSessions(skip = 5) {
 		})
 		.catch();
 	return sessions;
+}
+
+export async function fetchUserForTooltip(userId) {
+	const authSession = await auth();
+	if (!authSession) return;
+	let user = null as any;
+	try {
+		user = await prisma.user.findFirst({
+			where: {
+				id: userId,
+			},
+			select: {
+				officialName: true,
+				officialSurname: true,
+				displayName: true,
+				id: true,
+				nationality: true,
+				username: true,
+				bio: true,
+				isProfilePrivate: true,
+				...generateUserDataObject(),
+			},
+		});
+	} catch (e) {
+		return { ok: false, message: ["User not found"] };
+	}
+
+	const userWithData = { ...generateUserData(user), bio: user.bio, username: user.username, isProfilePrivate: user.isProfilePrivate };
+
+	return { ok: true, message: [], data: { user: userWithData } };
 }
 
 export async function getSessionData(number) {

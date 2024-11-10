@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { sortProposal } from "./page";
+import { getSocketInstance } from "@/socket/server";
 
 export async function delegationAssignmentChanges(proposalId, newAssignment) {
 	const authSession = await auth();
@@ -103,6 +104,17 @@ export async function delegationAssignmentChanges(proposalId, newAssignment) {
 
 	const areSame = validatedNewAssignment.every((a) => assignmentArray.some((b) => isEqual(a, b)));
 	const parsedOriginalAssignment = JSON.parse(selectedProposal.assignment);
+
+	/* SERVER	socket.on("update:delegation-proposal", async (sessionId, proposalId, data) => {
+		const authSession = await socketAuth(socket);
+		const isManagement = authorize(authSession, [s.management]);
+		if (!isManagement) {
+			socket.emit("error", "Unauthorized");
+			return;
+		}
+		socket.to(`room:delegate-assignment:${sessionId}`).emit("update:delegation-proposal", proposalId, data);
+	}); */
+
 	try {
 		await prisma.schoolDelegationProposal.update({
 			data: {
@@ -118,6 +130,23 @@ export async function delegationAssignmentChanges(proposalId, newAssignment) {
 		return { ok: false, message: ["Error modifying delegation proposal."] };
 	}
 
+	const io = getSocketInstance();
+
+	if (!io) {
+		return { ok: true, message: ["Delegation proposal modified but this change was not broadcasted to other people viewing this page."] };
+	}
+	console.log(`room:delegate-assignment:${selectedSession.id}`);
+
+	delete selectedProposal.session;
+	delete selectedProposal.school;
+
+	const socketObject = {
+		...selectedProposal,
+		changes: areSame && validatedNewAssignment.length == parsedOriginalAssignment.length ? null : validatedNewAssignment,
+		assignment: JSON.parse(selectedProposal.assignment),
+	};
+
+	io.to(`room:delegate-assignment-${selectedSession.id}`).emit("update-delegation-proposal", proposalId, socketObject);
 	return { ok: true, message: ["Delegation proposal modified."] };
 }
 

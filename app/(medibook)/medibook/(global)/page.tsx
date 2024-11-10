@@ -1,10 +1,5 @@
 import { auth } from "@/auth";
-import { Avatar } from "@/components/avatar";
-import { Badge } from "@/components/badge";
-import { Divider } from "@/components/divider";
-import { Heading, Subheading } from "@/components/heading";
-import { Select } from "@/components/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Heading } from "@/components/heading";
 import { Text } from "@/components/text";
 import { cn } from "@/lib/cn";
 import MediBookWelcome from "@/public/assets/medibook-welcome.webp";
@@ -71,7 +66,7 @@ export default async function Home() {
 					{greeting}, {preferredName}
 				</Heading>
 				<Text>
-					Your ID number is {userId.slice(0, 4)}-{userId.slice(4, 8)}-{userId.slice(8, 12)}
+					Your User ID is {userId.slice(0, 4)}-{userId.slice(4, 8)}-{userId.slice(8, 12)}
 				</Text>
 			</div>
 			<div className="w-full overflow-hidden rounded-xl shadow-md">

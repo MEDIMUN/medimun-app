@@ -6,9 +6,12 @@ import { ReceivedSchoolDirectorApplicationTemplate } from "./templates/received-
 import { ResetPasswordEmailTemplate } from "./templates/reset-password";
 import { PasswordChangedNotification } from "./templates/password-changed-notification";
 import { AssignCountriesToSchool } from "./templates/assign-countries-to-school";
+import { AssignDelegateToCommittee } from "./templates/assign-delegate-to-committee";
+import { SchoolReceiveInvoice } from "./templates/new-invoice-to-school";
+import { YourDelegatesAssignedToTheirCommittees } from "./templates/your-delegates-assigned-to-their-committees";
 
 export async function sendEmailVerificationEmail({ email, officialName, code }) {
-	await sendEmail({
+	return sendEmail({
 		to: email,
 		title: "Verify Your Email",
 		subject: "Verify Your Email - MEDIMUN",
@@ -28,7 +31,7 @@ export async function sendEmailRejectSchoolDirectorApplication({
 	officialSurname: string;
 	applicationId: string;
 }) {
-	await sendEmail({
+	return sendEmail({
 		to: email,
 		subject: "School Director Application Status - MEDIMUN",
 		preview: `Dear ${officialName}, your application has been rejected.`,
@@ -48,7 +51,7 @@ export async function sendEmailAcceptSchoolDirectorApplication({
 	officialSurname: string;
 	applicationId: string;
 }) {
-	await sendEmail({
+	return sendEmail({
 		to: email,
 		subject: "School Director Application Status - MEDIMUN",
 		preview: `Dear ${officialName}, your application has been accepted.`,
@@ -70,7 +73,7 @@ export async function sendEmailReceivedSchoolDirectorApplication({
 	applicationId: string;
 	schoolName: string;
 }) {
-	await sendEmail({
+	return sendEmail({
 		to: email,
 		subject: "School Director Application Received - MEDIMUN",
 		preview: `Dear ${officialName}, your application has been received.`,
@@ -94,7 +97,7 @@ export async function sendEmailResetPassword({
 	passwordResetLink: string;
 	email: string;
 }) {
-	await sendEmail({
+	return sendEmail({
 		to: email,
 		hideFooter: true,
 		subject: "Reset Your Password - MEDIMUN",
@@ -104,7 +107,7 @@ export async function sendEmailResetPassword({
 }
 
 export async function sendEmailPasswordChangedNotification({ officialName, email }: { officialName: string; email: string }) {
-	await sendEmail({
+	return sendEmail({
 		to: email,
 		hideFooter: true,
 		subject: "Security Notification - MEDIMUN",
@@ -122,10 +125,55 @@ export async function sendEmailSchoolHasBeenAssignedCountries({
 	email: string;
 	delegationLink: string;
 }) {
-	await sendEmail({
+	return await sendEmail({
 		to: email,
 		subject: "School Country Assignment - MEDIMUN",
 		preview: `Dear ${officialName}, your school has been assigned countries.`,
 		html: <AssignCountriesToSchool delegationLink={delegationLink} officialName={officialName} />,
+	});
+}
+
+export async function sendEmailAssignDelegateToCommittee({
+	officialName,
+	email,
+	committeeName,
+	country,
+}: {
+	officialName: string;
+	email: string;
+	committeeName: string;
+	country: string | null;
+}) {
+	return sendEmail({
+		to: email,
+		subject: `Welcome to ${committeeName} - MEDIMUN`,
+		preview: `Dear ${officialName}, go to MediBook to check out your committee.`,
+		html: <AssignDelegateToCommittee country={country} officialName={officialName} committeeName={committeeName} />,
+	});
+}
+
+export async function sendEmailSchoolInvoice({ officialName, email, schoolName }: { officialName: string; email: string; schoolName: string }) {
+	return await sendEmail({
+		to: email,
+		subject: `New School Invoice - MEDIMUN`,
+		preview: `Dear ${officialName}, go to MediBook to view your school's invoice.`,
+		html: <SchoolReceiveInvoice officialName={officialName} schoolName={schoolName} />,
+	});
+}
+
+export async function sendEmailYourDelegatesHaveBeenAssigned({
+	officialName,
+	email,
+	schoolName,
+}: {
+	officialName: string;
+	email: string;
+	schoolName: string;
+}) {
+	return sendEmail({
+		to: email,
+		subject: `Delegates Assigned - MEDIMUN`,
+		preview: `Dear ${officialName}, your delegates have been assigned to their committees.`,
+		html: <YourDelegatesAssignedToTheirCommittees officialName={officialName} schoolName={schoolName} />,
 	});
 }

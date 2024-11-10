@@ -2,7 +2,7 @@ import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { countries } from "@/data/countries";
 import { OptionsDropdown } from "./client-components";
-import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsButton, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
@@ -135,14 +135,21 @@ export default async function Page(props) {
 					<TableBody>
 						{schools.map((school, index) => {
 							const country = countries.find((country) => country.countryCode === school?.location?.country);
-							const directors = school.director.map((director, index) => (
-								<Fragment key={index}>
-									<Link className="text-primary hover:underline" href={`/medibook/users/${director.user.username || director.user.id}`}>
-										{director.user.displayName || `${director.user.officialName} ${director.user.officialSurname}`}
-									</Link>
-									<span>{index < school.director.length - 1 ? ", " : ""}</span>
-								</Fragment>
-							));
+							const directors = (
+								<div className="flex gap-2">
+									{school.director.map((director, index) => (
+										<Link
+											key={`${director.id}-${index}`}
+											className="text-primary hover:underline"
+											href={`/medibook/users/${director.user.username || director.user.id}`}>
+											<UserTooltip userId={director.user.id} key={`${director.id}-${index}`}>
+												{director.user.displayName ||
+													`${director.user.officialName} ${director.user.officialSurname}${index < school.director.length - 1 ? ", " : ""}`}
+											</UserTooltip>
+										</Link>
+									))}
+								</div>
+							);
 							return (
 								<TableRow href={!school.director.length ? `/medibook/schools/${school.slug || school.id}` : null} key={school.id}>
 									<TableCell>

@@ -1,31 +1,31 @@
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { auth } from "@/auth";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import Paginator from "@/components/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { countries } from "@/data/countries";
-import { authorize, s } from "@/lib/authorize";
+import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, s } from "@/lib/authorize";
 import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
+import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import { Avatar } from "@nextui-org/avatar";
 import { notFound } from "next/navigation";
 
 const itemsPerPage = 10;
 
 //FIX
-export default async function Page(
-    props: { params: Promise<{ sessionNumber: string; committeeId: string; page: string }> }
-) {
-    const params = await props.params;
-    const authSession = await auth();
-    const currentPage = parseInt(params.page) || 1;
-    const isManagement = authorize(authSession, [s.management]);
+export default async function Page(props: { params: Promise<{ sessionNumber: string; committeeId: string; page: string }> }) {
+	const params = await props.params;
+	const authSession = await auth();
+	const currentPage = parseInt(params.page) || 1;
+	const isManagement = authorize(authSession, [s.management]);
 
-    const [selectedSession, totalItems] = await prisma
+	const [selectedSession, totalItems] = await prisma
 		.$transaction([
 			prisma.session.findFirstOrThrow({
 				where: {
 					number: params.sessionNumber,
-					...(isManagement ? {} : { isVisible: true }),
+					...(isManagement ? {} : { isPartlyVisible: true }),
 				},
 				include: {
 					committee: {
@@ -41,44 +41,74 @@ export default async function Page(
 		])
 		.catch(notFound);
 
-    const selectedCommittee = selectedSession.committee[0];
-    const delegates = selectedCommittee.delegate;
-    const allCountries = countries.push(selectedCommittee.ExtraCountry.map((c) => c.name));
+	const selectedCommittee = selectedSession.committee[0];
 
-    return (
+	const isChairOfCommittee = authorizeChairCommittee([...authSession?.user?.currentRoles, ...authSession?.user?.pastRoles], selectedCommittee.id);
+	const isDelegateOfCommittee = authorizeDelegateCommittee(
+		[...authSession?.user?.currentRoles, ...authSession?.user?.pastRoles],
+		selectedCommittee.id
+	);
+
+	console.log(authSession?.currentRoles);
+
+	const isPartOfCommittee = isChairOfCommittee || isDelegateOfCommittee;
+	const isManagerOrMember = authorize(authSession, [s.manager, s.member]);
+
+	if (!isManagement && !isPartOfCommittee && !isManagerOrMember) notFound();
+
+	const delegates = selectedCommittee.delegate;
+	const allCountries = [...countries, ...selectedCommittee.ExtraCountry];
+
+	return (
 		<>
 			<TopBar
 				buttonHref={`/medibook/sessions/${selectedSession.number}/committees/${selectedCommittee.slug || selectedCommittee.id}`}
 				buttonText={selectedCommittee.name}
-				title="Committee Delegates"
+				title="Delegates"
 			/>
-			<Table>
-				<TableHead>
-					<TableRow>
-						<TableHeader>
-							<span className="sr-only">Actions</span>
-						</TableHeader>
-						<TableHeader>Avatar</TableHeader>
-						<TableHeader>Name</TableHeader>
-						<TableHeader>Country</TableHeader>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{delegates.map((delegate) => {
-						const user = delegate.user;
-						return (
-							<TableRow key={delegate.id}>
-								<TableCell></TableCell>
-								<TableCell>
-									<Avatar showFallback className="text-primary dark:bg-zinc-900" size="sm" src={`/api/users/${user.id}/avatar`} />
-								</TableCell>
-								<TableCell>{user.displayName || `${user.officialName} ${user.officialSurname}`}</TableCell>
-								<TableCell>{delegate.country}</TableCell>
-							</TableRow>
-						);
-					})}
-				</TableBody>
-			</Table>
+			{!!selectedCommittee.delegate.length && (
+				<Table>
+					<TableHead>
+						<TableRow>
+							<TableHeader>
+								<span className="sr-only">Actions</span>
+							</TableHeader>
+							<TableHeader>
+								<span className="sr-only">Avatar</span>
+							</TableHeader>
+							<TableHeader>Name</TableHeader>
+							<TableHeader>Country</TableHeader>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{delegates.map((delegate) => {
+							const user = delegate.user;
+							const selectedCountry = allCountries.find((country) => country.countryCode === delegate.country);
+							return (
+								<TableRow key={delegate.id}>
+									<TableCell>
+										<Dropdown>
+											<DropdownButton plain>
+												<EllipsisVerticalIcon />
+											</DropdownButton>
+											<DropdownMenu>
+												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
+											</DropdownMenu>
+										</Dropdown>
+									</TableCell>
+									<TableCell>
+										<UserTooltip userId={user.id}>
+											<Avatar showFallback radius="md" src={`/api/users/${user.id}/avatar`} />
+										</UserTooltip>
+									</TableCell>
+									<TableCell>{user.displayName || `${user.officialName} ${user.officialSurname}`}</TableCell>
+									<TableCell>{selectedCountry.countryNameEn}</TableCell>
+								</TableRow>
+							);
+						})}
+					</TableBody>
+				</Table>
+			)}
 			<Paginator totalItems={totalItems} itemsPerPage={itemsPerPage} itemsOnPage={selectedCommittee.delegate.length} />
 		</>
 	);

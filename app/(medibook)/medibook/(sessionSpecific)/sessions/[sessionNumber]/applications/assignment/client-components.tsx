@@ -7,7 +7,7 @@ import { Text } from "@/components/text";
 import { countries } from "@/data/countries";
 import { Avatar } from "@nextui-org/avatar";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "sonner";
 import { delegationAssignmentChanges, getStudentsOfSchool, handleFinalAssignDelegates } from "./actions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
@@ -21,40 +21,44 @@ import { Input } from "@/components/input";
 import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/listbox";
 import { flushSync } from "react-dom";
 import { sortProposal } from "./page";
+import { Link } from "@/components/link";
+import { SearchParamsDropDropdownItem } from "@/app/(medibook)/medibook/client-components";
 
-export function FinalAssignDelegates({ users, delegateProposals, selectedSession }) {
-	const [rejectedNominations, setRejectedNominations] = useState([]);
+export function FinalAssignDelegates({ users, delegateProposalsInitial, selectedSession }) {
+	const delegateProposals = delegateProposalsInitial;
 	const [isLoading, setIsLoading] = useState(false);
 	const [visibleProposal, setVisibleProposal] = useState(null);
 	const [selectedDeleteProposal, setSelectedDeleteProposal] = useState(null);
 	const [addStudentsToProposal, setAddStudentsToProposal] = useState(null);
 	const router = useRouter();
-	const searchParams = useSearchParams();
-
-	async function handleSubmit(assignments, schoolId) {
-		if (isLoading) return;
-		const filteredAssignments = assignments.filter((a) => !rejectedNominations.includes(a.studentId));
-		if (filteredAssignments.length === 0) return toast.error("You cannot assign 0 delegates.");
-		setIsLoading(true);
-		const res = await handleFinalAssignDelegates(filteredAssignments, selectedSession.id, schoolId);
-		if (res?.ok) {
-			toast.success(...res?.message);
-			router.refresh();
-		} else {
-			toast.error(...res?.message);
-		}
-		setIsLoading(false);
-	}
-
 	const socket = useSocket();
 
 	useEffect(() => {
 		if (!socket) return;
-		socket.emit(`join-room`, "delegate-assignment", selectedSession.id);
+		handleJoinRoom();
 		return () => {
-			socket.emit(`leave-room`, "delegate-assignment", selectedSession.id);
+			socket.emit(`leave-room`, `delegate-assignment-${selectedSession.id}`);
 		};
+	}, [socket, router]);
+
+	const handleJoinRoom = async () => {
+		await new Promise((resolve) => setTimeout(resolve, 250));
+		socket.emit(`join-room-delegate-assignment`, selectedSession.id);
+	};
+
+	useEffect(() => {
+		if (!socket) return;
+		socket.on("update-delegation-proposal", (proposalId, data) => {
+			if (delegateProposals.find((p) => p.id === proposalId)) router.refresh();
+		});
 	}, [socket]);
+
+	useEffect(() => {
+		if (!visibleProposal) return;
+		const proposal = delegateProposals.find((p) => p.id === visibleProposal.id);
+		setVisibleProposal(proposal);
+	}, [delegateProposals]);
+
 	return (
 		<>
 			{!!selectedDeleteProposal && <DeleteProposalModal proposal={selectedDeleteProposal} setSelectedDeleteProposal={setSelectedDeleteProposal} />}
@@ -77,7 +81,7 @@ export function FinalAssignDelegates({ users, delegateProposals, selectedSession
 					setVisibleProposal={setVisibleProposal}
 				/>
 			)}
-			<Table>
+			<Table className="showscrollbar">
 				<TableHead>
 					<TableRow>
 						<TableHeader>
@@ -88,10 +92,19 @@ export function FinalAssignDelegates({ users, delegateProposals, selectedSession
 						<TableHeader>GA Delegates Proposed</TableHeader>
 						<TableHeader>Non-GA Delegates Proposed</TableHeader>
 						<TableHeader>Modifications</TableHeader>
+						<TableHeader>Current School Directors</TableHeader>
 					</TableRow>
 				</TableHead>
 				<TableBody>
 					{delegateProposals.map((proposal, index) => {
+						const directors = proposal.school.director.map((director, index) => (
+							<Fragment key={`${director.id}-${index}`}>
+								<Link className="text-primary hover:underline" href={`/medibook/users/${director.user.username || director.user.id}`}>
+									{director.user.displayName || `${director.user.officialName} ${director.user.officialSurname}`}
+								</Link>
+								<span>{index < proposal.school.director.length - 1 ? ", " : ""}</span>
+							</Fragment>
+						));
 						return (
 							<TableRow key={proposal.id}>
 								<TableCell>
@@ -106,7 +119,12 @@ export function FinalAssignDelegates({ users, delegateProposals, selectedSession
 												}}>
 												View & Edit Students
 											</DropdownItem>
-											<DropdownItem>Confirm</DropdownItem>
+											<SearchParamsDropDropdownItem
+												searchParams={{
+													"approve-school-delegate-assignment-proposal": proposal.id,
+												}}>
+												Approve
+											</SearchParamsDropDropdownItem>
 											<DropdownDivider />
 											<DropdownItem
 												onClick={() => {
@@ -119,9 +137,22 @@ export function FinalAssignDelegates({ users, delegateProposals, selectedSession
 								</TableCell>
 								<TableCell>{proposal.school.name}</TableCell>
 								<TableCell>{proposal.school.ApplicationGrantedDelegationCountries[0].countries.length}</TableCell>
-								<TableCell>{proposal.assignment.filter((a) => a.countryCode).length || "None"}</TableCell>
-								<TableCell>{proposal.assignment.filter((a) => !a.countryCode).length || "None"}</TableCell>
-								<TableCell>{proposal.changes.length ? <Badge color="yellow">Modified</Badge> : <Badge color="green">Unmodified</Badge>}</TableCell>
+								<TableCell>
+									{proposal.assignment.filter((a) => a.countryCode)?.length || "None"}{" "}
+									{!!proposal.changes.length &&
+										proposal.assignment.filter((a) => a.countryCode)?.length !== proposal.changes.filter((a) => a.countryCode)?.length && (
+											<Badge className="!rounded-full">Modified to {proposal.changes.filter((a) => a.countryCode)?.length || "None"}</Badge>
+										)}
+								</TableCell>
+								<TableCell>
+									{proposal.assignment.filter((a) => !a.countryCode)?.length || "None"}{" "}
+									{!!proposal.changes.length &&
+										proposal.assignment.filter((a) => !a.countryCode)?.length !== proposal.changes.filter((a) => !a.countryCode)?.length && (
+											<Badge>Modified to {proposal.changes.filter((a) => !a.countryCode)?.length || "None"}</Badge>
+										)}
+								</TableCell>
+								<TableCell>{proposal.changes?.length ? <Badge color="yellow">Modified</Badge> : <Badge color="green">Unmodified</Badge>}</TableCell>
+								<TableCell>{directors}</TableCell>
 							</TableRow>
 						);
 					})}
@@ -286,8 +317,8 @@ function ViewEditDelegateProposal({
 		const res = await delegationAssignmentChanges(visibleProposal.id, visibleProposal?.assignment);
 		if (res?.ok) {
 			toast.success(...res?.message);
-			router.refresh();
 			flushSync(() => {
+				router.refresh();
 				setVisibleProposal((prev) => ({ ...prev, changes: [], assignment: sortProposal(visibleProposal?.assignment, selectedSession.committee) }));
 			});
 		} else {
@@ -538,7 +569,7 @@ function AddStudentsToProposalModal({ proposal, setAddStudentsToProposal, setVis
 					onClick={() => {
 						addStudentToAssignment();
 					}}
-					disabled={!selectedCommittee || !fetchedUsers.length || (selectedCommittee.type == "GENERALASSEMBLY" && !selectedCountry)}>
+					disabled={!selectedCommittee || !fetchedUsers?.length || (selectedCommittee.type == "GENERALASSEMBLY" && !selectedCountry)}>
 					Add
 				</Button>
 			</DialogActions>
@@ -566,7 +597,7 @@ function DeleteProposalModal({ proposal, setSelectedDeleteProposal }) {
 					<DescriptionTerm>Proposal ID</DescriptionTerm>
 					<DescriptionDetails>{proposal.id}</DescriptionDetails>
 					<DescriptionTerm>Number of Delegates</DescriptionTerm>
-					<DescriptionDetails>{proposal.assignment.length}</DescriptionDetails>
+					<DescriptionDetails>{proposal.assignment?.length}</DescriptionDetails>
 				</DescriptionList>
 			</DialogBody>
 			<DialogActions>

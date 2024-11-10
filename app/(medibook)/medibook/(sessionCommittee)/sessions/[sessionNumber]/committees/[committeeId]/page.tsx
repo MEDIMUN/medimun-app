@@ -1,9 +1,9 @@
-import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsButton, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { InteractiveMap } from "@/app/(medibook)/medibook/interactive-map";
 import { auth } from "@/auth";
 import { Badge } from "@/components/badge";
 import { Divider } from "@/components/divider";
-import { authorize, s } from "@/lib/authorize";
+import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, s } from "@/lib/authorize";
 import { cn } from "@/lib/cn";
 import { romanize } from "@/lib/romanize";
 import { displayNumberInSentenceAsText } from "@/lib/text";
@@ -11,13 +11,14 @@ import prisma from "@/prisma/client";
 import { Avatar } from "@nextui-org/avatar";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Fragment } from "react";
 
 export default async function Page(props) {
-    const searchParams = await props.searchParams;
-    const params = await props.params;
-    const authSession = await auth();
-    const isManagement = authorize(authSession, [s.management]);
-    const selectedCommittee = await prisma.committee
+	const searchParams = await props.searchParams;
+	const params = await props.params;
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
+	const selectedCommittee = await prisma.committee
 		.findFirstOrThrow({
 			where: {
 				OR: [
@@ -29,67 +30,82 @@ export default async function Page(props) {
 		})
 		.catch(notFound);
 
-    const basePath = `/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}`;
+	const isChair = authorizeChairCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedCommittee.id);
+	const isDelegate = authorizeDelegateCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedCommittee.id);
+	const isChairOrDelegate = isChair || isDelegate;
+	const isManagementOrChair = isManagement || isChair;
+	const isManagementChairOrDelegate = isManagement || isChairOrDelegate;
 
-    const actions = [
+	const basePath = `/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}`;
+
+	const actions = [
 		{
 			title: "Committee Announcements",
 			description: "Announcements for the committee.",
 			href: `${basePath}/announcements`,
+			isVisible: isManagementChairOrDelegate,
 		},
 		{
 			title: "Committee Resources",
 			description: "Applications for the position of Manager",
 			href: `${basePath}/resources`,
+			isVisible: isManagementChairOrDelegate,
 		},
 		{
 			title: "Topics",
 			description: "Topics for the committee.",
 			href: `${basePath}/topics`,
+			isVisible: true,
 		},
 		{
 			title: "Resolutions",
 			description: "Resolutions for the committee.",
 			href: `${basePath}/resolutions`,
+			isVisible: isManagementChairOrDelegate,
 		},
 		{
 			title: "Participants",
 			description: "Participants in the committee.",
-			href: `${basePath}/participants`,
+			href: `${basePath}/delegates`,
+			isVisible: isManagementChairOrDelegate,
 		},
 		{
 			title: "Roll Calls",
 			description: "Roll calls for the committee.",
 			href: `${basePath}/roll-calls`,
+			isVisible: isManagementChairOrDelegate,
 		},
-		authorize(authSession, [s.management]) && {
+		{
 			title: "Settings",
 			description: "Settings for the committee.",
 			href: `${basePath}/settings`,
+			isVisible: isManagement,
 		},
-	].filter((x) => x);
+	].filter((x) => x.isVisible);
 
-    /* 	const assignedCountries = selectedCommittee.delegate.map((delegate) => delegate.country);
-	 */
-
-    return (
+	return (
 		<>
 			<TopBar
 				title={selectedCommittee.name}
 				subheading={
 					!!selectedCommittee.chair.length && (
-						<p className="text-zinc-700 md:text-sm">
-							Chaired by{" "}
-							{selectedCommittee.chair.map((chair, index) => (
-								<>
-									<Link key={chair.user.id} className="hover:underline" href={`/medibook/users/${chair.user.username || chair.user.id}`}>
-										{chair.user.displayName}
-									</Link>
-									{index === 0 && selectedCommittee.chair.length > 1 && <span> & </span>}
-									{index < selectedCommittee.chair.length - 1 && <span>, </span>}
-								</>
-							))}
-						</p>
+						<div className="text-zinc-700 gap-1 flex md:text-sm">
+							<span>Chaired by </span>
+							{selectedCommittee.chair.map((chair: any, index: number) => {
+								const user = chair?.user;
+								const displayNameShortened =
+									user?.displayName?.split(" ").length === 1
+										? user?.displayName
+										: user?.displayName?.split(" ")[0] + " " + user?.displayName?.split(" ")[1][0] + ".";
+								const fullName = user?.displayName ? displayNameShortened : user?.officialName.split(" ")[0] + " " + user?.officialSurname[0] + ".";
+
+								return (
+									<UserTooltip userId={user.id} key={Math.random()}>
+										{`${fullName} ${index < selectedCommittee.chair.length - 2 ? ", " : index === selectedCommittee.chair.length - 2 ? " & " : ""}`}
+									</UserTooltip>
+								);
+							})}
+						</div>
 					)
 				}
 				buttonText={`Session ${romanize(selectedCommittee.session.numberInteger)} Committees`}

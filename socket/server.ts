@@ -6,13 +6,15 @@ import prisma from "@/prisma/client";
 import {
 	authorize,
 	authorizeChairCommittee,
+	authorizeChairDelegate,
 	authorizeDelegateCommittee,
 	authorizeDirect,
 	authorizeManagerDepartment,
 	authorizeMemberDepartment,
 	s,
 } from "@/lib/authorize";
-import { generateUserDataObject } from "@/lib/user";
+import { generateUserData, generateUserDataObject } from "@/lib/user";
+import { handleSocketRollCall } from "./roll-call";
 
 declare global {
 	var io: Server | undefined;
@@ -37,17 +39,73 @@ export const initializeSocket = (server: any): Server => {
 		subClient.on("error", (error) => console.error("Redis subClient error:", error));
 
 		global.io.on("connection", async (socket) => {
-			// Example auth call (to be replaced as you implement your specific auth)
 			const authSession = await socketAuth(socket);
+			socket.user = authSession.user;
 
 			if (!authSession) {
 				socket.disconnect();
 				return;
 			}
 
-			console.log("User connected", authSession.user.id);
-			socket.user = authSession.user;
 			socket.join(`private-user-${authSession?.user.id}`);
+
+			socket.on("join-room-delegate-assignment", async (sessionId) => {
+				console.log("REQUEST TO JOIN");
+				const authSession = await socketAuth(socket);
+				const isManagement = authorize(authSession, [s.management]);
+				if (!authSession && !isManagement) {
+					socket.emit("error", "Unauthorized");
+					return;
+				}
+				await socket.join(`room:delegate-assignment-${sessionId}`);
+			});
+
+			/* 			const handleJoinRoom = async () => {
+				await new Promise((resolve) => setTimeout(resolve, 250));
+				try {
+					socket.emit(`join:committee-roll-calls`, selectedCommittee.id);
+				} catch {
+				} finally {
+					setIsLoading(false);
+				}
+			}; */
+
+			socket.on("update:committee-roll-call", async ({ dayId, rollCallId, userId, type, action }) => {
+				handleSocketRollCall(socket, { dayId, rollCallId, userId, type, action });
+			});
+
+			socket.on("join:committee-roll-calls", async (selectedCommitteeId, selectedDayId) => {
+				const authSession = await socketAuth(socket);
+				const isManagement = authorize(authSession, [s.management]);
+				const selectedCommittee = await prisma.committee.findUnique({
+					where: { id: selectedCommitteeId },
+					include: { session: { select: { Day: true } } },
+				});
+				const selectedDay = selectedCommittee.session.Day.find((day) => day.id === selectedDayId);
+				if (!selectedDay) {
+					socket.emit("error", "Day not found");
+					return;
+				}
+				if (!selectedCommittee) {
+					socket.emit("error", "Committee not found");
+					return;
+				}
+				const isChairOfCommittee = authorizeChairCommittee(
+					authSession?.user?.currentRoles?.concat(authSession?.user?.pastRoles),
+					selectedCommitteeId
+				);
+				const isDelegateOfCommittee = authorizeDelegateCommittee(
+					authSession?.user?.currentRoles?.concat(authSession?.user?.pastRoles),
+					selectedCommitteeId
+				);
+
+				if (!isManagement && !isChairOfCommittee && !isDelegateOfCommittee) {
+					socket.emit("error", "Unauthorized");
+					return;
+				}
+				socket.join(`room:committee-roll-calls-${selectedDayId}`);
+				socket.nsp.to(`private-user-${authSession?.user.id}`).emit("joined:committee-roll-calls", selectedDayId);
+			});
 
 			// Message Group Room
 			socket.on("join-message-group", (groupId) => {
@@ -182,10 +240,19 @@ export const initializeSocket = (server: any): Server => {
 				socket.join("global-events");
 			});
 
-			// Roll Call Room (for committee chairs)
-			socket.on("join-roll-call", (committeeId) => {
-				socket.join(`roll-call-${committeeId}`);
-				socket.to(`roll-call-${committeeId}`).emit("chair-joined", `Chair ${socket.id} joined roll call`);
+			//global leave room
+			socket.on("leave-room", (room) => {
+				socket.leave(`room:${room}`);
+			});
+
+			socket.on("update:delegation-proposal", async (sessionId, proposalId, data) => {
+				const authSession = await socketAuth(socket);
+				const isManagement = authorize(authSession, [s.management]);
+				if (!isManagement) {
+					socket.emit("error", "Unauthorized");
+					return;
+				}
+				socket.to(`room:delegate-assignment:${sessionId}`).emit("update:delegation-proposal", proposalId, data);
 			});
 
 			// Voting Room

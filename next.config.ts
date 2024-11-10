@@ -35,6 +35,9 @@ const nextConfig = {
 	},
 	transpilePackages: ["next-auth"],
 	experimental: {
+		turbo: { optimizeImages: true },
+		optimizePackageImports: ["@heroicons/react/16/solid", "@heroicons/react/16/outline", "@react-email", "@alexandernanberg/react-pdf-renderer"],
+		after: true,
 		serverActions: {
 			bodySizeLimit: "50mb",
 			allowedOrigins: ["https://www.medimun.org", "www.medimun.org", "www.medimun.org.", "https://www.medimun.org."],
@@ -44,4 +47,8 @@ const nextConfig = {
 	reactStrictMode: true,
 };
 
-export default nextConfig;
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+	enabled: process.env.ANALYZE === "true",
+});
+
+export default withBundleAnalyzer(nextConfig);
