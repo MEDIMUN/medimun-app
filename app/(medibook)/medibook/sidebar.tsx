@@ -214,7 +214,7 @@ export function Sidebar({ sessions }) {
 					<div
 						className={cn(
 							"-my-[19px] mx-auto min-h-full w-[4px] bg-zinc-500 dark:bg-white",
-							index + 1 == visibleCommitteeOptions.length && "rounded-b-full",
+							index + 1 == visibleApplicationOptions.length && "rounded-b-full",
 							index == 0 && "rounded-t-full"
 						)}
 					/>
