@@ -306,7 +306,7 @@ export function RollCallTable({ delegates, rollCallsInit, selectedCommittee, sel
 									</UserTooltip>
 								</TableCell>
 								<TableCell>{delegate.user.displayName || `${delegate.user.officialName} ${delegate.user.officialSurname}`}</TableCell>
-								<TableCell>{selectedCountry.countryNameEn || "-"}</TableCell>
+								<TableCell>{selectedCountry?.countryNameEn || "Not Assigned"}</TableCell>
 								<TableCell>
 									{(() => {
 										const selectedUser = rollCalls?.find((user) => user.id === delegate.id);

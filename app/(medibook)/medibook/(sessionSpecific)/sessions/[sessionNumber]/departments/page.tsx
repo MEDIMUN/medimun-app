@@ -89,7 +89,7 @@ export default async function Page(props) {
 										<div key={department.id} className="flex gap-6 py-6">
 											<div className="w-32 shrink-0">
 												<Link
-													href={`/medibook/sessions/${selectedSession?.number}/committees/${department?.slug || department.id}`}
+													href={`/medibook/sessions/${selectedSession?.number}/departments/${department?.slug || department.id}`}
 													aria-hidden="true">
 													<img
 														className="aspect-[3/2] rounded-lg shadow"
