@@ -21,16 +21,20 @@ export default async function Page(props) {
 	const authSession = await auth();
 	if (!authSession) notFound();
 
-	const selectedSchool = await prisma.school
-		.findFirstOrThrow({ where: { OR: [{ id: params.schoolId }, { slug: params.schoolId }] } })
-		.catch(notFound);
-
 	const selectedSession = await prisma.session
 		.findFirstOrThrow({
 			where: { number: params.sessionNumber },
 			include: { committee: { include: { ExtraCountry: true } } },
 		})
 		.catch(notFound);
+
+	const selectedSchool = await prisma.school
+		.findFirstOrThrow({
+			where: { OR: [{ id: params.schoolId }, { slug: params.schoolId }] },
+			include: { finalDelegation: { where: { sessionId: selectedSession.id } } },
+		})
+		.catch(notFound);
+
 	const grantedDelegation = await prisma.applicationGrantedDelegationCountries.findFirst({
 		where: { sessionId: selectedSession.id, schoolId: selectedSchool.id },
 	});
@@ -66,18 +70,25 @@ export default async function Page(props) {
 
 	const delegationAssignmentProposal = await prisma.schoolDelegationProposal.findFirst({
 		where: { schoolId: selectedSchool.id, sessionId: selectedSession.id },
-		include: { school: { include: { finalDelegation: true } } },
 	});
+
+	console.log({ delegationAssignmentProposal }, selectedSchool.id, selectedSession.id);
 
 	const numberOfGACommittees = selectedSession.committee.filter((committee) => committee.type === "GENERALASSEMBLY").length;
 	const filteredCountries = countries.filter((country) => selectedSession.countriesOfSession.includes(country.countryCode));
 	const applicationsOpen = areDelegateApplicationsOpen(selectedSession);
 
 	const parsedAssignment = delegationAssignmentProposal ? JSON.parse(delegationAssignmentProposal.assignment) : null;
+	const parsedFinal = selectedSchool.finalDelegation[0] ? JSON.parse(selectedSchool.finalDelegation[0].delegation) : null;
 
 	const userIds = parsedAssignment?.map((assignment) => assignment.studentId);
+	const finalStudentIds = parsedFinal?.map((assignment) => assignment.studentId);
 
-	const users = parsedAssignment ? await prisma.user.findMany({ where: { id: { in: parsedAssignment.map((a) => a.studentId) } } }) : [];
+	const allStudentIds = [...(userIds || []), ...(finalStudentIds || [])];
+
+	const users = parsedAssignment || parsedFinal ? await prisma.user.findMany({ where: { id: { in: allStudentIds } } }) : [];
+
+	console.log(users);
 
 	const renderAssignments = (assignments) =>
 		assignments.map((assignment, index) => {
@@ -99,7 +110,7 @@ export default async function Page(props) {
 			);
 		});
 
-	if (delegationAssignmentProposal?.school?.finalDelegation?.length) {
+	if (selectedSchool?.finalDelegation?.length) {
 		const proposal = delegationAssignmentProposal;
 		return (
 			<>
@@ -111,16 +122,14 @@ export default async function Page(props) {
 				/>
 				<DescriptionList>
 					<DescriptionTerm>Delegation ID</DescriptionTerm>
-					<DescriptionDetails>{proposal.school.finalDelegation[0].id}</DescriptionDetails>
+					<DescriptionDetails>{selectedSchool.finalDelegation[0].id}</DescriptionDetails>
 					<DescriptionTerm>Delegation Application Status</DescriptionTerm>
 					<DescriptionDetails>
 						<Badge color="green">Accepted</Badge>
 					</DescriptionDetails>
 					<DescriptionTerm>Assignments</DescriptionTerm>
 					<DescriptionDetails>
-						<div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
-							{renderAssignments(JSON.parse(proposal.school.finalDelegation[0].delegation))}
-						</div>
+						<div className="grid grid-cols-1 xl:grid-cols-2 gap-2">{renderAssignments(JSON.parse(selectedSchool.finalDelegation[0].delegation))}</div>
 					</DescriptionDetails>
 				</DescriptionList>
 			</>

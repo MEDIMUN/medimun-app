@@ -155,6 +155,7 @@ export async function sendEmailAssignDelegateToCommittee({
 export async function sendEmailSchoolInvoice({ officialName, email, schoolName }: { officialName: string; email: string; schoolName: string }) {
 	return await sendEmail({
 		to: email,
+		hideFooter: true,
 		subject: `New School Invoice - MEDIMUN`,
 		preview: `Dear ${officialName}, go to MediBook to view your school's invoice.`,
 		html: <SchoolReceiveInvoice officialName={officialName} schoolName={schoolName} />,
@@ -172,6 +173,7 @@ export async function sendEmailYourDelegatesHaveBeenAssigned({
 }) {
 	return sendEmail({
 		to: email,
+		hideFooter: true,
 		subject: `Delegates Assigned - MEDIMUN`,
 		preview: `Dear ${officialName}, your delegates have been assigned to their committees.`,
 		html: <YourDelegatesAssignedToTheirCommittees officialName={officialName} schoolName={schoolName} />,
