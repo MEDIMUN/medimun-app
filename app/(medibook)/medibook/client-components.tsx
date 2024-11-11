@@ -303,9 +303,11 @@ export function UserTooltip({ userId, children }) {
 				</div>
 				<div className="flex gap-2 flex-wrap">
 					<Badge>{user?.schoolName}</Badge>
-					<Badge>
-						{nationalityCountry?.flag} {nationalityCountry?.countryNameEn}
-					</Badge>
+					{nationalityCountry && (
+						<Badge>
+							{nationalityCountry?.flag} {nationalityCountry?.countryNameEn}
+						</Badge>
+					)}
 					<Badge>{user?.isProfilePrivate ? "Private" : "Public"}</Badge>
 				</div>
 				<div>

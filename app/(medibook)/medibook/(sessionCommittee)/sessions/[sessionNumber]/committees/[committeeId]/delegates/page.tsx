@@ -14,10 +14,11 @@ import { notFound } from "next/navigation";
 const itemsPerPage = 10;
 
 //FIX
-export default async function Page(props: { params: Promise<{ sessionNumber: string; committeeId: string; page: string }> }) {
+export default async function Page(props: { searchParams: any; params: Promise<{ sessionNumber: string; committeeId: string; page: string }> }) {
 	const params = await props.params;
+	const searchParams = await props.searchParams;
 	const authSession = await auth();
-	const currentPage = parseInt(params.page) || 1;
+	const currentPage = parseInt(searchParams.page) || 1;
 	const isManagement = authorize(authSession, [s.management]);
 
 	const [selectedSession, totalItems] = await prisma
@@ -43,28 +44,30 @@ export default async function Page(props: { params: Promise<{ sessionNumber: str
 
 	const selectedCommittee = selectedSession.committee[0];
 
-	const isChairOfCommittee = authorizeChairCommittee([...authSession?.user?.currentRoles, ...authSession?.user?.pastRoles], selectedCommittee.id);
-	const isDelegateOfCommittee = authorizeDelegateCommittee(
-		[...authSession?.user?.currentRoles, ...authSession?.user?.pastRoles],
+	const isChairOfCommittee = authorizeChairCommittee(
+		(authSession?.user?.currentRoles || []).concat(authSession?.user?.pastRoles || []),
 		selectedCommittee.id
 	);
-
-	console.log(authSession?.currentRoles);
+	const isDelegateOfCommittee = authorizeDelegateCommittee(
+		(authSession?.user?.currentRoles || []).concat(authSession?.user?.pastRoles || []),
+		selectedCommittee.id
+	);
 
 	const isPartOfCommittee = isChairOfCommittee || isDelegateOfCommittee;
 	const isManagerOrMember = authorize(authSession, [s.manager, s.member]);
 
 	if (!isManagement && !isPartOfCommittee && !isManagerOrMember) notFound();
 
-	const delegates = selectedCommittee.delegate;
-	const allCountries = [...countries, ...selectedCommittee.ExtraCountry];
+	const delegates = selectedCommittee?.delegate || [];
+	const allCountries = (countries || []).concat(selectedCommittee?.ExtraCountry || []);
 
 	return (
 		<>
 			<TopBar
 				buttonHref={`/medibook/sessions/${selectedSession.number}/committees/${selectedCommittee.slug || selectedCommittee.id}`}
 				buttonText={selectedCommittee.name}
-				title="Delegates"
+				title="Committee Delegates"
+				subheading={`${totalItems} Delegates`}
 			/>
 			{!!selectedCommittee.delegate.length && (
 				<Table>
