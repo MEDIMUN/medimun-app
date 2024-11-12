@@ -1,4 +1,4 @@
-import { authorizeManagerDepartment, authorizeMemberDepartment, authorizePerSession, s } from "@/lib/authorize";
+import { authorize, authorizeManagerDepartment, authorizeMemberDepartment, authorizePerSession, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { parseOrderDirection } from "@/lib/order-direction";
 import prisma from "@/prisma/client";
@@ -14,6 +14,8 @@ export default async function AnnouncementsPage(props) {
 	const orderDirection = parseOrderDirection(searchParams.direction);
 	const authSession = await auth();
 
+	if (!authSession) notFound();
+
 	const selectedEntity = await prisma.department.findFirstOrThrow({
 		where: {
 			OR: [
@@ -24,6 +26,12 @@ export default async function AnnouncementsPage(props) {
 		include: { session: true },
 	});
 
+	const isManagement = authorize(authSession, [s.management]);
+	const isManagerOfDepartment = authorizeManagerDepartment(authSession.user.currentRoles, selectedEntity.id);
+	const isMemberOfDepartment = authorizeMemberDepartment(authSession.user.currentRoles, selectedEntity.id);
+
+	if (!isManagement && !isManagerOfDepartment && !isMemberOfDepartment) notFound();
+
 	const hasSomeArray = [
 		"DEPARTMENTWEBSITE",
 		authorizeManagerDepartment([...authSession.user.pastRoles, ...authSession.user.currentRoles], selectedEntity.id) ? "DEPARTMENTMANAGER" : null,
@@ -31,7 +39,6 @@ export default async function AnnouncementsPage(props) {
 		authorizePerSession(authSession, [s.manager, s.management], [selectedEntity.session.number]) ? "DEPARTCHAIR" : null,
 		authorizePerSession(authSession, [s.member, s.management], [selectedEntity.session.number]) ? "DEPARTMENTDELEGATE" : null,
 		authorizePerSession(authSession, [s.sec, s.management], [selectedEntity.session.number]) ? "DEPARTMENTSECRETARIAT" : null,
-		authorizePerSession(authSession, [s.schooldirector, s.management], [selectedEntity.session.number]) ? "DEPARTMENTSCHOOLDIRECTORS" : null,
 		authorizePerSession(authSession, [s.director, s.sd], [selectedEntity.session.number]) ? "DEPARTMENTDIRECTORS" : null,
 		authorizePerSession(authSession, [s.sd], [selectedEntity.session.number]) ? "DEPARTMENTSENIORDIRECTORS" : null,
 	].filter((x) => x);
@@ -60,6 +67,9 @@ export default async function AnnouncementsPage(props) {
 
 	return (
 		<AnnouncementsTable
+			buttonHref={`/medibook/sessions/${selectedEntity.session.number}/departments/${selectedEntity.slug || selectedEntity.id}`}
+			buttonText={selectedEntity.name}
+			showPublishButton={isManagement || isManagerOfDepartment}
 			title={"Department Announcements"}
 			baseUrl={`/medibook/sessions/${params.sessionNumber}/departments/${params.departmentId}/announcements`}
 			announcements={prismaAnnouncements}

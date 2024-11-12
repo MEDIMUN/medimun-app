@@ -20,7 +20,7 @@ export function UserIdDisplay({ userId }): string | null {
 	}
 
 	return (
-		<span className="flex">
+		<span className="flex font-mono">
 			<span>
 				{firstPart}
 				<span className="select-none">-</span>

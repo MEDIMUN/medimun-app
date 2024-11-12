@@ -15,7 +15,15 @@ import {
 	SidebarSection,
 	SidebarSpacer,
 } from "@/components/sidebar";
-import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, authorizePerSession, s } from "@/lib/authorize";
+import {
+	authorize,
+	authorizeChairCommittee,
+	authorizeDelegateCommittee,
+	authorizeManagerDepartment,
+	authorizeMemberDepartment,
+	authorizePerSession,
+	s,
+} from "@/lib/authorize";
 import { cn } from "@/lib/cn";
 import { romanize } from "@/lib/romanize";
 import { getSessionData } from "./actions";
@@ -25,11 +33,13 @@ import {
 	ChevronUpIcon,
 	Cog8ToothIcon,
 	HashtagIcon,
+	HomeIcon,
 	LightBulbIcon,
 	PlusIcon,
 	ShieldCheckIcon,
 	SparklesIcon,
 	UserCircleIcon,
+	UserIcon,
 } from "@heroicons/react/16/solid";
 import { signOut, useSession } from "next-auth/react";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -43,37 +53,45 @@ import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { Text } from "@/components/text";
 import { Heading } from "@/components/heading";
 import { Badge } from "@/components/badge";
+import { Cog6ToothIcon } from "@heroicons/react/20/solid";
 
 export function AccountDropdownMenu({ anchor }: { anchor: "top start" | "bottom end" }) {
 	const { data: authSession, status } = useSession();
-	return (
-		<DropdownMenu className="min-w-64" anchor={anchor}>
-			{status === "authenticated" && (
+	if (status === "authenticated")
+		return (
+			<DropdownMenu className="min-w-64" anchor={anchor}>
 				<DropdownItem href="/medibook/account">
-					<UserCircleIcon />
+					<Cog6ToothIcon />
 					<DropdownLabel>My Account</DropdownLabel>
 				</DropdownItem>
-			)}
-			<DropdownItem href={`/medibook/users/${authSession?.user?.username || authSession?.user?.id}`}>
-				<UserCircleIcon />
-				<DropdownLabel>
-					My Profile <Badge color="yellow">New</Badge>
-				</DropdownLabel>
-			</DropdownItem>
-			<DropdownDivider />
-			<DropdownItem href="/medibook/policies">
-				<ShieldCheckIcon />
-				<DropdownLabel>Conference Policies</DropdownLabel>
-			</DropdownItem>
-			<DropdownDivider />
-			<DropdownItem href="/home">
-				<LightBulbIcon />
-				<DropdownLabel>View Homepage</DropdownLabel>
-			</DropdownItem>
-			<DropdownDivider />
-			<DropdownItem onClick={signOut}>
-				<ArrowRightStartOnRectangleIcon />
-				<DropdownLabel>Sign Out</DropdownLabel>
+				<DropdownItem href={`/medibook/users/${authSession?.user?.username || authSession?.user?.id}`}>
+					<UserCircleIcon />
+					<DropdownLabel>My Profile</DropdownLabel>
+				</DropdownItem>
+				<DropdownDivider />
+				<DropdownItem href="/medibook/policies">
+					<ShieldCheckIcon />
+					<DropdownLabel>Conference Policies</DropdownLabel>
+				</DropdownItem>
+				<DropdownDivider />
+				<DropdownItem href="/home">
+					<HomeIcon />
+					<DropdownLabel>View Homepage</DropdownLabel>
+				</DropdownItem>
+				<DropdownDivider />
+				<DropdownItem
+					onClick={() => {
+						signOut();
+					}}>
+					<ArrowRightStartOnRectangleIcon />
+					<DropdownLabel>Sign Out</DropdownLabel>
+				</DropdownItem>
+			</DropdownMenu>
+		);
+	return (
+		<DropdownMenu className="min-w-64" anchor={anchor}>
+			<DropdownItem disabled>
+				<DropdownLabel>Loading...</DropdownLabel>
 			</DropdownItem>
 		</DropdownMenu>
 	);
@@ -81,7 +99,7 @@ export function AccountDropdownMenu({ anchor }: { anchor: "top start" | "bottom 
 
 export function Sidebar({ sessions }) {
 	const { data: authSession, status } = useSession();
-	const pathname = usePathname();
+	const pathname = usePathname() || "";
 	const router = useRouter();
 	const isManagement = authorize(authSession, [s.management]);
 
@@ -96,16 +114,46 @@ export function Sidebar({ sessions }) {
 		setIsLoading,
 		schoolDirectorRoles,
 		setSchoolDirectorRoles,
+		visibleSchoolOptionIds,
+		setVisibleSchoolOptionIds,
+		visibleSidebarOptions,
+		setVisibleSidebarOptions,
 	} = useSidebarContext();
+
+	const basePath = `/medibook/sessions/${selectedSession}`;
+	const pastRoles = authSession?.user.pastRoles;
+	const currentRoles = authSession?.user.currentRoles;
+
+	let allCurrentAndPastRoles;
+
+	async function handleSessionChange() {
+		let sessionData = await getSessionData(selectedSession);
+		const sortedCommittees = sessionData?.committee?.sort((a, b) => {
+			const committeeType = ["GENERALASSEMBLY", "SECURITYCOUNCIL", "SPECIALCOMMITTEE"];
+			return committeeType.indexOf(a.type) - committeeType.indexOf(b.type);
+		});
+
+		allCurrentAndPastRoles = (currentRoles || []).concat(pastRoles || []);
+		setSchoolDirectorRoles(
+			allCurrentAndPastRoles.filter((role) => role?.roleIdentifier === "schoolDirector")?.filter((role) => role?.session === selectedSession)
+		);
+
+		if (!sessionData?.committee) return;
+		sessionData.committee = sortedCommittees;
+		setSelectedSessionData(sessionData);
+	}
+
+	async function loadMoreSessionsHandler() {
+		setIsLoading(true);
+		const moreSessions = await getMoreSessions(sessionsData.length);
+		setSessionsData((sessionsData || []).concat(moreSessions || []));
+		setIsLoading(false);
+	}
 
 	useEffect(() => {
 		setSessionsData(sessions);
 		setSelectedSession(sessions[0]?.number);
 	}, []);
-
-	const basePath = `/medibook/sessions/${selectedSession}`;
-	const pastRoles = authSession?.user.pastRoles;
-	const currentRoles = authSession?.user.currentRoles;
 
 	useEffect(() => {
 		const getSessionFromPath = () => {
@@ -133,112 +181,162 @@ export function Sidebar({ sessions }) {
 		handleSessionChange();
 	}, [selectedSession]);
 
-	let allCurrentAndPastRoles;
+	useEffect(() => {
+		handleSessionChange();
+	}, [status]);
 
-	async function handleSessionChange() {
-		let sessionData = await getSessionData(selectedSession);
-		const sortedCommittees = sessionData?.committee?.sort((a, b) => {
-			const committeeType = ["GENERALASSEMBLY", "SECURITYCOUNCIL", "SPECIALCOMMITTEE"];
-			return committeeType.indexOf(a.type) - committeeType.indexOf(b.type);
-		});
-
-		allCurrentAndPastRoles = [].concat(currentRoles).concat(pastRoles);
-		setSchoolDirectorRoles(
-			allCurrentAndPastRoles.filter((role) => role?.roleIdentifier === "schoolDirector")?.filter((role) => role?.session === selectedSession)
-		);
-
-		if (!sessionData?.committee) return;
-		sessionData.committee = sortedCommittees;
-		setSelectedSessionData(sessionData);
-	}
-
-	const applicationOptionsList = [
-		{ name: "Status", href: `/applications/status`, isVisible: true },
-		{ name: "School Director", href: `/applications/school-director`, isVisible: true },
-		{ name: "Delegation", href: `/applications/delegation`, isVisible: true },
-		{ name: "Delegate Assignment", href: `/applications/assignment`, isVisible: true },
-		{ name: "Chair", href: `/applications/chair`, isVisible: isManagement, isDisabled: true },
-		{ name: "Manager", href: `/applications/manager`, isVisible: isManagement, isDisabled: true },
-		{ name: "Member", href: `/applications/member`, isVisible: isManagement, isDisabled: true },
-	];
-
-	const visibleApplicationOptions = applicationOptionsList.filter((option) => option.isVisible);
-
-	function CommitteeOptions({ basePath, committeeId }) {
-		const isChairOrDelegate =
-			authorizeChairCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], committeeId) ||
-			authorizeDelegateCommittee([...authSession.user.pastRoles, ...authSession.user.currentRoles], committeeId);
-
-		const isManagementOrChairOrDelegate = isManagement || isChairOrDelegate;
-
-		const committeeOptionsList = [
-			{ name: "Overview", href: ``, isVisible: true, icon: "heroicons-solid:home" },
-			{ name: "Announcements", href: `/announcements`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:speakerphone" },
-			{ name: "Topics", href: `/topics`, isVisible: true, icon: "heroicons-solid:library" },
-			{ name: "Resolutions", href: `/resolutions`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
-			{ name: "Delegates", href: `/delegates`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:user-group" },
-			{ name: "Resources", href: `/resources`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:folder" },
-			{ name: "Roll Calls", href: `/roll-calls`, isVisible: isManagement, icon: "heroicons-solid:clipboard-list" },
-			{ name: "Settings", href: `/settings`, isVisible: isManagement, icon: "heroicons-solid:cog" },
-		].filter((option) => option.isVisible);
-
-		return committeeOptionsList.map((item, index) => (
+	function OptionsItem({ basePath, item, length, index }) {
+		return (
 			<SidebarItem
-				key={"committee-options-" + index}
-				className={cn("h-8", index + 1 == committeeOptionsList.length && "mb-2")}
-				href={basePath + item.href}
+				disabled={item.isDisabled || item.isSoon}
+				className={cn("h-8", index + 1 == length && "mb-2")}
+				{...(item.isDisabled || item.isSoon ? {} : { href: basePath + item.href })}
 				current={pathname == basePath + item.href}>
 				<div slot="icon" className="flex min-w-[23px]">
 					<div
 						className={cn(
 							"-my-[19px] mx-auto min-h-full w-[4px] bg-zinc-500 dark:bg-white",
-							index + 1 == committeeOptionsList.length && "rounded-b-full",
-							index == 0 && "rounded-t-full"
-						)}
-					/>
-				</div>
-				<SidebarLabel>{item.name}</SidebarLabel>
-			</SidebarItem>
-		));
-	}
-
-	function ApplicationOptions({ basePath }) {
-		return visibleApplicationOptions.map((committee, index) => (
-			<SidebarItem
-				key={"application-options-" + index}
-				disabled={committee.isDisabled}
-				className={cn("h-8", index + 1 == visibleApplicationOptions.length && "mb-2")}
-				href={basePath + committee.href}
-				current={pathname == basePath + committee.href}>
-				<div slot="icon" className="flex min-w-[23px]">
-					<div
-						className={cn(
-							"-my-[19px] mx-auto min-h-full w-[4px] bg-zinc-500 dark:bg-white",
-							index + 1 == visibleApplicationOptions.length && "rounded-b-full",
+							index + 1 == length && "rounded-b-full",
 							index == 0 && "rounded-t-full"
 						)}
 					/>
 				</div>
 				<SidebarLabel>
-					{committee.name}
-					{committee.isDisabled && <SoonBadge />}
+					{item.name}
+					{item.isSoon && <SoonBadge />}
+				</SidebarLabel>
+			</SidebarItem>
+		);
+	}
+
+	function Departmentoptions({ basePath, departmentId }) {
+		const allUserRoles = (authSession?.user?.pastRoles || []).concat(authSession?.user?.currentRoles || []);
+		const isManagerOfCommittee = authorizeManagerDepartment(allUserRoles, departmentId);
+		const isMemberOfDepartment = authorizeMemberDepartment(allUserRoles, departmentId);
+		const isPartOfCommittee = isManagement || isManagerOfCommittee || isMemberOfDepartment;
+
+		const departmentOptionsList = [
+			{ name: "Overview", href: ``, isVisible: true, icon: "heroicons-solid:home" },
+			{ name: "Announcements", href: `/announcements`, isVisible: isPartOfCommittee, icon: "heroicons-solid:speakerphone" },
+			{ name: "Resources", href: `/resources`, isVisible: isPartOfCommittee, icon: "heroicons-solid:folder" },
+			{ name: "Channels", href: `/channels`, isVisible: isPartOfCommittee, icon: "heroicons-solid:folder", isDisabled: true, isSoon: true },
+			{ name: "Tasks", href: `/tasks`, isVisible: isPartOfCommittee, icon: "heroicons-solid:folder", isDisabled: true, isSoon: true },
+			{ name: "Members", href: `/members`, isVisible: true, icon: "heroicons-solid:user-group" },
+		].filter((o) => o.isVisible);
+
+		return departmentOptionsList.map((item, index) => (
+			<OptionsItem key={"department-options-" + index} basePath={basePath} item={item} length={departmentOptionsList.length} index={index} />
+		));
+	}
+
+	function CommitteeOptions({ basePath, committeeId }) {
+		const allUserRoles = (authSession?.user?.pastRoles || []).concat(authSession?.user?.currentRoles || []);
+		const isChairOrDelegate = authorizeChairCommittee(allUserRoles, committeeId) || authorizeDelegateCommittee(allUserRoles, committeeId);
+		const isManagementOrChairOrDelegate = isManagement || isChairOrDelegate;
+
+		const committeeOptionsList = [
+			{ name: "Overview", href: ``, isVisible: true, icon: "heroicons-solid:home" },
+			{ name: "Chairs", href: `/chairs`, isVisible: true, icon: "heroicons-solid:user-group", isSoon: true },
+			{ name: "Delegates", href: `/delegates`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:user-group" },
+			{ name: "Topics", href: `/topics`, isVisible: true, icon: "heroicons-solid:library" },
+			{ name: "Announcements", href: `/announcements`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:speakerphone" },
+			{ name: "Resolutions", href: `/resolutions`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
+			{ name: "Tasks", href: `/tasks`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text", isSoon: true },
+			{ name: "Channels", href: `/channels`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text", isSoon: true },
+			{ name: "Resources", href: `/resources`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:folder" },
+			{ name: "Roll Calls", href: `/roll-calls`, isVisible: isManagement, icon: "heroicons-solid:clipboard-list" },
+			{ name: "Settings", href: `/settings`, isVisible: isManagement, icon: "heroicons-solid:cog" },
+		].filter((o) => o.isVisible);
+
+		return committeeOptionsList.map((item, index) => (
+			<OptionsItem key={"committee-options-" + index} basePath={basePath} item={item} length={committeeOptionsList.length} index={index} />
+		));
+	}
+
+	function ApplicationOptions({ basePath }) {
+		const applicationOptionsList = [
+			{ name: "Status", href: `/applications/status`, isVisible: isManagement },
+			{ name: "School Director", href: `/applications/school-director`, isVisible: isManagement },
+			{ name: "Delegation", href: `/applications/delegation`, isVisible: isManagement },
+			{ name: "Delegate Assignment", href: `/applications/assignment`, isVisible: isManagement },
+			{ name: "Chair", href: `/applications/chair`, isVisible: isManagement, isDisabled: true },
+			{ name: "Manager", href: `/applications/manager`, isVisible: isManagement, isDisabled: true },
+			{ name: "Member", href: `/applications/member`, isVisible: isManagement, isDisabled: true },
+		].filter((x) => x.isVisible);
+
+		return applicationOptionsList.map((committee, index) => (
+			<OptionsItem key={"application-options-" + index} basePath={basePath} item={committee} length={applicationOptionsList.length} index={index} />
+		));
+	}
+
+	function SchoolDirectorOptions({ sdBasePath, role }) {
+		const schoolDirectorSidebarItems = [
+			{ name: "My School", href: `${sdBasePath}`, icon: "heroicons-solid:academic-cap" },
+			{ name: "My Students", href: `${sdBasePath}/students`, icon: "heroicons-solid:users" },
+			{
+				name: "My Delegation",
+				href: `/medibook/sessions/${selectedSession}/schools/${role?.schoolSlug || role?.schoolId}/delegation`,
+				icon: "heroicons-solid:document-add",
+			},
+			{
+				name: "Changes",
+				href: `${sdBasePath}/request-changes`,
+				icon: "heroicons-solid:pencil-alt",
+				isSoon: true,
+			},
+			{
+				name: "Certificates",
+				href: `${sdBasePath}/request-changes`,
+				icon: "heroicons-solid:newspaper",
+				isSoon: true,
+			},
+			{
+				name: "Awards",
+				href: `${sdBasePath}/request-changes`,
+				icon: "heroicons-solid:thumb-up",
+				isSoon: true,
+			},
+			{
+				name: "Reports",
+				href: `${sdBasePath}/request-changes`,
+				icon: "heroicons-solid:presentation-chart-line",
+				isSoon: true,
+			},
+			{
+				name: "Invoices",
+				href: `/medibook/sessions/${selectedSession}/schools/${role?.schoolSlug || role?.schoolId}/invoices`,
+				icon: "heroicons-solid:currency-euro",
+			},
+		];
+
+		return schoolDirectorSidebarItems.map((item, index) => (
+			<SidebarItem key={index} {...(item.isSoon ? {} : { href: item.href })} current={pathname === item.href} disabled={item.isSoon}>
+				<Icon slot="icon" icon={item.icon} height={20} />
+				<SidebarLabel>
+					{item.name}
+					{item.isSoon && <SoonBadge />}
 				</SidebarLabel>
 			</SidebarItem>
 		));
 	}
 
-	async function loadMoreSessionsHandler() {
-		setIsLoading(true);
-		const moreSessions = await getMoreSessions(sessionsData.length);
-		setSessionsData([...sessionsData, ...moreSessions]);
-		setIsLoading(false);
+	function ShowHideButton({ isShown, onClick }) {
+		if (isShown)
+			return (
+				<i className="cursor-pointer bg-zinc-200 rounded-md md:rounded-sm md:p-0 md:px-1 p-1 px-3 select-none" onClick={onClick}>
+					Hide
+				</i>
+			);
+
+		if (!isShown)
+			return (
+				<i className="cursor-pointer rounded-md bg-zinc-200 md:rounded-sm md:p-0 md:px-1 p-1 px-3 select-none" onClick={onClick}>
+					Show
+				</i>
+			);
 	}
 
-	useEffect(() => {
-		handleSessionChange();
-	}, [status]);
-
-	const SoonBadge = () => <Badge className="ml-1 !rounded-full">Coming Soon</Badge>;
+	const SoonBadge = () => <Badge className="ml-1 !rounded-sm !text-xs">Coming Soon</Badge>;
 
 	if (status === "authenticated")
 		return (
@@ -295,7 +393,7 @@ export function Sidebar({ sessions }) {
 						<SidebarSection>
 							<SidebarItem href="/medibook/register" className="bg-primary rounded-lg !text-white" current={pathname === "/medibook/register"}>
 								<Icon slot="icon" className="text-white" icon="heroicons-solid:qrcode" height={20} />
-								<SidebarLabel className="text-white">Registration</SidebarLabel>
+								<SidebarLabel className="text-white">Morning Register</SidebarLabel>
 							</SidebarItem>
 						</SidebarSection>
 						<SidebarSection>
@@ -321,59 +419,61 @@ export function Sidebar({ sessions }) {
 								<Icon slot="icon" icon="heroicons-solid:book-open" height={20} />
 								<SidebarLabel>Policies</SidebarLabel>
 							</SidebarItem>
-							<Popover className="w-full">
-								<PopoverButton as={SidebarItem} className="w-full">
-									<Icon slot="icon" icon="heroicons-solid:bell" height={20} />
-									<SidebarLabel>Notifications</SidebarLabel>
-								</PopoverButton>
-								<PopoverPanel
-									transition
-									anchor="left start"
-									className="absolute h-64 w-64 -translate-x-8 -translate-y-6 rounded-lg bg-white text-sm/6 shadow-md ring-1 ring-zinc-950/5 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0">
-									<div className="absolute h-full w-full bg-zinc-50 px-3 py-2 ring-1">
-										<Text>Notifications</Text>
-									</div>
-								</PopoverPanel>
-							</Popover>
 							<SidebarItem href="/medibook/drive" current={pathname === "/medibook/drive"}>
 								<Icon slot="icon" icon="heroicons-solid:inbox-in" height={20} />
 								<SidebarLabel>Storage Drive</SidebarLabel>
 							</SidebarItem>
 						</SidebarSection>
 						<SidebarSection>
-							<SidebarHeading>General</SidebarHeading>
-							{isManagement && (
+							<SidebarHeading>
+								General{" "}
+								<ShowHideButton
+									isShown={visibleSidebarOptions.includes("general")}
+									onClick={() => {
+										if (visibleSidebarOptions.includes("general")) {
+											setVisibleSidebarOptions(visibleSidebarOptions.filter((id) => id != "general"));
+										} else {
+											setVisibleSidebarOptions([...visibleSidebarOptions, "general"]);
+										}
+									}}
+								/>
+							</SidebarHeading>
+							{visibleSidebarOptions.includes("general") && (
 								<>
-									<SidebarItem href="/medibook/schools" current={pathname?.startsWith("/medibook/schools")}>
-										<Icon slot="icon" icon="heroicons-solid:academic-cap" height={20} />
-										<SidebarLabel>Schools</SidebarLabel>
+									{isManagement && (
+										<>
+											<SidebarItem href="/medibook/schools" current={pathname?.startsWith("/medibook/schools")}>
+												<Icon slot="icon" icon="heroicons-solid:academic-cap" height={20} />
+												<SidebarLabel>Schools</SidebarLabel>
+											</SidebarItem>
+											<SidebarItem href="/medibook/locations" current={pathname?.startsWith("/medibook/locations")}>
+												<Icon slot="icon" icon="heroicons-solid:location-marker" height={20} />
+												<SidebarLabel>Locations</SidebarLabel>
+											</SidebarItem>
+											<SidebarItem href="/medibook/users" current={pathname?.startsWith("/medibook/users")}>
+												<Icon icon="heroicons-solid:users" height={20} />
+												<SidebarLabel>All Users</SidebarLabel>
+											</SidebarItem>
+										</>
+									)}
+									<SidebarItem href="/medibook/sessions" current={pathname == "/medibook/sessions"}>
+										<Icon slot="icon" icon="heroicons-solid:hashtag" height={20} />
+										<SidebarLabel>Sessions</SidebarLabel>
 									</SidebarItem>
-									<SidebarItem href="/medibook/locations" current={pathname?.startsWith("/medibook/locations")}>
-										<Icon slot="icon" icon="heroicons-solid:location-marker" height={20} />
-										<SidebarLabel>Locations</SidebarLabel>
+									<SidebarItem href="/medibook/announcements" current={pathname?.startsWith("/medibook/announcements")}>
+										<Icon slot="icon" icon="heroicons-solid:speakerphone" height={19} />
+										<SidebarLabel>Announcements</SidebarLabel>
 									</SidebarItem>
-									<SidebarItem href="/medibook/users" current={pathname?.startsWith("/medibook/users")}>
-										<Icon icon="heroicons-solid:users" height={20} />
-										<SidebarLabel>All Users</SidebarLabel>
+									<SidebarItem href="/medibook/resources" current={pathname?.startsWith("/medibook/resources")}>
+										<Icon slot="icon" icon="heroicons-solid:folder" height={20} />
+										<SidebarLabel>Resources</SidebarLabel>
+									</SidebarItem>
+									<SidebarItem href={`/medibook/invoices`} current={pathname == `/medibook/invoices`}>
+										<Icon icon="heroicons-solid:currency-euro" height={20} />
+										<SidebarLabel>Individual Invoices</SidebarLabel>
 									</SidebarItem>
 								</>
 							)}
-							<SidebarItem href="/medibook/sessions" current={pathname == "/medibook/sessions"}>
-								<Icon slot="icon" icon="heroicons-solid:hashtag" height={20} />
-								<SidebarLabel>Sessions</SidebarLabel>
-							</SidebarItem>
-							<SidebarItem href="/medibook/announcements" current={pathname?.startsWith("/medibook/announcements")}>
-								<Icon slot="icon" icon="heroicons-solid:speakerphone" height={19} />
-								<SidebarLabel>Announcements</SidebarLabel>
-							</SidebarItem>
-							<SidebarItem href="/medibook/resources" current={pathname?.startsWith("/medibook/resources")}>
-								<Icon slot="icon" icon="heroicons-solid:folder" height={20} />
-								<SidebarLabel>Resources</SidebarLabel>
-							</SidebarItem>
-							<SidebarItem href={`/medibook/invoices`} current={pathname == `/medibook/invoices`}>
-								<Icon icon="heroicons-solid:currency-euro" height={20} />
-								<SidebarLabel>Individual Invoices</SidebarLabel>
-							</SidebarItem>
 						</SidebarSection>
 
 						{!!schoolDirectorRoles.length &&
@@ -382,51 +482,20 @@ export function Sidebar({ sessions }) {
 								const sdBasePath = `/medibook/schools/${role?.schoolSlug || role?.schoolId}`;
 								return (
 									<SidebarSection key={"school-director-role" + role.id}>
-										<SidebarHeading className="line-clamp-1">{schoolDirectorRoles.length == 1 ? "School Management" : role.school}</SidebarHeading>
-										<SidebarItem href={`${sdBasePath}`} current={pathname == `${sdBasePath}`}>
-											<Icon slot="icon" icon="heroicons-solid:academic-cap" height={20} />
-											<SidebarLabel>My School</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem href={`${sdBasePath}/students`} current={pathname == `${sdBasePath}/students`}>
-											<Icon icon="heroicons-solid:users" height={20} />
-											<SidebarLabel>My Students</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem
-											href={`/medibook/sessions/${selectedSession}/schools/${role?.schoolSlug || role?.schoolId}/delegation`}
-											current={pathname == `/medibook/sessions/${selectedSession}/schools/${role?.schoolSlug || role?.schoolId}/delegation`}>
-											<Icon slot="icon" icon="heroicons-solid:document-add" height={20} />
-											<SidebarLabel>My Delegation</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem disabled href={`${sdBasePath}/request-changes`} current={pathname == `${sdBasePath}/request-changes`}>
-											<Icon slot="icon" icon="heroicons-solid:pencil-alt" height={20} />
-											<SidebarLabel>
-												Changes <SoonBadge />
-											</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem disabled href={`${sdBasePath}/request-changes`} current={pathname == `${sdBasePath}/request-changes`}>
-											<Icon slot="icon" icon="heroicons-solid:newspaper" height={20} />
-											<SidebarLabel>
-												Certificates <SoonBadge />
-											</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem disabled href={`${sdBasePath}/request-changes`} current={pathname == `${sdBasePath}/request-changes`}>
-											<Icon slot="icon" icon="heroicons-solid:thumb-up" height={20} />
-											<SidebarLabel>
-												Awards <SoonBadge />
-											</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem disabled href={`${sdBasePath}/request-changes`} current={pathname == `${sdBasePath}/request-changes`}>
-											<Icon slot="icon" icon="heroicons-solid:presentation-chart-line" height={20} />
-											<SidebarLabel>
-												Reports <SoonBadge />
-											</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem
-											href={`/medibook/sessions/${selectedSession}/schools/${role?.schoolSlug || role?.schoolId}/invoices`}
-											current={pathname == `/medibook/sessions/${selectedSession}/schools/${role?.schoolSlug || role?.schoolId}/invoices`}>
-											<Icon slot="icon" icon="heroicons-solid:currency-euro" height={20} />
-											<SidebarLabel>Invoices</SidebarLabel>
-										</SidebarItem>
+										<SidebarHeading className="line-clamp-1">
+											{schoolDirectorRoles.length == 1 ? "School Management" : role.school}{" "}
+											<ShowHideButton
+												isShown={visibleSchoolOptionIds.includes(role.schoolId)}
+												onClick={() => {
+													if (visibleSchoolOptionIds.includes(role.schoolId)) {
+														setVisibleSchoolOptionIds(visibleSchoolOptionIds.filter((id) => id != role.schoolId));
+													} else {
+														setVisibleSchoolOptionIds([...visibleSchoolOptionIds, role.schoolId]);
+													}
+												}}
+											/>
+										</SidebarHeading>
+										{visibleSchoolOptionIds.includes(role.schoolId) && <SchoolDirectorOptions sdBasePath={sdBasePath} role={role} />}
 									</SidebarSection>
 								);
 							})}
@@ -441,63 +510,93 @@ export function Sidebar({ sessions }) {
 								</SidebarItem>
 							</SidebarSection>
 						)}
+						{/* {authorize(authSession, [s.chair, s.delegate]) && (
+							<SidebarSection>
+								<SidebarHeading>
+									My Committee <i>Coming Soon</i>
+								</SidebarHeading>
+							</SidebarSection>
+						)}
+						{authorize(authSession, [s.member, s.manager]) && (
+							<SidebarSection>
+								<SidebarHeading>
+									My Department <i>Coming Soon</i>
+								</SidebarHeading>
+							</SidebarSection>
+						)} */}
 						{!!sessionsData?.length && (
 							<SidebarSection>
-								<SidebarHeading>Session {romanize(selectedSession)}</SidebarHeading>
-								<SidebarItem href={`/medibook/sessions/${selectedSession}`} current={pathname == `/medibook/sessions/${selectedSession}`}>
-									<Icon slot="icon" icon="heroicons-solid:home" height={20} />
-									<SidebarLabel>Overview</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem href={`${basePath}/announcements`} current={pathname == `${basePath}/announcements`}>
-									<Icon icon="heroicons-solid:speakerphone" height={19} />
-									<SidebarLabel>Announcements</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem href={`${basePath}/committees`} current={pathname == `${basePath}/committees`}>
-									<Icon icon="heroicons-solid:library" height={20} />
-									<SidebarLabel>Committees</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem href={`${basePath}/departments`} current={pathname == `${basePath}/departments`}>
-									<Icon icon="heroicons-solid:briefcase" height={20} />
-									<SidebarLabel>Departments</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem href={`${basePath}/programme`} current={pathname == `${basePath}/programme`}>
-									<Icon icon="heroicons-solid:calendar" height={20} />
-									<SidebarLabel>Programme</SidebarLabel>
-								</SidebarItem>
-								<SidebarItem href={`${basePath}/participants`} current={pathname == `${basePath}/participants`}>
-									<Icon icon="heroicons-solid:user-group" height={20} />
-									<SidebarLabel>Participants</SidebarLabel>
-								</SidebarItem>
-								{isManagement && (
-									<SidebarItem href={`${basePath}/invoices`} current={pathname == `${basePath}/invoices`}>
-										<Icon icon="heroicons-solid:currency-euro" height={20} />
-										<SidebarLabel>Invoices</SidebarLabel>
-									</SidebarItem>
-								)}
-								{isManagement && (
+								<SidebarHeading>
+									Session {romanize(selectedSession)}{" "}
+									<ShowHideButton
+										isShown={visibleSidebarOptions.includes("session-general")}
+										onClick={() => {
+											if (visibleSidebarOptions.includes("session-general")) {
+												setVisibleSidebarOptions(visibleSidebarOptions.filter((id) => id != "session-general"));
+											} else {
+												setVisibleSidebarOptions([...visibleSidebarOptions, "session-general"]);
+											}
+										}}
+									/>
+								</SidebarHeading>
+								{visibleSidebarOptions.includes("session-general") && (
 									<>
-										<SidebarItem href={`${basePath}/applications`} current={pathname == `${basePath}/applications`}>
-											<Icon icon="heroicons-solid:document-download" height={20} />
-											<SidebarLabel>Applications</SidebarLabel>
+										<SidebarItem href={`/medibook/sessions/${selectedSession}`} current={pathname == `/medibook/sessions/${selectedSession}`}>
+											<Icon slot="icon" icon="heroicons-solid:home" height={20} />
+											<SidebarLabel>Overview</SidebarLabel>
 										</SidebarItem>
-										{pathname?.includes(`${basePath}/applications`) && <ApplicationOptions basePath={basePath} />}
+										<SidebarItem href={`${basePath}/announcements`} current={pathname == `${basePath}/announcements`}>
+											<Icon icon="heroicons-solid:speakerphone" height={19} />
+											<SidebarLabel>Announcements</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem href={`${basePath}/committees`} current={pathname == `${basePath}/committees`}>
+											<Icon icon="heroicons-solid:library" height={20} />
+											<SidebarLabel>Committees</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem href={`${basePath}/departments`} current={pathname == `${basePath}/departments`}>
+											<Icon icon="heroicons-solid:briefcase" height={20} />
+											<SidebarLabel>Departments</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem href={`${basePath}/programme`} current={pathname == `${basePath}/programme`}>
+											<Icon icon="heroicons-solid:calendar" height={20} />
+											<SidebarLabel>Programme</SidebarLabel>
+										</SidebarItem>
+										<SidebarItem href={`${basePath}/participants`} current={pathname == `${basePath}/participants`}>
+											<Icon icon="heroicons-solid:user-group" height={20} />
+											<SidebarLabel>Participants</SidebarLabel>
+										</SidebarItem>
+										{isManagement && (
+											<SidebarItem href={`${basePath}/invoices`} current={pathname == `${basePath}/invoices`}>
+												<Icon icon="heroicons-solid:currency-euro" height={20} />
+												<SidebarLabel>Invoices</SidebarLabel>
+											</SidebarItem>
+										)}
+										{isManagement && (
+											<>
+												<SidebarItem href={`${basePath}/applications`} current={pathname == `${basePath}/applications`}>
+													<Icon icon="heroicons-solid:document-download" height={20} />
+													<SidebarLabel>Applications</SidebarLabel>
+												</SidebarItem>
+												{pathname?.includes(`${basePath}/applications`) && <ApplicationOptions basePath={basePath} />}
+											</>
+										)}
+										<SidebarItem href={`${basePath}/resources`} current={pathname == `${basePath}/resources`}>
+											<Icon icon="heroicons-solid:folder" height={20} />
+											<SidebarLabel>Resources</SidebarLabel>
+										</SidebarItem>
+										{isManagement && (
+											<SidebarItem href={`${basePath}/roll-calls`} current={pathname == `${basePath}/roll-calls`}>
+												<Icon icon="heroicons-solid:clipboard-list" height={20} />
+												<SidebarLabel>Roll Calls</SidebarLabel>
+											</SidebarItem>
+										)}
+										{isManagement && (
+											<SidebarItem href={`${basePath}/settings`} current={pathname == `${basePath}/settings`}>
+												<Icon icon="heroicons-solid:cog" height={20} />
+												<SidebarLabel>Settings</SidebarLabel>
+											</SidebarItem>
+										)}
 									</>
-								)}
-								<SidebarItem href={`${basePath}/resources`} current={pathname == `${basePath}/resources`}>
-									<Icon icon="heroicons-solid:folder" height={20} />
-									<SidebarLabel>Resources</SidebarLabel>
-								</SidebarItem>
-								{isManagement && (
-									<SidebarItem href={`${basePath}/roll-calls`} current={pathname == `${basePath}/roll-calls`}>
-										<Icon icon="heroicons-solid:clipboard-list" height={20} />
-										<SidebarLabel>Roll Calls</SidebarLabel>
-									</SidebarItem>
-								)}
-								{isManagement && (
-									<SidebarItem href={`${basePath}/settings`} current={pathname == `${basePath}/settings`}>
-										<Icon icon="heroicons-solid:cog" height={20} />
-										<SidebarLabel>Settings</SidebarLabel>
-									</SidebarItem>
 								)}
 							</SidebarSection>
 						)}
@@ -508,8 +607,7 @@ export function Sidebar({ sessions }) {
 									<Fragment key={"session-committee-" + committee.id}>
 										<SidebarItem href={`${basePath}/committees/${committee.slug || committee.id}`}>
 											<div
-												style={{ background: `url(/assets/gradients/${(index % 6) + 1}.jpg)` }}
-												className={`flex min-h-[23px] min-w-[23px] rounded-md  !bg-cover text-center`}
+												className={`flex min-h-[23px] ring-1 bg-zinc-200 shadow-md ring-zinc-300 min-w-[23px] rounded-md !bg-cover text-center`}
 												slot="icon">
 												<p className="m-auto text-[8px] text-black -mix-blend-overlay">{committee.shortName.slice(0, 3).toUpperCase()}</p>
 											</div>
@@ -526,22 +624,30 @@ export function Sidebar({ sessions }) {
 							<SidebarSection>
 								<SidebarHeading>Session {romanize(selectedSession)} Departments</SidebarHeading>
 								{selectedSessionData?.department?.map((department, index: number) => (
-									<SidebarItem
-										key={"session-department-" + department.id}
-										href={`${basePath}/departments/${department.slug || department.id}`}
-										className="line-clamp-2">
-										<div
-											style={{ background: `url(/assets/gradients/${(index % 6) + 1}.jpg)` }}
-											className={`flex min-h-[23px] min-w-[23px] rounded-md !bg-cover text-center`}
-											slot="icon">
-											<p
-												style={{ background: `url(/assets/gradients/${(index % 6) + 1}.jpg)` }}
-												className="m-auto !bg-cover !bg-clip-text text-[8px]">
-												{department.shortName ? department.shortName.slice(0, 3).toUpperCase() : ""}
-											</p>
-										</div>
-										<SidebarLabel>{department.name}</SidebarLabel>
-									</SidebarItem>
+									<Fragment key={department.id}>
+										<SidebarItem
+											key={"session-department-" + department.id}
+											href={`${basePath}/departments/${department.slug || department.id}`}
+											className="line-clamp-2">
+											<div
+												className={`flex min-h-[23px] ring-1 bg-zinc-200 shadow-md ring-zinc-300 min-w-[23px] rounded-full !bg-cover text-center`}
+												slot="icon">
+												<div
+													style={{ background: `url(/assets/gradients/${(index % 6) + 1}.jpg)` }}
+													className="m-auto !bg-cover !bg-clip-text text-[8px]">
+													{department.shortName ? (
+														department.shortName.slice(0, 3).toUpperCase()
+													) : (
+														<div className="h-2 w-2 bg-zinc-500 rounded-full"></div>
+													)}
+												</div>
+											</div>
+											<SidebarLabel>{department.name}</SidebarLabel>
+										</SidebarItem>
+										{pathname?.includes(`${basePath}/departments/${department.slug || department.id}`) && (
+											<Departmentoptions departmentId={department.id} basePath={`${basePath}/departments/${department.slug || department.id}`} />
+										)}
+									</Fragment>
 								))}
 							</SidebarSection>
 						)}
@@ -565,13 +671,12 @@ export function Sidebar({ sessions }) {
 													{authSession?.user?.displayName || `${authSession?.user?.officialName} ${authSession?.user?.officialSurname}`}
 												</span>
 												<span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
-													{authSession?.user?.currentRoles[0]?.name}
+													{authSession?.user?.currentRoles[0]?.name || authSession.user.id}
 												</span>
 											</>
 										)}
 									</span>
 								</span>
-
 								<ChevronUpIcon />
 							</DropdownButton>
 							<AccountDropdownMenu anchor="top start" />
@@ -582,4 +687,21 @@ export function Sidebar({ sessions }) {
 		);
 
 	return null;
+}
+
+{
+	/* <Popover className="w-full">
+								<PopoverButton as={SidebarItem} className="w-full">
+									<Icon slot="icon" icon="heroicons-solid:bell" height={20} />
+									<SidebarLabel>Notifications</SidebarLabel>
+								</PopoverButton>
+								<PopoverPanel
+									transition
+									anchor="left start"
+									className="absolute h-64 w-64 -translate-x-8 -translate-y-6 rounded-lg bg-white text-sm/6 shadow-md ring-1 ring-zinc-950/5 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0">
+									<div className="absolute h-full w-full bg-zinc-50 px-3 py-2 ring-1">
+										<Text>Notifications</Text>
+									</div>
+								</PopoverPanel>
+							</Popover> */
 }

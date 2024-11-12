@@ -70,7 +70,7 @@ export default async function Component(props) {
 						const isInvolved = currentCommitteeIds.includes(committee.id);
 						return (
 							<>
-								<li key={`session-${committee.id}`}>
+								<li key={`session-${committee.id}-${Math.random()}`}>
 									<Divider soft={index > 0} />
 									<div className="flex items-center justify-between">
 										<div key={committee.id} className="flex gap-6 py-6">
@@ -97,7 +97,6 @@ export default async function Component(props) {
 												<div className="text-xs/6 text-zinc-500">
 													{!!chairsLength ? "Chaired by " : "No Chairs Assigned"}
 													{chairs.map((chair: any, index: number) => {
-														console.log(chairs);
 														const user = chair?.user;
 														const displayNameShortened =
 															user?.displayName?.split(" ").length === 1
@@ -108,7 +107,7 @@ export default async function Component(props) {
 															: user?.officialName.split(" ")[0] + " " + user?.officialSurname[0] + ".";
 
 														return (
-															<Fragment key={chair.id}>
+															<Fragment key={`chair-${chair.id}`}>
 																{fullName}
 																{index < chairs.length - 2 ? ", " : index === chairs.length - 2 ? " & " : ""}
 															</Fragment>

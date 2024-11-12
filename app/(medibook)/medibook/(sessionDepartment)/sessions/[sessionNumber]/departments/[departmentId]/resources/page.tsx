@@ -29,10 +29,12 @@ export default async function Page(props) {
 		.findFirstOrThrow({ where: { OR: [{ id: params.departmentId }, { slug: params.departmentId }], session: { number: params.sessionNumber } } })
 		.catch(notFound);
 
+	const allRoles = (authSession?.user?.currentRoles || []).concat(authSession?.user?.pastRoles || []);
+
 	const hasSomeArray: ResourcePrivacyTypes[] = [
 		"DEPARTMENTWEBSITE",
-		authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], selectedDepartment.id) ? "DEPARTMENTMANAGER" : null,
-		authorizeMemberDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], selectedDepartment.id) ? "DEPARTMENTMEMBER" : null,
+		authorizeManagerDepartment(allRoles, selectedDepartment.id) ? "DEPARTMENTMANAGER" : null,
+		authorizeMemberDepartment(allRoles, selectedDepartment.id) ? "DEPARTMENTMEMBER" : null,
 		authorizePerSession(authSession, [s.sec, s.management], [params.sessionNumber]) ? "DEPARTMENTSECRETARIAT" : null,
 		authorizePerSession(authSession, [s.director, s.sd], [params.sessionNumber]) ? "DEPARTMENTDIRECTORS" : null,
 		authorizePerSession(authSession, [s.sd], [params.sessionNumber]) ? "DEPARTMENTSENIORDIRECTORS" : null,
@@ -78,12 +80,11 @@ export default async function Page(props) {
 				buttonText={selectedDepartment.name}
 				sortOptions={sortOptions}
 				defaultSort="timedesc"
-				className="mb-8"
 				title="Department Resources">
 				<SearchParamsButton searchParams={{ uploaddepartmentresource: true }}>Upload Department Resource</SearchParamsButton>
 			</TopBar>
-			<ResourcesTable resources={prismaResources} isManagement={isManagement} />
-			<Paginator totalItems={totalItems} itemsPerPage={itemsPerPage} />
+			{!!prismaResources.length && <ResourcesTable resources={prismaResources} isManagement={isManagement} />}
+			<Paginator totalItems={totalItems} itemsOnPage={prismaResources.length} itemsPerPage={itemsPerPage} />
 		</>
 	);
 }
