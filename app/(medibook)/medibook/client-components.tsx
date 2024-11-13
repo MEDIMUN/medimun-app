@@ -11,7 +11,7 @@ import { Text } from "@/components/text";
 import { useUpdateEffect } from "@/hooks/use-update-effect";
 import { cn } from "@/lib/cn";
 import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
-import { EllipsisVerticalIcon, MagnifyingGlassIcon } from "@heroicons/react/16/solid";
+import { ClockIcon, EllipsisVerticalIcon, MagnifyingGlassIcon, PhoneIcon } from "@heroicons/react/16/solid";
 import { useDebouncedValue } from "@mantine/hooks";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -293,7 +293,7 @@ export function UserTooltip({ userId, children }) {
 						avatarProps={{ src: `/api/users/${userId}/avatar`, showFallback: true, isBordered: true, size: "sm", radius: "md" }}
 					/>
 					<div className="gap-2 flex ml-auto">
-						<Button disabled color="primary" className="h-8 my-auto" onClick={() => setIsOpen(false)}>
+						<Button color="primary" className="h-8 my-auto" href={`/medibook/messenger/@${user?.username || user?.id}`}>
 							Message
 						</Button>
 						<Button href={`/medibook/users/${user?.username || user?.id}`} className="h-8 my-auto" onClick={() => setIsOpen(false)}>
@@ -310,18 +310,37 @@ export function UserTooltip({ userId, children }) {
 					)}
 					<Badge>{user?.isProfilePrivate ? "Private" : "Public"}</Badge>
 				</div>
-				<div>
-					<Text>{user?.bio}</Text>
-				</div>
+				{user?.bio && (
+					<div>
+						<Text>{user?.bio}</Text>
+					</div>
+				)}
+				{(user?.phoneNumber || user?.bestTimeToReach) && (
+					<div className="flex gap-2">
+						{user?.phoneNumber && (
+							<div className="flex gap-1">
+								<PhoneIcon className="h-4 w-4 my-auto" />
+								<Text className="my-auto">{user?.phoneNumber}</Text>
+							</div>
+						)}
+						{user?.bestTimeToReach && (
+							<div className="flex gap-1">
+								<ClockIcon className="h-4 w-4 my-auto" />
+								<Text className="my-auto line-clamp-1">{user?.bestTimeToReach}</Text>
+							</div>
+						)}
+					</div>
+				)}
 			</div>
 		);
 	}
 
 	return (
 		<Tooltip
+			closeDelay={1000}
 			shouldCloseOnInteractOutside={true}
 			shouldCloseOnBlur={true}
-			delay={1000}
+			delay={500}
 			showArrow
 			isOpen={isOpen}
 			onOpenChange={(open) => setIsOpen(open)}

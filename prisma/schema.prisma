@@ -116,7 +116,7 @@ model User {
 
 model Group {
   id        String   @id @default(nanoid())
-  name      String
+  name      String?
   createdAt DateTime @default(now())
 
   GroupMember GroupMember[]
@@ -124,12 +124,13 @@ model Group {
 }
 
 model GroupMember {
-  id      String  @id @default(nanoid())
-  user    User    @relation(fields: [userId], references: [id])
-  userId  String
-  group   Group   @relation(fields: [groupId], references: [id])
-  groupId String
-  isAdmin Boolean @default(false)
+  id              String    @id @default(nanoid())
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  group           Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId         String
+  isAdmin         Boolean   @default(false)
+  lastMessageSeen DateTime?
 
   @@unique([userId, groupId])
 }

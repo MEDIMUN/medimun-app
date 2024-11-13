@@ -401,7 +401,7 @@ export function Sidebar({ sessions }) {
 								<Icon slot="icon" icon="heroicons-solid:home" height={20} />
 								<SidebarLabel>Home</SidebarLabel>
 							</SidebarItem>
-							<SidebarItem href="/medibook/messaging" current={pathname === "/medibook/messaging"}>
+							<SidebarItem href="/medibook/messenger" current={pathname === "/medibook/messenger"}>
 								<Icon slot="icon" icon="heroicons-solid:chat" height={20} />
 								<SidebarLabel>
 									Messaging

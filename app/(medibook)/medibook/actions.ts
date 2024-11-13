@@ -21,6 +21,7 @@ export async function getMoreSessions(skip = 5) {
 
 export async function fetchUserForTooltip(userId) {
 	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
 	if (!authSession) return;
 	let user = null as any;
 	try {
@@ -37,6 +38,8 @@ export async function fetchUserForTooltip(userId) {
 				username: true,
 				bio: true,
 				isProfilePrivate: true,
+				bestTimeToReach: isManagement,
+				phoneNumber: isManagement,
 				...generateUserDataObject(),
 			},
 		});
@@ -44,7 +47,14 @@ export async function fetchUserForTooltip(userId) {
 		return { ok: false, message: ["User not found"] };
 	}
 
-	const userWithData = { ...generateUserData(user), bio: user.bio, username: user.username, isProfilePrivate: user.isProfilePrivate };
+	const userWithData = {
+		...generateUserData(user),
+		bio: user.bio,
+		username: user.username,
+		isProfilePrivate: user.isProfilePrivate,
+		bestTimeToReach: user.bestTimeToReach,
+		phoneNumber: user.phoneNumber,
+	};
 
 	return { ok: true, message: [], data: { user: userWithData } };
 }

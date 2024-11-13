@@ -3,211 +3,209 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "LondiniaMedium";
-  src: url("/fonts/LondiniaMedium.ttf");
+	font-family: "LondiniaMedium";
+	src: url("/fonts/LondiniaMedium.ttf");
 }
 
 @font-face {
-  font-family: "Gilroy";
-  src: url("/fonts/Gilroy.ttf");
+	font-family: "Gilroy";
+	src: url("/fonts/Gilroy.ttf");
 }
 
 @font-face {
-  font-family: "JackyBlack";
-  src: url("/fonts/JackyBlack.ttf");
+	font-family: "JackyBlack";
+	src: url("/fonts/JackyBlack.ttf");
 }
 
 @font-face {
-  font-family: "GilroyLight";
-  src: url("/fonts/GilroyLight.ttf");
+	font-family: "GilroyLight";
+	src: url("/fonts/GilroyLight.ttf");
 }
 
 @font-face {
-  font-family: "TTNormsProRegular";
-  src: url("/fonts/TTNormsProRegular.otf");
+	font-family: "TTNormsProRegular";
+	src: url("/fonts/TTNormsProRegular.otf");
 }
 
 @font-face {
-  font-family: "GilroySemiBold";
-  src: url("/fonts/GilroySemiBold.ttf");
+	font-family: "GilroySemiBold";
+	src: url("/fonts/GilroySemiBold.ttf");
 }
 
 @font-face {
-  font-family: "Sequel";
-  src: url("/fonts/Sequel.ttf");
+	font-family: "Sequel";
+	src: url("/fonts/Sequel.ttf");
 }
 
 @font-face {
-  font-family: "Inter";
-  src: url("/fonts/Inter.ttf");
+	font-family: "Inter";
+	src: url("/fonts/Inter.ttf");
 }
 
 @font-face {
-  font-family: "SequelThin";
-  src: url("/fonts/SequelThin.ttf");
+	font-family: "SequelThin";
+	src: url("/fonts/SequelThin.ttf");
 }
 
 @font-face {
-  font-family: "SequelBlack";
-  src: url("/fonts/SequelBlack.ttf");
+	font-family: "SequelBlack";
+	src: url("/fonts/SequelBlack.ttf");
 }
 
 @font-face {
-  font-family: "Canela";
-  src: url("/fonts/Canela2.ttf");
+	font-family: "Canela";
+	src: url("/fonts/Canela2.ttf");
 }
 
 @font-face {
-  font-family: "Montserrat";
-  src: url("/fonts/Montserrat.ttf");
+	font-family: "Montserrat";
+	src: url("/fonts/Montserrat.ttf");
 }
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+	:root {
+		--background: 0 0% 100%;
+		--foreground: 0 0% 3.9%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+		--card: 0 0% 100%;
+		--card-foreground: 0 0% 3.9%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
+		--popover: 0 0% 100%;
+		--popover-foreground: 0 0% 3.9%;
 
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
+		--primary: 0 0% 9%;
+		--primary-foreground: 0 0% 98%;
 
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
+		--secondary: 0 0% 96.1%;
+		--secondary-foreground: 0 0% 9%;
 
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
+		--muted: 0 0% 96.1%;
+		--muted-foreground: 0 0% 45.1%;
 
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+		--accent: 0 0% 96.1%;
+		--accent-foreground: 0 0% 9%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+		--destructive: 0 84.2% 60.2%;
+		--destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+		--border: 0 0% 89.8%;
+		--input: 0 0% 89.8%;
+		--ring: 0 0% 3.9%;
 
-    --radius: 0.5rem;
-  }
+		--radius: 0.5rem;
+	}
 
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
+	.dark {
+		--background: 0 0% 3.9%;
+		--foreground: 0 0% 98%;
 
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
+		--card: 0 0% 3.9%;
+		--card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
+		--popover: 0 0% 3.9%;
+		--popover-foreground: 0 0% 98%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
+		--primary: 0 0% 98%;
+		--primary-foreground: 0 0% 9%;
 
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
+		--secondary: 0 0% 14.9%;
+		--secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
+		--muted: 0 0% 14.9%;
+		--muted-foreground: 0 0% 63.9%;
 
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
+		--accent: 0 0% 14.9%;
+		--accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+		--destructive: 0 62.8% 30.6%;
+		--destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-  }
+		--border: 0 0% 14.9%;
+		--input: 0 0% 14.9%;
+		--ring: 0 0% 83.1%;
+	}
 }
 
 html {
-  scroll-behavior: smooth;
+	scroll-behavior: smooth;
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+	* {
+		@apply border-border;
+	}
 
-  body {
-    @apply bg-background text-foreground;
-  }
+	body {
+		@apply bg-background text-foreground;
+	}
 }
 
 ::-webkit-scrollbar {
-  display: none;
-  width: 5px !important;
+	display: none;
+	width: 5px !important;
 }
 
 /* For Firefox */
 .showscrollbar {
-  scrollbar-width: thin;
-  /* Firefox-specific property */
-  scrollbar-color: #71717a35 transparent;
-  /* Thumb and track colors */
+	scrollbar-width: thin;
+	/* Firefox-specific property */
+	scrollbar-color: #71717a35 transparent;
+	/* Thumb and track colors */
 }
 
 /* For WebKit-based browsers (Chrome, Safari) */
 .showscrollbar::-webkit-scrollbar {
-  width: 5px;
-  /* Scrollbar width */
+	width: 5px;
+	/* Scrollbar width */
 }
 
 .showscrollbar::-webkit-scrollbar-thumb {
-  background-color: #71717a35;
-  /* Thumb color */
-  border-radius: 100px;
-  /* Rounded corners */
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  /* Shadow effect */
+	background-color: #71717a35;
+	/* Thumb color */
+	border-radius: 100px;
+	/* Rounded corners */
+	box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	/* Shadow effect */
 }
 
 .showscrollbar::-webkit-scrollbar-track {
-  background: transparent;
-  /* Track color */
+	background: transparent;
+	/* Track color */
 }
 
 /* Ensure specificity and important flag if necessary */
 .showscrollbar::-webkit-scrollbar,
 .showscrollbar::-webkit-scrollbar-thumb,
 .showscrollbar::-webkit-scrollbar-track {
-  width: 5px !important;
-  /* Force the width with !important if being overridden */
+	width: 5px !important;
+	/* Force the width with !important if being overridden */
 }
 
 .showscrollbar::-webkit-scrollbar-thumb {
-  background-color: #71717a35 !important;
-  /* Force the thumb color */
-  border-radius: 100px !important;
-  /* Force the border radius */
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
-  /* Force the shadow */
+	background-color: #71717a35 !important;
+	/* Force the thumb color */
+	border-radius: 100px !important;
+	/* Force the border radius */
+	box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+	/* Force the shadow */
 }
 
-
-
 .mask {
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
 }
 
 .mask-squircle {
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-image: url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M100 0C20 0 0 20 0 100s20 100 100 100 100-20 100-100S180 0 100 0Z'/%3e%3c/svg%3e");
-  mask-image: url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M100 0C20 0 0 20 0 100s20 100 100 100 100-20 100-100S180 0 100 0Z'/%3e%3c/svg%3e");
+	-webkit-mask-size: contain;
+	mask-size: contain;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-image: url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M100 0C20 0 0 20 0 100s20 100 100 100 100-20 100-100S180 0 100 0Z'/%3e%3c/svg%3e");
+	mask-image: url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M100 0C20 0 0 20 0 100s20 100 100 100 100-20 100-100S180 0 100 0Z'/%3e%3c/svg%3e");
 }

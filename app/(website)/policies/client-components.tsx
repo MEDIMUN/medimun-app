@@ -35,7 +35,7 @@ export function PoliciesNavbar({ allPolicies }) {
 					<nav className="-mb-px flex justify-center space-x-8">
 						{allPolicies.map((tab) => (
 							<Link
-								key={tab.name}
+								key={`${tab.name}-tab-${Math.random()}`}
 								href={tab.slug}
 								aria-current={pathname == `/policies/${tab.slug}` ? "page" : undefined}
 								className={cn(

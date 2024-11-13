@@ -46,6 +46,7 @@ export default async function RootLayout({
 	rollCallModals,
 	dayModals,
 	topicsModals,
+	privateMessageModals,
 }): Promise<JSX.Element> {
 	const authSession = await auth();
 	const sessions = await prisma.session
@@ -61,7 +62,8 @@ export default async function RootLayout({
 			className={cn("text-zinc-950 antialiased !scrollbar-hide h-full", "dark:bg-zinc-900 dark:text-white lg:bg-zinc-100")}
 			suppressHydrationWarning>
 			<head>
-				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+				<link rel="manifest" href="/manifest.json" />
+				<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
 				<link rel="preconnect" href="https://rsms.me/" />
 				<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
 				<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
@@ -105,6 +107,7 @@ export default async function RootLayout({
 					{dayModals}
 					{rollCallModals}
 					{topicsModals}
+					{privateMessageModals}
 					<SidebarLayout
 						navbar={
 							<Navbar>

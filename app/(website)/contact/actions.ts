@@ -7,6 +7,12 @@ import axios from "axios";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+export async function checkTokenGoogle(token: string) {
+	return await axios
+		.post(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`)
+		.then((res) => res.data.success);
+}
+
 export async function contactUs(formData: FormData) {
 	const parsedFormData = parseFormData(formData);
 

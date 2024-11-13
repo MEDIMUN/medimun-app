@@ -48,8 +48,10 @@ function MobileSidebar({ open, close, children }: React.PropsWithChildren<{ open
 export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChildren<{ navbar: React.ReactNode; sidebar: React.ReactNode }>) {
 	let [showSidebar, setShowSidebar] = useState(false);
 	const [scrollY, setScrollY] = useState(0);
-	const hiddenPaths = ["/medibook/messaging"];
+	const hiddenPaths = ["/medibook/messenger/"];
 	const pathname = usePathname();
+
+	const pathIsHidden = hiddenPaths.some((path) => pathname.startsWith(path));
 
 	useEffect(() => {
 		function handleScroll() {
@@ -67,22 +69,26 @@ export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChil
 			<MobileSidebar open={showSidebar} close={() => setShowSidebar(false)}>
 				{sidebar}
 			</MobileSidebar>
-			<div className="min-h-[60px] lg:hidden"></div>
-			<div className={cn("-bg-red-500 fixed z-[10000000] h-[60px] w-full border-b bg-white lg:hidden", !!scrollY && "shadow-md")}>
-				{/* Navbar on mobile */}
-				<header className="-ring-1 mx-2 flex w-[calc(100%-16px)] items-center px-2 ring-zinc-950/5">
-					<div className="py-2.5">
-						<NavbarItem onClick={() => setShowSidebar(true)} aria-label="Open navigation">
-							<OpenMenuIcon />
-						</NavbarItem>
+			{!pathIsHidden && (
+				<>
+					<div className="min-h-[60px] lg:hidden"></div>
+					<div className={cn("-bg-red-500 fixed z-[1000] h-[60px] w-full border-b bg-white lg:hidden", !!scrollY && "shadow-md")}>
+						{/* Navbar on mobile */}
+						<header className="-ring-1 mx-2 flex w-[calc(100%-16px)] items-center px-2 ring-zinc-950/5">
+							<div className="py-2.5">
+								<NavbarItem onClick={() => setShowSidebar(true)} aria-label="Open navigation">
+									<OpenMenuIcon />
+								</NavbarItem>
+							</div>
+							<div className="min-w-0 flex-1">{navbar}</div>
+						</header>
 					</div>
-					<div className="min-w-0 flex-1">{navbar}</div>
-				</header>
-			</div>
+				</>
+			)}
 			{/* Content */}
 			<main className="flex h-full flex-1 flex-col lg:min-w-0 lg:pl-64 lg:pr-2 lg:pt-2">
 				{children}
-				<div className="min-h-2" />
+				<div className="min-h-2 h-2" />
 			</main>
 		</div>
 	);

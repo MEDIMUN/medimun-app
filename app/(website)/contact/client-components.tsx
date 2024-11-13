@@ -10,15 +10,30 @@ import { Button } from "@/components/button";
 import { Link } from "@/components/link";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import { useSearchParams } from "next/navigation";
-import { contactUs } from "./actions";
+import { checkTokenGoogle, contactUs } from "./actions";
 import { useFlushState } from "@/hooks/use-flush-state";
 
-export function RecaptchaComp({ className, sitekey }: { className?: string; sitekey: string }) {
+export function RecaptchaComp({
+	className,
+	sitekey,
+	isVerified,
+	setIsVerified,
+}: {
+	className?: string;
+	sitekey: string;
+	isVerified: boolean;
+	setIsVerified: (value: boolean) => void;
+}) {
 	const recaptchaRef = useRef<ReCAPTCHA>(null);
-	const [isVerified, setIsVerified] = useState(false);
 
-	const handleChange = (token: string | null) => {
-		console.log(token);
+	const handleChange = async (token: string | null) => {
+		if (!token) return;
+		const test = await checkTokenGoogle(token);
+		if (test) {
+			setIsVerified(true);
+		} else {
+			setIsVerified(false);
+		}
 	};
 
 	function handleExpired() {
@@ -31,6 +46,7 @@ export function RecaptchaComp({ className, sitekey }: { className?: string; site
 export function ContactUsForm({ sitekey }) {
 	const searchParams = useSearchParams();
 	const [isLoading, setIsLoading] = useFlushState(false);
+	const [isVerified, setIsVerified] = useState(false);
 
 	async function handleSubmit(formData) {
 		if (isLoading) return;
@@ -121,10 +137,10 @@ export function ContactUsForm({ sitekey }) {
 							</Field>
 						</div>
 						<div className="mt-8 flex w-full justify-end">
-							<RecaptchaComp className="ml-auto" sitekey={sitekey} />
+							<RecaptchaComp isVerified={isVerified} setIsVerified={setIsVerified} className="ml-auto" sitekey={sitekey} />
 						</div>
 						<div className="mt-6 flex justify-end">
-							<Button disabled={isLoading} type="submit" color="primary">
+							<Button disabled={isLoading || !isVerified} type="submit" color="primary">
 								Send message
 							</Button>
 						</div>
