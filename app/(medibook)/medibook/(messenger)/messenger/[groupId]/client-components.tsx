@@ -315,7 +315,7 @@ export function ChatLayout({ group, authSession }) {
 	useEffect(() => {
 		if (!observerRef.current) return;
 		const observer = new IntersectionObserver((entries) => {
-			if (entries[0]?.isIntersecting) {
+			if (entries?.[0]?.isIntersecting) {
 				handleLoadMoreMessages();
 			}
 		});
