@@ -203,6 +203,7 @@ export default async function Page(props) {
 	return (
 		<>
 			<TopBar
+				hideBackdrop
 				hideSearchBar
 				buttonHref="/medibook/sessions"
 				buttonText="Sessions"

@@ -21,7 +21,6 @@ export function ChatLayout({ group, authSession }) {
 	const [viewportHeight, setViewportHeight] = useState();
 	const [scrollY, setScrollY] = useState(0); // Store scroll position
 	const [isFocused, setIsFocused] = useState(false);
-	const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
 	const [isMounted, setIsMounted] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const observerRef = useRef(null);
@@ -34,11 +33,16 @@ export function ChatLayout({ group, authSession }) {
 	const [selectedMessageId, setSelectedMessageId] = useState("");
 	const [replyToId, setReplyToId] = useState("");
 	const [reacttToId, setReactToId] = useState("");
+	const [isIos, setIsIos] = useState(false);
 	const [editId, setEditId] = useState("");
 	let groupName, otherUserRole;
 
 	// Function to check if the current screen size is mobile
 	const checkIsMobile = () => window.innerWidth < 768;
+
+	useEffect(() => {
+		setIsIos(/iPhone|iPod/.test(navigator.userAgent));
+	}, []);
 
 	useEffect(() => {
 		// Update `isMobile` based on screen size in real-time

@@ -48,6 +48,7 @@ export default async function Page(props) {
 	return (
 		<>
 			<TopBar
+				hideBackdrop
 				buttonHref={`/medibook/sessions/${sessionNumber}`}
 				hideSearchBar
 				buttonText={`Session ${romanize(sessionNumber)}`}

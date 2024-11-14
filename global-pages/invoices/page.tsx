@@ -10,7 +10,7 @@ import { TopBar } from "@/app/(medibook)/medibook/client-components";
 export default async function InvoicesPage({ topbarProps, invoices, totalItems, hiddenColumns = [] }) {
 	return (
 		<>
-			<TopBar {...topbarProps} />
+			<TopBar hideBackdrop {...topbarProps} />
 			{!!invoices.length && (
 				<Table>
 					<TableHead>
