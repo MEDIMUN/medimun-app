@@ -20,7 +20,7 @@ export default function Messaging() {
 					<p className="mt-1 text-sm text-gray-500">
 						Select a conversation or a group from the left to start messaging.
 						<br />
-						If you don't have any, you can create a new one.
+						If you don&apos;t have any, you can create a new one.
 					</p>
 				</div>
 			</div>
