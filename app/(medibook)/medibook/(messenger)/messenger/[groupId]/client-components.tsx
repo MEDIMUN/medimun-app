@@ -106,7 +106,7 @@ export function ChatLayout({ group, authSession }) {
 	if (group.GroupMember.length == 2) {
 		const otherUser = group.GroupMember.find((member) => member.userId !== authSession.user.id);
 		const fullName = otherUser.user.displayName || `${otherUser.user.officialName} ${otherUser.user.officialSurname}`;
-		otherUserRole = otherUser?.user.currentRoleNames[0];
+		otherUserRole = otherUser?.user.currentRoleNames?.[0];
 		groupName = (
 			<Link href={`/medibook/users/${otherUser?.user?.username || otherUser?.user?.id}`} className="flex cursor-pointer gap-1">
 				<Avatar showFallback size="sm" radius="sm" className="w-6 my-auto h-6" src={`/api/users/${otherUser.user.id}/avatar`} /> {fullName}
@@ -312,7 +312,7 @@ export function ChatLayout({ group, authSession }) {
 	useEffect(() => {
 		if (!observerRef.current) return;
 		const observer = new IntersectionObserver((entries) => {
-			if (entries[0].isIntersecting) {
+			if (entries[0]?.isIntersecting) {
 				handleLoadMoreMessages();
 			}
 		});
