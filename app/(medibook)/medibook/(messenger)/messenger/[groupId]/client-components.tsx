@@ -136,6 +136,7 @@ export function ChatLayout({ group, authSession }) {
 
 	useEffect(() => {
 		if (!socket) return;
+		handleJoinGroup();
 		socket.on("connect", () => {
 			handleJoinGroup();
 		});
