@@ -258,7 +258,7 @@ export const initializeSocket = (server: any): Server => {
 				socket.nsp.to(`private-user-${authSession.user.id}`).emit("joined:private-group", groupId);
 			});
 
-			socket.on("update:private-message", async ({ groupId, messageId, action, data, replyToId }) => {
+			socket.on("update:private-message", async ({ groupId, messageId, action, data, replyToId, clientId }) => {
 				const authSession = await socketAuth(socket);
 				if (!authSession) return socket.emit("error", "Unauthorized");
 
@@ -273,16 +273,7 @@ export const initializeSocket = (server: any): Server => {
 				if (action === "EDIT") {
 					const selectedMessage = await prisma.message.update({
 						where: { id: messageId, userId: authSession.user.id },
-						include: { user: true },
-						data: { markdown: data },
-					});
-					socket.to(`room:private-group-${groupId}`).emit("update:private-message", "UPDATE", selectedMessage);
-				}
-				if (action === "REPLY") {
-					const selectedMessage = await prisma.message.findFirst({
-						where: { id: replyToId },
 						include: {
-							group: true,
 							user: {
 								select: {
 									id: true,
@@ -291,17 +282,17 @@ export const initializeSocket = (server: any): Server => {
 									displayName: true,
 								},
 							},
-							MessageReaction: {
-								include: {
-									user: {
-										select: {
-											id: true,
-											officialName: true,
-											officialSurname: true,
-											displayName: true,
-										},
-									},
-								},
+						},
+						data: { markdown: data },
+					});
+					socket.to(`room:private-group-${groupId}`).emit("update:private-message", "UPDATE", selectedMessage);
+				}
+				if (action === "REPLY") {
+					const selectedMessage = await prisma.message.findFirst({
+						where: {
+							id: replyToId,
+							group: {
+								GroupMember: { some: { userId: authSession.user.id } },
 							},
 						},
 					});
@@ -319,8 +310,30 @@ export const initializeSocket = (server: any): Server => {
 							markdown: data,
 							isDeleted: false,
 						},
-						include: { user: true },
+						include: {
+							user: {
+								select: {
+									id: true,
+									officialName: true,
+									officialSurname: true,
+									displayName: true,
+								},
+							},
+							replyTo: {
+								include: {
+									user: {
+										select: {
+											id: true,
+											officialName: true,
+											officialSurname: true,
+											displayName: true,
+										},
+									},
+								},
+							},
+						},
 					});
+					socket.emit("update:message-id", "UPDATE", clientId, newMessage);
 					socket.to(`room:private-group-${groupId}`).emit("update:private-message", "NEW", newMessage);
 				}
 				if (action === "NEW") {
@@ -358,6 +371,7 @@ export const initializeSocket = (server: any): Server => {
 							},
 						},
 					});
+					socket.emit("update:message-id", "UPDATE", clientId, newMessage);
 					socket.to(`room:private-group-${groupId}`).emit("update:private-message", "NEW", newMessage);
 				}
 				if (action === "REACTION") {

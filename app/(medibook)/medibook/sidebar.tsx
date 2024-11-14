@@ -403,10 +403,7 @@ export function Sidebar({ sessions }) {
 							</SidebarItem>
 							<SidebarItem href="/medibook/messenger" current={pathname === "/medibook/messenger"}>
 								<Icon slot="icon" icon="heroicons-solid:chat" height={20} />
-								<SidebarLabel>
-									Messaging
-									<SoonBadge />
-								</SidebarLabel>
+								<SidebarLabel>Messaging</SidebarLabel>
 							</SidebarItem>
 							<SidebarItem disabled href="/medibook/tasks" current={pathname === "/medibook/tasks"}>
 								<Icon slot="icon" icon="heroicons-solid:clipboard-check" height={20} />
@@ -499,7 +496,7 @@ export function Sidebar({ sessions }) {
 									</SidebarSection>
 								);
 							})}
-						{selectedSessionData?.applicationsOpen && !authorizePerSession(authSession, [s.schooldirector], [selectedSession]) && (
+						{selectedSessionData?.applicationsOpen && !authorizePerSession(authSession, [s.schooldirector], [selectedSession]) && !isManagement && (
 							<SidebarSection>
 								<SidebarHeading>Individual Applications</SidebarHeading>
 								<SidebarItem

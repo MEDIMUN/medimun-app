@@ -29,6 +29,7 @@ export default async function Page(props) {
 	return (
 		<div className="grow h-full overflow-scroll lg:rounded-lg lg:bg-white lg:p-0 lg:shadow-sm lg:ring-1 lg:ring-zinc-950/5 dark:lg:bg-zinc-900 dark:lg:ring-white/10">
 			<TopBar
+				hideBackdrop
 				hideSearchBar
 				buttonHref={isManagement ? "/medibook/users" : "/mediboook"}
 				className="absolute p-5 !text-white"
@@ -81,7 +82,7 @@ export default async function Page(props) {
 								)}
 								<Button
 									color=""
-									href={`/medibook/messages/${userData.user.id}`}
+									href={`/medibook/messenger/@${userData.user.username || userData.user.id}?new=true`}
 									type="button"
 									className="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
 									<span>Message</span>

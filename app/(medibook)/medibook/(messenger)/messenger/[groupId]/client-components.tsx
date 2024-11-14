@@ -1,10 +1,7 @@
 "use client";
 
-import { Button } from "@nextui-org/button";
-import { Input } from "@/components/input";
-import { arrayFromNumber } from "@/lib/array-from-number";
-import { ArrowRightCircleIcon, ArrowRightIcon, EllipsisHorizontalCircleIcon } from "@heroicons/react/16/solid";
-import React, { useEffect, useRef, useState } from "react";
+import { ArrowRightIcon, XMarkIcon } from "@heroicons/react/16/solid";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { TopBar, UserTooltip } from "../../../client-components";
 import { loadMoreMessages } from "./actions";
 import { cn } from "@/lib/cn";
@@ -12,9 +9,11 @@ import { Avatar } from "@nextui-org/avatar";
 import Link from "next/link";
 import { useSocket } from "@/contexts/socket";
 import { Textarea } from "@nextui-org/input";
-import { useRouter } from "next/navigation";
-import { generateUserData } from "@/lib/user";
+import { usePathname, useRouter } from "next/navigation";
 import { Text } from "@/components/text";
+import MediBookLogo from "@/public/assets/branding/logos/medichat-logo-red.svg";
+import Image from "next/image";
+import { Button as MButton } from "@/components/button";
 
 export function ChatLayout({ group, authSession }) {
 	const textareaRef = useRef(null);
@@ -24,13 +23,18 @@ export function ChatLayout({ group, authSession }) {
 	const [isFocused, setIsFocused] = useState(false);
 	const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
 	const [isMounted, setIsMounted] = useState(false);
-	const [noOfMessages, setNoOfMessages] = useState(100);
 	const [isLoading, setIsLoading] = useState(true);
 	const observerRef = useRef(null);
 	const socket = useSocket();
 	const router = useRouter();
+	const pathname = usePathname();
 	const [inputValue, setInputValue] = useState("");
 	const [messages, setMessages] = useState(group.Message);
+	const [receivedFinalMessage, setReceivedFinalMessage] = useState(false);
+	const [selectedMessageId, setSelectedMessageId] = useState("");
+	const [replyToId, setReplyToId] = useState("");
+	const [reacttToId, setReactToId] = useState("");
+	const [editId, setEditId] = useState("");
 	let groupName, otherUserRole;
 
 	// Function to check if the current screen size is mobile
@@ -101,7 +105,7 @@ export function ChatLayout({ group, authSession }) {
 		otherUserRole = otherUser?.user.currentRoleNames[0];
 		groupName = (
 			<Link href={`/medibook/users/${otherUser?.user?.username || otherUser?.user?.id}`} className="flex cursor-pointer gap-1">
-				<Avatar showFallback size="sm" className="w-6 my-auto h-6" src={`/api/users/${otherUser.user.id}/avatar`} /> {fullName}
+				<Avatar showFallback size="sm" radius="sm" className="w-6 my-auto h-6" src={`/api/users/${otherUser.user.id}/avatar`} /> {fullName}
 			</Link>
 		);
 	}
@@ -112,18 +116,13 @@ export function ChatLayout({ group, authSession }) {
 			group.name || otherUsers.map((member) => member.user.displayName || `${member.user.officialName} ${member.user.officialSurname}`).join(", ");
 	}
 
-	//when in view add 100 more messages
-
-	//join the group
-
 	async function handleJoinGroup() {
 		const isBrowser = typeof window !== "undefined";
 		if (!isBrowser) return;
 		if (!socket) return;
-		socket.on("connect", async () => {
-			await new Promise((resolve) => setTimeout(resolve, 1500));
-			socket.emit("join:private-group", group.id);
-		});
+		console.log("joining group");
+		await new Promise((resolve) => setTimeout(resolve, 1500));
+		socket.emit("join:private-group", group.id);
 	}
 
 	useEffect(() => {
@@ -137,7 +136,7 @@ export function ChatLayout({ group, authSession }) {
 		return () => {
 			socket.emit("leave-room", `private-room-group.id-${group.id}`);
 		};
-	}, [socket, router]);
+	}, [socket, router, pathname]);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -154,9 +153,10 @@ export function ChatLayout({ group, authSession }) {
 		socket.on("disconnect", () => {
 			setIsLoading(true);
 		});
-	}, [socket, router]);
+	}, [socket, router, pathname]);
 
-	async function handleSendMessage() {
+	async function handleSendMessage(e) {
+		if (e) e.preventDefault();
 		if (!socket) return;
 		if (isLoading) return;
 		if (!inputValue || inputValue.length === 0) return;
@@ -165,33 +165,110 @@ export function ChatLayout({ group, authSession }) {
 		const isMessageOnlySpacesORLineBreaks = inputValue.replace(/\s/g, "").length === 0;
 		if (isMessageOnlySpacesORLineBreaks) return;
 		const heartsReplaced = inputValue.replace(/<3/g, "❤️");
-		socket.emit("update:private-message", {
-			groupId: group.id,
-			action: "NEW",
-			data: heartsReplaced,
-		});
-		setInputValue("");
-		//update messages
+		let newMessage;
 
-		const newMessage = {
-			id: Math.random(),
-			markdown: heartsReplaced,
-			userId: authSession.user.id,
-			user: {
-				id: authSession.user.id,
-				officialName: authSession.user.officialName,
-				officialSurname: authSession.user.officialSurname,
-				displayName: authSession.user.displayName,
-			},
-		};
+		const tempId = Math.random().toString();
+
+		if (editId) {
+			socket.emit("update:private-message", {
+				groupId: group.id,
+				action: "EDIT",
+				data: heartsReplaced,
+				messageId: editId,
+			});
+			newMessage = {
+				id: editId,
+				markdown: heartsReplaced,
+				userId: authSession.user.id,
+				createdAt: new Date(),
+				user: {
+					id: authSession.user.id,
+					officialName: authSession.user.officialName,
+					officialSurname: authSession.user.officialSurname,
+					displayName: authSession.user.displayName,
+				},
+			};
+			setEditId("");
+			setMessages((prev) => {
+				const index = prev.findIndex((message) => message.id === editId);
+				if (index === -1) return prev;
+				const newMessages = [...prev];
+				newMessages[index] = newMessage;
+				return newMessages;
+			});
+			setInputValue("");
+			return;
+		}
+
+		if (!replyToId) {
+			socket.emit("update:private-message", {
+				groupId: group.id,
+				action: "NEW",
+				data: heartsReplaced,
+				clientId: tempId,
+			});
+
+			newMessage = {
+				id: tempId,
+				markdown: heartsReplaced,
+				createdAt: new Date(),
+				userId: authSession.user.id,
+				user: {
+					id: authSession.user.id,
+					officialName: authSession.user.officialName,
+					officialSurname: authSession.user.officialSurname,
+					displayName: authSession.user.displayName,
+				},
+			};
+		}
+		if (replyToId) {
+			socket.emit("update:private-message", {
+				groupId: group.id,
+				action: "REPLY",
+				data: heartsReplaced,
+				clientId: tempId,
+				replyToId,
+			});
+			const selectedMessage = messages.find((message) => message.id === replyToId);
+			newMessage = {
+				id: tempId,
+				markdown: heartsReplaced,
+				userId: authSession.user.id,
+				createdAt: new Date(),
+				replyTo: selectedMessage,
+				user: {
+					id: authSession.user.id,
+					officialName: authSession.user.officialName,
+					officialSurname: authSession.user.officialSurname,
+					displayName: authSession.user.displayName,
+				},
+			};
+		}
+		setReplyToId("");
 		setMessages((prev) => [newMessage, ...prev]);
+		setInputValue("");
 	}
+
+	useEffect(() => {
+		if (!socket) return;
+		socket.on("update:message-id", async (action, id, data) => {
+			if (action === "UPDATE") {
+				setMessages((prev) => {
+					const index = prev.findIndex((message) => message.id === id);
+					if (index === -1) return prev;
+					const newMessages = [...prev];
+					newMessages[index] = data;
+					return newMessages;
+				});
+			}
+		});
+	}, [socket]);
 
 	//liste for enter key
 	useEffect(() => {
-		const handleKeyDown = (e) => {
+		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Enter") {
-				handleSendMessage();
+				handleSendMessage(e);
 			}
 		};
 		document.addEventListener("keydown", handleKeyDown);
@@ -205,6 +282,15 @@ export function ChatLayout({ group, authSession }) {
 			if (action === "NEW") {
 				setMessages((prev) => [data, ...prev]);
 			}
+			if (action === "UPDATE") {
+				setMessages((prev) => {
+					const index = prev.findIndex((message) => message.id === data.id);
+					if (index === -1) return prev;
+					const newMessages = [...prev];
+					newMessages[index] = data;
+					return newMessages;
+				});
+			}
 		});
 	}, [socket]);
 
@@ -214,9 +300,9 @@ export function ChatLayout({ group, authSession }) {
 		if (isLoading) return;
 		if (messages.length < 50) return;
 		const moreMessages = await loadMoreMessages(group.id, messages.length);
-		if (!moreMessages) return;
-		setMessages((prev) => [...prev, ...moreMessages.data.messages]);
 		setIsLoading(false);
+		if (!moreMessages?.data?.messages?.length) return setReceivedFinalMessage(true);
+		setMessages((prev) => [...prev, ...moreMessages.data.messages]);
 	}
 
 	useEffect(() => {
@@ -240,41 +326,78 @@ export function ChatLayout({ group, authSession }) {
 					transform: `translateY(-${-1 * scrollY}px)`,
 				}}>
 				<div className="flex gap-1 z-[9999999999999999999999999999999] shadow-md md:shadow-none bg-white md:bg-zinc-100 p-2 !absolute top-0 left-0 right-0">
-					<TopBar /* subheading={otherUserRole} */ title={groupName} buttonText={"Inboxes"} buttonHref="/medibook/messenger" hideSearchBar></TopBar>
+					<div className="w-full">
+						<TopBar
+							hideBackdrop
+							className="max-w-5xl mx-auto"
+							/* subheading={otherUserRole} */ title={groupName}
+							buttonText={isMobile && "Inboxes"}
+							buttonHref="/medibook/messenger"
+							hideSearchBar></TopBar>
+					</div>
 				</div>
 				<div className="w-full overflow-y-auto max-w-5xl mx-auto flex-col-reverse flex">
+					{selectedMessageId && <div className="min-h-[50px]" />}
+
 					<div className="flex-grow flex w-full mx-auto flex-col-reverse overflow-y-auto">
 						<div className="min-h-32" />
 						{messages.map((message, index) => {
-							const isMyMessage = message.userId === authSession.user.id;
+							const isMyMessage = message?.userId === authSession.user.id;
 							let isAfterMyMessage, isBeforeMyMessage;
+							const messageAfter = messages[index - 1] || {};
+
 							if (index > 0) {
-								isAfterMyMessage = messages[index - 1].userId === authSession.user.id;
+								isAfterMyMessage = messageAfter.userId === authSession.user.id;
 							}
+
 							if (index < messages.length - 1) {
 								isBeforeMyMessage = messages[index + 1].userId === authSession.user.id;
 							}
 
 							if (isMyMessage) {
 								return (
-									<div key={`${message.id}-${Math.random()}`} className={cn("flex gap-2", "justify-end")}>
+									<div
+										onMouseDown={(e) => {
+											e.preventDefault();
+											setSelectedMessageId(message.id);
+											setReplyToId("");
+										}}
+										key={message.id}
+										className={cn("flex gap-2 justify-end group", !isBeforeMyMessage && "mt-2")}>
 										<div className="flex gap-1">
-											<div className="ml-5 my-auto">
-												<ArrowRightCircleIcon className="w-4 h-4 text-gray-500" />
-											</div>
 											<div className="flex flex-col">
 												<div className="flex gap-1">
 													<span className="font-semibold">{message.user.displayName}</span>
 												</div>
 												<div
 													className={cn(
-														"max-w-[400px] mr-2 text-sm min-w-[35px] text-right",
-														"bg-gray-100 p-2 rounded-lg",
-														isAfterMyMessage && "rounded-br-none mb-[2px]",
-														isBeforeMyMessage && "rounded-tr-none"
+														"max-w-[300px] md:max-w-[400px] mr-2 text-sm min-w-[35px] text-right",
+														"bg-gray-100 p-2 hyphens-auto break-words overflow-hidden ml-auto rounded-lg",
+														isAfterMyMessage && !messageAfter.replyTo && "rounded-br-none mb-[2px]",
+														isBeforeMyMessage && "rounded-tr-none",
+														messageAfter.replyTo && "mb-3",
+														selectedMessageId === message.id && "bg-zinc-200 duration-200 shadow-md"
 													)}>
 													{message.markdown}
+													<div className="mr-auto text-left text-xs text-zinc-500 mt-1">
+														{new Date(message.createdAt).toLocaleTimeString("en-GB").slice(0, 5)}
+													</div>
 												</div>
+												{messageAfter.replyTo && (
+													<div className="flex flex-col gap-1 mb-1 max-w-[300px] ml-auto">
+														<div className="flex gap-1">
+															<Text className="!text-[9px] text-gray-500 ml-auto mr-16 -mb-2">{messageAfter.replyTo.user.officialName}</Text>
+														</div>
+														<div className="flex gap-1">
+															<div className="bg-gray-100/60 p-3 rounded-full overflow-hidden">
+																<div className="text-xs w-full flex-1 my-auto overflow-hidden line-clamp-2 break-words h-full truncate">
+																	{messageAfter.replyTo.markdown}
+																</div>
+															</div>
+															<Image alt="" src={`/assets/message-reply.svg`} className="grayscal" width={40} height={40} />
+														</div>
+													</div>
+												)}
 											</div>
 										</div>
 									</div>
@@ -283,8 +406,14 @@ export function ChatLayout({ group, authSession }) {
 								const isPreviousSamePersons = messages[index - 1]?.userId === message.userId;
 								const isNextSamePersons = messages[index + 1]?.userId === message.userId;
 								return (
-									<>
-										<div key={message.id} className={cn("flex gap-2", "justify-start")}>
+									<Fragment key={message.id}>
+										<div
+											onMouseDown={(e) => {
+												e.preventDefault();
+												setSelectedMessageId(message.id);
+												setReplyToId("");
+											}}
+											className={cn("flex gap-2", "justify-start group")}>
 											<div className="flex gap-1 ml-2">
 												{!isPreviousSamePersons ? (
 													<UserTooltip userId={message.userId} className="w-8 mt-auto">
@@ -299,23 +428,57 @@ export function ChatLayout({ group, authSession }) {
 													</div>
 													<div
 														className={cn(
-															"max-w-[400px] text-sm min-w-[35px] text-left mr-5",
+															"max-w-[400px] break-words text-sm min-w-[35px] text-left",
 															"bg-gray-100 p-2 rounded-lg",
-															isPreviousSamePersons && "rounded-bl-none mb-[2px]",
-															isNextSamePersons && "rounded-tl-none"
+															isPreviousSamePersons && !messageAfter.replyTo && "rounded-bl-none mb-[2px]",
+															isNextSamePersons && "rounded-tl-none",
+															messageAfter.replyTo && "mb-3",
+															selectedMessageId === message.id && "bg-zinc-200 duration-200 shadow-md"
 														)}>
 														{message.markdown}
+														<div className="mr-auto text-right text-xs text-zinc-500 mt-1">
+															{new Date(message.createdAt).toLocaleTimeString("en-GB").slice(0, 5)}
+														</div>
 													</div>
+													{messageAfter.replyTo && (
+														<div className="flex flex-col gap-1 mb-1 max-w-[300px] mr-auto">
+															<div className="flex gap-1">
+																<Text className="!text-[9px] text-gray-500 mr-auto ml-16 -mb-2">{messageAfter.replyTo.user.officialName}</Text>
+															</div>
+															<div className="flex gap-1">
+																<Image alt="" src={`/assets/message-reply.svg`} className="grayscale scale-x-[-1]" width={40} height={40} />
+																<div className="bg-gray-100/80 p-3 rounded-full overflow-hidden">
+																	<div className="text-xs w-full flex-1 my-auto line-clamp-2 break-words h-full truncate">
+																		{messageAfter.replyTo.markdown}
+																	</div>
+																</div>
+															</div>
+														</div>
+													)}
 												</div>
 											</div>
 										</div>
 										{!isNextSamePersons && <Text className="!text-[9px] text-gray-500 ml-12 -mb-1">{message.user.officialName}</Text>}
-									</>
+									</Fragment>
 								);
 							}
 						})}
-						<div className="mx-auto">Messages are monitored</div>
-						{messages.length > 50 && (
+						{(receivedFinalMessage || messages.length < 50) && (
+							<div className="mx-auto p-10">
+								<div className="p-12 text-center flex flex-col backdrop-blur-lg mt-6 shadow-md gap-6 rounded-2xl font-[montserrat] bg-zinc-100">
+									<Image alt="MediChat Logo" className="mx-auto grayscale" src={MediBookLogo} width={200} height={200} />
+									<Text>
+										Messages can be accessed by the management in case of a report.
+										<br />
+										Please be respectful in your messages.
+										<br />
+										<br />
+										<i>Messages will be deleted at the start of the next Session of the conference.</i>
+									</Text>
+								</div>
+							</div>
+						)}
+						{!receivedFinalMessage && messages.length > 49 && (
 							<i onClick={handleLoadMoreMessages} className="z-[1000000] text-zinc-500 text-sm cursor-pointer text-center" ref={observerRef}>
 								Click to load more messages...
 							</i>
@@ -323,31 +486,138 @@ export function ChatLayout({ group, authSession }) {
 						<div className="min-h-[72px]" />
 					</div>
 				</div>
-				<div className="flex gap-1 max-w-5xl mx-auto z-[9999999999] bg-white p-2 border-t !fixed bottom-0 left-0 right-0">
-					<div className="w-full">
-						<Textarea
-							value={inputValue}
-							onValueChange={(e) => setInputValue(e)}
-							isDisabled={isLoading}
-							autoComplete="off"
-							ref={textareaRef}
-							onFocus={handleFocus}
-							onBlur={handleBlur}
-							role="presentation"
-							height="auto"
-							classNames={{ input: "text-lg md:text-md", inputWrapper: "!rounded-br-none" }}
-							className="w-full  !text-xl h-full  rounded-none rounded-tl-md"
-						/>
-					</div>
-					<div className="w-[45px] md:w-[35px] h-[45px] md:h-[35px] mt-auto">
-						<Button
-							isIconOnly
-							onPress={() => handleSendMessage()}
-							isDisabled={isLoading}
-							isLoading={isLoading}
-							className="w-full aspect-square h-full bg-zinc-800 !rounded-bl-lg hover:bg-zinc-600 p-2 rounded-lg">
-							<ArrowRightIcon color="white" className="text-white w-4  h-4" />
-						</Button>
+				<div className="flex flex-col gap-1 font-[montserrat] max-w-5xl mx-auto z-[9999999999] bg-white p-2 border-t !fixed bottom-0 left-0 right-0">
+					{replyToId && messages.find((message) => message.id === replyToId) && (
+						<div className="flex h-12 mb-1 w-full gap-1">
+							<MButton
+								onMouseDown={(e) => {
+									e.preventDefault();
+									setReplyToId("");
+								}}
+								plain
+								className="aspect-square h-12 w-12">
+								<XMarkIcon />
+							</MButton>
+							<div className="bg-gray-100 p-2 rounded-lg overflow-hidden">
+								<div className="flex gap-1 text-xs">
+									<span className="font-semibold">
+										{messages.find((message) => message.id === replyToId).displayName ||
+											`${messages.find((message) => message.id === replyToId).user.officialName} ${messages.find((message) => message.id === replyToId).user.officialSurname}`}
+									</span>
+								</div>
+								<div className="text-sm w-full flex-1 line-clamp-1 truncate">{messages.find((message) => message.id === replyToId).markdown}</div>
+							</div>
+						</div>
+					)}
+					{editId && messages.find((message) => message.id === editId) && (
+						<div className="flex h-12 mb-1 w-full gap-1">
+							<MButton
+								onMouseDown={(e) => {
+									e.preventDefault();
+									setEditId("");
+								}}
+								plain
+								className="aspect-square h-12 w-12">
+								<XMarkIcon />
+							</MButton>
+							<div className="bg-gray-100 p-2 rounded-lg overflow-hidden">
+								<div className="flex gap-1 text-xs">
+									<span className="font-semibold">Editing</span>
+								</div>
+								<div className="text-sm w-full flex-1 line-clamp-1 truncate">{messages.find((message) => message.id === editId).markdown}</div>
+							</div>
+						</div>
+					)}
+					{selectedMessageId && (
+						<div className="w-full mb-1 overflow-x-scroll">
+							<div className="flex gap-1">
+								<MButton
+									onMouseDown={(e) => {
+										e.preventDefault();
+										setReplyToId("");
+										setSelectedMessageId("");
+									}}
+									plain>
+									<XMarkIcon />
+								</MButton>
+								<MButton
+									onMouseDown={(e) => {
+										e.preventDefault();
+										setReplyToId(selectedMessageId);
+										setSelectedMessageId("");
+									}}
+									plain>
+									Reply
+								</MButton>
+								{messages.find((message) => message.id === selectedMessageId).userId === authSession.user.id && (
+									<MButton
+										onMouseDown={(e) => {
+											e.preventDefault();
+											setEditId(selectedMessageId);
+											setSelectedMessageId("");
+											setInputValue(messages.find((message) => message.id === selectedMessageId).markdown);
+										}}
+										plain>
+										Edit
+									</MButton>
+								)}
+								<MButton disabled plain>
+									Delete
+								</MButton>
+								<MButton disabled plain>
+									❤️
+								</MButton>
+								<MButton disabled plain>
+									😂
+								</MButton>
+								<MButton disabled plain>
+									🤪
+								</MButton>
+								<MButton disabled plain>
+									😲
+								</MButton>
+								<MButton disabled plain>
+									😔
+								</MButton>
+								<MButton disabled plain>
+									😠
+								</MButton>
+								<MButton disabled plain>
+									👍
+								</MButton>
+							</div>
+						</div>
+					)}
+					<div className="w-full flex gap-1">
+						<div className="w-full">
+							<Textarea
+								value={inputValue}
+								onValueChange={(e) => setInputValue(e)}
+								isDisabled={isLoading}
+								autoComplete="off"
+								ref={textareaRef}
+								autoCorrect="off"
+								onFocus={handleFocus}
+								onBlur={handleBlur}
+								role="presentation"
+								maxRows={4}
+								height="auto"
+								enterKeyHint="send"
+								classNames={{ input: "text-lg md:text-md", inputWrapper: "" }}
+								className="w-full  !text-xl h-full  rounded-none rounded-tl-md"
+							/>
+						</div>
+						<div className="w-[35px] md:w-[35px] h-[35px] md:h-[35px] mt-auto">
+							<button
+								onMouseDown={handleSendMessage}
+								type="submit"
+								disabled={isLoading}
+								className={`w-full flex aspect-square h-full p-2 rounded-full 
+		${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-zinc-800 hover:bg-zinc-600"} 
+		${isLoading ? "bg-blue-500 cursor-wait" : ""}`}>
+								<ArrowRightIcon className={`w-full my-auto h-4 ${isLoading ? "text-gray-200" : "text-white"}`} />
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>

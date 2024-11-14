@@ -1,78 +1,29 @@
-"use client";
-
-import { Divider } from "@/components/divider";
-import { Text } from "@/components/text";
-import { arrayFromNumber } from "@/lib/array-from-number";
-import { User } from "@nextui-org/user";
-import { SearchBar, SearchParamsButton } from "../../client-components";
-import { Button } from "@/components/button";
-import Paginator from "@/components/pagination";
-import { Heading } from "@/components/heading";
-import { Badge } from "@/components/badge";
-import { ScrollShadow } from "@nextui-org/scroll-shadow";
-import { useEffect, useRef, useState } from "react";
-
+import InboxesPage from "../inbox-page";
+//FIXME:
 export default function Messaging() {
-	const [number, setNumber] = useState(0);
-	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-	//check if the element is in view
-
-	const inViewRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						setNumber((prev) => prev + 0);
-					}
-				});
-			},
-			{ threshold: 0.5 }
-		);
-		if (inViewRef.current) {
-			observer.observe(inViewRef.current);
-		}
-		return () => {
-			if (inViewRef.current) {
-				observer.unobserve(inViewRef.current);
-			}
-		};
-	}, [inViewRef.current]);
-
 	return (
-		<div className="w-full flex h-full shadow-md">
-			<div className="h-full flex flex-col gap-2 p-4">
-				<div className="flex items-stretch">
-					<Heading level={2}>Chats</Heading>
-				</div>
-				<div className="flex w-full gap-2 flex-1">
-					<SearchBar className="min-w-60" />
-					<SearchParamsButton searchParams={{ "create-new-group": true }} color="white" className="h-9">
-						+
-					</SearchParamsButton>
-				</div>
-				<ScrollShadow hideScrollBar orientation="vertical" className="!overflow-y-scroll !p-0 !m-0 mt-1 showscrollbar">
-					<ul className="flex  flex-col gap-2">
-						{arrayFromNumber(number).map((_, i) => (
-							<li key={i} className="w-full flex p-2  hover:bg-zinc-100 hover:shadow-sm cursor-pointer duration-75 rounded-lg">
-								<User
-									avatarProps={{
-										showFallback: true,
-										src: "https://www.medimun.org/api/users/111111111111/avatar",
-										className: "",
-									}}
-									name="John Doe"
-									description={"Deputy Secretary-General"}
-								/>
-							</li>
-						))}
-					</ul>
-					<div ref={inViewRef}></div>
-				</ScrollShadow>
+		<>
+			<div className="md:hidden w-full block">
+				<InboxesPage />
 			</div>
-			<div className="h-full w-[2px] bg-zinc-100"></div>
-		</div>
+			<div className="w-full hidden md:flex  bg-zinc-100 p-6 h-full">
+				<div className="text-center mx-auto flex flex-col my-auto">
+					<svg fill="none" stroke="currentColor" viewBox="0 0 48 48" aria-hidden="true" className="mx-auto size-12 text-gray-400">
+						<path
+							d="M34 40h10v-4a6 6 0 00-10.712-3.714M34 40H14m20 0v-4a9.971 9.971 0 00-.712-3.714M14 40H4v-4a6 6 0 0110.713-3.714M14 40v-4c0-1.313.253-2.566.713-3.714m0 0A10.003 10.003 0 0124 26c4.21 0 7.813 2.602 9.288 6.286M30 14a6 6 0 11-12 0 6 6 0 0112 0zm12 6a4 4 0 11-8 0 4 4 0 018 0zm-28 0a4 4 0 11-8 0 4 4 0 018 0z"
+							strokeWidth={2}
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
+					</svg>
+					<h2 className="mt-2 text-base font-semibold text-gray-900">Start a conversation</h2>
+					<p className="mt-1 text-sm text-gray-500">
+						Select a conversation or a group from the left to start messaging.
+						<br />
+						If you don't have any, you can create a new one.
+					</p>
+				</div>
+			</div>
+		</>
 	);
 }

@@ -72,8 +72,6 @@ export default async function Page(props) {
 		where: { schoolId: selectedSchool.id, sessionId: selectedSession.id },
 	});
 
-	console.log({ delegationAssignmentProposal }, selectedSchool.id, selectedSession.id);
-
 	const numberOfGACommittees = selectedSession.committee.filter((committee) => committee.type === "GENERALASSEMBLY").length;
 	const filteredCountries = countries.filter((country) => selectedSession.countriesOfSession.includes(country.countryCode));
 	const applicationsOpen = areDelegateApplicationsOpen(selectedSession);
@@ -87,8 +85,6 @@ export default async function Page(props) {
 	const allStudentIds = [...(userIds || []), ...(finalStudentIds || [])];
 
 	const users = parsedAssignment || parsedFinal ? await prisma.user.findMany({ where: { id: { in: allStudentIds } } }) : [];
-
-	console.log(users);
 
 	const renderAssignments = (assignments) =>
 		assignments.map((assignment, index) => {
@@ -115,6 +111,7 @@ export default async function Page(props) {
 		return (
 			<>
 				<TopBar
+					hideBackdrop
 					buttonText={selectedSchool.name}
 					buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`}
 					hideSearchBar
@@ -140,6 +137,7 @@ export default async function Page(props) {
 		return (
 			<>
 				<TopBar
+					hideBackdrop
 					buttonText={selectedSchool.name}
 					buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`}
 					hideSearchBar
@@ -165,6 +163,7 @@ export default async function Page(props) {
 		return (
 			<>
 				<TopBar
+					hideBackdrop
 					buttonText={selectedSchool.name}
 					buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`}
 					hideSearchBar
@@ -187,6 +186,7 @@ export default async function Page(props) {
 	return (
 		<>
 			<TopBar
+				hideBackdrop
 				buttonText={selectedSchool.name}
 				buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`}
 				hideSearchBar

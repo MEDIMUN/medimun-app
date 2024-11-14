@@ -142,23 +142,23 @@ model Message {
   isDeleted       Boolean           @default(false)
   isPinned        Boolean           @default(false)
   createdAt       DateTime          @default(now())
-  user            User              @relation(fields: [userId], references: [id])
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String
-  group           Group             @relation(fields: [groupId], references: [id])
+  group           Group             @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId         String
   MessageReaction MessageReaction[]
   //replies
   replies         Message[]         @relation("MessageReplies")
-  replyTo         Message?          @relation("MessageReplies", fields: [replyToId], references: [id])
+  replyTo         Message?          @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
   replyToId       String?
 }
 
 model MessageReaction {
   id        String  @id @default(nanoid())
   reaction  String
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  message   Message @relation(fields: [messageId], references: [id])
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
   messageId String
 
   @@unique([userId, messageId])

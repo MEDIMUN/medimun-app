@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 791.51 200.59">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #333;
+        font-size: 38.79px;
+      }
+
+      .cls-1, .cls-2 {
+        font-family: LondiniaMedium, 'Londinia Medium';
+        isolation: isolate;
+      }
+
+      .cls-2 {
+        fill: #ae2d28;
+        font-size: 162.2px;
+        letter-spacing: .06em;
+      }
+
+      .cls-3 {
+        letter-spacing: 0em;
+      }
+
+      .cls-4 {
+        letter-spacing: 0em;
+      }
+    </style>
+  </defs>
+  <text class="cls-2" transform="translate(0 137.87)"><tspan x="0" y="0">MediChat</tspan></text>
+  <text class="cls-1" transform="translate(553.44 184.28)"><tspan x="0" y="0">by MEDI</tspan><tspan class="cls-4" x="150.43" y="0">M</tspan><tspan class="cls-3" x="182.7" y="0">UN</tspan></text>
+</svg>

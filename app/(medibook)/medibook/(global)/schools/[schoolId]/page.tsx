@@ -63,6 +63,7 @@ export default async function Page(props: { params: Promise<any> }) {
 				<div className="rounded-lg border bg-zinc-100 p-2 text-center text-sm md:text-left">This page is private.</div>
 			)}
 			<TopBar
+				hideBackdrop
 				hideSearchBar
 				title={school.name}
 				buttonText={isManagement ? "Schools" : "Home"}

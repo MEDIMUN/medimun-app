@@ -12,13 +12,13 @@ import Paginator from "@/components/pagination";
 export const dynamic = "force-dynamic";
 
 export default async function PoliciesPage(props) {
-    const searchParams = await props.searchParams;
-    const authSession = await auth();
-    const isManagement = authorize(authSession, [s.management]);
-    const query = searchParams["search"];
-    const page = parseInt(searchParams["page"]) || 1;
+	const searchParams = await props.searchParams;
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
+	const query = searchParams["search"];
+	const page = parseInt(searchParams["page"]) || 1;
 
-    const policies = await prisma.policy
+	const policies = await prisma.policy
 		.findMany({
 			where: {
 				title: {
@@ -34,7 +34,7 @@ export default async function PoliciesPage(props) {
 		})
 		.catch(notFound);
 
-    const totalItems = await prisma.policy.count({
+	const totalItems = await prisma.policy.count({
 		where: {
 			title: {
 				contains: query,
@@ -43,9 +43,9 @@ export default async function PoliciesPage(props) {
 		},
 	});
 
-    return (
+	return (
 		<>
-			<TopBar buttonHref="/medibook" buttonText="Home" title="Conference & Digital Policies">
+			<TopBar key="TopBar" buttonHref="/medibook" buttonText="Home" title="Conference & Digital Policies">
 				{isManagement && (
 					<SearchParamsButton
 						searchParams={{

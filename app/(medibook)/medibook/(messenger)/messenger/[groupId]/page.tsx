@@ -32,6 +32,11 @@ export default async function MessagePage(props) {
 						include: {
 							user: { select: { id: true, officialName: true, officialSurname: true, displayName: true } },
 							MessageReaction: { include: { user: { select: { id: true, officialName: true, officialSurname: true, displayName: true } } } },
+							replyTo: {
+								include: {
+									user: { select: { id: true, officialName: true, officialSurname: true, displayName: true } },
+								},
+							},
 						},
 					},
 				},
@@ -53,6 +58,11 @@ export default async function MessagePage(props) {
 						include: {
 							user: { select: { id: true, officialName: true, officialSurname: true, displayName: true } },
 							MessageReaction: { include: { user: { select: { id: true, officialName: true, officialSurname: true, displayName: true } } } },
+							replyTo: {
+								include: {
+									user: { select: { id: true, officialName: true, officialSurname: true, displayName: true } },
+								},
+							},
 						},
 					},
 				},
@@ -82,6 +92,11 @@ export default async function MessagePage(props) {
 						include: {
 							user: { select: { id: true, officialName: true, officialSurname: true, displayName: true } },
 							MessageReaction: { include: { user: { select: { id: true, officialName: true, officialSurname: true, displayName: true } } } },
+							replyTo: {
+								include: {
+									user: { select: { id: true, officialName: true, officialSurname: true, displayName: true } },
+								},
+							},
 						},
 					},
 				},

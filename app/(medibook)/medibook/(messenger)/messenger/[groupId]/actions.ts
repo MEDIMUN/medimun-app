@@ -14,6 +14,11 @@ export async function loadMoreMessages(groupId: string, skip: number) {
 				skip: skip,
 				orderBy: { createdAt: "desc" },
 				include: {
+					replyTo: {
+						include: {
+							user: { select: { id: true, officialName: true, officialSurname: true, displayName: true } },
+						},
+					},
 					user: {
 						select: {
 							id: true,

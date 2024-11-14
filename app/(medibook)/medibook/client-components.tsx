@@ -74,9 +74,9 @@ export function SearchBar({ placeholder = "Search...", debounceDelay = 500, defa
 	}, [debouncedSearch, router]);
 
 	return (
-		<InputGroup className="w-full">
+		<InputGroup className={cn("w-full", className)}>
 			<MagnifyingGlassIcon />
-			<Input className={className} onChange={(e) => setSearch(e.target.value)} value={search} name="search" type="search" placeholder={placeholder} />
+			<Input onChange={(e) => setSearch(e.target.value)} value={search} name="search" type="search" placeholder={placeholder} />
 		</InputGroup>
 	);
 }
@@ -93,6 +93,7 @@ export function TopBar({
 	buttonText = "",
 	buttonHref = "",
 	showDivider = false,
+	hideBackdrop = false,
 }: {
 	className?: string;
 	title?: string;
@@ -105,11 +106,44 @@ export function TopBar({
 	buttonText?: string;
 	buttonHref?: string;
 	showDivider?: boolean;
+	hideBackdrop?: boolean;
 }) {
+	const [height, setHeight] = useState(0);
+
+	useEffect(() => {
+		setHeight(document.getElementById("clientTopbar").clientHeight);
+	}, []);
+
+	//listen to scroll resize navigation
+
+	useEffect(() => {
+		function handleResize() {
+			setHeight(document.getElementById("clientTopbar").clientHeight);
+		}
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, []);
+
 	sortOptions = sortOptions && sortOptions.map((option, index) => ({ ...option, key: index }));
 	return (
 		<>
-			<div className={cn("flex flex-wrap items-end justify-between gap-4", className)}>
+			{!hideBackdrop && (
+				<>
+					<div
+						style={{
+							height: `${height + 24}px`,
+							overflow: "hidden",
+						}}
+						className="flex-1 top-0 w-full md:block absolute hidden !overflow-x-hidden md:rounded-t-[8px] left-0 right-0 h-[131px] z-[1] border-b bg-zinc-100 "></div>
+					<div
+						style={{
+							height: `${height + 3}px`,
+							overflow: "hidden",
+						}}
+						className="flex-1 md:hidden top-0 w-full absolute !overflow-x-hidden md:rounded-t-[8px] left-0 right-0 h-[131px] z-[1] border-b bg-zinc-100 "></div>
+				</>
+			)}
+			<div id="clientTopbar" className={cn("flex flex-wrap items-end z-[10] justify-between gap-4", className)}>
 				<div className="w-full sm:flex-1">
 					{buttonText && buttonHref && (
 						<Link href={buttonHref}>
@@ -131,7 +165,7 @@ export function TopBar({
 					<div className={cn("flex flex-col gap-4 md:flex-row", (!hideSearchBar || sortOptions) && "mt-4")}>
 						{!hideSearchBar && (
 							<div className="w-full flex-1">
-								<SearchBar placeholder={searchText} />
+								<SearchBar className="shadow-sm rounded-xl" placeholder={searchText} />
 							</div>
 						)}
 						{sortOptions && (
@@ -143,6 +177,7 @@ export function TopBar({
 				</div>
 				{children && <div className="grid w-full grid-cols-1 gap-4 md:flex md:w-auto md:flex-row">{children}</div>}
 			</div>
+
 			{showDivider && <Divider soft />}
 		</>
 	);
@@ -209,13 +244,13 @@ export function SocketHandler() {
 	}, [socket]);
 
 	//disable scroll when!isConnected
-	useLayoutEffect(() => {
+	/* 	useLayoutEffect(() => {
 		if (notConnectedFor30Seconds) {
 			document.body.style.overflow = "hidden";
 		} else {
 			document.body.style.overflow = "auto";
 		}
-	}, [notConnectedFor30Seconds]);
+	}, [notConnectedFor30Seconds]); */
 
 	useLayoutEffect(() => {
 		const timer = setTimeout(() => {
@@ -293,7 +328,7 @@ export function UserTooltip({ userId, children }) {
 						avatarProps={{ src: `/api/users/${userId}/avatar`, showFallback: true, isBordered: true, size: "sm", radius: "md" }}
 					/>
 					<div className="gap-2 flex ml-auto">
-						<Button color="primary" className="h-8 my-auto" href={`/medibook/messenger/@${user?.username || user?.id}`}>
+						<Button color="primary" className="h-8 my-auto" href={`/medibook/messenger/@${user?.username || user?.id}?new=true`}>
 							Message
 						</Button>
 						<Button href={`/medibook/users/${user?.username || user?.id}`} className="h-8 my-auto" onClick={() => setIsOpen(false)}>
