@@ -108,10 +108,12 @@ model User {
   ResetPassword                       ResetPassword[]
   MorningCode                         MorningCode[]
 
-  GroupMember     GroupMember[]
-  MorningPresent  MorningPresent[]
-  Message         Message[]
-  MessageReaction MessageReaction[]
+  GroupMember              GroupMember[]
+  MorningPresent           MorningPresent[]
+  Message                  Message[]
+  MessageReaction          MessageReaction[]
+  CommitteeMessage         CommitteeMessage[]
+  CommitteeMessageReaction CommitteeMessageReaction[]
 }
 
 model Group {
@@ -159,6 +161,48 @@ model MessageReaction {
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId String
+
+  @@unique([userId, messageId])
+}
+
+model CommitteeMessage {
+  id                       String                     @id @default(nanoid())
+  markdown                 String
+  resources                Resource[]
+  isDeleted                Boolean                    @default(false)
+  isPinned                 Boolean                    @default(false)
+  createdAt                DateTime                   @default(now())
+  user                     User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                   String
+  committee                Committee                  @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+  committeeId              String
+  //replies
+  replies                  CommitteeMessage[]         @relation("CommitteeMessageReplies")
+  replyTo                  CommitteeMessage?          @relation("CommitteeMessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replyToId                String?
+  CommitteeMessageReaction CommitteeMessageReaction[]
+  Delegate                 Delegate?                  @relation(fields: [delegateId], references: [id])
+  delegateId               String?
+}
+
+model DayEvent {
+  id          String  @id @default(nanoid())
+  name        String
+  description String?
+  location    String?
+  startTime   String
+  endTime     String
+  Day         Day     @relation(fields: [dayId], references: [id])
+  dayId       String
+}
+
+model CommitteeMessageReaction {
+  id        String           @id @default(nanoid())
+  reaction  String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  message   CommitteeMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
   messageId String
 
   @@unique([userId, messageId])
@@ -337,6 +381,7 @@ model Day {
   RollCall       RollCall[]
   MorningCode    MorningCode[]
   MorningPresent MorningPresent[]
+  DayEvent       DayEvent[]
 
   @@unique([sessionId, date])
 }
@@ -422,14 +467,15 @@ model Manager {
 }
 
 model Delegate {
-  id          String    @id @default(uuid())
-  country     String?
+  id               String             @id @default(uuid())
+  country          String?
   //
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String
+  user             User               @relation(fields: [userId], references: [id])
+  userId           String
   //
-  committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
-  committeeId String
+  committee        Committee          @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+  committeeId      String
+  CommitteeMessage CommitteeMessage[]
 
   @@unique([userId, committeeId])
 }
@@ -482,24 +528,25 @@ enum RoleType {
 }
 
 model Committee {
-  id           String         @id @unique @default(uuid())
-  name         String
-  description  String?
-  shortName    String?
-  slug         String?
-  isVisible    Boolean        @default(false)
+  id               String             @id @unique @default(uuid())
+  name             String
+  description      String?
+  shortName        String?
+  slug             String?
+  isVisible        Boolean            @default(false)
   //
-  type         CommitteeType  @default(GENERALASSEMBLY)
+  type             CommitteeType      @default(GENERALASSEMBLY)
   //
-  session      Session        @relation(fields: [sessionId], references: [id])
-  sessionId    String
+  session          Session            @relation(fields: [sessionId], references: [id])
+  sessionId        String
   //
-  delegate     Delegate[]
-  chair        Chair[]
-  Announcement Announcement[]
-  Resource     Resource[]
-  ExtraCountry ExtraCountry[]
-  Topic        Topic[]
+  delegate         Delegate[]
+  chair            Chair[]
+  Announcement     Announcement[]
+  Resource         Resource[]
+  ExtraCountry     ExtraCountry[]
+  Topic            Topic[]
+  CommitteeMessage CommitteeMessage[]
 
   @@unique([sessionId, name])
   @@unique([sessionId, shortName])
@@ -670,31 +717,33 @@ model MorningPresent {
 // RESOURCES ///////////////////////////////////////////////////////////
 
 model Resource {
-  id           String                 @id @unique @default(nanoid())
-  isPinned     Boolean                @default(false)
-  name         String?
-  description  String?
-  time         DateTime               @default(now())
+  id                 String                 @id @unique @default(nanoid())
+  isPinned           Boolean                @default(false)
+  name               String?
+  description        String?
+  time               DateTime               @default(now())
   //
-  scope        ResourcePrivacyTypes[]
+  scope              ResourcePrivacyTypes[]
   //
-  driveUrl     String?
-  fileId       String?
+  driveUrl           String?
+  fileId             String?
   //
-  isAnonymous  Boolean                @default(false)
-  isPrivate    Boolean                @default(false)
+  isAnonymous        Boolean                @default(false)
+  isPrivate          Boolean                @default(false)
   //
-  user         User                   @relation(fields: [userId], references: [id])
-  userId       String
+  user               User                   @relation(fields: [userId], references: [id])
+  userId             String
   //
-  session      Session?               @relation(fields: [sessionId], references: [id])
-  sessionId    String?
-  committee    Committee?             @relation(fields: [committeeId], references: [id])
-  committeeId  String?
-  department   Department?            @relation(fields: [departmentId], references: [id])
-  departmentId String?
-  Message      Message?               @relation(fields: [messageId], references: [id])
-  messageId    String?
+  session            Session?               @relation(fields: [sessionId], references: [id])
+  sessionId          String?
+  committee          Committee?             @relation(fields: [committeeId], references: [id])
+  committeeId        String?
+  department         Department?            @relation(fields: [departmentId], references: [id])
+  departmentId       String?
+  Message            Message?               @relation(fields: [messageId], references: [id])
+  messageId          String?
+  CommitteeMessage   CommitteeMessage?      @relation(fields: [committeeMessageId], references: [id])
+  committeeMessageId String?
 }
 
 // ANNOUNCEMENT ///////////////////////////////////////////////////////////

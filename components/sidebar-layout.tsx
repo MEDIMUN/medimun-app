@@ -51,7 +51,7 @@ export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChil
 	const hiddenPaths = ["/medibook/messenger/"];
 	const pathname = usePathname();
 
-	const pathIsHidden = hiddenPaths.some((path) => pathname.startsWith(path));
+	const pathIsHidden = hiddenPaths.some((path) => pathname.startsWith(path)) || pathname?.includes("chat");
 
 	useEffect(() => {
 		function handleScroll() {

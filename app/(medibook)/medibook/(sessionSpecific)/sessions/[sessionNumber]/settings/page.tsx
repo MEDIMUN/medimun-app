@@ -8,10 +8,10 @@ import { authorize, authorizePerSession, s } from "@/lib/authorize";
 import { Badge } from "@/components/badge";
 
 export default async function Page(props) {
-    const params = await props.params;
-    const authSession = await auth();
+	const params = await props.params;
+	const authSession = await auth();
 
-    const selectedSession = await prisma.session
+	const selectedSession = await prisma.session
 		.findUniqueOrThrow({
 			where: {
 				number: params.sessionNumber,
@@ -19,13 +19,14 @@ export default async function Page(props) {
 		})
 		.catch(notFound);
 
-    const isManagement = authorize(authSession, [s.management]);
+	const isManagement = authorize(authSession, [s.management]);
 
-    if (!authSession || !isManagement) return notFound();
+	if (!authSession || !isManagement) return notFound();
 
-    return (
+	return (
 		<>
 			<TopBar
+				hideBackdrop
 				buttonText={`Session ${romanize(selectedSession.numberInteger)}`}
 				buttonHref={`/medibook/sessions/${selectedSession.number}/`}
 				hideSearchBar

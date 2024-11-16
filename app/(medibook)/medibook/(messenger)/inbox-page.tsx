@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { Avatar } from "@nextui-org/avatar";
 import { Badge } from "@/components/badge";
 import { ExclamationTriangleIcon } from "@heroicons/react/16/solid";
+import { MessageSidebar } from "./client-components";
 
 export default async function InboxesPage({ children, searchParams }) {
 	const authSession = await auth();
@@ -88,26 +89,7 @@ export default async function InboxesPage({ children, searchParams }) {
 						</div>
 					</div>
 				</div>
-
-				<Sidebar>
-					{groupsOfUser.map((group) => {
-						if (group.users.length == 2) {
-							const otherUser = group.users.find((user) => user.id != authSession.user.id);
-							return (
-								<SidebarItem
-									key={group.id}
-									href={`/medibook/messenger/@${otherUser.username || otherUser.id}?new=true`}
-									title={otherUser.displayName}>
-									<Avatar showFallback className="w-6 h-6 rounded-md" src={`/api/users/${otherUser.id}/avatar`} size="md" radius="sm" />
-									<SidebarLabel>
-										{otherUser.officialName} {otherUser.officialSurname}
-									</SidebarLabel>
-									<Badge className="ml-auto !rounded-full">1</Badge>
-								</SidebarItem>
-							);
-						}
-					})}
-				</Sidebar>
+				<MessageSidebar groupsOfUser={groupsOfUser} authSession={authSession} />
 			</div>
 		</div>
 	);

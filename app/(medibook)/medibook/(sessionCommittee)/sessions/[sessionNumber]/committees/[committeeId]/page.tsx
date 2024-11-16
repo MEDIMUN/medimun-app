@@ -46,6 +46,12 @@ export default async function Page(props) {
 			isVisible: isManagementChairOrDelegate,
 		},
 		{
+			title: "Meet the Chairs",
+			description: "Meet the chairs of the committee.",
+			href: `${basePath}/chairs`,
+			isVisible: true,
+		},
+		{
 			title: "Committee Resources",
 			description: "Applications for the position of Manager",
 			href: `${basePath}/resources`,
@@ -61,6 +67,18 @@ export default async function Page(props) {
 			title: "Resolutions",
 			description: "Resolutions for the committee.",
 			href: `${basePath}/resolutions`,
+			isVisible: isManagementChairOrDelegate,
+		},
+		{
+			title: "Chat",
+			description: "Chat with other committee delegates.",
+			href: `${basePath}/chat`,
+			isVisible: isManagementChairOrDelegate,
+		},
+		{
+			title: "Position Papers",
+			description: "Position papers uploads and feedback.",
+			href: `${basePath}/position-papers`,
 			isVisible: isManagementChairOrDelegate,
 		},
 		{
@@ -86,6 +104,7 @@ export default async function Page(props) {
 	return (
 		<>
 			<TopBar
+				hideBackdrop
 				title={selectedCommittee.name}
 				subheading={
 					!!selectedCommittee.chair.length && (

@@ -41,6 +41,12 @@ export default async function Page(props) {
 			isVisible: isPartOfDepartment,
 		},
 		{
+			title: "Meet the Managers",
+			description: "Meet the managers of the department.",
+			href: `/medibook/sessions/${selectedDepartment.session.number}/departments/${selectedDepartment.slug || selectedDepartment.id}/managers`,
+			isVisible: true,
+		},
+		{
 			title: "Department Members",
 			description: "Members of the department.",
 			href: `/medibook/sessions/${selectedDepartment.session.number}/departments/${selectedDepartment.slug || selectedDepartment.id}/members`,

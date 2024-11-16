@@ -6,9 +6,17 @@ import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { Progress } from "@nextui-org/progress";
 import { Scanner } from "@yudiel/react-qr-scanner";
-import { deleteRegUser } from "./actions";
+import { changeRegMorning, deleteRegUser } from "./actions";
 import { Button } from "@/components/button";
 import { Text } from "@/components/text";
+import { SearchBar } from "../../client-components";
+import { Heading } from "@/components/heading";
+import { Description, Field, Label } from "@/components/fieldset";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Avatar } from "@nextui-org/avatar";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
+import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
+import { toast } from "sonner";
 
 export function RegisterQRCodeBox({ code }) {
 	const router = useRouter();
@@ -48,15 +56,30 @@ export function RegisterQRCodeBox({ code }) {
 	);
 }
 
-export function QRReader() {
+export function QRReader({ delegates }) {
 	const socket = useSocket();
+	const router = useRouter();
 
 	const [error, setError] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	async function handleScan(code) {
 		if (code) {
 			socket.emit("morning-register", code[0].rawValue);
 		}
+	}
+
+	async function changeRegMorningHandler(id) {
+		if (isLoading) return;
+		setIsLoading(true);
+		const res = await changeRegMorning(id);
+		if (res?.ok) {
+			toast.success(...(res?.message || []));
+			router.refresh();
+		} else {
+			toast.error(...(res?.message || []));
+		}
+		setIsLoading(false);
 	}
 
 	return (
@@ -84,9 +107,65 @@ export function QRReader() {
 					</div>
 				)}
 			</div>
-			<Button onClick={() => deleteRegUser()} color="primary">
-				Test Reset
-			</Button>
+			<Field>
+				<Label>Manually Register</Label>
+				<Description>Search by Name, Surname, User ID or School.</Description>
+				<SearchBar className="!w-[500px] flex-1" />
+			</Field>
+			{!!delegates.length && (
+				<Table>
+					<TableHead>
+						<TableRow>
+							<TableHeader>
+								<span className="sr-only">Actions</span>
+							</TableHeader>
+							<TableHeader>
+								<span className="sr-only">Profile Picture</span>
+							</TableHeader>
+							<TableHeader>User ID</TableHeader>
+							<TableHeader>Official Name</TableHeader>
+							<TableHeader>Official Surname</TableHeader>
+							<TableHeader>Display Name</TableHeader>
+							<TableHeader>School</TableHeader>
+							<TableHeader>Committee</TableHeader>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{delegates.map((delegate) => {
+							console.log();
+							return (
+								<TableRow key={delegate.id}>
+									<TableCell>
+										<Dropdown>
+											<DropdownButton plain>
+												<EllipsisVerticalIcon />
+											</DropdownButton>
+											<DropdownMenu>
+												{delegate.MorningPresent.length ? (
+													<DropdownItem onClick={() => changeRegMorningHandler(delegate.id)}>Set as Absent</DropdownItem>
+												) : (
+													<DropdownItem onClick={() => changeRegMorningHandler(delegate.id)}>Set as Present</DropdownItem>
+												)}
+												<DropdownItem href={`/medibook/messenger/@${delegate.username || delegate.id}`}>Message</DropdownItem>
+												<DropdownItem href={`/medibook/users/${delegate.username || delegate.id}`}>View Profile</DropdownItem>
+											</DropdownMenu>
+										</Dropdown>
+									</TableCell>
+									<TableCell>
+										<Avatar src={`/api/users/${delegate.id}/avatar`} showFallback radius="md"></Avatar>
+									</TableCell>
+									<TableCell>{delegate.id}</TableCell>
+									<TableCell>{delegate.officialName}</TableCell>
+									<TableCell>{delegate.officialSurname}</TableCell>
+									<TableCell>{delegate.displayName || "-"}</TableCell>
+									<TableCell>{delegate.Student?.name}</TableCell>
+									<TableCell>{delegate.delegate[0].committee.name}</TableCell>
+								</TableRow>
+							);
+						})}
+					</TableBody>
+				</Table>
+			)}
 		</>
 	);
 }

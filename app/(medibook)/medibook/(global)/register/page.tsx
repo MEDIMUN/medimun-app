@@ -11,7 +11,7 @@ import { Code, Text } from "@/components/text";
 import { ActionList } from "../../server-components";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 
-export default async function RegistrationPage() {
+export default async function RegistrationPage(props) {
 	const authSession = await auth();
 	if (!authSession) notFound();
 
@@ -33,7 +33,25 @@ export default async function RegistrationPage() {
 	const cyprusMidnightString = new Date().toISOString().split("T")[0].concat("T00:00:00.000Z");
 	const today = new Date(cyprusMidnightString);
 
-	const selectedDay = await prisma.day.findUniqueOrThrow({ where: { date: today } }).catch(notFound);
+	const selectedDay = await prisma.day.findFirst({ where: { date: today } });
+
+	if (!selectedDay)
+		return (
+			<>
+				<TopBar
+					hideBackdrop
+					title="Morning Registration"
+					hideSearchBar
+					buttonHref="/medibook"
+					buttonText="Home"
+					subheading={`Your User ID is ${authSession.user.id.slice(0, 4)}-${authSession.user.id.slice(4, 8)}-${authSession.user.id.slice(8, 12)}`}
+				/>
+				<Text>
+					Keep this page open before arriving at the conference on any conference or workshop day. Delegates and members must show their QR code to
+					enter the conference venue. On conference days, a QR code will be displayed on this page.
+				</Text>
+			</>
+		);
 
 	let code,
 		isPresent = null;
@@ -115,6 +133,7 @@ export default async function RegistrationPage() {
 		return (
 			<>
 				<TopBar
+					hideBackdrop
 					title="Morning Registration"
 					hideSearchBar
 					buttonHref="/medibook"
@@ -147,6 +166,7 @@ export default async function RegistrationPage() {
 		return (
 			<>
 				<TopBar
+					hideBackdrop
 					title="Morning Registration"
 					hideSearchBar
 					buttonHref="/medibook"
@@ -161,10 +181,59 @@ export default async function RegistrationPage() {
 			</>
 		);
 
+	let delegates = [] as any;
+	const query = (await props.searchParams).search || "";
+
+	if ((isManagement || isManager || isMemberOfPIorIT) && query) {
+		delegates = await prisma.user.findMany({
+			take: 10,
+			include: {
+				MorningPresent: {
+					where: {
+						dayId: selectedDay.id,
+					},
+				},
+				Student: true,
+				delegate: {
+					select: {
+						committee: {
+							select: {
+								name: true,
+							},
+						},
+					},
+				},
+			},
+			where: {
+				OR: [
+					{ officialName: { contains: query, mode: "insensitive" } },
+					{ officialSurname: { contains: query, mode: "insensitive" } },
+					{ displayName: { contains: query, mode: "insensitive" } },
+					{ id: { contains: query, mode: "insensitive" } },
+					{ Student: { name: { contains: query, mode: "insensitive" } } },
+				],
+				delegate: {
+					some: {
+						committee: {
+							session: {
+								Day: {
+									some: {
+										date: today,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+	}
+
 	if (isManager || isManagement || (isMemberOfPIorIT && isPresent))
 		return (
 			<>
 				<TopBar
+					hideBackdrop
 					title="Registration Scanner"
 					hideSearchBar
 					buttonHref="/medibook"
@@ -179,7 +248,7 @@ export default async function RegistrationPage() {
 						<Text className="!text-white m-auto font-[montserrat] !text-lg">You have been registered for today.</Text>
 					</div>
 				)}
-				<QRReader />
+				<QRReader delegates={delegates} />
 				<Text>
 					Scan the QR code of a Delegate or Member to register them in the morning. Members can only register delegates while managers and management
 					members can register both delegates and members.

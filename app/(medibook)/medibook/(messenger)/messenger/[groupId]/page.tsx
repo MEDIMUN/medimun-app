@@ -10,6 +10,7 @@ export default async function MessagePage(props) {
 	const authSession = await auth();
 	if (!authSession) notFound();
 	let selectedGroup = null as any;
+
 	if (groupId.includes("@")) {
 		const atRemoved = groupId.replace("@", "");
 
@@ -68,24 +69,25 @@ export default async function MessagePage(props) {
 				},
 			});
 		}
+		selectedGroup = {
+			...selectedGroup,
+			GroupMember: selectedGroup?.GroupMember.map((gm) => ({
+				...gm,
+				user: generateUserData(gm.user),
+			})),
+		};
 	}
 
-	selectedGroup = {
-		...selectedGroup,
-		GroupMember: selectedGroup?.GroupMember.map((gm) => ({
-			...gm,
-			user: generateUserData(gm.user),
-		})),
-	};
-
 	if (!selectedGroup && !groupId.includes("@")) {
+		console.log("Group ID", groupId);
 		selectedGroup = await prisma.group
 			.findFirstOrThrow({
 				where: {
 					id: groupId,
-					GroupMember: { some: { userId: authSession.user.id } },
+					GroupMember: { some: { userId: { in: [authSession.user.id] } } },
 				},
 				include: {
+					GroupMember: { include: { user: { include: { ...generateUserDataObject() } } } },
 					Message: {
 						orderBy: { createdAt: "desc" },
 						take: 50,

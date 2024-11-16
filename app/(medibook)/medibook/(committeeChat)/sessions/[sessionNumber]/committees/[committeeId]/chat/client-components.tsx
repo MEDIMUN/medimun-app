@@ -2,7 +2,6 @@
 
 import { ArrowRightIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { TopBar, UserTooltip } from "../../../client-components";
 import { loadMoreMessages } from "./actions";
 import { cn } from "@/lib/cn";
 import { Avatar, AvatarGroup } from "@nextui-org/avatar";
@@ -16,8 +15,11 @@ import Image from "next/image";
 import { Button as MButton } from "@/components/button";
 import { useUpdateEffect } from "@/hooks/use-update-effect";
 import { Badge } from "@/components/badge";
+import { TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
+import { SelectedGroupProps } from "./page";
+import { Session } from "next-auth";
 
-export function ChatLayout({ group, authSession }) {
+export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: SelectedGroupProps; authSession: Session }) {
 	const textareaRef = useRef(null);
 	const [isMobile, setIsMobile] = useState();
 	const [viewportHeight, setViewportHeight] = useState();
@@ -30,7 +32,7 @@ export function ChatLayout({ group, authSession }) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const [inputValue, setInputValue] = useState("");
-	const [messages, setMessages] = useState(group.Message);
+	const [messages, setMessages] = useState(selectedGroup.CommitteeMessage);
 	const [receivedFinalMessage, setReceivedFinalMessage] = useState(false);
 	const [selectedMessageId, setSelectedMessageId] = useState("");
 	const [replyToId, setReplyToId] = useState("");
@@ -105,48 +107,13 @@ export function ChatLayout({ group, authSession }) {
 		return () => clearInterval(interval);
 	}, [scrollY]);
 
-	if (group.GroupMember?.length == 2) {
-		const otherUser = group.GroupMember.find((member) => member.userId !== authSession.user.id);
-		const fullName = otherUser.user.displayName || `${otherUser.user.officialName} ${otherUser.user.officialSurname}`;
-		otherUserRole = otherUser?.user.currentRoleNames?.[0];
-		groupName = (
-			<Link href={`/medibook/users/${otherUser?.user?.username || otherUser?.user?.id}`} className="flex cursor-pointer gap-1">
-				<Avatar showFallback size="sm" radius="sm" className="w-6 my-auto h-6" src={`/api/users/${otherUser.user.id}/avatar`} /> {fullName}
-			</Link>
-		);
-	}
-
-	if (group.GroupMember?.length > 2) {
-		console.log("jkkkk");
-		const otherUsers = group.GroupMember.filter((member) => member.userId !== authSession.user.id);
-		const allNnames =
-			group.name ||
-			otherUsers
-				.map((member) => member.user.displayName || `${member.user.officialName} ${member.user.officialSurname}`)
-				.join(", ")
-				.slice(0, 75);
-
-		groupName = (
-			<div className="flex gap-2 ml-2">
-				<AvatarGroup max={5} className="flex gap-1">
-					{otherUsers.map((member) => (
-						<UserTooltip userId={member.userId} key={member.userId}>
-							<Avatar showFallback size="sm" radius="sm" className="w-6 my-auto h-6" src={`/api/users/${member.userId}/avatar`} />
-						</UserTooltip>
-					))}
-				</AvatarGroup>
-				<Text className="truncate line-clamp-1">{allNnames}</Text>
-			</div>
-		);
-	}
-
 	async function handleJoinGroup() {
 		const isBrowser = typeof window !== "undefined";
 		if (!isBrowser) return;
 		if (!socket) return;
 		console.log("joining group");
 		await new Promise((resolve) => setTimeout(resolve, 1500));
-		socket.emit("join:private-group", group.id);
+		socket.emit("join:committee-chat", selectedGroup.id);
 	}
 
 	useEffect(() => {
@@ -161,14 +128,14 @@ export function ChatLayout({ group, authSession }) {
 			handleJoinGroup();
 		});
 		return () => {
-			socket.emit("leave-room", `private-room-group.id-${group.id}`);
+			socket.emit("leave-room", `committee-chat-${selectedGroup.id}`);
 		};
 	}, [socket, router, pathname]);
 
 	useEffect(() => {
 		if (!socket) return;
-		socket.on("joined:private-group", async (groupId) => {
-			if (groupId === group.id) {
+		socket.on("joined:committee-chat", async (groupId) => {
+			if (groupId === selectedGroup.id) {
 				setIsLoading(false);
 			}
 		});
@@ -196,8 +163,8 @@ export function ChatLayout({ group, authSession }) {
 		const tempId = Math.random().toString();
 
 		if (editId) {
-			socket.emit("update:private-message", {
-				groupId: group.id,
+			socket.emit("update:committee-chat", {
+				groupId: selectedGroup.id,
 				action: "EDIT",
 				data: heartsReplaced,
 				messageId: editId,
@@ -227,8 +194,8 @@ export function ChatLayout({ group, authSession }) {
 		}
 
 		if (!replyToId) {
-			socket.emit("update:private-message", {
-				groupId: group.id,
+			socket.emit("update:committee-chat", {
+				groupId: selectedGroup.id,
 				action: "NEW",
 				data: heartsReplaced,
 				clientId: tempId,
@@ -248,8 +215,8 @@ export function ChatLayout({ group, authSession }) {
 			};
 		}
 		if (replyToId) {
-			socket.emit("update:private-message", {
-				groupId: group.id,
+			socket.emit("update:committee-chat", {
+				groupId: selectedGroup.id,
 				action: "REPLY",
 				data: heartsReplaced,
 				clientId: tempId,
@@ -304,7 +271,7 @@ export function ChatLayout({ group, authSession }) {
 	//listen for new messages
 	useEffect(() => {
 		if (!socket) return;
-		socket.on("update:private-message", async (action, data) => {
+		socket.on("update:committee-chat", async (action, data) => {
 			if (action === "NEW") {
 				if (!messages.find((message) => message.id === data.id)) {
 					setMessages((prev) => [data, ...prev]);
@@ -334,7 +301,7 @@ export function ChatLayout({ group, authSession }) {
 	async function handleLoadMoreMessages() {
 		if (isLoading) return;
 		if (messages.length < 50) return;
-		const moreMessages = await loadMoreMessages(group.id, messages.length);
+		const moreMessages = await loadMoreMessages(selectedGroup.id, messages.length);
 		setIsLoading(false);
 		if (!moreMessages?.data?.messages?.length) return setReceivedFinalMessage(true);
 		setMessages((prev) => [...prev, ...moreMessages.data.messages]);
@@ -360,14 +327,14 @@ export function ChatLayout({ group, authSession }) {
 					...(!isIos && isMobile ? { height: `${viewportHeight}px` } : {}),
 					transform: `translateY(-${-1 * scrollY}px)`,
 				}}>
-				<div className="flex gap-1 z-[9999999999999999999999999999999] shadow-md md:shadow-none bg-white md:bg-zinc-100 p-2 !absolute top-0 left-0 right-0">
+				<div className="flex gap-1 z-[99999999999999] shadow-md md:shadow-none bg-white md:bg-zinc-100 p-2 !absolute top-0 left-0 right-0">
 					<div className="w-full">
 						<TopBar
 							hideBackdrop
 							className="max-w-5xl mx-auto"
-							/* subheading={otherUserRole} */ title={groupName}
-							buttonText={isMobile && "Inboxes"}
-							buttonHref="/medibook/messenger"
+							/* subheading={otherUserRole} */ title={"Committee Chat"}
+							buttonText={selectedGroup.name}
+							buttonHref={`/medibook/sessions/${selectedGroup.session.number}/committees/${selectedGroup.slug || selectedGroup.id}`}
 							hideSearchBar></TopBar>
 					</div>
 				</div>
@@ -377,16 +344,16 @@ export function ChatLayout({ group, authSession }) {
 					<div className="flex-grow flex w-full mx-auto flex-col-reverse overflow-y-auto">
 						<div className="min-h-32" />
 						{messages.map((message, index) => {
-							const isMyMessage = message?.userId === authSession.user.id;
+							const isMyMessage = message?.user.id === authSession.user.id;
 							let isAfterMyMessage, isBeforeMyMessage;
 							const messageAfter = messages[index - 1] || {};
 
 							if (index > 0) {
-								isAfterMyMessage = messageAfter.userId === authSession.user.id;
+								isAfterMyMessage = messageAfter.user.id === authSession.user.id;
 							}
 
 							if (index < messages?.length - 1) {
-								isBeforeMyMessage = messages[index + 1].userId === authSession.user.id;
+								isBeforeMyMessage = messages[index + 1]?.user?.id === authSession.user.id;
 							}
 
 							//not time just date
@@ -448,9 +415,6 @@ export function ChatLayout({ group, authSession }) {
 											className={cn("flex gap-2 justify-end group", !isBeforeMyMessage && "mt-2")}>
 											<div className="flex gap-1">
 												<div className="flex flex-col">
-													<div className="flex gap-1">
-														<span className="font-semibold">{message.user.displayName}</span>
-													</div>
 													<div className="flex flex-col gap-1 mb-1 max-w-[300px] mr-auto">
 														<div className="flex gap-1">
 															<Text className="!text-[9px] text-gray-500 mr-12 -mb-2">{name}</Text>
@@ -593,7 +557,7 @@ export function ChatLayout({ group, authSession }) {
 						})}
 						{(receivedFinalMessage || messages.length < 50) && (
 							<div className="mx-auto p-10">
-								<div className="p-12 text-center flex flex-col backdrop-blur-lg mt-6 shadow-md gap-6 rounded-2xl font-[montserrat] bg-zinc-100">
+								<div className="p-12 text-center flex flex-col backdrop-blur-lg mt-6 shadow-md gap-6 rounded-2xl font-[montserrat] bg-zinc-100/70">
 									<Image alt="MediChat Logo" className="mx-auto grayscale" src={MediBookLogo} width={200} height={200} />
 									<Text>
 										Messages can be accessed by the management in case of a report.
@@ -753,179 +717,3 @@ export function ChatLayout({ group, authSession }) {
 }
 
 export default ChatLayout;
-
-/* 	socket.on("update:private-message", async ({ groupId, messageId, action, data, replyToId }) => {
-		const authSession = await socketAuth(socket);
-		if (!authSession) return socket.emit("error", "Unauthorized");
-
-		if (action === "DELETE") {
-			const selectedMessage = await prisma.message.update({
-				where: { id: messageId, userId: authSession.user.id },
-				include: { user: true },
-				data: { isDeleted: true },
-			});
-			socket.to(`room:private-group-${groupId}`).emit("update:private-message", "UPDATE", selectedMessage);
-		}
-		if (action === "EDIT") {
-			const selectedMessage = await prisma.message.update({
-				where: { id: messageId, userId: authSession.user.id },
-				include: { user: true },
-				data: { markdown: data },
-			});
-			socket.to(`room:private-group-${groupId}`).emit("update:private-message", "UPDATE", selectedMessage);
-		}
-		if (action === "REPLY") {
-			const selectedMessage = await prisma.message.findFirst({
-				where: { id: replyToId },
-				include: {
-					group: true,
-					user: {
-						select: {
-							id: true,
-							officialName: true,
-							officialSurname: true,
-							displayName: true,
-						},
-					},
-					MessageReaction: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									officialName: true,
-									officialSurname: true,
-									displayName: true,
-								},
-							},
-						},
-					},
-				},
-			});
-
-			if (!selectedMessage) {
-				socket.emit("error", "Message not found");
-				return;
-			}
-
-			const newMessage = await prisma.message.create({
-				data: {
-					groupId: selectedMessage.groupId,
-					replyToId,
-					userId: authSession.user.id,
-					markdown: data,
-					isDeleted: false,
-				},
-				include: { user: true },
-			});
-			socket.to(`room:private-group-${groupId}`).emit("update:private-message", "NEW", newMessage);
-		}
-		if (action === "NEW") {
-			const selectedGroup = await prisma.group.findUnique({
-				where: { id: groupId, GroupMember: { some: { userId: authSession.user.id } } },
-			});
-			if (!selectedGroup) return socket.emit("error", "Group not found");
-			const newMessage = await prisma.message.create({
-				data: {
-					groupId: selectedGroup.id,
-					userId: authSession.user.id,
-					markdown: data,
-					isDeleted: false,
-				},
-				include: {
-					user: {
-						select: {
-							id: true,
-							officialName: true,
-							officialSurname: true,
-							displayName: true,
-						},
-					},
-					MessageReaction: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									officialName: true,
-									officialSurname: true,
-									displayName: true,
-								},
-							},
-						},
-					},
-				},
-			});
-			socket.to(`room:private-group-${groupId}`).emit("update:private-message", "NEW", newMessage);
-		}
-		if (action === "REACTION") {
-			const selectedMessage = await prisma.message.findFirst({
-				where: {
-					id: messageId,
-					group: {
-						GroupMember: { some: { userId: authSession.user.id } },
-					},
-				},
-			});
-
-			if (!selectedMessage) {
-				socket.emit("error", "Message not found");
-				return;
-			}
-
-			if (data === null) {
-				await prisma.messageReaction.delete({
-					where: {
-						userId_messageId: {
-							userId: authSession.user.id,
-							messageId,
-						},
-					},
-				});
-			}
-			const newReaction = await prisma.messageReaction.upsert({
-				where: {
-					userId_messageId: {
-						userId: authSession.user.id,
-						messageId,
-					},
-				},
-				include: { user: true },
-				update: { reaction: data },
-				create: {
-					userId: authSession.user.id,
-					messageId,
-					reaction: data,
-				},
-			});
-
-			const finalMessage = await prisma.message.findFirst({
-				where: { id: messageId },
-				include: {
-					user: {
-						select: {
-							id: true,
-							officialName: true,
-							officialSurname: true,
-							displayName: true,
-						},
-					},
-					MessageReaction: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									officialName: true,
-									officialSurname: true,
-									displayName: true,
-								},
-							},
-						},
-					},
-				},
-			});
-			socket.to(`room:private-group-${groupId}`).emit("update:private-message", "UPDATE", finalMessage);
-			//typing
-			if (action === "TYPING") {
-				socket.to(`room:private-group-${groupId}`).emit("update:private-message", "TYPING", authSession.user.id);
-			}
-		}
-	}); */
