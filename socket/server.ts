@@ -144,7 +144,7 @@ export const initializeSocket = (server: any): Server => {
 						.filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
 
 				const usersRegistered = await prisma.morningPresent.findUnique({
-					where: { userId_dayId: { dayId: selectedCode.day.id, userId: authSession.user.id } },
+					where: { userId_dayId: { dayId: selectedCode.day.id, userId: selectedCode.userId } },
 				});
 
 				//departmentTypes is an array within each department object that contains the department types that are allowed to register
@@ -157,6 +157,7 @@ export const initializeSocket = (server: any): Server => {
 				if (isMemberOfPIorIT && !isManagement && !usersRegistered) return unauthorizedSocket;
 
 				if (usersRegistered) {
+					console.log(usersRegistered);
 					socket.nsp.to(`private-user-${authSession?.user.id}`).emit("toast.info", "User already registered.");
 				} else {
 					try {
