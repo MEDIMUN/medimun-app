@@ -236,7 +236,9 @@ export function Sidebar({ sessions }) {
 
 	function CommitteeOptions({ basePath, committeeId }) {
 		const allUserRoles = (authSession?.user?.pastRoles || []).concat(authSession?.user?.currentRoles || []);
-		const isChairOrDelegate = authorizeChairCommittee(allUserRoles, committeeId) || authorizeDelegateCommittee(allUserRoles, committeeId);
+		const isChair = authorizeChairCommittee(allUserRoles, committeeId);
+		const isDelegate = authorizeDelegateCommittee(allUserRoles, committeeId);
+		const isChairOrDelegate = isChair || isDelegate;
 		const isManagementOrChairOrDelegate = isManagement || isChairOrDelegate;
 
 		const committeeOptionsList = [
@@ -250,7 +252,7 @@ export function Sidebar({ sessions }) {
 			{ name: "Chat", href: `/chat`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
 			{ name: "Position Papers", href: `/position-papers`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
 			{ name: "Resources", href: `/resources`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:folder" },
-			{ name: "Roll Calls", href: `/roll-calls`, isVisible: isManagement, icon: "heroicons-solid:clipboard-list" },
+			{ name: "Roll Calls", href: `/roll-calls`, isVisible: isManagement || isChair, icon: "heroicons-solid:clipboard-list" },
 			{ name: "Settings", href: `/settings`, isVisible: isManagement, icon: "heroicons-solid:cog" },
 		].filter((o) => o.isVisible);
 
