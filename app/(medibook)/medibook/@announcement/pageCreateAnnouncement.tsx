@@ -33,11 +33,15 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { SlugInput } from "@/components/slugInput";
 
 export function PageCreateAnnouncement({
+	committeeId,
+	departmentId,
 	type,
 	returnUrl,
 }: {
 	type: "globalAnnouncement" | "sessionAnnouncement" | "committeeAnnouncement" | "departmentAnnouncement";
 	returnUrl: string;
+	committeeId?: string;
+	departmentId?: string;
 }) {
 	const router = useRouter();
 	const params = useParams();
@@ -71,7 +75,7 @@ export function PageCreateAnnouncement({
 
 	const authGreaterScope = typeGreaterScopeMapList[type]?.[0]?.value;
 	const authInnerScope = innerAnnouncementScopeList[authGreaterScope]?.map((scope) => scope?.value);
-	const authBooleanMap = authInnerScope.map((scope) => authorizedToEditAnnouncementMap(authSession, params.committeeId, params.departmentId)[scope]);
+	const authBooleanMap = authInnerScope.map((scope) => authorizedToEditAnnouncementMap(authSession, committeeId, departmentId)[scope]);
 
 	useEffect(() => {
 		const createPreview = async () => {
@@ -96,7 +100,7 @@ export function PageCreateAnnouncement({
 	return (
 		<div className="mx-auto flex max-w-6xl h-full flex-col gap-6">
 			<form id="publishAnnouncement" action={handleSubmit}>
-				<TopBar title="Publish Announcement" hideSearchBar />
+				<TopBar title="Publish Announcement" hideBackdrop hideSearchBar />
 				<Divider className="mb-10 mt-4" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">

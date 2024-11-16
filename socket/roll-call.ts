@@ -15,10 +15,7 @@ export async function handleSocketRollCall(socket, { dayId, rollCallId, userId, 
 	}
 	const selectedUser = generateUserData(selectedUserPre);
 	const isManagement = authorize(authSession, [s.management]);
-	const isChairOfUser = authorizeChairDelegate(
-		authSession?.user?.currentRoles,
-		selectedUser?.user?.pastRoles?.concat(selectedUser?.user?.currentRoles)
-	);
+	const isChairOfUser = authorizeChairDelegate(authSession?.user?.currentRoles, selectedUser?.pastRoles?.concat(selectedUser?.currentRoles));
 	const isAuthorized = isManagement || isChairOfUser;
 	if (!isAuthorized) {
 		socket.emit("error", "Unauthorized");

@@ -214,7 +214,7 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 
 export async function AnnouncementViewPage({ params, searchParams }) {
 	const authSession = await auth();
-	let selectedAnnouncement;
+	let selectedAnnouncement, selectedCommittee, selectedDepartment, selectedSession;
 	try {
 		selectedAnnouncement = await prisma.announcement.update({
 			where: { id: params.announcementId[0] },
@@ -248,7 +248,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 	}
 
 	if (params.committeeId && !params.departmentId && params.sessionNumber) {
-		const selectedCommittee = await prisma.committee.findFirstOrThrow({
+		selectedCommittee = await prisma.committee.findFirstOrThrow({
 			where: {
 				OR: [
 					{ id: params.committeeId, session: { number: params.sessionNumber } },
@@ -264,7 +264,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 	}
 
 	if (params.departmentId && !params.committeeId && params.sessionNumber) {
-		const selectedDepartment = await prisma.department.findFirstOrThrow({
+		selectedDepartment = await prisma.department.findFirstOrThrow({
 			where: {
 				OR: [
 					{ id: params.departmentId, session: { number: params.sessionNumber } },
@@ -284,7 +284,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 	}
 
 	if (params.announcementId[0] === "publish") {
-		return <PageCreateAnnouncement returnUrl={baseUrl} type={createType} />;
+		return <PageCreateAnnouncement committeeId={selectedCommittee?.id} departmentId={selectedDepartment?.id} returnUrl={baseUrl} type={createType} />;
 	}
 
 	if (searchParams["edit-announcement"]) {
