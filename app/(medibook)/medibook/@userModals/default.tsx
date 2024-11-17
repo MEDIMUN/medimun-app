@@ -52,6 +52,8 @@ export default async function UserModals(props) {
 			"officialSurname",
 			"nationality",
 			"dateOfBirth",
+			"currentRoles",
+			"pastRoles",
 			isManagement && "email",
 			isManagement && "schoolId",
 			isManagement && "isDisabled",
@@ -81,6 +83,8 @@ export default async function UserModals(props) {
 			gender: editUserData.gender,
 			pronouns: editUserData.pronouns,
 			bio: editUserData.bio,
+			currentRoles: editUserData.currentRoles,
+			pastRoles: editUserData.pastRoles,
 		};
 
 		//only kesy present in allUpdatableFields should appear in allowedEditUserData
@@ -168,6 +172,8 @@ export default async function UserModals(props) {
 		if (userData && !(userData.highestRoleRank > highestRoleRank)) return;
 		selectedUser = userData;
 	}
+
+	console.log(filteredAllowedEditUserData);
 
 	return (
 		<>

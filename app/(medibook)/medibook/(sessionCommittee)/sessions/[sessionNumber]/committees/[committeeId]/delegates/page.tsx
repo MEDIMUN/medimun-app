@@ -5,6 +5,7 @@ import Paginator from "@/components/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { countries } from "@/data/countries";
 import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, s } from "@/lib/authorize";
+import { UserIdDisplay } from "@/lib/display-name";
 import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
 import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
@@ -165,7 +166,7 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 									<TableCell>{user.displayName || `${user.officialName} ${user.officialSurname}`}</TableCell>
 									<TableCell>{selectedCountry?.countryNameEn || "Not Assigned"}</TableCell>
 									{(isChairOfCommittee || isManagement) && <TableCell>{user.email}</TableCell>}
-									{(isChairOfCommittee || isManagement) && <TableCell>{user.id}</TableCell>}
+									{(isChairOfCommittee || isManagement) && <TableCell>{<UserIdDisplay userId={user.id} />}</TableCell>}
 								</TableRow>
 							);
 						})}

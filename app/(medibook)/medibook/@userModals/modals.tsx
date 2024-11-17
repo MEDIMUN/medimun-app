@@ -103,6 +103,7 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 
 	const isManagerOfMember = authorizeManagerMember(authSession.user.currentRoles, edit?.currentRoles);
 	const isChairOfDelegate = authorizeChairDelegate(authSession.user.currentRoles, edit?.currentRoles);
+	console.log("isChairOfDelegate", edit);
 	const isManagement = authorize(authSession, [s.management]);
 	const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession.user.currentRoles, { schoolId: studentSchoolId });
 
@@ -219,7 +220,7 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 					{allUpdatableFields.includes("isProfilePrivate") && (
 						<Field className="flex flex-col">
 							<Label>Profile Visibility</Label>
-							<Select defaultValue={[edit?.isProfilePrivate ? "true" : "false"]} name="isProfilePrivate">
+							<Select defaultValue={edit?.isProfilePrivate ? "true" : "false"} name="isProfilePrivate">
 								<option value="false">Public</option>
 								<option value="true">Private</option>
 							</Select>
@@ -229,7 +230,7 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 					{allUpdatableFields.includes("isDisabled") && (
 						<Field className="flex flex-col">
 							<Label>Account Status</Label>
-							<Select defaultValue={[edit?.isDisabled ? "true" : "false"]} name="isDisabled">
+							<Select defaultValue={edit?.isDisabled ? "true" : "false"} name="isDisabled">
 								<option value="false">Enabled</option>
 								<option value="true">Disabled</option>
 							</Select>
@@ -239,7 +240,7 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 					{allUpdatableFields.includes("gender") && (
 						<Field className="flex flex-col">
 							<Label>Gender</Label>
-							<Select name="gender" defaultValue={[edit?.gender || "PREFERNOTTOANSWER"]}>
+							<Select name="gender" defaultValue={edit?.gender || "PREFERNOTTOANSWER"}>
 								<option value="FEMALE">Female</option>
 								<option value="MALE">Male</option>
 								<option value="NONBINARY">Non-Binary</option>
