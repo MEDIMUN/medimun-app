@@ -128,6 +128,7 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 							<TableHeader>Name</TableHeader>
 							<TableHeader>Country</TableHeader>
 							{(isChairOfCommittee || isManagement) && <TableHeader>Email</TableHeader>}
+							{(isChairOfCommittee || isManagement) && <TableHeader>User ID</TableHeader>}
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -163,6 +164,7 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 									<TableCell>{user.displayName || `${user.officialName} ${user.officialSurname}`}</TableCell>
 									<TableCell>{selectedCountry?.countryNameEn || "Not Assigned"}</TableCell>
 									{(isChairOfCommittee || isManagement) && <TableCell>{user.email}</TableCell>}
+									{(isChairOfCommittee || isManagement) && <TableCell>{user.id}</TableCell>}
 								</TableRow>
 							);
 						})}
