@@ -145,12 +145,13 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 											</DropdownButton>
 											<DropdownMenu>
 												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
+												<DropdownItem href={`/medibook/users/${user.username || user.id}?new=true`}>Message</DropdownItem>
 												{(isChairOfDelegate || isManagement) && (
 													<SearchParamsDropDropdownItem
 														searchParams={{
 															"edit-user": user.id,
 														}}>
-														View Profile
+														Edit User
 													</SearchParamsDropDropdownItem>
 												)}
 											</DropdownMenu>
