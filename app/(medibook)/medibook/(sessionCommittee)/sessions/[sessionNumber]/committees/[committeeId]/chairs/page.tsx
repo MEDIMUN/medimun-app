@@ -62,7 +62,9 @@ export default async function MeetTheChairsPage(props) {
 								<p className="mt-6 text-base/7 text-gray-600">{chair.user.bio}</p>
 								<ul role="list" className=" flex gap-x-6">
 									<li>
-										<Button href={`/medibook/messenger/@${chair.user.username || chair.user.id}`} className="text-gray-400 hover:text-gray-500">
+										<Button
+											href={`/medibook/messenger/@${chair.user.username || chair.user.id}?new=true`}
+											className="text-gray-400 hover:text-gray-500">
 											Message
 										</Button>
 									</li>

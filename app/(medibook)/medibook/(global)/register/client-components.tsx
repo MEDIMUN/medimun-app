@@ -146,7 +146,7 @@ export function QRReader({ delegates }) {
 												) : (
 													<DropdownItem onClick={() => changeRegMorningHandler(delegate.id)}>Set as Present</DropdownItem>
 												)}
-												<DropdownItem href={`/medibook/messenger/@${delegate.username || delegate.id}`}>Message</DropdownItem>
+												<DropdownItem href={`/medibook/messenger/@${delegate.username || delegate.id}?new=true`}>Message</DropdownItem>
 												<DropdownItem href={`/medibook/users/${delegate.username || delegate.id}`}>View Profile</DropdownItem>
 											</DropdownMenu>
 										</Dropdown>
