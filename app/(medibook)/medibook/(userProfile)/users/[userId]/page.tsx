@@ -31,7 +31,7 @@ export default async function Page(props) {
 			<TopBar
 				hideBackdrop
 				hideSearchBar
-				buttonHref={isManagement ? "/medibook/users" : "/mediboook"}
+				buttonHref={isManagement ? "/medibook/users" : "/medibook"}
 				className="absolute p-5 !text-white"
 				buttonText={isManagement ? "All Users" : "Home"}
 			/>

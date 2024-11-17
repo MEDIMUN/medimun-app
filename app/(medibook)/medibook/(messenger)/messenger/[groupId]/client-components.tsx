@@ -410,9 +410,6 @@ export function ChatLayout({ group, authSession }) {
 											className={cn("flex gap-2 justify-end group", !isBeforeMyMessage && "mt-2")}>
 											<div className="flex gap-1">
 												<div className="flex flex-col">
-													<div className="flex gap-1">
-														<span className="font-semibold">{message.user.displayName}</span>
-													</div>
 													<div
 														className={cn(
 															"max-w-[300px] md:max-w-[400px] mr-2 text-sm min-w-[35px] text-right",
@@ -448,9 +445,6 @@ export function ChatLayout({ group, authSession }) {
 											className={cn("flex gap-2 justify-end group", !isBeforeMyMessage && "mt-2")}>
 											<div className="flex gap-1">
 												<div className="flex flex-col">
-													<div className="flex gap-1">
-														<span className="font-semibold">{message.user.displayName}</span>
-													</div>
 													<div className="flex flex-col gap-1 mb-1 max-w-[300px] mr-auto">
 														<div className="flex gap-1">
 															<Text className="!text-[9px] text-gray-500 mr-12 -mb-2">{name}</Text>

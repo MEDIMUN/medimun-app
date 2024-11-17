@@ -1,4 +1,4 @@
-import { TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsDropDropdownItem, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { auth } from "@/auth";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import Paginator from "@/components/pagination";
@@ -20,6 +20,7 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 	const authSession = await auth();
 	const currentPage = parseInt(searchParams.page) || 1;
 	const isManagement = authorize(authSession, [s.management]);
+	const query = searchParams.search || "";
 
 	const [selectedSession, totalItems] = await prisma
 		.$transaction([
@@ -32,7 +33,52 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 					committee: {
 						where: { OR: [{ id: params.committeeId }, { slug: params.committeeId }] },
 						take: 1,
-						include: { ExtraCountry: true, delegate: { take: itemsPerPage, skip: (currentPage - 1) * itemsPerPage, include: { user: true } } },
+						include: {
+							ExtraCountry: true,
+							delegate: {
+								where: {
+									OR: [
+										{
+											user: {
+												displayName: {
+													contains: query,
+													mode: "insensitive",
+												},
+											},
+										},
+										{
+											user: {
+												officialName: {
+													contains: query,
+													mode: "insensitive",
+												},
+											},
+										},
+										{
+											user: {
+												officialSurname: {
+													contains: query,
+													mode: "insensitive",
+												},
+											},
+										},
+										{
+											user: {
+												Student: {
+													name: {
+														contains: query,
+														mode: "insensitive",
+													},
+												},
+											},
+										},
+									],
+								},
+								take: itemsPerPage,
+								skip: (currentPage - 1) * itemsPerPage,
+								include: { user: true },
+							},
+						},
 					},
 				},
 			}),
@@ -87,6 +133,7 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 						{delegates.map((delegate) => {
 							const user = delegate.user;
 							const selectedCountry = allCountries.find((country) => country.countryCode === delegate.country);
+							const isChairOfDelegate = authorizeChairCommittee(authSession?.user?.currentRoles || [], selectedSession.committee[0].id);
 							return (
 								<TableRow key={delegate.id}>
 									<TableCell>
@@ -96,6 +143,14 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 											</DropdownButton>
 											<DropdownMenu>
 												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
+												{(isChairOfDelegate || isManagement) && (
+													<SearchParamsDropDropdownItem
+														searchParams={{
+															"edit-user": user.id,
+														}}>
+														View Profile
+													</SearchParamsDropDropdownItem>
+												)}
 											</DropdownMenu>
 										</Dropdown>
 									</TableCell>

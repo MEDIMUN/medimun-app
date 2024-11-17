@@ -225,7 +225,6 @@ export function Sidebar({ sessions }) {
 			{ name: "Announcements", href: `/announcements`, isVisible: isPartOfCommittee, icon: "heroicons-solid:speakerphone" },
 			{ name: "Resources", href: `/resources`, isVisible: isPartOfCommittee, icon: "heroicons-solid:folder" },
 			{ name: "Channels", href: `/channels`, isVisible: isPartOfCommittee, icon: "heroicons-solid:folder", isDisabled: true, isSoon: true },
-			{ name: "Tasks", href: `/tasks`, isVisible: isPartOfCommittee, icon: "heroicons-solid:folder", isDisabled: true, isSoon: true },
 			{ name: "Members", href: `/members`, isVisible: true, icon: "heroicons-solid:user-group" },
 		].filter((o) => o.isVisible);
 
@@ -248,7 +247,6 @@ export function Sidebar({ sessions }) {
 			{ name: "Topics", href: `/topics`, isVisible: true, icon: "heroicons-solid:library" },
 			{ name: "Announcements", href: `/announcements`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:speakerphone" },
 			{ name: "Resolutions", href: `/resolutions`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
-			{ name: "Tasks", href: `/tasks`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text", isSoon: true },
 			{ name: "Chat", href: `/chat`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
 			{ name: "Position Papers", href: `/position-papers`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
 			{ name: "Resources", href: `/resources`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:folder" },
@@ -413,13 +411,7 @@ export function Sidebar({ sessions }) {
 								<Icon slot="icon" icon="heroicons-solid:chat" height={20} />
 								<SidebarLabel>Messaging</SidebarLabel>
 							</SidebarItem>
-							<SidebarItem disabled href="/medibook/tasks" current={pathname === "/medibook/tasks"}>
-								<Icon slot="icon" icon="heroicons-solid:clipboard-check" height={20} />
-								<SidebarLabel>
-									Tasks
-									<SoonBadge />
-								</SidebarLabel>
-							</SidebarItem>
+
 							<SidebarItem href="/medibook/policies" current={pathname === "/medibook/policies"}>
 								<Icon slot="icon" icon="heroicons-solid:book-open" height={20} />
 								<SidebarLabel>Policies</SidebarLabel>
@@ -522,10 +514,6 @@ export function Sidebar({ sessions }) {
 										<SidebarItem href={`${delegateBasePath}/resolutions`} current={pathname == `${delegateBasePath}/resolutions`}>
 											<Icon slot="icon" icon="heroicons-solid:document-text" height={20} />
 											<SidebarLabel>Resolutions</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem href={`${delegateBasePath}/tasks`} current={pathname == `${delegateBasePath}/tasks`}>
-											<Icon slot="icon" icon="heroicons-solid:clipboard-check" height={20} />
-											<SidebarLabel>Tasks</SidebarLabel>
 										</SidebarItem>
 										<SidebarItem href={`${delegateBasePath}/chat`} current={pathname == `${delegateBasePath}/chat`}>
 											<Icon slot="icon" icon="heroicons-solid:chat" height={20} />

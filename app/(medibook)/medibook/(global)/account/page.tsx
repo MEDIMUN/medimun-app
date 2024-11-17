@@ -52,7 +52,13 @@ export default async function Settings(props) {
 			officialSurname: z.string({ required_error: "Official Surname is required." }).max(25).trim().transform(nameCase),
 			displayName: z.string().max(50).trim().transform(nameCase).optional().nullable(),
 			username: z.string().max(50).trim().optional().nullable(),
-			phoneNumber: z.string().max(50).trim().optional().nullable(),
+			phoneNumber: z
+				.string()
+				.max(50)
+				.trim()
+				.transform((v) => v.replace(/\s/g, ""))
+				.optional()
+				.nullable(),
 			schoolId: z.string().optional().nullable(),
 			dateOfBirth: z
 				.string()
@@ -94,7 +100,7 @@ export default async function Settings(props) {
 
 	return (
 		<>
-			<TopBar title="User Settings" hideSearchBar showDivider buttonHref="/medibook" buttonText="Home" />
+			<TopBar hideBackdrop title="User Settings" hideSearchBar showDivider buttonHref="/medibook" buttonText="Home" />
 			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 				<div className="space-y-1">
 					<Subheading>
@@ -153,7 +159,13 @@ export default async function Settings(props) {
 						</Text>
 					</div>
 					<div className="my-auto">
-						<Input pattern="^\+?[0-9]{0,15}$" maxLength={50} placeholder="Phone Number" name="phoneNumber" defaultValue={selectedUser?.phoneNumber} />
+						<Input
+							pattern="^\+?[0-9\s]{0,15}$"
+							maxLength={50}
+							placeholder="Phone Number"
+							name="phoneNumber"
+							defaultValue={selectedUser?.phoneNumber}
+						/>
 					</div>
 				</section>
 				<Divider className="my-10" soft />
