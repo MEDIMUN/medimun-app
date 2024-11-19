@@ -16,7 +16,7 @@ import Paginator from "@/components/pagination";
 import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { notFound, redirect } from "next/navigation";
-import { Suspense } from "react";
+import { Fragment, Suspense } from "react";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { Subheading } from "@/components/heading";
 import { PageCreateAnnouncement } from "./@announcement/pageCreateAnnouncement";
@@ -153,56 +153,61 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 				{showPublishButton && <Button href={baseUrl + "/publish"}>Publish</Button>}
 			</TopBar>
 			{!!announcements.length && (
-				<ul className="grid grid-flow-row gap-6">
+				<ul className="grid grid-flow-row">
 					{announcements.map((announcement, index) => {
 						const fullName = announcement.user.displayName || `${announcement.user.officialName} ${announcement.user.officialSurname}`;
 						const url = `${baseUrl}/${announcement.id}${announcement.slug ? "/" : ""}${announcement.slug ? announcement.slug : ""}`;
 						const isTimeSame = announcement.time.toLocaleTimeString() == announcement.editTime.toLocaleTimeString();
 						return (
-							<li className="rounded-md bg-zinc-100 p-4" key={announcement.id}>
-								<div className="flex gap-2">
-									<div className="max-w-auto w-full">
-										<Link href={url} className="!cursor-pointer hover:underline">
-											<h3 className="text-base/6 font-semibold">{announcement.title}</h3>
-										</Link>
-										<Text className="mb-2 line-clamp-1">{announcement.description}</Text>
-										<Text className="line-clamp-2">{processMarkdownPreview(announcement.markdown)}</Text>
-										<div className="mt-2 flex flex-wrap gap-2 md:flex-row">
-											<Badge className="max-w-max px-2">
-												{announcement?.privacy === "ANONYMOUS" && (isManagement ? `${fullName} (Anonymous)` : "Anonymous")}
-												{announcement?.privacy === "BOARD" && (isManagement ? `${fullName} (Anonymous - Board of Directors)` : "Board of Directors")}
-												{announcement?.privacy === "NORMAL" && fullName}
-												{announcement?.privacy === "SECRETARIAT" && (isManagement ? `${fullName} (Secretariat)` : "Secretariat")}
-											</Badge>
-											{isTimeSame ? (
-												<Badge className="max-w-max px-2">{announcement.time.toLocaleString("uk").replace(",", " -")}</Badge>
-											) : (
-												<Badge className="max-w-max px-2">Edited {announcement.editTime.toLocaleString("uk").replace(",", " -")}</Badge>
-											)}
+							<Fragment key={announcement.id}>
+								<li className="my-6 min-h-24">
+									<div className="flex gap-2">
+										<div className="max-w-auto w-full">
+											<Link href={url} className="!cursor-pointer hover:underline">
+												<h3 className="text-base/6 font-semibold">{announcement.title}</h3>
+											</Link>
+											<Text className="line-clamp-2">{processMarkdownPreview(announcement.markdown)}</Text>
+											<div className="mt-2 flex flex-wrap gap-2 md:flex-row">
+												<Badge className="max-w-max px-2 !rounded-full">
+													{announcement?.privacy === "ANONYMOUS" && (isManagement ? `${fullName} (Anonymous)` : "Anonymous")}
+													{announcement?.privacy === "BOARD" &&
+														(isManagement ? `${fullName} (Anonymous - Board of Directors)` : "Board of Directors")}
+													{announcement?.privacy === "NORMAL" && fullName}
+													{announcement?.privacy === "SECRETARIAT" && (isManagement ? `${fullName} (Secretariat)` : "Secretariat")}
+												</Badge>
+												{isTimeSame ? (
+													<Badge className="max-w-max px-2 !rounded-full">{announcement.time.toLocaleString("uk").replace(",", " -")}</Badge>
+												) : (
+													<Badge className="max-w-max px-2 !rounded-full">
+														Edited {announcement.editTime.toLocaleString("uk").replace(",", " -")}
+													</Badge>
+												)}
+											</div>
+										</div>
+										<div className="ml-2 flex">
+											<Dropdown>
+												<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
+													<EllipsisVerticalIcon />
+												</DropdownButton>
+												<DropdownMenu anchor="bottom end">
+													<DropdownItem href={url}>View</DropdownItem>
+													{authorizedToEditAnnouncement(authSession, announcement) && (
+														<>
+															<SearchParamsDropDropdownItem url={url} searchParams={{ "edit-announcement": announcement.id }}>
+																Edit
+															</SearchParamsDropDropdownItem>
+															<SearchParamsDropDropdownItem searchParams={{ "delete-announcement": announcement.id }}>
+																Delete
+															</SearchParamsDropDropdownItem>
+														</>
+													)}
+												</DropdownMenu>
+											</Dropdown>
 										</div>
 									</div>
-									<div className="ml-2 flex">
-										<Dropdown>
-											<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
-												<EllipsisVerticalIcon />
-											</DropdownButton>
-											<DropdownMenu anchor="bottom end">
-												<DropdownItem href={url}>View</DropdownItem>
-												{authorizedToEditAnnouncement(authSession, announcement) && (
-													<>
-														<SearchParamsDropDropdownItem url={url} searchParams={{ "edit-announcement": announcement.id }}>
-															Edit
-														</SearchParamsDropDropdownItem>
-														<SearchParamsDropDropdownItem searchParams={{ "delete-announcement": announcement.id }}>
-															Delete
-														</SearchParamsDropDropdownItem>
-													</>
-												)}
-											</DropdownMenu>
-										</Dropdown>
-									</div>
-								</div>
-							</li>
+								</li>
+								{index < announcements.length - 1 && <Divider />}
+							</Fragment>
 						);
 					})}
 				</ul>
@@ -320,17 +325,17 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 
 export function ActionList({ actions }) {
 	return (
-		<div className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-gray-200 ring-1 ring-gray-200 sm:grid sm:grid-cols-1 sm:gap-px sm:divide-y-0">
+		<div className="divide-y divide-gray-200 dark:divide-gray-800 overflow-hidden rounded-xl bg-gray-200 dark:bg-gray-800 ring-1 ring-gray-200 dark:bg-ring-gray-800 sm:grid sm:grid-cols-1 sm:gap-px sm:divide-y-0">
 			{actions.map((action, actionIdx) => (
 				<div
 					key={action.title}
 					className={cn(
 						actionIdx === 0 ? "rounded-tl-xl rounded-tr-xl sm:rounded-tr-none" : "",
 						actionIdx === actions.length - 1 ? "rounded-bl-xl rounded-br-xl sm:rounded-bl-none" : "",
-						"group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary"
+						"group relative bg-white dark:bg-black p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary"
 					)}>
 					<div>
-						<h3 className="text-base font-semibold leading-6 text-gray-900">
+						<h3 className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">
 							<Link href={action.href} className="focus:outline-none">
 								<span aria-hidden="true" className="absolute inset-0" />
 								{action.title}
@@ -338,7 +343,7 @@ export function ActionList({ actions }) {
 						</h3>
 						<p className="mt-2 text-sm text-gray-500">{action.description}</p>
 					</div>
-					<span aria-hidden="true" className="pointer-events-none absolute right-6 top-6 text-gray-300 group-hover:text-gray-400">
+					<span aria-hidden="true" className="pointer-events-none absolute right-6 top-6 text-gray-300 dark:text-gray-700 group-hover:text-gray-400">
 						<svg fill="currentColor" viewBox="0 0 24 24" className="h-6 w-6">
 							<path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
 						</svg>

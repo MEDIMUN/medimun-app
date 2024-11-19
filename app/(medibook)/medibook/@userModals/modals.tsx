@@ -103,7 +103,6 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 
 	const isManagerOfMember = authorizeManagerMember(authSession.user.currentRoles, edit?.currentRoles);
 	const isChairOfDelegate = authorizeChairDelegate(authSession.user.currentRoles, edit?.currentRoles);
-	console.log("isChairOfDelegate", edit);
 	const isManagement = authorize(authSession, [s.management]);
 	const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession.user.currentRoles, { schoolId: studentSchoolId });
 

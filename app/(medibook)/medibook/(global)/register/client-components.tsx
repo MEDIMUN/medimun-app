@@ -132,7 +132,6 @@ export function QRReader({ delegates }) {
 					</TableHead>
 					<TableBody>
 						{delegates.map((delegate) => {
-							console.log();
 							return (
 								<TableRow key={delegate.id}>
 									<TableCell>

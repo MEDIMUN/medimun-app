@@ -473,7 +473,6 @@ export async function createUser(formData: FormData) {
 	const schema = z.object(newSchemaObject);
 	const parsedFormData = parseFormData(formData);
 	const { data, error } = schema.safeParse(parsedFormData);
-	if (error) console.log(error.errors);
 	if (error) return { ok: false, message: ["Invalid data."] };
 
 	if (data.username) {

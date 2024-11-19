@@ -1,5 +1,6 @@
 import { SearchParamsButton, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { InteractiveMap } from "@/app/(medibook)/medibook/interactive-map";
+import { ActionList } from "@/app/(medibook)/medibook/server-components";
 import { auth } from "@/auth";
 import { Badge } from "@/components/badge";
 import { Divider } from "@/components/divider";
@@ -138,33 +139,7 @@ export default async function Page(props) {
 					{selectedCommittee.description && <p className="font-[canela] text-medium text-zinc-700 md:text-2xl">{selectedCommittee.description}</p>}
 				</div>
 			</div>
-			<div className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-gray-200 ring-1 ring-gray-200 sm:grid sm:grid-cols-1 sm:gap-px sm:divide-y-0">
-				{actions.map((action, actionIdx) => (
-					<div
-						key={action.title}
-						className={cn(
-							actionIdx === 0 ? "rounded-tl-md rounded-tr-md sm:rounded-tr-none" : "",
-							actionIdx === actions.length - 1 ? "rounded-bl-md rounded-br-md sm:rounded-bl-none" : "",
-							"group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary"
-						)}>
-						<div>
-							<h3 className="text-base font-semibold leading-6 text-gray-900">
-								<Link href={action.href} className="focus:outline-none">
-									{/* Extend touch target to entire panel */}
-									<span aria-hidden="true" className="absolute inset-0" />
-									{action.title}
-								</Link>
-							</h3>
-							<p className="mt-2 text-sm text-gray-500">{action.description}</p>
-						</div>
-						<span aria-hidden="true" className="pointer-events-none absolute right-6 top-6 text-gray-300 group-hover:text-gray-400">
-							<svg fill="currentColor" viewBox="0 0 24 24" className="h-6 w-6">
-								<path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
-							</svg>
-						</span>
-					</div>
-				))}
-			</div>
+			<ActionList actions={actions} />
 		</>
 	);
 }

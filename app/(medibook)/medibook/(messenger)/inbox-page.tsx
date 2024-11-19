@@ -65,7 +65,7 @@ export default async function InboxesPage({ children, searchParams }) {
 
 	return (
 		<div className="h-full w-full md:w-[400px] md:border-r">
-			<div className="px-4 py-4 bg-zinc-100">
+			<div className="px-4 py-4 bg-zinc-100 dark:bg-zinc-900">
 				<TopBar hideBackdrop title="Messages" buttonHref="/medibook" hideSearchBar buttonText="Home"></TopBar>
 				<div className="flex flex-col gap-2 mt-1 w-full">
 					<SearchBar className="!w-[500px] flex-1" />

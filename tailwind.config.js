@@ -5,7 +5,7 @@ const defaultTheme = require( 'tailwindcss/defaultTheme' );
 const { default: flattenColorPalette } = require( "tailwindcss/lib/util/flattenColorPalette" );
 
 const config = {
-   darkMode: [ "class" ],
+   darkMode: "selector",
    content: [ "./components/**/*.{js,jsx,ts,tsx}", "./app/**/*.{ts,tsx,js,jsx}", "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}" ],
    prefix: "",
    theme: {

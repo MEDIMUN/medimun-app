@@ -13,8 +13,6 @@ export default async function SpecificDaySchedulePage(props) {
 	const dayType = dayNameParts[0];
 	const dayIndex = parseInt(dayNameParts[2]);
 
-	console.log({ dayType, dayIndex });
-
 	const selectedDayPrisma = await prisma.day.findMany({
 		where: {
 			session: {

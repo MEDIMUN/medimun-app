@@ -27,19 +27,26 @@ function OrSpacer() {
 
 export default function LoginForm({ allowLogin }) {
 	const [isLoading, setIsLoading] = useState(false);
+	const [emailValue, setEmailValue] = useState("");
+	const [passwordValue, setPasswordValue] = useState("");
 
 	const searchParams = useSearchParams();
 
-	async function handleSignIn(formData: FormData) {
+	async function handleSignIn() {
 		setIsLoading(true);
 		const afterLogin = searchParams?.get("after-login");
-		const res = await signIn(formData);
-		if (!res?.ok) toast.error(res?.message);
-		if (res?.ok) toast.success(res?.message);
+		const res = await signIn({ username: emailValue, password: passwordValue });
+		if (res?.ok) {
+			if (res?.ok) toast.success(res?.message);
+			if (res?.firstLogin) redirect(`/medibook/account?first-login=true${afterLogin ? `&after-login=${afterLogin}` : ""}`);
+			redirect(afterLogin || `/medibook`);
+		} else {
+			setPasswordValue("");
+			toast.error(res?.message);
+		}
 		setIsLoading(false);
-		if (res?.firstLogin) redirect(`/medibook/account?first-login=true${afterLogin ? `&after-login=${afterLogin}` : ""}`);
-		redirect(afterLogin || `/medibook`);
 	}
+
 	return (
 		<>
 			{searchParams?.get("type") === "englishschool" && (
@@ -71,7 +78,7 @@ export default function LoginForm({ allowLogin }) {
 					</form>
 				</>
 			)}
-			{searchParams.get("type") !== "englishschool" && (
+			{searchParams && searchParams.get("type") !== "englishschool" && (
 				<>
 					<div className="mx-auto h-14 w-[180px] md:mx-0">
 						<Link href="/">
@@ -81,11 +88,24 @@ export default function LoginForm({ allowLogin }) {
 					<form className="mt-8" action={handleSignIn}>
 						<Field>
 							<Label>Username</Label>
-							<Input className="mb-5 animate-appearance-in delay-150" name="username" placeholder="Email, Username, or User ID" />
+							<Input
+								value={emailValue}
+								onChange={(e) => setEmailValue(e.target.value.toLowerCase())}
+								className="mb-5 animate-appearance-in delay-150"
+								name="username"
+								placeholder="Email, Username, or User ID"
+							/>
 						</Field>
 						<Field>
 							<Label>Password</Label>
-							<Input className="mb-5 animate-appearance-in delay-300" name="password" placeholder="At least 8 characters" type="password" />
+							<Input
+								value={passwordValue}
+								onChange={(e) => setPasswordValue(e.target.value)}
+								className="mb-5 animate-appearance-in delay-300"
+								name="password"
+								placeholder="At least 8 characters"
+								type="password"
+							/>
 						</Field>
 						<Link href="/login/help" className="-mx-auto ml-1 cursor-pointer text-xs text-content3-foreground hover:text-primary">
 							Forgot Password?

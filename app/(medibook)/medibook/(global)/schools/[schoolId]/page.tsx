@@ -60,7 +60,7 @@ export default async function Page(props: { params: Promise<any> }) {
 	return (
 		<>
 			{isVisible && !school.isPublic && (
-				<div className="rounded-lg border bg-zinc-100 p-2 text-center text-sm md:text-left">This page is private.</div>
+				<div className="rounded-lg border bg-zinc-100 dark:bg-zinc-900 p-2 text-center text-sm md:text-left">This page is private.</div>
 			)}
 			<TopBar
 				hideBackdrop
@@ -113,7 +113,7 @@ export default async function Page(props: { params: Promise<any> }) {
 					</DescriptionList>
 				</div>
 			) : (
-				<div className="rounded-xl border bg-zinc-100 p-4 text-center text-sm md:text-left">
+				<div className="rounded-xl border bg-zinc-100 dark:bg-zinc-900 p-4 text-center text-sm md:text-left">
 					This is the public profile page of this school. It&apos;s not available yet as address details haven&apos;t been added.
 					{fullAddress && (
 						<>

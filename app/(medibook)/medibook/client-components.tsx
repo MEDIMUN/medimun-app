@@ -134,13 +134,13 @@ export function TopBar({
 							height: `${height + 24}px`,
 							overflow: "hidden",
 						}}
-						className="flex-1 top-0 w-full md:block absolute hidden !overflow-x-hidden md:rounded-t-[8px] left-0 right-0 h-[131px] z-[1] border-b bg-zinc-100 "></div>
+						className="flex-1 top-0 w-full md:block absolute hidden !overflow-x-hidden md:rounded-t-[8px] left-0 right-0 h-[131px] z-[1] border-b bg-zinc-100 dark:hidden"></div>
 					<div
 						style={{
 							height: `${height + 3}px`,
 							overflow: "hidden",
 						}}
-						className="flex-1 md:hidden top-0 w-full absolute !overflow-x-hidden md:rounded-t-[8px] left-0 right-0 h-[131px] z-[1] border-b bg-zinc-100 "></div>
+						className="flex-1 md:hidden top-0 w-full absolute !overflow-x-hidden md:rounded-t-[8px] left-0 right-0 h-[131px] z-[1] border-b bg-zinc-100 dark:bg-zinc-600"></div>
 				</>
 			)}
 			<div id="clientTopbar" className={cn("flex flex-wrap items-end z-[10] justify-between gap-4", className)}>

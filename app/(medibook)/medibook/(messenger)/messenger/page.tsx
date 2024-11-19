@@ -6,7 +6,7 @@ export default function Messaging() {
 			<div className="md:hidden w-full block">
 				<InboxesPage />
 			</div>
-			<div className="w-full hidden md:flex  bg-zinc-100 p-6 h-full">
+			<div className="w-full hidden md:flex bg-zinc-100 dark:bg-zinc-900 p-6 h-full">
 				<div className="text-center mx-auto flex flex-col my-auto">
 					<svg fill="none" stroke="currentColor" viewBox="0 0 48 48" aria-hidden="true" className="mx-auto size-12 text-gray-400">
 						<path

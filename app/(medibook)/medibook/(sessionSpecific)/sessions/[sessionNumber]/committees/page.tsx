@@ -55,7 +55,7 @@ export default async function Component(props) {
 	});
 
 	return (
-		<>
+		<Fragment>
 			<TopBar
 				buttonHref={`/medibook/sessions/${params.sessionNumber}`}
 				buttonText={`Session ${romanize(selectedSession.numberInteger)}`}
@@ -69,8 +69,8 @@ export default async function Component(props) {
 						const chairsLength = chairs.length;
 						const isInvolved = currentCommitteeIds.includes(committee.id);
 						return (
-							<>
-								<li key={`session-${committee.id}-${Math.random()}`}>
+							<Fragment key={`session-${committee.id}-${Math.random()}`}>
+								<li>
 									<Divider soft={index > 0} />
 									<div className="flex items-center justify-between">
 										<div key={committee.id} className="flex gap-6 py-6">
@@ -136,12 +136,12 @@ export default async function Component(props) {
 										</div>
 									</div>
 								</li>
-							</>
+							</Fragment>
 						);
 					})}
 				</ul>
 			)}
 			<Paginator itemsOnPage={committees.length} itemsPerPage={itemsPerPage} totalItems={totalItems} />
-		</>
+		</Fragment>
 	);
 }

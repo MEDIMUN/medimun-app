@@ -190,10 +190,10 @@ export default async function Page(props) {
 							})}
 						</TableBody>
 					</Table>
-					<Table className="showscrollbar absolute z-50 top-0 border-r-1 bg-white">
+					<Table className="showscrollbar absolute z-50 top-0 border-r-1 bg-white dark:bg-zinc-900">
 						<TableHead>
 							<TableRow>
-								<TableHeader className="text-white select-none">S</TableHeader>
+								<TableHeader className="text-white dark:text-black select-none">S</TableHeader>
 								<TableHeader>
 									<span className="sr-only">Actions</span>
 								</TableHeader>

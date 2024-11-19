@@ -173,8 +173,6 @@ export default async function UserModals(props) {
 		selectedUser = userData;
 	}
 
-	console.log(filteredAllowedEditUserData);
-
 	return (
 		<>
 			{selectedUser && <DeleteUserModal selectedUser={selectedUser} />}

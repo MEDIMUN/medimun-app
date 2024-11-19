@@ -19,6 +19,7 @@ import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/
 import { MatomoAnalytics } from "@/components/analytics";
 import { JSX, Suspense } from "react";
 import { SocketHandler } from "./client-components";
+import ThemedHTMLElement from "./html-element";
 /* import TopFl from "./flprovider";
  */
 
@@ -57,10 +58,7 @@ export default async function RootLayout({
 		.catch();
 
 	return (
-		<html
-			lang="en"
-			className={cn("text-zinc-950 antialiased !scrollbar-hide h-full", "dark:bg-zinc-900 dark:text-white lg:bg-zinc-100")}
-			suppressHydrationWarning>
+		<ThemedHTMLElement>
 			<head>
 				<link rel="manifest" href="/manifest.json" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
@@ -151,6 +149,6 @@ export default async function RootLayout({
 					<Toaster richColors visibleToasts={3} closeButton />
 				</Providers>
 			</body>
-		</html>
+		</ThemedHTMLElement>
 	);
 }

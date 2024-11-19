@@ -57,7 +57,6 @@ export async function resetPasswordFinal(formData: FormData) {
 			});
 		});
 	} catch (error) {
-		console.error(error);
 		return { ok: false, message: ["Password reset code is invalid."] };
 	}
 	return { ok: true, message: ["Password changed successfully."] };

@@ -126,7 +126,6 @@ export async function delegationAssignmentChanges(proposalId, newAssignment) {
 			where: { id: proposalId },
 		});
 	} catch (e) {
-		console.log(e);
 		return { ok: false, message: ["Error modifying delegation proposal."] };
 	}
 
@@ -135,7 +134,6 @@ export async function delegationAssignmentChanges(proposalId, newAssignment) {
 	if (!io) {
 		return { ok: true, message: ["Delegation proposal modified but this change was not broadcasted to other people viewing this page."] };
 	}
-	console.log(`room:delegate-assignment:${selectedSession.id}`);
 
 	delete selectedProposal.session;
 	delete selectedProposal.school;

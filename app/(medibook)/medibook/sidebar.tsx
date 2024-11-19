@@ -2,7 +2,16 @@
 
 import { Avatar } from "@/components/avatar";
 import { Avatar as NextUIAvatar } from "@nextui-org/avatar";
-import { Dropdown, DropdownButton, DropdownDescription, DropdownDivider, DropdownItem, DropdownLabel, DropdownMenu } from "@/components/dropdown";
+import {
+	Dropdown,
+	DropdownButton,
+	DropdownDescription,
+	DropdownDivider,
+	DropdownItem,
+	DropdownLabel,
+	DropdownMenu,
+	DropdownSection,
+} from "@/components/dropdown";
 import Icon from "@/components/icon";
 import {
 	Sidebar as SidebarComponent,
@@ -29,15 +38,19 @@ import { romanize } from "@/lib/romanize";
 import { getSessionData } from "./actions";
 import {
 	ArrowRightStartOnRectangleIcon,
+	CheckIcon,
 	ChevronDownIcon,
 	ChevronUpIcon,
 	Cog8ToothIcon,
+	ComputerDesktopIcon,
 	HashtagIcon,
 	HomeIcon,
 	LightBulbIcon,
+	MoonIcon,
 	PlusIcon,
 	ShieldCheckIcon,
 	SparklesIcon,
+	SunIcon,
 	UserCircleIcon,
 	UserIcon,
 } from "@heroicons/react/16/solid";
@@ -54,9 +67,11 @@ import { Text } from "@/components/text";
 import { Heading } from "@/components/heading";
 import { Badge } from "@/components/badge";
 import { Cog6ToothIcon } from "@heroicons/react/20/solid";
+import { useTheme } from "next-themes";
 
 export function AccountDropdownMenu({ anchor }: { anchor: "top start" | "bottom end" }) {
 	const { data: authSession, status } = useSession();
+	const { theme, setTheme } = useTheme();
 	if (status === "authenticated")
 		return (
 			<DropdownMenu className="min-w-64" anchor={anchor}>
@@ -78,6 +93,30 @@ export function AccountDropdownMenu({ anchor }: { anchor: "top start" | "bottom 
 					<HomeIcon />
 					<DropdownLabel>View Homepage</DropdownLabel>
 				</DropdownItem>
+				<DropdownDivider />
+				<DropdownSection>
+					<DropdownItem
+						disabled={theme == "light"}
+						onClick={() => setTheme("light")}
+						className={cn(theme == "light" && "bg-primary text-white !hover:bg-primary")}>
+						<SunIcon className={cn(theme == "light" && "!text-white")} />
+						<DropdownLabel className={cn(theme == "light" && "!text-white")}>Light</DropdownLabel>
+					</DropdownItem>
+					<DropdownItem
+						disabled={theme == "dark"}
+						onClick={() => setTheme("dark")}
+						className={cn(theme == "dark" && "bg-primary text-white !hover:bg-primary")}>
+						<MoonIcon className={cn(theme == "dark" && "!text-white")} />
+						<DropdownLabel className={cn(theme == "dark" && "!text-white")}>Dark</DropdownLabel>
+					</DropdownItem>
+					<DropdownItem
+						disabled={theme == "system"}
+						onClick={() => setTheme("system")}
+						className={cn(theme == "system" && "bg-primary text-white !hover:bg-primary")}>
+						<ComputerDesktopIcon className={cn(theme == "system" && "!text-white")} />
+						<DropdownLabel className={cn(theme == "system" && "!text-white")}>System</DropdownLabel>
+					</DropdownItem>
+				</DropdownSection>
 				<DropdownDivider />
 				<DropdownItem
 					onClick={() => {
@@ -661,7 +700,7 @@ export function Sidebar({ sessions }) {
 													style={{ background: `url(/assets/gradients/${(index % 6) + 1}.jpg)` }}
 													className="m-auto !bg-cover !bg-clip-text text-[8px]">
 													{department.shortName ? (
-														department.shortName.slice(0, 3).toUpperCase()
+														<span className="h-2 w-2 dark:text-zinc-800">{department.shortName.slice(0, 3).toUpperCase()}</span>
 													) : (
 														<div className="h-2 w-2 bg-zinc-500 rounded-full"></div>
 													)}

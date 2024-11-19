@@ -79,7 +79,6 @@ export default async function MessagePage(props) {
 	}
 
 	if (!selectedGroup && !groupId.includes("@")) {
-		console.log("Group ID", groupId);
 		selectedGroup = await prisma.group
 			.findFirstOrThrow({
 				where: {

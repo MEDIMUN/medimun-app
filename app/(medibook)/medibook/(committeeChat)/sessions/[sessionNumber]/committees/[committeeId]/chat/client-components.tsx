@@ -111,7 +111,6 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 		const isBrowser = typeof window !== "undefined";
 		if (!isBrowser) return;
 		if (!socket) return;
-		console.log("joining group");
 		await new Promise((resolve) => setTimeout(resolve, 1500));
 		socket.emit("join:committee-chat", selectedGroup.id);
 	}
@@ -327,7 +326,7 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 					...(!isIos && isMobile ? { height: `${viewportHeight}px` } : {}),
 					transform: `translateY(-${-1 * scrollY}px)`,
 				}}>
-				<div className="flex gap-1 z-[99999999999999] shadow-md md:shadow-none bg-white md:bg-zinc-100 p-2 !absolute top-0 left-0 right-0">
+				<div className="flex gap-1 z-[9999999999999999999999999999999] shadow-md md:shadow-none bg-white dark:bg-zinc-800 md:bg-zinc-100 p-2 !absolute top-0 left-0 right-0">
 					<div className="w-full">
 						<TopBar
 							hideBackdrop
@@ -383,11 +382,11 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 													<div
 														className={cn(
 															"max-w-[300px] md:max-w-[400px] mr-2 text-sm min-w-[35px] text-right",
-															"bg-gray-100 p-2 hyphens-auto break-words overflow-hidden ml-auto rounded-lg",
+															"bg-gray-100 dark:bg-zinc-600 p-2 hyphens-auto break-words overflow-hidden ml-auto rounded-lg",
 															isAfterMyMessage && !messageAfter.replyTo && "rounded-br-none mb-[2px]",
 															isBeforeMyMessage && "rounded-tr-none",
 															messageAfter.replyTo && "mb-3",
-															selectedMessageId === message.id && "bg-zinc-200 duration-200 shadow-md"
+															selectedMessageId === message.id && "bg-zinc-200 dark:bg-zinc-700 duration-200 shadow-md"
 														)}>
 														{message.markdown}
 														<div className="mr-auto text-left text-xs text-zinc-500 mt-1">
@@ -420,7 +419,7 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 															<Text className="!text-[9px] text-gray-500 mr-12 -mb-2">{name}</Text>
 														</div>
 														<div className="flex ml-auto gap-1">
-															<div className="bg-gray-100/80 p-3 rounded-md overflow-hidden">
+															<div className="bg-gray-100/80 dark:bg-zinc-600/60 p-3 rounded-md overflow-hidden">
 																<div className="text-xs w-full flex-1 my-auto line-clamp-2 break-words h-full truncate">
 																	{message.replyTo.markdown}
 																</div>
@@ -431,7 +430,7 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 													<div
 														className={cn(
 															"max-w-[300px] md:max-w-[400px] mr-2 text-sm min-w-[35px] text-right",
-															"bg-gray-100 p-2 hyphens-auto break-words overflow-hidden ml-auto rounded-lg",
+															"bg-gray-100 dark:bg-zinc-600 p-2 hyphens-auto break-words overflow-hidden ml-auto rounded-lg",
 															isAfterMyMessage && !messageAfter.replyTo && "rounded-br-none mb-[2px]",
 															isBeforeMyMessage && "rounded-tr-none",
 															messageAfter.replyTo && "mb-3",
@@ -478,7 +477,7 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 													<div
 														className={cn(
 															"max-w-[400px] break-words text-sm min-w-[35px] text-left",
-															"bg-gray-100 p-2 rounded-lg",
+															"bg-gray-100 dark:bg-zinc-600 p-2 rounded-lg",
 															isPreviousSamePersons && !messageAfter.replyTo && "rounded-bl-none mb-[2px]",
 															isNextSamePersons && "rounded-tl-none",
 															selectedMessageId === message.id && "bg-zinc-200 duration-200 shadow-md"
@@ -524,7 +523,7 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 														</div>
 														<div className="flex mr-auto gap-1">
 															<Image alt="" src={`/assets/message-reply.svg`} className="scale-x-[-1]" width={40} height={40} />
-															<div className="bg-gray-100/80 p-3 rounded-md overflow-hidden">
+															<div className="bg-gray-100/80 dark:bg-zinc-600 p-3 rounded-md overflow-hidden">
 																<div className="text-xs w-full flex-1 my-auto line-clamp-2 break-words h-full truncate">
 																	{message.replyTo.markdown}
 																</div>
@@ -537,7 +536,7 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 													<div
 														className={cn(
 															"max-w-[400px] break-words text-sm min-w-[35px] w-max text-left",
-															"bg-gray-100 p-2 rounded-lg",
+															"bg-gray-100 dark:bg-zinc-600 p-2 rounded-lg",
 															isPreviousSamePersons && !messageAfter.replyTo && "rounded-bl-none mb-[2px]",
 															messageAfter.replyTo && "mb-3",
 															selectedMessageId === message.id && "bg-zinc-200 duration-200 shadow-md"
@@ -557,8 +556,8 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 						})}
 						{(receivedFinalMessage || messages.length < 50) && (
 							<div className="mx-auto p-10">
-								<div className="p-12 text-center flex flex-col backdrop-blur-lg mt-6 shadow-md gap-6 rounded-2xl font-[montserrat] bg-zinc-100/70">
-									<Image alt="MediChat Logo" className="mx-auto grayscale" src={MediBookLogo} width={200} height={200} />
+								<div className="p-12 text-center flex flex-col backdrop-blur-lg mt-6 shadow-md gap-6 rounded-2xl font-[montserrat] bg-zinc-100 dark:bg-zinc-800">
+									<Image alt="MediChat Logo" className="mx-auto grayscale dark:grayscale-0" src={MediBookLogo} width={200} height={200} />
 									<Text>
 										Messages can be accessed by the management in case of a report.
 										<br />
@@ -578,7 +577,7 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 						<div className="min-h-[72px]" />
 					</div>
 				</div>
-				<div className="flex flex-col gap-1 font-[montserrat] max-w-5xl mx-auto z-[9999999999] bg-white p-2 border-t !fixed bottom-0 left-0 right-0">
+				<div className="flex flex-col gap-1 font-[montserrat] max-w-5xl mx-auto z-[9999999999] bg-white dark:bg-zinc-900 p-2 border-t !fixed bottom-0 left-0 right-0">
 					{replyToId && messages.find((message) => message.id === replyToId) && (
 						<div className="flex h-12 mb-1 w-full gap-1">
 							<MButton
