@@ -147,21 +147,6 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 						</div>
 					</section>
 					<Divider className="my-10" soft />
-					<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-						<div className="space-y-1">
-							<Subheading>Description</Subheading>
-							<Text>
-								The text which will appear below the announcement before it&apos;s opened or the text which will appear below the email before
-								it&apos;s opened.
-								<br />
-								<em>Max 500 characters.</em>
-							</Text>
-						</div>
-						<div className="my-auto flex flex-col gap-4 md:flex-row">
-							<Textarea defaultValue={selectedAnnouncement.description} type="text" maxLength={100} name="description" />
-						</div>
-					</section>
-					<Divider className="my-10" soft />
 					<section className="grid gap-x-8 gap-y-6">
 						<div className="space-y-1">
 							<Subheading>Announcement Content (Markdown)</Subheading>

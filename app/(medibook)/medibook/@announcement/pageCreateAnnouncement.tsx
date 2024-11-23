@@ -17,7 +17,7 @@ import { notFound, redirect, useParams, useRouter, useSearchParams } from "next/
 import { Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { TopBar } from "../client-components";
-import { Text } from "@/components/text";
+import { Code, Text } from "@/components/text";
 import { Textarea } from "@/components/textarea";
 import { publishAnnouncement } from "./actions";
 import {
@@ -185,7 +185,9 @@ export function PageCreateAnnouncement({
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Title</Subheading>
+						<Subheading>
+							Title <Code>Required</Code>
+						</Subheading>
 						<Text>
 							Title of the announcement and subject of emails.
 							<br />
@@ -199,7 +201,9 @@ export function PageCreateAnnouncement({
 				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
-						<Subheading>Slug</Subheading>
+						<Subheading>
+							Slug <Code>Optional</Code>
+						</Subheading>
 						<Text>
 							A friendly title to appear in the URL.
 							<br />
@@ -211,24 +215,11 @@ export function PageCreateAnnouncement({
 					</div>
 				</section>
 				<Divider className="my-10" soft />
-				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-					<div className="space-y-1">
-						<Subheading>Description</Subheading>
-						<Text>
-							The text which will appear below the announcement before it&apos;s opened or the text which will appear below the email before it&apos;s
-							opened.
-							<br />
-							<em>Max 500 characters.</em>
-						</Text>
-					</div>
-					<div className="my-auto flex flex-col gap-4 md:flex-row">
-						<Textarea maxLength={100} name="description" />
-					</div>
-				</section>
-				<Divider className="my-10" soft />
 				<section className="grid gap-x-8 gap-y-6">
 					<div className="space-y-1">
-						<Subheading>Announcement Content (Markdown)</Subheading>
+						<Subheading>
+							Announcement Content (Markdown) <Code>Required</Code>
+						</Subheading>
 						<Text>
 							The content of the announcement in markdown format. Learn more about <Link href={"/wiki/markdown"}>markdown</Link>
 							<br />

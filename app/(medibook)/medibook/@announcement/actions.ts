@@ -11,10 +11,10 @@ import { AnnouncementPrivacyTypes } from "@prisma/client";
 import { processSlug } from "@/lib/text";
 
 export async function publishAnnouncement(formData: FormData, params) {
+	console.log(params);
 	const authSession = await auth();
 	const schema = z.object({
 		title: z.string().min(10).max(100),
-		description: z.string().min(10).max(500).optional().nullable(),
 		markdown: z.string().min(10).max(10000),
 		privacy: z.enum(["NORMAL", "BOARD", "ANONYMOUS", "SECRETARIAT"]),
 		type: z.string(),
@@ -30,11 +30,6 @@ export async function publishAnnouncement(formData: FormData, params) {
 	const parsedFormData = parseFormData(formData);
 	const { data, error } = schema.safeParse(parsedFormData);
 	if (error) return { ok: false, message: "Invalid data submitted." };
-
-	const submittedScope = data.scope.split(",");
-	const scopeMap = authorizedToEditAnnouncementMap(authSession, params.committeeId, params.departmentId);
-	const arrayOfBooleanScope = submittedScope.map((scope) => scopeMap[scope]);
-	if (arrayOfBooleanScope.includes(false)) return { ok: false, message: "You are not authorized to publish to the selected scope." };
 
 	let selectedCommittee = null,
 		selectedDepartment = null,
@@ -62,6 +57,11 @@ export async function publishAnnouncement(formData: FormData, params) {
 			include: { session: true },
 		});
 
+	const submittedScope = data.scope.split(",");
+	const scopeMap = authorizedToEditAnnouncementMap(authSession, selectedCommittee?.id, selectedDepartment?.id);
+	const arrayOfBooleanScope = submittedScope.map((scope) => scopeMap[scope]);
+	if (arrayOfBooleanScope.includes(false)) return { ok: false, message: "You are not authorized to publish to the selected scope." };
+
 	if (params.sessionNumber && !params.committeeId && !params.departmentId)
 		try {
 			selectedSession = await prisma.session.findFirstOrThrow({
@@ -80,7 +80,6 @@ export async function publishAnnouncement(formData: FormData, params) {
 				time: timeNow,
 				editTime: timeNow,
 				title: data.title,
-				description: data.description,
 				markdown: data.markdown,
 				privacy: data.privacy,
 				type: data.type.split(","),
@@ -117,7 +116,6 @@ export async function editAnnouncement(formData: FormData, selectedAnnouncementI
 
 	const schema = z.object({
 		title: z.string().min(10).max(100),
-		description: z.string().min(10).max(500).optional().nullable(),
 		markdown: z.string().min(10).max(10000),
 		privacy: z.enum(["NORMAL", "BOARD", "ANONYMOUS", "SECRETARIAT"]),
 		isPinned: z.boolean(),
@@ -146,7 +144,6 @@ export async function editAnnouncement(formData: FormData, selectedAnnouncementI
 			},
 			data: {
 				title: data.title,
-				description: data.description,
 				markdown: data.markdown,
 				privacy: data.privacy,
 				isPinned: data.isPinned,
