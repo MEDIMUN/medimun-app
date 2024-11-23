@@ -14,14 +14,14 @@ export async function addExtraCountry(formData, params) {
 	if (!authSession || !authorize(authSession, [s.management])) return { ok: false, message: "Unauthorized" };
 
 	const schema = z.object({
-		countryNameEn: z.string().trim().min(3).max(100).transform(entityCase),
+		countryNameEn: z.string().trim().min(1).max(100).transform(entityCase),
 		countryCode: z
 			.string()
 			.trim()
-			.min(2)
-			.max(4)
+			.min(1)
+			.max(10)
 			.toUpperCase()
-			.regex(/^[A-Z]+$/)
+			.regex(/^[A-Z0-9]+$/)
 			.optional()
 			.nullable(),
 		isPowerToVeto: z.boolean(),
@@ -88,7 +88,7 @@ export async function editExtraCountry(formData, params, extraCountryId) {
 	if (!authSession || !authorize(authSession, [s.management])) return { ok: false, message: "Unauthorized" };
 
 	const schema = z.object({
-		countryNameEn: z.string().trim().min(3).max(100).transform(entityCase),
+		countryNameEn: z.string().trim().min(1).max(100).transform(entityCase),
 		isPowerToVeto: z.boolean(),
 	});
 	const parsedFormData = parseFormData(formData);

@@ -63,12 +63,18 @@ export function AddExtraCountryModal() {
 					<Field>
 						<Label>Name</Label>
 						<Description>The long name of the country or entity.</Description>
-						<Input placeholder="e.g. The European Union, Soviet Union." name="countryNameEn" required />
+						<Input
+							minLength={1}
+							maxLength={100}
+							placeholder="e.g. The European Union, Soviet Union or Judge Tim A..."
+							name="countryNameEn"
+							required
+						/>
 					</Field>
 					<Field>
 						<Label>Country/Organization Code</Label>
-						<Description>The 2 to 4 letter code to distinctly identify the country/entity.</Description>
-						<Input placeholder="e.g. EU, USSR." name="countryCode" required />
+						<Description>The 1 to 10 letter code to distinctly identify the country/entity.</Description>
+						<Input minLength={1} maxLength={10} placeholder="e.g. EU, USSR or JUDGE1" name="countryCode" required />
 					</Field>
 					<Field>
 						<Label>Power to Veto</Label>
@@ -137,7 +143,14 @@ export function EditExtraCountryModal({ selectedCommittee, selectedExtraCountry 
 					<Field>
 						<Label>Name</Label>
 						<Description>The long name of the country or entity.</Description>
-						<Input defaultValue={selectedExtraCountry?.name} placeholder="e.g. The European Union, Soviet Union." name="countryNameEn" required />
+						<Input
+							minLength={1}
+							maxLength={100}
+							defaultValue={selectedExtraCountry?.name}
+							placeholder="e.g. The European Union, Soviet Union."
+							name="countryNameEn"
+							required
+						/>
 					</Field>
 					<Field>
 						<Label>Power to Veto</Label>
