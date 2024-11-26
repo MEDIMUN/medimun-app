@@ -133,7 +133,7 @@ export function PageCreateAnnouncement({
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
 						<Subheading>Distribution Type</Subheading>
-						<Text>Select wheter the announcement will be shown on the website and MediBook, will be emailed or both.</Text>
+						<Text>Select wheter the announcement will just be shown on the website and MediBook or if it will be emailed as well.</Text>
 					</div>
 					<div className="my-auto">
 						<Listbox multiple value={typeInput} onChange={(val) => setTypeInput(val)} disabled={isLoading}>
