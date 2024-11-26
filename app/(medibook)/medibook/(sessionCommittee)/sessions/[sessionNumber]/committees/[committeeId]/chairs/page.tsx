@@ -56,10 +56,10 @@ export default async function MeetTheChairsPage(props) {
 									className="aspect-[4/5] w-52 flex-none rounded-2xl object-cover"
 								/>
 							</UserTooltip>
-							<div className="max-w-xl flex-auto">
+							<div className="max-w-xl flex-auto gap-6">
 								<h3 className="text-lg/8 font-semibold tracking-tight text-gray-900">{fullName}</h3>
 								<p className="text-base/7 text-gray-600">{chair.user.Student?.name}</p>
-								<p className="mt-6 text-base/7 text-gray-600">{chair.user.bio}</p>
+								<p className="text-base/7 text-gray-600">{chair.user.bio}</p>
 								<ul role="list" className=" flex gap-x-6">
 									<li>
 										<Button

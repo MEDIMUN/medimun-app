@@ -358,11 +358,11 @@ export function ChatLayout({ group, authSession }) {
 					...(!isIos && isMobile ? { height: `${viewportHeight}px` } : {}),
 					transform: `translateY(-${-1 * scrollY}px)`,
 				}}>
-				<div className="flex gap-1 z-[9999999999999999999999999999999] shadow-md md:shadow-none bg-white dark:bg-zinc-800 md:bg-zinc-100 p-2 !absolute top-0 left-0 right-0">
+				<div className="flex gap-1 z-[99999] shadow-md md:shadow-none bg-white dark:bg-zinc-800 md:bg-zinc-100 p-2 !absolute top-0 left-0 right-0">
 					<div className="w-full">
 						<TopBar
 							hideBackdrop
-							className="max-w-5xl mx-auto"
+							className="max-w-5xl mx-auto z-[99999]"
 							title={groupName}
 							buttonText={isMobile && "Inboxes"}
 							buttonHref="/medibook/messenger"
