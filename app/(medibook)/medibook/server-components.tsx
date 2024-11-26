@@ -303,6 +303,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 	return (
 		<>
 			<TopBar
+				hideBackdrop
 				hideSearchBar
 				buttonHref={buttonHref}
 				buttonText={buttonText}

@@ -10,6 +10,7 @@ import { AssignDelegateToCommittee } from "./templates/assign-delegate-to-commit
 import { SchoolReceiveInvoice } from "./templates/new-invoice-to-school";
 import { YourDelegatesAssignedToTheirCommittees } from "./templates/your-delegates-assigned-to-their-committees";
 import { ReturnDelegatePositionPaper } from "./templates/return-delegate-position-paper";
+import { Announcement } from "./templates/announcement";
 
 export async function sendEmailVerificationEmail({ email, officialName, code }) {
 	return sendEmail({
@@ -188,5 +189,28 @@ export async function sendEmailReturnPositionPaper({ officialName, details, emai
 		subject: `Position Paper Returned - MEDIMUN`,
 		preview: `Dear ${officialName}, your position paper has been reviewed.`,
 		html: <ReturnDelegatePositionPaper officialName={officialName} details={details} />,
+	});
+}
+
+export async function sendEmailAnnouncement({
+	email,
+	announcementTitle,
+	name,
+	markdown,
+	title,
+}: {
+	email: string;
+	announcementTitle: string;
+	name: string;
+	markdown: string;
+	title?: string;
+}) {
+	return sendEmail({
+		to: email,
+		title: announcementTitle,
+		hideFooter: true,
+		subject: `New Announcement - MEDIMUN`,
+		preview: `Dear ${name}, check out the latest announcement.`,
+		html: <Announcement name={name} markdown={markdown} title={title} />,
 	});
 }

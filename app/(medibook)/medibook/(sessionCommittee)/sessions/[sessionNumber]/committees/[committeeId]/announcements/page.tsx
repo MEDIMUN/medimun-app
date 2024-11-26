@@ -40,7 +40,7 @@ export default async function AnnouncementsPage(props) {
 		authorizePerSession(authSession, [s.member, s.management], [selectedEntity.session.number]) ? "COMMITTEEMEMBER" : null,
 		authorizePerSession(authSession, [s.sec, s.management], [selectedEntity.session.number]) ? "COMMITTEESECRETARIAT" : null,
 		authorizePerSession(authSession, [s.director, s.sd], [selectedEntity.session.number]) ? "COMMITTEEDIRECTORS" : null,
-		authorizePerSession(authSession, [s.sd], [selectedEntity.session.number]) ? "COMMITTEESENIORDIRECTORS" : null,
+		authorizePerSession(authSession, [s.sd, s.management], [selectedEntity.session.number]) ? "COMMITTEESENIORDIRECTORS" : null,
 	].filter((x) => x);
 
 	const whereObject = {
@@ -48,7 +48,6 @@ export default async function AnnouncementsPage(props) {
 		departmentId: null,
 		title: { contains: query, mode: "insensitive" },
 		scope: { hasSome: hasSomeArray },
-		type: { has: "WEBSITE" },
 	};
 
 	const [prismaAnnouncements, totalItems] = await prisma

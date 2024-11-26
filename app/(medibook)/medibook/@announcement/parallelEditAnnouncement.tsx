@@ -86,7 +86,7 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 		<div className="grow p-6 lg:rounded-lg lg:bg-white lg:p-10 lg:shadow-sm lg:ring-1 lg:ring-zinc-950/5 dark:lg:bg-zinc-900 dark:lg:ring-white/10">
 			<div className="mx-auto flex max-w-6xl h-full flex-col gap-6">
 				<form id="publishAnnouncement" action={handleSubmit}>
-					<TopBar title="Edit Announcement" hideSearchBar />
+					<TopBar hideBackdrop title="Edit Announcement" hideSearchBar />
 					<Divider className="mb-10 mt-4" soft />
 					<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 						<div className="space-y-1">
@@ -125,11 +125,11 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 							<Text>
 								Title of the announcement and subject of emails.
 								<br />
-								<em>Min 10, Max 100 characters.</em>
+								<em>Min 3, Max 200 characters.</em>
 							</Text>
 						</div>
 						<div className="my-auto flex flex-col gap-4 md:flex-row">
-							<Input defaultValue={selectedAnnouncement.title} required type="text" minLength={10} maxLength={100} name="title" />
+							<Input defaultValue={selectedAnnouncement.title} required type="text" minLength={3} maxLength={100} name="title" />
 						</div>
 					</section>
 					<Divider className="my-10" soft />

@@ -12,6 +12,7 @@ import { DescriptionDetails, DescriptionList, DescriptionTerm } from "@/componen
 import { countries } from "@/data/countries";
 import { Badge } from "@/components/badge";
 import { statusMap } from "../page";
+import { ViewPositionPaperFrame } from "../client-components";
 
 export default async function ViewPositionPaper(props) {
 	const authSession = await auth();
@@ -136,7 +137,7 @@ export default async function ViewPositionPaper(props) {
 						Delete
 					</SearchParamsButton>
 				)}
-				{selectedPositionPaper.status == "REVISION" && (isChairOfCommittee || isManagement) && (
+				{selectedPositionPaper.status == "PENDING" && (isChairOfCommittee || isManagement) && (
 					<SearchParamsButton searchParams={{ "return-position-paper": selectedPositionPaper.id }}>Return</SearchParamsButton>
 				)}
 				<SearchParamsButton searchParams={{ full: "true" }}>Full Screen</SearchParamsButton>
@@ -174,9 +175,7 @@ export default async function ViewPositionPaper(props) {
 					)}
 				</DescriptionList>
 			</div>
-			<div className={cn("bg-zinc-200 rounded-md overflow-scroll w-full h-full !min-h-[512px]")}>
-				{frameUrl && <iframe className="h-full min-h-[800px]" src={frameUrl} width="100%" height="100%" />}
-			</div>
+			<ViewPositionPaperFrame frameUrl={frameUrl} />
 			{seachParams.full == "true" && (
 				<div className={cn("bg-zinc-200 rounded-md w-full h-full fixed top-0 left-0 right-0 bottom-0 z-[2000]", seachParams.full == "true")}>
 					<div className="w-full h-16 p-4 flex">

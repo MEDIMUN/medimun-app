@@ -4,20 +4,28 @@ import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, authorizeManagerDepartment, s } from "@/lib/authorize";
 import { parseFormData } from "@/lib/parse-form-data";
 import { z } from "zod";
-import { authorizedToEditAnnouncementMap } from "./default";
+import { authorizedToEditAnnouncementMap, typeGreaterScopeMapList } from "./default";
 import prisma from "@/prisma/client";
 import { isPinned } from "@mantine/hooks/lib/use-headroom/use-headroom";
 import { AnnouncementPrivacyTypes } from "@prisma/client";
 import { processSlug } from "@/lib/text";
+import { unstable_after as after } from "next/server";
+import { sendEmailAnnouncement } from "@/email/send";
 
 export async function publishAnnouncement(formData: FormData, params) {
-	console.log(params);
 	const authSession = await auth();
 	const schema = z.object({
-		title: z.string().min(10).max(100),
-		markdown: z.string().min(10).max(10000),
+		title: z.string().min(3).max(200),
+		markdown: z.string().min(5).max(10000),
 		privacy: z.enum(["NORMAL", "BOARD", "ANONYMOUS", "SECRETARIAT"]),
-		type: z.string(),
+		type: z
+			.string()
+			.transform((val) => val.split(","))
+			.pipe(
+				z.array(z.enum(["WEBSITE", "EMAIL"])).refine((val) => val.includes("WEBSITE") && (val.includes("EMAIL") || val.length === 1), {
+					message: "Invalid type selected. Must include 'WEBSITE', and only 'EMAIL' is optional.",
+				})
+			),
 		slug: z
 			.string()
 			.transform((val) => processSlug(val.trim()))
@@ -25,17 +33,26 @@ export async function publishAnnouncement(formData: FormData, params) {
 			.nullable(),
 		scope: z.string(),
 		isPinned: z.boolean(),
+		scopeType: z.enum(["globalAnnouncement", "sessionAnnouncement", "committeeAnnouncement", "departmentAnnouncement"]),
 	});
+
+	const typeEmailTitleMap = {
+		globalAnnouncement: "You have received a new global announcement",
+		sessionAnnouncement: "You have received a new session announcement",
+		committeeAnnouncement: "You have received a new committee announcement",
+		departmentAnnouncement: "You have received a new department announcement",
+	};
 
 	const parsedFormData = parseFormData(formData);
 	const { data, error } = schema.safeParse(parsedFormData);
 	if (error) return { ok: false, message: "Invalid data submitted." };
+	let emails = [] as { email: string; name: string }[];
 
 	let selectedCommittee = null,
 		selectedDepartment = null,
 		selectedSession = null;
 
-	if (params.committeeId)
+	if (params.committeeId) {
 		selectedCommittee = await prisma.committee.findFirst({
 			where: {
 				OR: [
@@ -45,8 +62,28 @@ export async function publishAnnouncement(formData: FormData, params) {
 			},
 			include: { session: true },
 		});
+		const isEmail = data.scope.split(",").includes("COMMITTEEDELEGATE") && data.type.includes("EMAIL");
+		if (isEmail) {
+			const committee = await prisma.committee.findFirst({
+				where: {
+					id: selectedCommittee.id,
+				},
+				select: { delegate: { select: { user: { select: { email: true, officialName: true, officialSurname: true, displayName: true } } } } },
+			});
+			if (committee) {
+				const emailList = committee.delegate.map((delegate) => {
+					const name = delegate.user.displayName || `${delegate.user.officialName} ${delegate.user.officialSurname}`;
+					return {
+						email: delegate.user.email,
+						name,
+					};
+				});
+				emails = emails.concat(emailList);
+			}
+		}
+	}
 
-	if (params.departmentId)
+	if (params.departmentId) {
 		selectedDepartment = await prisma.department.findFirstOrThrow({
 			where: {
 				OR: [
@@ -56,6 +93,28 @@ export async function publishAnnouncement(formData: FormData, params) {
 			},
 			include: { session: true },
 		});
+
+		const isEmail = data.scope.split(",").includes("DEPARTMENTMEMBER") && data.type.includes("EMAIL");
+
+		if (isEmail) {
+			const department = await prisma.department.findFirst({
+				where: {
+					id: selectedDepartment.id,
+				},
+				select: { member: { select: { user: { select: { email: true, officialName: true, officialSurname: true, displayName: true } } } } },
+			});
+			if (department) {
+				const emailList = department.member.map((member) => {
+					const name = member.user.displayName || `${member.user.officialName} ${member.user.officialSurname}`;
+					return {
+						email: member.user.email,
+						name,
+					};
+				});
+				emails = emails.concat(emailList);
+			}
+		}
+	}
 
 	const submittedScope = data.scope.split(",");
 	const scopeMap = authorizedToEditAnnouncementMap(authSession, selectedCommittee?.id, selectedDepartment?.id);
@@ -82,7 +141,7 @@ export async function publishAnnouncement(formData: FormData, params) {
 				title: data.title,
 				markdown: data.markdown,
 				privacy: data.privacy,
-				type: data.type.split(","),
+				type: data.type,
 				slug: data.slug,
 				scope: data.scope.split(",") as AnnouncementPrivacyTypes[],
 				committeeId: selectedCommittee?.id || null,
@@ -93,7 +152,31 @@ export async function publishAnnouncement(formData: FormData, params) {
 			},
 		});
 	} catch (e) {
+		console.log(e);
 		return { ok: false, message: "Failed to create announcement." };
+	}
+
+	if (!!emails.length) {
+		after(async () => {
+			const emailPromises = emails.map(async (email) => {
+				return sendEmailAnnouncement({
+					name: email?.name,
+					email: email?.email,
+					markdown: data.markdown,
+					announcementTitle: data.title,
+					title: typeEmailTitleMap[data.scopeType],
+				}).catch(() => {});
+			});
+
+			await Promise.all(emailPromises);
+
+			io
+				?.to(`private-user-${authSession?.user.id}`)
+				.emit(
+					"toast.info",
+					`The announcement has been sent to ${emails.length} users via email. If our email queue is full, it may take a few minutes for the emails to be received.`
+				);
+		});
 	}
 
 	return { ok: true, message: "Announcement created." };
@@ -115,8 +198,8 @@ export async function editAnnouncement(formData: FormData, selectedAnnouncementI
 	});
 
 	const schema = z.object({
-		title: z.string().min(10).max(100),
-		markdown: z.string().min(10).max(10000),
+		title: z.string().min(3).max(100),
+		markdown: z.string().min(5).max(10000),
 		privacy: z.enum(["NORMAL", "BOARD", "ANONYMOUS", "SECRETARIAT"]),
 		isPinned: z.boolean(),
 		slug: z

@@ -58,6 +58,7 @@ export function PageCreateAnnouncement({
 		setIsLoading(true);
 		formData.append("scope", innerScope);
 		formData.append("type", typeInput);
+		formData.append("scopeType", type);
 		const res = await publishAnnouncement(formData, params);
 		if (res?.ok) {
 			toast.success(res?.message);
@@ -92,6 +93,9 @@ export function PageCreateAnnouncement({
 	}, [debouncedMarkDown]);
 
 	if (status !== "authenticated") return null;
+
+	const allowedEmailTypes = ["committeeAnnouncement", "departmentAnnouncement" /* "sessionAnnouncement" */];
+	const isEmailAllowed = allowedEmailTypes.includes(type);
 
 	const fullName = authSession.user.displayName || `${authSession.user.officialName} ${authSession.user.officialSurname}`;
 
@@ -129,24 +133,15 @@ export function PageCreateAnnouncement({
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 					<div className="space-y-1">
 						<Subheading>Distribution Type</Subheading>
-						<Text>
-							Select wheter the announcement will be shown on the website and MediBook, will be emailed or both.
-							<br />
-							<em>
-								The email option is not available yet.
-								<Link className="cursor-pointer text-primary hover:underline" href={`/medibook/users/111111111111`}>
-									{" Berzan "}
-								</Link>
-								is working on it but he may have forgotten, please ask him if you really need this.
-							</em>
-						</Text>
+						<Text>Select wheter the announcement will be shown on the website and MediBook, will be emailed or both.</Text>
 					</div>
 					<div className="my-auto">
-						<Listbox multiple value={typeInput} onChange={(val) => setTypeInput(val)} disabled={true || isLoading}>
-							<ListboxOption value="WEBSITE">Website and/or MediBook</ListboxOption>
-							<ListboxOption disabled value="EMAIL">
+						<Listbox multiple value={typeInput} onChange={(val) => setTypeInput(val)} disabled={isLoading}>
+							<ListboxOption disabled value="WEBSITE">
+								Website and/or MediBook
+							</ListboxOption>
+							<ListboxOption disabled={!isEmailAllowed} value="EMAIL">
 								<ListboxLabel>Email</ListboxLabel>
-								<ListboxDescription>Not Available</ListboxDescription>
 							</ListboxOption>
 						</Listbox>
 					</div>
@@ -191,11 +186,11 @@ export function PageCreateAnnouncement({
 						<Text>
 							Title of the announcement and subject of emails.
 							<br />
-							<em>Min 10, Max 100 characters.</em>
+							<em>Min 3, Max 200 characters.</em>
 						</Text>
 					</div>
 					<div className="my-auto flex flex-col gap-4 md:flex-row">
-						<Input required type="text" minLength={10} maxLength={100} name="title" />
+						<Input required type="text" minLength={3} maxLength={100} name="title" />
 					</div>
 				</section>
 				<Divider className="my-10" soft />
