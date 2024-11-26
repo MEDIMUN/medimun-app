@@ -114,6 +114,7 @@ model User {
   MessageReaction          MessageReaction[]
   CommitteeMessage         CommitteeMessage[]
   CommitteeMessageReaction CommitteeMessageReaction[]
+  PositionPaper            PositionPaper[]
 }
 
 model Group {
@@ -528,29 +529,62 @@ enum RoleType {
 }
 
 model Committee {
-  id               String             @id @unique @default(uuid())
-  name             String
-  description      String?
-  shortName        String?
-  slug             String?
-  isVisible        Boolean            @default(false)
+  id                                   String             @id @unique @default(uuid())
+  name                                 String
+  description                          String?
+  shortName                            String?
+  slug                                 String?
+  isVisible                            Boolean            @default(false)
   //
-  type             CommitteeType      @default(GENERALASSEMBLY)
+  isPositionPapersVisible              Boolean            @default(false)
+  isPositionPaperSubmissionForceOpen   Boolean            @default(false)
+  isPositionPaperSubmissionAutoOpen    Boolean            @default(false)
+  positionPaperSubmissionAutoOpenTime  DateTime?
+  positionPaperSubmissionAutoCloseTime DateTime?
   //
-  session          Session            @relation(fields: [sessionId], references: [id])
-  sessionId        String
+  type                                 CommitteeType      @default(GENERALASSEMBLY)
   //
-  delegate         Delegate[]
-  chair            Chair[]
-  Announcement     Announcement[]
-  Resource         Resource[]
-  ExtraCountry     ExtraCountry[]
-  Topic            Topic[]
-  CommitteeMessage CommitteeMessage[]
+  session                              Session            @relation(fields: [sessionId], references: [id])
+  sessionId                            String
+  //
+  delegate                             Delegate[]
+  chair                                Chair[]
+  Announcement                         Announcement[]
+  Resource                             Resource[]
+  ExtraCountry                         ExtraCountry[]
+  Topic                                Topic[]
+  CommitteeMessage                     CommitteeMessage[]
+  PositionPaper                        PositionPaper[]
 
   @@unique([sessionId, name])
   @@unique([sessionId, shortName])
   @@unique([sessionId, slug])
+}
+
+model PositionPaper {
+  id           String              @id @default(nanoid())
+  index        Int                 @default(autoincrement())
+  createdAt    DateTime            @default(now())
+  returnTime   DateTime?
+  //
+  user         User                @relation(fields: [userId], references: [id])
+  userId       String
+  //
+  committee    Committee           @relation(fields: [committeeId], references: [id])
+  committeeId  String
+  //
+  resource     Resource            @relation(fields: [resourceId], references: [id])
+  resourceId   String
+  //
+  status       PositionPaperStatus @default(PENDING)
+  chairComment String?
+}
+
+enum PositionPaperStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REVISION
 }
 
 model Topic {
@@ -724,6 +758,7 @@ model Resource {
   time               DateTime               @default(now())
   //
   scope              ResourcePrivacyTypes[]
+  mimeType           String?
   //
   driveUrl           String?
   fileId             String?
@@ -744,6 +779,7 @@ model Resource {
   messageId          String?
   CommitteeMessage   CommitteeMessage?      @relation(fields: [committeeMessageId], references: [id])
   committeeMessageId String?
+  PositionPaper      PositionPaper[]
 }
 
 // ANNOUNCEMENT ///////////////////////////////////////////////////////////

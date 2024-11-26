@@ -15,6 +15,7 @@ import { authorize, authorizeChairCommittee, authorizeManagerDepartment, s } fro
 import prisma from "@/prisma/client";
 import { randomUUID } from "crypto";
 import { minio } from "@/minio/client";
+import mimeExt from "mime-ext";
 
 export async function uploadResource(formData: FormData, searchParams: any) {
 	const processedFormData = parseFormData(formData);
@@ -45,15 +46,7 @@ export async function uploadResource(formData: FormData, searchParams: any) {
 		resourceDriveUrl: z.string().optional().nullable(),
 		resourceFile: z
 			.any()
-			.refine((files) => files?.[0]?.size <= 30000000, `Max image size is 30MB.`)
-			.refine(
-				//has "pdf" or "image"
-				(files) => {
-					const supportedFormats = ["pdf", "jpg", "jpeg", "png"];
-					return files?.[0]?.type.includes("pdf") || supportedFormats.some((format) => files?.[0]?.type.includes(format));
-				},
-				"Only .jpg, .jpeg, .png and .webp formats are supported."
-			)
+			.refine((files) => files?.[0]?.size <= 50000000, `Max file size is 50MB.`)
 			.optional()
 			.nullable(),
 	});
@@ -103,6 +96,7 @@ export async function uploadResource(formData: FormData, searchParams: any) {
 		isAnonymous: data.resourceIsAnonymous,
 		driveUrl: data.resourceDriveUrl,
 		scope: filteredSubmittedScope,
+		mimeType: resourceFile?.type || null,
 		user: { connect: { id: authSession.user.id } },
 	};
 
@@ -144,7 +138,9 @@ export async function uploadResource(formData: FormData, searchParams: any) {
 		const file = resourceFile;
 		if (!file) return { ok: false, message: "No file selected" };
 		const buffer = Buffer.from(await file?.arrayBuffer());
-		const fileName = `${randomName}.${file.type.split("/")[1]}`;
+		const fileExtension = mimeExt(file.type);
+		if (!fileExtension.length) return { ok: false, message: "Invalid file type" };
+		const fileName = `${randomName}.${fileExtension[0]}`;
 		const filePath = `resources/${fileName}`;
 
 		try {
@@ -154,10 +150,9 @@ export async function uploadResource(formData: FormData, searchParams: any) {
 						data: {
 							name: customizedData.name,
 							user: {
-								connect: {
-									id: authSession.user.id,
-								},
+								connect: { id: authSession.user.id },
 							},
+							mimeType: customizedData.mimeType,
 							session: customizedData.session,
 							committee: customizedData.committee,
 							department: customizedData.department,

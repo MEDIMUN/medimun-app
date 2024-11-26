@@ -9,6 +9,7 @@ import { AssignCountriesToSchool } from "./templates/assign-countries-to-school"
 import { AssignDelegateToCommittee } from "./templates/assign-delegate-to-committee";
 import { SchoolReceiveInvoice } from "./templates/new-invoice-to-school";
 import { YourDelegatesAssignedToTheirCommittees } from "./templates/your-delegates-assigned-to-their-committees";
+import { ReturnDelegatePositionPaper } from "./templates/return-delegate-position-paper";
 
 export async function sendEmailVerificationEmail({ email, officialName, code }) {
 	return sendEmail({
@@ -177,5 +178,15 @@ export async function sendEmailYourDelegatesHaveBeenAssigned({
 		subject: `Delegates Assigned - MEDIMUN`,
 		preview: `Dear ${officialName}, your delegates have been assigned to their committees.`,
 		html: <YourDelegatesAssignedToTheirCommittees officialName={officialName} schoolName={schoolName} />,
+	});
+}
+
+export async function sendEmailReturnPositionPaper({ officialName, details, email }: { officialName: string; details: string; email: string }) {
+	return sendEmail({
+		to: email,
+		hideFooter: true,
+		subject: `Position Paper Returned - MEDIMUN`,
+		preview: `Dear ${officialName}, your position paper has been reviewed.`,
+		html: <ReturnDelegatePositionPaper officialName={officialName} details={details} />,
 	});
 }

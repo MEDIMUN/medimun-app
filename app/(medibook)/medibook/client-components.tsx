@@ -183,11 +183,22 @@ export function TopBar({
 	);
 }
 
-export function SearchParamsButton({ searchParams, useRouter = true, ...params }) {
+export function SearchParamsButton({
+	searchParams,
+	deleteSearchParams,
+	useRouter = true,
+	...params
+}: {
+	searchParams?: Object;
+	deleteSearchParams?: Object;
+	useRouter?: boolean;
+	children: React.ReactNode;
+}) {
 	const router = useNextRouter();
 
 	function handleOnClick() {
-		updateSearchParams(searchParams, useRouter ? router : null);
+		if (searchParams) updateSearchParams(searchParams, useRouter ? router : null);
+		if (removeSearchParams) removeSearchParams(deleteSearchParams, useRouter ? router : null);
 		router.refresh();
 	}
 

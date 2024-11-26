@@ -470,10 +470,6 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 													<div className="w-8" />
 												)}
 												<div className="flex flex-col">
-													<div className="flex gap-1">
-														<span className="font-semibold">{message.user.displayName}</span>
-													</div>
-
 													<div
 														className={cn(
 															"max-w-[400px] break-words text-sm min-w-[35px] text-left",
