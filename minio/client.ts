@@ -2,6 +2,7 @@ var Minio = require("minio");
 
 const use_ssl = process.env.MINIO_USE_SSL === "true" ? true : false;
 let minioClient: any;
+
 exports.minio = function () {
 	let client = (minioClient = new Minio.Client({
 		endPoint: process.env.MINIO_END_POINT,

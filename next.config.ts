@@ -44,6 +44,11 @@ const nextConfig = {
 		},
 		reactCompiler: true,
 	},
+	webpack: {
+		fallback: {
+			fs: false,
+		},
+	},
 	reactStrictMode: true,
 };
 

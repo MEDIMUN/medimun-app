@@ -76,7 +76,7 @@ export default async function Page(props) {
 					<SearchParamsButton searchParams={{ uploadglobalresource: true }}>Upload Global Resource</SearchParamsButton>
 				)}
 			</TopBar>
-			<ResourcesTable resources={prismaResources} isManagement={isManagement} />
+			<ResourcesTable baseUrl={`/medibook/resources`} resources={prismaResources} isManagement={isManagement} />
 			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
 		</>
 	);

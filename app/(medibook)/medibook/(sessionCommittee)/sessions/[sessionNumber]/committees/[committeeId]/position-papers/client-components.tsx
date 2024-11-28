@@ -208,7 +208,7 @@ export function ViewPositionPaperFrame({ frameUrl }) {
 			<div className="bg-zinc-200 rounded-md overflow-scroll w-full h-full !min-h-[512px]">
 				{!isLoaded && (
 					<Text className="p-2">
-						<i>Loading... (Attempt {reloadAttempts} out of 5)</i>
+						<i>Loading... (Attempt {reloadAttempts + 1} out of 5)</i>
 					</Text>
 				)}
 				<iframe ref={iframeRef} className="h-full min-h-[1200px]" onLoad={() => setIsLoaded(true)} src={frameUrl} width="100%" id="pdfIframe" />

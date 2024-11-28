@@ -1,7 +1,7 @@
 "use client";
 
 import { useSidebarContext } from "../../../providers";
-import { ActionList } from "../../../server-components";
+import { ActionList } from "@/app/components/actions-list";
 
 export function SchoolSessionActionsList({ isManagementOrDirector, school }) {
 	const { selectedSession } = useSidebarContext();

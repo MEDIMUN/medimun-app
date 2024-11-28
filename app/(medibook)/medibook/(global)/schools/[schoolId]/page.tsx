@@ -9,7 +9,7 @@ import prisma from "@/prisma/client";
 import { notFound, redirect } from "next/navigation";
 import { EditDeleteSchoolButtons } from "../client-components";
 import { TopBar } from "../../../client-components";
-import { ActionList } from "../../../server-components";
+import { ActionList } from "@/app/components/actions-list";
 import { SchoolSessionActionsList } from "./client-components";
 
 export default async function Page(props: { params: Promise<any> }) {

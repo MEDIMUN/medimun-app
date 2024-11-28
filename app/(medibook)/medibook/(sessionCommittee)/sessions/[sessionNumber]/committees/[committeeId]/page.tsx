@@ -1,6 +1,6 @@
 import { SearchParamsButton, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { InteractiveMap } from "@/app/(medibook)/medibook/interactive-map";
-import { ActionList } from "@/app/(medibook)/medibook/server-components";
+import { ActionList } from "@/app/components/actions-list";
 import { auth } from "@/auth";
 import { Badge } from "@/components/badge";
 import { Divider } from "@/components/divider";

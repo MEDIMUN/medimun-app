@@ -8,7 +8,7 @@ import { authorize, authorizeDirect, s } from "@/lib/authorize";
 import Image from "next/image";
 import Confirm from "@/public/assets/confirm.gif";
 import { Code, Text } from "@/components/text";
-import { ActionList } from "../../server-components";
+import { ActionList } from "@/app/components/actions-list";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 
 export default async function RegistrationPage(props) {

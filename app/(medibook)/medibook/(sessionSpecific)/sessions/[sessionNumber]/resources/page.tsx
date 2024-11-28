@@ -90,7 +90,7 @@ export default async function Page(props) {
 					</>
 				)}
 			</TopBar>
-			<ResourcesTable resources={prismaResources} isManagement={isManagement} />
+			<ResourcesTable baseUrl={`/medibook/sessions/${params.sessionNumber}/resources`} resources={prismaResources} isManagement={isManagement} />
 			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
 		</>
 	);

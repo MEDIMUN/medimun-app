@@ -83,7 +83,13 @@ export default async function Page(props) {
 				title="Department Resources">
 				<SearchParamsButton searchParams={{ uploaddepartmentresource: true }}>Upload Department Resource</SearchParamsButton>
 			</TopBar>
-			{!!prismaResources.length && <ResourcesTable resources={prismaResources} isManagement={isManagement} />}
+			{!!prismaResources.length && (
+				<ResourcesTable
+					baseUrl={`/medibook/sessions/${params.sessionNumber}/departments/${selectedDepartment.slug || selectedDepartment.id}/resources`}
+					resources={prismaResources}
+					isManagement={isManagement}
+				/>
+			)}
 			<Paginator totalItems={totalItems} itemsOnPage={prismaResources.length} itemsPerPage={itemsPerPage} />
 		</>
 	);

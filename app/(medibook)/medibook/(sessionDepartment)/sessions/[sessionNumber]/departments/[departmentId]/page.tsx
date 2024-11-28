@@ -1,5 +1,5 @@
 import { TopBar } from "@/app/(medibook)/medibook/client-components";
-import { ActionList } from "@/app/(medibook)/medibook/server-components";
+import { ActionList } from "@/app/components/actions-list";
 import { auth } from "@/auth";
 import { Badge } from "@/components/badge";
 import { authorize, authorizeManagerDepartment, authorizeMemberDepartment, s } from "@/lib/authorize";

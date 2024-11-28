@@ -2,6 +2,7 @@ import { TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components
 import { auth } from "@/auth";
 import { Button } from "@/components/button";
 import prisma from "@/prisma/client";
+import { ChatBubbleLeftIcon, UserCircleIcon } from "@heroicons/react/16/solid";
 import { Avatar } from "@nextui-org/avatar";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -56,16 +57,23 @@ export default async function MeetTheChairsPage(props) {
 									className="aspect-[4/5] w-52 flex-none rounded-2xl object-cover"
 								/>
 							</UserTooltip>
-							<div className="max-w-xl flex-auto gap-6">
-								<h3 className="text-lg/8 font-semibold tracking-tight text-gray-900">{fullName}</h3>
-								<p className="text-base/7 text-gray-600">{chair.user.Student?.name}</p>
-								<p className="text-base/7 text-gray-600">{chair.user.bio}</p>
-								<ul role="list" className=" flex gap-x-6">
+							<div className="max-w-xl flex flex-col flex-auto gap-4">
+								<div>
+									<h3 className="text-lg/8 font-semibold tracking-tight text-gray-900">{fullName}</h3>
+									<p className="text-base/7 text-gray-600">{chair.user.Student?.name}</p>
+								</div>
+								{chair.user.bio && <p className="text-base/7 -mt-1 text-gray-600">{chair.user.bio}</p>}
+								<ul role="list" className="flex gap-x-3">
 									<li>
-										<Button
-											href={`/medibook/messenger/@${chair.user.username || chair.user.id}?new=true`}
-											className="text-gray-400 hover:text-gray-500">
+										<Button href={`/medibook/messenger/@${chair.user.username || chair.user.id}?new=true`}>
+											<ChatBubbleLeftIcon />
 											Message
+										</Button>
+									</li>
+									<li>
+										<Button href={`/medibook/users/${chair.user.username || chair.user.id}`}>
+											<UserCircleIcon />
+											Profile
 										</Button>
 									</li>
 								</ul>

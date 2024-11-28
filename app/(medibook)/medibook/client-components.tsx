@@ -7,7 +7,7 @@ import Icon from "@/components/icon";
 import { Input, InputGroup } from "@/components/input";
 import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/listbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
-import { Text } from "@/components/text";
+import { Text, TextLink } from "@/components/text";
 import { useUpdateEffect } from "@/hooks/use-update-effect";
 import { cn } from "@/lib/cn";
 import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
@@ -16,7 +16,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect, useRouter as useNextRouter, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { authorizedToEditResource } from "./@resourceModals/default";
 import { Divider } from "@/components/divider";
@@ -516,4 +516,74 @@ export function SearchParamsDropDropdownItem({
 		}
 	}
 	return <DropdownItem onClick={handleOnClick} {...params} />;
+}
+
+export function ResourceViewer({ frameUrl }) {
+	const [reloadAttempts, setReloadAttempts] = useState(0);
+	const [isLoaded, setIsLoaded] = useState(false);
+	const iframeRef = useRef(null);
+	const MAX_RETRIES = 4;
+
+	const reloadIframe = () => {
+		if (iframeRef.current) {
+			iframeRef.current.src = null;
+			setTimeout(() => {
+				iframeRef.current.src = frameUrl;
+			}, 100);
+		}
+	};
+
+	useEffect(() => {
+		if (!isLoaded && reloadAttempts == MAX_RETRIES) {
+			window.location.reload();
+		}
+
+		if (!isLoaded && reloadAttempts < MAX_RETRIES) {
+			const interval = setInterval(() => {
+				if (!isLoaded) {
+					setReloadAttempts((prev) => prev + 1);
+					reloadIframe();
+				} else {
+					clearInterval(interval);
+					reloadIframe();
+				}
+			}, 2500);
+
+			return () => clearInterval(interval);
+		}
+	}, [isLoaded, reloadAttempts]);
+
+	useEffect(() => {
+		setReloadAttempts(0);
+		setIsLoaded(false);
+		reloadIframe();
+	}, [frameUrl]);
+
+	return (
+		<>
+			<div className="bg-zinc-100 rounded-md overflow-scroll w-full min-h-screen">
+				{!isLoaded && (
+					<Text className="p-2">
+						<i>Loading... (Attempt {reloadAttempts + 1} out of 5)</i>
+					</Text>
+				)}
+				<iframe
+					sandbox="allow-scripts allow-same-origin"
+					ref={iframeRef}
+					className="w-full min-h-screen"
+					onLoad={() => setIsLoaded(true)}
+					src={frameUrl}
+				/>
+			</div>
+			<Text>
+				<i>
+					If the document does not load, please click{" "}
+					<TextLink target="_blank" href={frameUrl}>
+						here
+					</TextLink>{" "}
+					to view it.
+				</i>
+			</Text>
+		</>
+	);
 }

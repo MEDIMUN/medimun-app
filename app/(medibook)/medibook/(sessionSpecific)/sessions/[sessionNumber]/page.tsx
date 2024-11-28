@@ -17,7 +17,7 @@ import Image from "next/image";
 import { cn } from "@/lib/cn";
 import { Text } from "@/components/text";
 import { Divider } from "@/components/divider";
-import { ActionList } from "../../../server-components";
+import { ActionList } from "@/app/components/actions-list";
 
 export async function generateMetadata(props: { params: Promise<{ sessionNumber: string }> }) {
 	const params = await props.params;

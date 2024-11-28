@@ -97,7 +97,11 @@ export default async function Page(props) {
 					<SearchParamsButton searchParams={{ uploadcommitteeresource: selectedCommittee.id }}>Upload Committee Resource</SearchParamsButton>
 				)}
 			</TopBar>
-			<ResourcesTable resources={prismaResources} isManagement={isManagement} />
+			<ResourcesTable
+				baseUrl={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/resources`}
+				resources={prismaResources}
+				isManagement={isManagement}
+			/>
 			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
 		</>
 	);

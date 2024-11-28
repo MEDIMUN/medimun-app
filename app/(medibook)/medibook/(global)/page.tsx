@@ -1,11 +1,10 @@
+import { ActionList } from "@/app/components/actions-list";
 import { auth } from "@/auth";
 import { Heading } from "@/components/heading";
 import { Text } from "@/components/text";
 import { cn } from "@/lib/cn";
 import MediBookWelcome from "@/public/assets/medibook-welcome.webp";
 import Image from "next/image";
-import Link from "next/link";
-import { ActionList } from "../server-components";
 
 export default async function Home() {
 	const authSession = await auth();

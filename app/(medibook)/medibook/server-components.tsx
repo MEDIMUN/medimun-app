@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
-import { SearchParamsButton, SearchParamsDropDropdownItem, SessionResourceDropdown, TopBar } from "./client-components";
+import { ResourceViewer, SearchParamsButton, SearchParamsDropDropdownItem, SessionResourceDropdown, TopBar } from "./client-components";
 import { Link } from "@/components/link";
 import { Badge } from "@/components/badge";
 import { romanize } from "@/lib/romanize";
@@ -21,10 +21,12 @@ import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { Subheading } from "@/components/heading";
 import { PageCreateAnnouncement } from "./@announcement/pageCreateAnnouncement";
 import { cn } from "@/lib/cn";
+import { minio } from "@/minio/client";
+import mimeExt from "mime-ext";
 
 const columns = ["Name", "Uploader", "Date Uploaded", "Tags"];
 
-export async function ResourcesTable({ resources, isManagement, tableColumns = columns }) {
+export async function ResourcesTable({ resources, isManagement, tableColumns = columns, baseUrl }) {
 	function replaceMergedWords(string) {
 		string = string.replace("Seniordirectors", "Senior Directors");
 		string = string.replace("Schooldirectors", "School Directors");
@@ -57,9 +59,9 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 								{tableColumns.includes("Name") && (
 									<TableCell>
 										<Link
-											target="_blank"
 											className="hover:underline"
-											href={resource.driveUrl ? `https://${resource.driveUrl}` : `/medibook/resources/${resource.id}`}>
+											{...(resource.driveUrl ? { target: "_blank" } : {})}
+											href={resource.driveUrl ? `https://${resource.driveUrl}` : `${baseUrl}/${resource.id}`}>
 											{resource.isPinned && "📌 "}
 											{resource.name}
 										</Link>
@@ -324,33 +326,111 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 	);
 }
 
-export function ActionList({ actions }) {
+export async function ResourceViewPage(props) {
+	const params = await props.params;
+	const authSession = await auth();
+	if (!authSession) notFound();
+	const selectedResource = await prisma.resource.findFirst({ where: { id: params.resourceId } });
+
+	const minioClient = minio();
+	let presignedFileUrl;
+	try {
+		presignedFileUrl = await minioClient.presignedGetObject(process.env.BUCKETNAME, `resources/${selectedResource.fileId}`, 60 * 60);
+	} catch (e) {
+		notFound();
+	}
+
+	const isDrive = props?.isDrive;
+
+	let buttonText = isDrive ? "Personal Drive" : "Global Resources";
+	let buttonHref = isDrive ? "/medibook/drive" : "/medibook/resources";
+
+	const sessionNumber = params.sessionNumber;
+	const committeeId = params.committeeId;
+	const departmentId = params.departmentId;
+
+	if (sessionNumber && !committeeId && !departmentId) {
+		buttonText = `Session ${romanize(sessionNumber)} Resources`;
+		buttonHref = `/medibook/sessions/${sessionNumber}/resources`;
+	}
+
+	if (committeeId && !departmentId) {
+		const selectedCommittee = await prisma.committee.findFirstOrThrow({
+			where: {
+				OR: [
+					{ id: committeeId, session: { number: sessionNumber } },
+					{ slug: committeeId, session: { number: sessionNumber } },
+				],
+			},
+			include: { session: true },
+		});
+		buttonText = `${selectedCommittee.name} Resources`;
+		buttonHref = `/medibook/sessions/${selectedCommittee.session.number}/committees/${selectedCommittee.slug || selectedCommittee.id}/resources`;
+	}
+
+	if (departmentId && !committeeId) {
+		const selectedDepartment = await prisma.department.findFirstOrThrow({
+			where: {
+				OR: [
+					{ id: departmentId, session: { number: sessionNumber } },
+					{ slug: departmentId, session: { number: sessionNumber } },
+				],
+			},
+			include: { session: true },
+		});
+		buttonText = `${selectedDepartment.name} Resources`;
+		buttonHref = `/medibook/sessions/${selectedDepartment.session.number}/departments/${selectedDepartment.slug || selectedDepartment.id}/resources`;
+	}
+
+	if (!selectedResource) notFound();
+
+	const encodedUrl = encodeURIComponent(presignedFileUrl);
+	const gviewUrl = `https://docs.google.com/gview?embedded=true&url=${encodedUrl}`;
+
+	const gviewMimeTypes = [
+		"application/vnd.google-apps.document",
+		"application/vnd.google-apps.spreadsheet",
+		"application/vnd.google-apps.presentation",
+		"application/vnd.google-apps.drawing",
+		"application/vnd.google-apps.script",
+		"application/pdf",
+		"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+		"application/vnd.openxmlformats-officedocument.presentationml.presentation",
+		"application/msword",
+	];
+
 	return (
-		<div className="divide-y divide-gray-200 dark:divide-gray-800 overflow-hidden rounded-xl bg-gray-200 dark:bg-gray-800 ring-1 ring-gray-200 dark:bg-ring-gray-800 sm:grid sm:grid-cols-1 sm:gap-px sm:divide-y-0">
-			{actions.map((action, actionIdx) => (
-				<div
-					key={action.title}
-					className={cn(
-						actionIdx === 0 ? "rounded-tl-xl rounded-tr-xl sm:rounded-tr-none" : "",
-						actionIdx === actions.length - 1 ? "rounded-bl-xl rounded-br-xl sm:rounded-bl-none" : "",
-						"group relative bg-white dark:bg-black p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary"
-					)}>
-					<div>
-						<h3 className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">
-							<Link href={action.href} className="focus:outline-none">
-								<span aria-hidden="true" className="absolute inset-0" />
-								{action.title}
-							</Link>
-						</h3>
-						<p className="mt-2 text-sm text-gray-500">{action.description}</p>
-					</div>
-					<span aria-hidden="true" className="pointer-events-none absolute right-6 top-6 text-gray-300 dark:text-gray-700 group-hover:text-gray-400">
-						<svg fill="currentColor" viewBox="0 0 24 24" className="h-6 w-6">
-							<path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
-						</svg>
-					</span>
+		<>
+			<TopBar hideBackdrop hideSearchBar buttonHref={buttonHref} buttonText={buttonText} title={selectedResource.name}>
+				{authorizedToEditResource(authSession, selectedResource) && (
+					<>
+						<SearchParamsButton color="red" searchParams={{ "delete-resource": selectedResource.id }}>
+							Delete
+						</SearchParamsButton>
+						<SearchParamsButton searchParams={{ "edit-resource": selectedResource.id }}>Edit</SearchParamsButton>
+					</>
+				)}
+				<Button
+					href={
+						selectedResource.fileId ? decodeURIComponent(presignedFileUrl.replace("http://", "https://")) : `https://${selectedResource.driveUrl}`
+					}
+					target="_blank"
+					download={selectedResource.fileId ? `Resource.${mimeExt(selectedResource.mimeType)}` : false}>
+					Download
+				</Button>
+			</TopBar>
+			{gviewMimeTypes.includes(selectedResource?.mimeType) ? (
+				<ResourceViewer frameUrl={gviewUrl} />
+			) : selectedResource.mimeType?.includes("image") ? (
+				<div className="bg-zinc-100 rounded-md overflow-scroll w-full p-4">
+					<img className="flex-1 w-full" src={presignedFileUrl} alt={selectedResource.name} />
 				</div>
-			))}
-		</div>
+			) : (
+				<div className="bg-zinc-100 rounded-md overflow-scroll w-full min-h-screen">
+					<iframe className="w-full min-h-screen" src={presignedFileUrl.replace("http://", "https://")} />
+				</div>
+			)}
+		</>
 	);
 }

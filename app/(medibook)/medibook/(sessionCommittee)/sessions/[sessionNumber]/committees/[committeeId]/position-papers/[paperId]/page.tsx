@@ -13,6 +13,7 @@ import { countries } from "@/data/countries";
 import { Badge } from "@/components/badge";
 import { statusMap } from "../page";
 import { ViewPositionPaperFrame } from "../client-components";
+import Link from "next/link";
 
 export default async function ViewPositionPaper(props) {
 	const authSession = await auth();
@@ -154,7 +155,13 @@ export default async function ViewPositionPaper(props) {
 					<DescriptionDetails>{selectedCountry?.countryNameEn}</DescriptionDetails>
 
 					<DescriptionTerm>Delegate</DescriptionTerm>
-					<DescriptionDetails>{fullName}</DescriptionDetails>
+					<DescriptionDetails>
+						<Link
+							href={`/medibook/user/${selectedPositionPaper.user.username || selectedPositionPaper.user.id}`}
+							className="text-blue-600 hover:underline">
+							{fullName}
+						</Link>
+					</DescriptionDetails>
 					{(isSubmitterOfPositionPaper || isManagement || isChairOfCommittee) && (
 						<>
 							<DescriptionTerm>Submitted</DescriptionTerm>

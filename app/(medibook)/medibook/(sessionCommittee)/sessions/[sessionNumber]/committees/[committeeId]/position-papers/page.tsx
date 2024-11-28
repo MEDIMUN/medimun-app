@@ -34,7 +34,7 @@ export const statusMap = {
 		color: "green",
 	},
 	PENDING: {
-		name: "Pending",
+		name: "Pending Review",
 		color: "yellow",
 	},
 	REVISION: {
@@ -217,8 +217,10 @@ export default async function Page(props) {
 													<DropdownMenu>
 														<DropdownItem
 															href={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/position-papers/${paper.id}`}>
-															View
+															View Paper
 														</DropdownItem>
+														<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View User</DropdownItem>
+														<DropdownItem href={`/medibook/messenger/@${user.username || user.id}?new=true`}>Message User</DropdownItem>
 														<SearchParamsDropDropdownItem searchParams={{ "return-position-paper": paper.id }}>Return</SearchParamsDropDropdownItem>
 														<SearchParamsDropDropdownItem searchParams={{ "delete-position-paper": paper.id }}>Delete</SearchParamsDropDropdownItem>
 													</DropdownMenu>
@@ -330,10 +332,11 @@ export default async function Page(props) {
 													<Button
 														plain
 														href={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/position-papers/${paper.id}`}>
-														View
+														View Paper
 													</Button>
 												</TableCell>
-
+												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View User</DropdownItem>
+												<DropdownItem href={`/medibook/messenger/@${user.username || user.id}?new=true`}>Message User</DropdownItem>
 												<TableCell>{selectedCountry?.countryNameEn || "-"}</TableCell>
 												<TableCell>
 													<UserTooltip userId={user.id}>

@@ -45,7 +45,12 @@ export default async function Page(props) {
 			<TopBar sortOptions={sortOptions} buttonHref="/medibook" buttonText="Home" defaultSort="timedesc" title="Personal Files">
 				<SearchParamsButton searchParams={{ uploadresource: true }}>Upload File</SearchParamsButton>
 			</TopBar>
-			<ResourcesTable tableColumns={["Name", "Scope", "Date Uploaded", "Tags"]} resources={prismaResources} isManagement={isManagement} />
+			<ResourcesTable
+				baseUrl={"/medibook/drive"}
+				tableColumns={["Name", "Scope", "Date Uploaded", "Tags"]}
+				resources={prismaResources}
+				isManagement={isManagement}
+			/>
 			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
 		</>
 	);
