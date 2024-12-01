@@ -56,7 +56,6 @@ export async function createPositionPaper(resourceId: string, committeeId: strin
 export async function deletePositionPaper(paperId: string) {
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
-	if (!isManagement) return { ok: false, message: ["Unauthorized"] };
 
 	if (!authSession) return { ok: false, message: ["Unauthorized"] };
 

@@ -157,7 +157,7 @@ export default async function ViewPositionPaper(props) {
 					<DescriptionTerm>Delegate</DescriptionTerm>
 					<DescriptionDetails>
 						<Link
-							href={`/medibook/user/${selectedPositionPaper.user.username || selectedPositionPaper.user.id}`}
+							href={`/medibook/users/${selectedPositionPaper.user.username || selectedPositionPaper.user.id}`}
 							className="text-blue-600 hover:underline">
 							{fullName}
 						</Link>

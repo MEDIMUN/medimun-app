@@ -393,7 +393,6 @@ export async function ResourceViewPage(props) {
 		"application/vnd.google-apps.presentation",
 		"application/vnd.google-apps.drawing",
 		"application/vnd.google-apps.script",
-		"application/pdf",
 		"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 		"application/vnd.openxmlformats-officedocument.presentationml.presentation",
