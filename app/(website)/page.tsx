@@ -151,7 +151,7 @@ export async function HomePage() {
 								<Image
 									width={1000}
 									height={1000}
-									quality={80}
+									quality={50}
 									alt="Delegates lined up"
 									src="/placeholders/delegates-2.jpg"
 									className="aspect-[7/5] w-[37rem] max-w-none rounded-2xl bg-gray-50 object-cover"
@@ -162,7 +162,7 @@ export async function HomePage() {
 									<Image
 										width={1000}
 										height={1000}
-										quality={80}
+										quality={50}
 										alt="Delegates lined up for the plenary session"
 										src="/placeholders/delegates-3.jpg"
 										className="aspect-[4/3] w-[24rem] max-w-none flex-none rounded-2xl bg-gray-50 object-cover"
@@ -172,7 +172,7 @@ export async function HomePage() {
 									<Image
 										width={1000}
 										height={1000}
-										quality={80}
+										quality={50}
 										alt="Delegates and the committee chairs in session"
 										src="/placeholders/delegates-and-chairs.JPG"
 										className="aspect-[7/5] w-[37rem] max-w-none flex-none rounded-2xl bg-gray-50 object-cover"
@@ -182,7 +182,7 @@ export async function HomePage() {
 									<Image
 										width={1000}
 										height={1000}
-										quality={80}
+										quality={50}
 										alt="Delegates indoors lifting their placards"
 										src="/assets/delegates-indoors.jpg"
 										className="aspect-[4/3] w-[24rem] max-w-none rounded-2xl bg-gray-50 object-cover"
@@ -217,10 +217,11 @@ export async function HomePage() {
 							</div>
 						</div>
 						<Image
-							alt="Product screenshot"
+							alt="MediBook screenshot"
 							src="/assets/app-preview.png"
 							width={2432}
 							height={1442}
+							quality={60}
 							className="w-[48rem] max-w-none rounded-2xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
 						/>
 					</div>
