@@ -2,7 +2,7 @@
 
 import { MyDocument } from "@/pdf/templates/invoice";
 import prisma from "@/prisma/client";
-import { Document, Page, renderToStream, Text } from "@alexandernanberg/react-pdf-renderer";
+import { Document, Page, renderToStream, Text } from "@react-pdf/renderer";
 
 export default async function handler(req, res) {
 	const selectedInvoice = await prisma.invoice

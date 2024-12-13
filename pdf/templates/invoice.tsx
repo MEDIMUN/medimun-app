@@ -1,5 +1,5 @@
 import { arrayFromNumber } from "@/lib/array-from-number";
-import { Page, Text, View, Document, StyleSheet, render, Image, Font, Svg, G, Rect, Path, Circle, Link } from "@alexandernanberg/react-pdf-renderer";
+import { Page, Text, View, Document, StyleSheet, render, Image, Font, Svg, G, Rect, Path, Circle, Link } from "@react-pdf/renderer";
 import { createTw } from "react-pdf-tailwind";
 
 const tw = createTw({

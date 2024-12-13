@@ -2,7 +2,7 @@
 
 import { DropdownItem } from "@/components/dropdown";
 import { MyDocument } from "@/pdf/templates/invoice";
-import { usePDF, PDFDownloadLink } from "@alexandernanberg/react-pdf-renderer";
+import { usePDF, PDFDownloadLink } from "@react-pdf/renderer";
 import { useEffect, useRef, useState } from "react";
 
 export function PdfDownloadButton({ invoice }) {

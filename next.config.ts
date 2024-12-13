@@ -33,10 +33,11 @@ const nextConfig = {
 	compiler: {
 		removeConsole: process.env.NODE_ENV === "production",
 	},
-	transpilePackages: ["next-auth"],
+	transpilePackages: ["next-auth", "prettier"],
 	experimental: {
+		ppr: "incremental",
 		turbo: { optimizeImages: true },
-		optimizePackageImports: ["@heroicons/react/16/solid", "@heroicons/react/16/outline", "@react-email", "@alexandernanberg/react-pdf-renderer"],
+		optimizePackageImports: ["@heroicons/react/16/solid", "@heroicons/react/16/outline", "@react-email", "@react-pdf/renderer"],
 		after: true,
 		serverActions: {
 			bodySizeLimit: "50mb",
