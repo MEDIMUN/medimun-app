@@ -354,10 +354,18 @@ model ApplicationGrantedDelegationCountries {
   sessionId String
 }
 
+enum SchoolDelegationProposalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REVISION
+}
+
 model SchoolDelegationProposal {
   id         String   @id @default(nanoid())
   //
   date       DateTime @default(now())
+  status     String   @default("PENDING")
   //
   assignment String
   changes    String?

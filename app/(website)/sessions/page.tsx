@@ -15,14 +15,14 @@ import { Code } from "@/components/text";
 export const revalidate = 60;
 
 export default async function Page(props) {
-    const searchParams = await props.searchParams;
-    const currentPage = parseInt(searchParams.page) || 1;
+	const searchParams = await props.searchParams;
+	const currentPage = parseInt(searchParams.page) || 1;
 
-    const whereObject = {
+	const whereObject = {
 		isPartlyVisible: true,
 	};
 
-    const [sessions, numberOfSessions] = await prisma
+	const [sessions, numberOfSessions] = await prisma
 		.$transaction([
 			prisma.session.findMany({
 				where: whereObject,
@@ -35,7 +35,7 @@ export default async function Page(props) {
 		])
 		.catch(notFound);
 
-    if (!sessions.length) {
+	if (!sessions.length) {
 		return (
 			<div className="flex h-[calc(100vh-64px)] flex-col items-center justify-center">
 				<Code className="text-4xl">No sessions found</Code>
@@ -43,7 +43,7 @@ export default async function Page(props) {
 		);
 	}
 
-    return (
+	return (
 		<>
 			<Topbar title={"Sessions"} description={"All Past, Current and Future Sessions of our Conference."} />
 			{!!sessions.length && (

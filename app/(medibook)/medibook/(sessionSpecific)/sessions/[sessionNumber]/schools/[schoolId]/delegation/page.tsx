@@ -1,4 +1,4 @@
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
 import { auth } from "@/auth";
 import { Badge } from "@/components/badge";
 import { Divider } from "@/components/divider";
@@ -8,12 +8,14 @@ import { authorize, authorizeSchoolDirectorSchool, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { SelectCountriesSection, SelectStudents } from "./client-components";
-import { InformationCircleIcon, XCircleIcon } from "@heroicons/react/16/solid";
+import { EllipsisVerticalIcon, InformationCircleIcon, XCircleIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { areDelegateApplicationsOpen } from "@/app/(medibook)/medibook/(sessionSpecific)/sessions/[sessionNumber]/applications/delegation/page";
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from "@/components/description-list";
 import { Avatar } from "@nextui-org/avatar";
 import { Fragment } from "react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 
 export default async function Page(props) {
 	const searchParams = await props.searchParams;
@@ -86,6 +88,38 @@ export default async function Page(props) {
 
 	const users = parsedAssignment || parsedFinal ? await prisma.user.findMany({ where: { id: { in: allStudentIds } } }) : [];
 
+	const assignedDelegatesOfSchoolAndSession = await prisma.delegate.findMany({
+		where: {
+			committee: { sessionId: selectedSession.id },
+			user: {
+				schoolId: selectedSchool.id,
+			},
+		},
+		orderBy: [{ committee: { type: "asc" } }, { committee: { name: "asc" } }, { country: "asc" }, { user: { officialName: "asc" } }],
+		select: {
+			country: true,
+			committee: {
+				select: {
+					slug: true,
+					id: true,
+					name: true,
+					ExtraCountry: true,
+				},
+			},
+			user: {
+				select: {
+					username: true,
+					officialName: true,
+					officialSurname: true,
+					displayName: true,
+					id: true,
+				},
+			},
+		},
+	});
+
+	//map assignemnts in a way that we can use it in the renderAssignments function
+
 	const renderAssignments = (assignments) =>
 		assignments.map((assignment, index) => {
 			const student = users.find((u) => u.id === assignment.studentId);
@@ -106,29 +140,53 @@ export default async function Page(props) {
 			);
 		});
 
-	if (selectedSchool?.finalDelegation?.length) {
-		const proposal = delegationAssignmentProposal;
+	if (selectedSchool?.finalDelegation?.length || delegationAssignmentProposal?.status == "ACCEPTED") {
 		return (
 			<>
-				<TopBar
-					hideBackdrop
-					buttonText={selectedSchool.name}
-					buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`}
-					hideSearchBar
-					title="My Delegation"
-				/>
-				<DescriptionList>
-					<DescriptionTerm>Delegation ID</DescriptionTerm>
-					<DescriptionDetails>{selectedSchool.finalDelegation[0].id}</DescriptionDetails>
-					<DescriptionTerm>Delegation Application Status</DescriptionTerm>
-					<DescriptionDetails>
-						<Badge color="green">Accepted</Badge>
-					</DescriptionDetails>
-					<DescriptionTerm>Assignments</DescriptionTerm>
-					<DescriptionDetails>
-						<div className="grid grid-cols-1 xl:grid-cols-2 gap-2">{renderAssignments(JSON.parse(selectedSchool.finalDelegation[0].delegation))}</div>
-					</DescriptionDetails>
-				</DescriptionList>
+				<TopBar buttonText={selectedSchool.name} buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`} title="My Delegation" />
+				<Table className="showscrollbar">
+					<TableHead>
+						<TableRow>
+							<TableHeader>
+								<span className="sr-only">Actions</span>
+							</TableHeader>
+							<TableHeader>Official Name</TableHeader>
+							<TableHeader>Official Surname</TableHeader>
+							<TableHeader>Display Name</TableHeader>
+							<TableHeader>Committee</TableHeader>
+							<TableHeader>Country/Entity</TableHeader>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{assignedDelegatesOfSchoolAndSession.map((assignment, index) => {
+							const user = assignment.user;
+							const committee = assignment.committee;
+							const allCountries = countries.concat(committee.ExtraCountry);
+							const selectedCountry = allCountries.find((c) => c.countryCode === assignment.country);
+							return (
+								<TableRow key={index + user.id}>
+									<TableCell>
+										<Dropdown>
+											<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
+												<EllipsisVerticalIcon />
+											</DropdownButton>
+											<DropdownMenu anchor="bottom end">
+												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View User</DropdownItem>
+												<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit User</SearchParamsDropDropdownItem>
+												<DropdownItem href={`/medibook/committees/${committee.slug || committee.id}`}>View Committee</DropdownItem>
+											</DropdownMenu>
+										</Dropdown>
+									</TableCell>
+									<TableCell>{user.officialName}</TableCell>
+									<TableCell>{user.officialSurname}</TableCell>
+									<TableCell>{user.displayName || "-"}</TableCell>
+									<TableCell>{committee.name}</TableCell>
+									<TableCell>{selectedCountry?.countryNameEn}</TableCell>
+								</TableRow>
+							);
+						})}
+					</TableBody>
+				</Table>
 			</>
 		);
 	}

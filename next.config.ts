@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	/* 	cacheHandler: process.env.NODE_ENV === "production" ? require.resolve("./cache-handler.js") : undefined,
-	cacheMaxMemorySize: 0, */
-	generateBuildId: async () => {
+	/* 	cacheHandler: require.resolve("./cache-handler.mjs"),
+	 */ generateBuildId: async () => {
 		return process.env.GIT_HASH || Math.random().toString(36).slice(2);
 	},
 	async redirects() {
@@ -35,8 +34,8 @@ const nextConfig = {
 	},
 	transpilePackages: ["next-auth", "prettier"],
 	experimental: {
-		ppr: "incremental",
-		turbo: { optimizeImages: true },
+		/* 		ppr: "incremental",
+		 */ turbo: { optimizeImages: true },
 		optimizePackageImports: ["@heroicons/react/16/solid", "@heroicons/react/16/outline", "@react-email", "@react-pdf/renderer"],
 		after: true,
 		serverActions: {
