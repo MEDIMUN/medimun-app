@@ -147,11 +147,6 @@ export function PrivateProfilePictureUploader({ user }) {
 		setIsLoading(false);
 	}
 
-	useEffect(() => {
-		const res = confirm("Are you sure you want to delete your profile picture?");
-		alert(res);
-	}, []);
-
 	return (
 		<div className="flex min-w-full flex-col gap-5 md:flex-row">
 			<form ref={formRef} className="w-full">
