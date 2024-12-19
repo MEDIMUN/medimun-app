@@ -34,9 +34,9 @@ export function AssignUserChip({ uid, officialName, displayName }) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	function onClickHandler() {
-		const userIdsArray = searchParams.get("assignroles").split(",");
-		const newUsersArray = userIdsArray.filter((id) => id !== uid);
-		if (!newUsersArray.length) {
+		const userIdsArray = searchParams?.get("assignroles")?.split(",");
+		const newUsersArray = userIdsArray?.filter((id) => id !== uid);
+		if (!newUsersArray?.length) {
 			removeSearchParams({ assignroles: "" }, router);
 			router.refresh();
 		} else {

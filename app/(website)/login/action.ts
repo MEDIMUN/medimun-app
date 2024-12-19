@@ -2,7 +2,7 @@
 
 import { signIn as signInAction } from "@/auth";
 import prisma from "@/prisma/client";
-import { isRedirectError } from "next/dist/client/components/redirect";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export async function signIn({ username, password }) {
 	let selectedUser;

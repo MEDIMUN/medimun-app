@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { LayoutGroup, motion } from "framer-motion";
 import React, { Fragment, forwardRef, useId } from "react";
 import { TouchTarget } from "./button";
-import { Link } from "./link";
+import Link from "next/link";
 
 export function Sidebar({ className, ...props }: React.ComponentPropsWithoutRef<"nav">) {
 	return <nav {...props} className={clsx(className, "flex h-full min-h-0 flex-col")} />;

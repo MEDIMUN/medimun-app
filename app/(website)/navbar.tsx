@@ -53,7 +53,7 @@ const callsToAction = [
 	{ name: "View all products", href: "#", icon: RectangleGroupIcon }, */
 ];
 
-const whitepages = /*  ["/resources", "/announcements", "/blog", "/sessions", "/about"]; */ [];
+const whitepages = /*  ["/resources", "/announcements", "/blog", "/sessions", "/about"]; */ ["/shop"];
 
 const hiddenPathnames = ["/login", "/login/help", "/reset-password", "/verify-email", "/signup"];
 
