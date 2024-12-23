@@ -56,6 +56,7 @@ export default async function Page(props) {
 	const query = searchParams.search || "";
 	let positionPapersVisibleToDelegate = [];
 	let positionPapersOfDelegate = [];
+	const currentPage = parseInt(searchParams.page) || 1;
 
 	const isManagement = authorize(authSession, [s.management]);
 
@@ -103,6 +104,8 @@ export default async function Page(props) {
 					],
 				},
 			},
+			take: 10,
+			skip: (currentPage - 1) * 10,
 			orderBy: [{ index: "asc" }, { userId: "asc" }],
 			include: { user: { include: { delegate: { where: { committeeId: selectedCommittee.id } } } } },
 		});
@@ -140,6 +143,8 @@ export default async function Page(props) {
 				},
 				status: { in: ["APPROVED"] },
 			},
+			take: 10,
+			skip: (currentPage - 1) * 10,
 			orderBy: [{ index: "asc" }, { userId: "asc" }],
 			include: { user: { include: { delegate: { where: { committeeId: selectedCommittee.id } } } } },
 		});

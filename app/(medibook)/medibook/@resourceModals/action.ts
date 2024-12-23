@@ -143,6 +143,10 @@ export async function uploadResource(formData: FormData, searchParams: any) {
 		const fileName = `${randomName}.${fileExtension[0]}`;
 		const filePath = `resources/${fileName}`;
 
+		//ocket stream = mime type return error
+
+		if (file.type === "application/octet-stream") return { ok: false, message: "Invalid file type" };
+
 		try {
 			await prisma.$transaction(
 				async (tx) => {

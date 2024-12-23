@@ -84,7 +84,45 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 				},
 			}),
 			prisma.delegate.count({
-				where: { committee: { session: { number: params.sessionNumber }, OR: [{ id: params.committeeId }, { slug: params.committeeId }] } },
+				where: {
+					OR: [
+						{
+							user: {
+								displayName: {
+									contains: query,
+									mode: "insensitive",
+								},
+							},
+						},
+						{
+							user: {
+								officialName: {
+									contains: query,
+									mode: "insensitive",
+								},
+							},
+						},
+						{
+							user: {
+								officialSurname: {
+									contains: query,
+									mode: "insensitive",
+								},
+							},
+						},
+						{
+							user: {
+								Student: {
+									name: {
+										contains: query,
+										mode: "insensitive",
+									},
+								},
+							},
+						},
+					],
+					committee: { session: { number: params.sessionNumber }, OR: [{ id: params.committeeId }, { slug: params.committeeId }] },
+				},
 			}),
 		])
 		.catch(notFound);

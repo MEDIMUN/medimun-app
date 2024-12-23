@@ -97,21 +97,30 @@ export function AccountDropdownMenu({ anchor }: { anchor: "top start" | "bottom 
 				<DropdownSection>
 					<DropdownItem
 						disabled={theme == "light"}
-						onClick={() => setTheme("light")}
+						onClick={() => {
+							setTheme("light");
+							window.dispatchEvent(new Event("storage"));
+						}}
 						className={cn(theme == "light" && "bg-primary text-white !hover:bg-primary")}>
 						<SunIcon className={cn(theme == "light" && "!text-white")} />
 						<DropdownLabel className={cn(theme == "light" && "!text-white")}>Light</DropdownLabel>
 					</DropdownItem>
 					<DropdownItem
 						disabled={theme == "dark"}
-						onClick={() => setTheme("dark")}
+						onClick={() => {
+							setTheme("dark");
+							window.dispatchEvent(new Event("storage"));
+						}}
 						className={cn(theme == "dark" && "bg-primary text-white !hover:bg-primary")}>
 						<MoonIcon className={cn(theme == "dark" && "!text-white")} />
 						<DropdownLabel className={cn(theme == "dark" && "!text-white")}>Dark</DropdownLabel>
 					</DropdownItem>
 					<DropdownItem
 						disabled={theme == "system"}
-						onClick={() => setTheme("system")}
+						onClick={() => {
+							setTheme("system");
+							window.dispatchEvent(new Event("storage"));
+						}}
 						className={cn(theme == "system" && "bg-primary text-white !hover:bg-primary")}>
 						<ComputerDesktopIcon className={cn(theme == "system" && "!text-white")} />
 						<DropdownLabel className={cn(theme == "system" && "!text-white")}>System</DropdownLabel>
@@ -253,6 +262,22 @@ export function Sidebar({ sessions }) {
 		);
 	}
 
+	function OptionsItemWithIcon({ basePath, item, length, index }) {
+		return (
+			<SidebarItem
+				disabled={item.isDisabled || item.isSoon}
+				className={cn(index + 1 == length && "mb-2")}
+				{...(item.isDisabled || item.isSoon ? {} : { href: basePath + item.href })}
+				current={pathname == basePath + item.href}>
+				<Icon slot="icon" icon={item.icon} height={20} />
+				<SidebarLabel>
+					{item.name}
+					{item.isSoon && <SoonBadge />}
+				</SidebarLabel>
+			</SidebarItem>
+		);
+	}
+
 	function Departmentoptions({ basePath, departmentId }) {
 		const allUserRoles = (authSession?.user?.pastRoles || []).concat(authSession?.user?.currentRoles || []);
 		const isManagerOfCommittee = authorizeManagerDepartment(allUserRoles, departmentId);
@@ -272,7 +297,7 @@ export function Sidebar({ sessions }) {
 		));
 	}
 
-	function CommitteeOptions({ basePath, committeeId }) {
+	function CommitteeOptions({ basePath, committeeId, Item = OptionsItem }) {
 		const allUserRoles = (authSession?.user?.pastRoles || []).concat(authSession?.user?.currentRoles || []);
 		const isChair = authorizeChairCommittee(allUserRoles, committeeId);
 		const isDelegate = authorizeDelegateCommittee(allUserRoles, committeeId);
@@ -286,7 +311,7 @@ export function Sidebar({ sessions }) {
 			{ name: "Topics", href: `/topics`, isVisible: true, icon: "heroicons-solid:library" },
 			{ name: "Announcements", href: `/announcements`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:speakerphone" },
 			{ name: "Resolutions", href: `/resolutions`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
-			{ name: "Chat", href: `/chat`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
+			{ name: "Chat", href: `/chat`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:chat" },
 			{ name: "Position Papers", href: `/position-papers`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:document-text" },
 			{ name: "Resources", href: `/resources`, isVisible: isManagementOrChairOrDelegate, icon: "heroicons-solid:folder" },
 			{ name: "Roll Calls", href: `/roll-calls`, isVisible: isManagement || isChair, icon: "heroicons-solid:clipboard-list" },
@@ -294,7 +319,7 @@ export function Sidebar({ sessions }) {
 		].filter((o) => o.isVisible);
 
 		return committeeOptionsList.map((item, index) => (
-			<OptionsItem key={"committee-options-" + index} basePath={basePath} item={item} length={committeeOptionsList.length} index={index} />
+			<Item key={"committee-options-" + index} basePath={basePath} item={item} length={committeeOptionsList.length} index={index} />
 		));
 	}
 
@@ -450,7 +475,6 @@ export function Sidebar({ sessions }) {
 								<Icon slot="icon" icon="heroicons-solid:chat" height={20} />
 								<SidebarLabel>Messaging</SidebarLabel>
 							</SidebarItem>
-
 							<SidebarItem href="/medibook/policies" current={pathname === "/medibook/policies"}>
 								<Icon slot="icon" icon="heroicons-solid:book-open" height={20} />
 								<SidebarLabel>Policies</SidebarLabel>
@@ -459,10 +483,14 @@ export function Sidebar({ sessions }) {
 								<Icon slot="icon" icon="heroicons-solid:inbox-in" height={20} />
 								<SidebarLabel>Storage Drive</SidebarLabel>
 							</SidebarItem>
+							<SidebarItem href={`/medibook/invoices`} current={pathname == `/medibook/invoices`}>
+								<Icon icon="heroicons-solid:currency-euro" height={20} />
+								<SidebarLabel>Individual Invoices</SidebarLabel>
+							</SidebarItem>
 						</SidebarSection>
 						<SidebarSection>
 							<SidebarHeading>
-								General{" "}
+								Global{" "}
 								<ShowHideButton
 									isShown={visibleSidebarOptions.includes("general")}
 									onClick={() => {
@@ -504,14 +532,19 @@ export function Sidebar({ sessions }) {
 										<Icon slot="icon" icon="heroicons-solid:folder" height={20} />
 										<SidebarLabel>Resources</SidebarLabel>
 									</SidebarItem>
-									<SidebarItem href={`/medibook/invoices`} current={pathname == `/medibook/invoices`}>
-										<Icon icon="heroicons-solid:currency-euro" height={20} />
-										<SidebarLabel>Individual Invoices</SidebarLabel>
-									</SidebarItem>
 								</>
 							)}
 						</SidebarSection>
-
+						{!!delegateRoles.length && status === "authenticated" && (
+							<SidebarSection className="bg-zinc-100 md:bg-zinc-200 dark:bg-zinc-800 -ml-4 pl-4 pr-4 pb-2 pt-3 -mr-4">
+								<SidebarHeading>My Committee</SidebarHeading>
+								<CommitteeOptions
+									Item={OptionsItemWithIcon}
+									basePath={`/medibook/sessions/${selectedSession}/committees/${delegateRoles[0]?.committeeSlug || delegateRoles[0]?.committeeId}`}
+									committeeId={delegateRoles[0]?.committeeId}
+								/>
+							</SidebarSection>
+						)}
 						{!!schoolDirectorRoles.length &&
 							status === "authenticated" &&
 							schoolDirectorRoles.map((role) => {
@@ -535,40 +568,6 @@ export function Sidebar({ sessions }) {
 									</SidebarSection>
 								);
 							})}
-						{!!delegateRoles.length &&
-							status === "authenticated" &&
-							delegateRoles.map((role) => {
-								const delegateBasePath = `/medibook/sessions/${selectedSession}/committees/${role.committeeSlug || role.committeeId}`;
-								return (
-									<SidebarSection key={"delegate-role" + role.id}>
-										<SidebarHeading className="line-clamp-1">My Committee</SidebarHeading>
-										<SidebarItem href={delegateBasePath} current={pathname == delegateBasePath}>
-											<Icon slot="icon" icon="heroicons-solid:home" height={20} />
-											<SidebarLabel>Overview</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem href={`${delegateBasePath}/topics`} current={pathname == `${delegateBasePath}/topics`}>
-											<Icon slot="icon" icon="heroicons-solid:library" height={20} />
-											<SidebarLabel>Topics</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem href={`${delegateBasePath}/resolutions`} current={pathname == `${delegateBasePath}/resolutions`}>
-											<Icon slot="icon" icon="heroicons-solid:document-text" height={20} />
-											<SidebarLabel>Resolutions</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem href={`${delegateBasePath}/chat`} current={pathname == `${delegateBasePath}/chat`}>
-											<Icon slot="icon" icon="heroicons-solid:chat" height={20} />
-											<SidebarLabel>Chat</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem href={`${delegateBasePath}/resources`} current={pathname == `${delegateBasePath}/resources`}>
-											<Icon slot="icon" icon="heroicons-solid:folder" height={20} />
-											<SidebarLabel>Resources</SidebarLabel>
-										</SidebarItem>
-										<SidebarItem href={`${delegateBasePath}/settings`} current={pathname == `${delegateBasePath}/settings`}>
-											<Icon slot="icon" icon="heroicons-solid:cog" height={20} />
-											<SidebarLabel>Settings</SidebarLabel>
-										</SidebarItem>
-									</SidebarSection>
-								);
-							})}
 						{selectedSessionData?.applicationsOpen && !authorizePerSession(authSession, [s.schooldirector], [selectedSession]) && !isManagement && (
 							<SidebarSection>
 								<SidebarHeading>Individual Applications</SidebarHeading>
@@ -580,14 +579,7 @@ export function Sidebar({ sessions }) {
 								</SidebarItem>
 							</SidebarSection>
 						)}
-						{/* {authorize(authSession, [s.chair, s.delegate]) && (
-						{authorize(authSession, [s.member, s.manager]) && (
-							<SidebarSection>
-								<SidebarHeading>
-									My Department <i>Coming Soon</i>
-								</SidebarHeading>
-							</SidebarSection>
-						)} */}
+
 						{!!sessionsData?.length && (
 							<SidebarSection>
 								<SidebarHeading>
