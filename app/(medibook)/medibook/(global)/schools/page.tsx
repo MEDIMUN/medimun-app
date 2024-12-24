@@ -109,7 +109,7 @@ export default async function Page(props) {
 			}),
 			prisma.school.count(queryObject as any),
 		])
-		.catch((e) => console.log(e));
+		.catch();
 
 	return (
 		<>

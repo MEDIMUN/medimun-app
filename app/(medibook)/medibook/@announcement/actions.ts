@@ -152,7 +152,6 @@ export async function publishAnnouncement(formData: FormData, params) {
 			},
 		});
 	} catch (e) {
-		console.log(e);
 		return { ok: false, message: "Failed to create announcement." };
 	}
 

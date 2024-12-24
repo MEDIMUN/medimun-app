@@ -97,7 +97,7 @@ export default async function Page(props) {
 			}),
 			prisma.user.count({ where: { ...(queryObject as any) } }),
 		])
-		.catch((e) => console.log(e));
+		.catch();
 
 	const usersWithData = users.map((user) => {
 		return {

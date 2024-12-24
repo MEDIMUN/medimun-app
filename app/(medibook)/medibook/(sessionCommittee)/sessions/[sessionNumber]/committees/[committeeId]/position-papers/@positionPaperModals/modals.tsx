@@ -208,9 +208,6 @@ export function ModalDeletePositionPaper({ selectedPositionPaper }) {
 	const searchParams = useSearchParams();
 	const { data: authSession, status } = useSession();
 	const [isLoading, setIsLoading] = useFlushState(false);
-	const isManagement = status === "authenticated" && authorize(authSession, [s.management]);
-
-	console.log(selectedPositionPaper);
 
 	function onClose() {
 		removeSearchParams({ "delete-position-paper": "" }, router);

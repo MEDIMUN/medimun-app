@@ -157,7 +157,6 @@ export const initializeSocket = (server: any): Server => {
 				if (isMemberOfPIorIT && !isManagement && !usersRegistered) return unauthorizedSocket;
 
 				if (usersRegistered) {
-					console.log(usersRegistered);
 					socket.nsp.to(`private-user-${authSession?.user.id}`).emit("toast.info", "User already registered.");
 				} else {
 					try {

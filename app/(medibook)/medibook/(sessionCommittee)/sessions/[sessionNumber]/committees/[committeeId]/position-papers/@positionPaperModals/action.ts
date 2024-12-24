@@ -13,7 +13,6 @@ export async function createPositionPaper(resourceId: string, committeeId: strin
 	const authSession = await auth();
 
 	if (!authSession) return { ok: false, message: ["Unauthorized"] };
-	console.log(resourceId, committeeId);
 
 	const selectedCommittee = await prisma.committee.findFirst({ where: { id: committeeId } });
 
@@ -85,7 +84,6 @@ export async function deletePositionPaper(paperId: string) {
 	try {
 		await prisma.positionPaper.delete({ where: { id: paperId } });
 	} catch (error) {
-		console.log(paperId);
 		return { ok: false, message: ["Error deleting position paper."] };
 	}
 
@@ -107,8 +105,6 @@ export async function returnPositionPaper(formData: FormData, paperId: string) {
 	const parsedFormData = parseFormData(formData);
 
 	const { data, error } = schema.safeParse(parsedFormData);
-
-	console.log(error?.errors);
 
 	if (error) return { ok: false, message: ["Invalid data."] };
 
