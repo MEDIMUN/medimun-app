@@ -37,7 +37,6 @@ const nextConfig = {
 		ppr: "incremental",
 		turbo: { optimizeImages: true },
 		optimizePackageImports: ["@heroicons/react/16/solid", "@heroicons/react/16/outline", "@react-email", "@react-pdf/renderer"],
-		after: true,
 		serverActions: {
 			bodySizeLimit: "50mb",
 			allowedOrigins: ["https://www.medimun.org", "www.medimun.org", "www.medimun.org.", "https://www.medimun.org."],
