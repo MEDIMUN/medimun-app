@@ -38,6 +38,14 @@ export async function createPositionPaper(resourceId: string, committeeId: strin
 	if (lastPositionPaper && !["REVISION"].includes(lastPositionPaper?.status))
 		return { ok: false, message: ["You have already submitted a position paper."] };
 
+	const selectedResource = await prisma.resource.findFirst({ where: { id: resourceId } });
+
+	if (!selectedResource) return { ok: false, message: ["Resource not found."] };
+
+	const notAllowedMimeTypes = ["application/x-msdownload", "application/x-msdos-program", "application/octet-stream"];
+
+	if (!selectedResource.driveUrl && notAllowedMimeTypes?.includes(selectedResource?.mimeType)) return { ok: false, message: ["Invalid file type."] };
+
 	try {
 		await prisma.positionPaper.create({
 			data: {
@@ -92,13 +100,15 @@ export async function returnPositionPaper(formData: FormData, paperId: string) {
 	if (!formData) return { ok: false, message: ["Invalid data."] };
 
 	const schema = z.object({
-		comment: z.string().max(500).trim().optional().nullable(),
+		comment: z.string().trim().max(10000).optional().nullable(),
 		action: z.enum(["APPROVED", "REJECTED", "REVISION"]),
 	});
 
 	const parsedFormData = parseFormData(formData);
 
 	const { data, error } = schema.safeParse(parsedFormData);
+
+	console.log(error?.errors);
 
 	if (error) return { ok: false, message: ["Invalid data."] };
 

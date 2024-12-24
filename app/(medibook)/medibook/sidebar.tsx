@@ -168,6 +168,8 @@ export function Sidebar({ sessions }) {
 		setVisibleSidebarOptions,
 		delegateRoles,
 		setDelegateRoles,
+		chairRoles,
+		setChairRoles,
 	} = useSidebarContext();
 
 	const basePath = `/medibook/sessions/${selectedSession}`;
@@ -190,6 +192,7 @@ export function Sidebar({ sessions }) {
 		setDelegateRoles(
 			allCurrentAndPastRoles.filter((role) => role?.roleIdentifier === "delegate")?.filter((role) => role?.session === selectedSession)
 		);
+		setChairRoles(allCurrentAndPastRoles.filter((role) => role?.roleIdentifier === "chair")?.filter((role) => role?.session === selectedSession));
 
 		if (!sessionData?.committee) return;
 		sessionData.committee = sortedCommittees;
@@ -411,7 +414,7 @@ export function Sidebar({ sessions }) {
 	if (status === "authenticated")
 		return (
 			<>
-				<SidebarComponent>
+				<SidebarComponent className="">
 					<SidebarHeader>
 						<Link href="/medibook" className="hidden md:block">
 							<div className="mb-4 ml-[8px] mt-[4px] flex h-[16px] max-w-max drop-shadow hover:grayscale">
@@ -475,10 +478,6 @@ export function Sidebar({ sessions }) {
 								<Icon slot="icon" icon="heroicons-solid:chat" height={20} />
 								<SidebarLabel>Messaging</SidebarLabel>
 							</SidebarItem>
-							<SidebarItem href="/medibook/policies" current={pathname === "/medibook/policies"}>
-								<Icon slot="icon" icon="heroicons-solid:book-open" height={20} />
-								<SidebarLabel>Policies</SidebarLabel>
-							</SidebarItem>
 							<SidebarItem href="/medibook/drive" current={pathname === "/medibook/drive"}>
 								<Icon slot="icon" icon="heroicons-solid:inbox-in" height={20} />
 								<SidebarLabel>Storage Drive</SidebarLabel>
@@ -532,17 +531,39 @@ export function Sidebar({ sessions }) {
 										<Icon slot="icon" icon="heroicons-solid:folder" height={20} />
 										<SidebarLabel>Resources</SidebarLabel>
 									</SidebarItem>
+									<SidebarItem href="/medibook/policies" current={pathname === "/medibook/policies"}>
+										<Icon slot="icon" icon="heroicons-solid:book-open" height={20} />
+										<SidebarLabel>Policies</SidebarLabel>
+									</SidebarItem>
 								</>
 							)}
 						</SidebarSection>
 						{!!delegateRoles.length && status === "authenticated" && (
-							<SidebarSection className="bg-zinc-100 md:bg-zinc-200 dark:bg-zinc-800 -ml-4 pl-4 pr-4 pb-2 pt-3 -mr-4">
-								<SidebarHeading>My Committee</SidebarHeading>
-								<CommitteeOptions
-									Item={OptionsItemWithIcon}
-									basePath={`/medibook/sessions/${selectedSession}/committees/${delegateRoles[0]?.committeeSlug || delegateRoles[0]?.committeeId}`}
-									committeeId={delegateRoles[0]?.committeeId}
-								/>
+							<SidebarSection>
+								<div
+									style={{ paddingTop: "16px", paddingBottom: "16px" }}
+									className="bg-zinc-100 dark:bg-zinc-800 md:bg-zinc-200 -ml-4 pl-4 -mr-4 pr-4">
+									<SidebarHeading>My Committee</SidebarHeading>
+									<CommitteeOptions
+										Item={OptionsItemWithIcon}
+										basePath={`/medibook/sessions/${selectedSession}/committees/${delegateRoles[0]?.committeeSlug || delegateRoles[0]?.committeeId}`}
+										committeeId={delegateRoles[0]?.committeeId}
+									/>
+								</div>
+							</SidebarSection>
+						)}
+						{!!chairRoles.length && status === "authenticated" && (
+							<SidebarSection>
+								<div
+									style={{ paddingTop: "16px", paddingBottom: "16px" }}
+									className="bg-zinc-100 dark:bg-zinc-800 md:bg-zinc-200 -ml-4 pl-4 -mr-4 pr-4">
+									<SidebarHeading>My Committee</SidebarHeading>
+									<CommitteeOptions
+										Item={OptionsItemWithIcon}
+										basePath={`/medibook/sessions/${selectedSession}/committees/${chairRoles[0]?.committeeSlug || chairRoles[0]?.committeeId}`}
+										committeeId={chairRoles[0]?.committeeId}
+									/>
+								</div>
 							</SidebarSection>
 						)}
 						{!!schoolDirectorRoles.length &&

@@ -76,7 +76,7 @@ export function EditTopicModal({ selectedTopic }) {
 
 	const isManagement = authorize(authSession, [s.management]);
 	const isChairOfCommittee =
-		status === "authenticated" && !!selectedTopic && authorizeChairCommittee(authSession.currentRoles, selectedTopic.committee.id);
+		status === "authenticated" && !!selectedTopic && authorizeChairCommittee(authSession.user.currentRoles, selectedTopic.committee.id);
 
 	function onClose() {
 		removeSearchParams({ "edit-topic": "" }, router);

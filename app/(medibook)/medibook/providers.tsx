@@ -77,6 +77,7 @@ export function SidebarContextProvider({ children }) {
 	const [visibleSchoolOptionIds, setVisibleSchoolOptionIds] = useState([]);
 	const [visibleSidebarOptions, setVisibleSidebarOptions] = useState(["general", "session-general"]);
 	const [delegateRoles, setDelegateRoles] = useState({});
+	const [chairRoles, setChairRoles] = useState({});
 
 	return (
 		<SidebarContext.Provider
@@ -97,6 +98,8 @@ export function SidebarContextProvider({ children }) {
 				setVisibleSidebarOptions,
 				delegateRoles,
 				setDelegateRoles,
+				chairRoles,
+				setChairRoles,
 			}}>
 			{children}
 		</SidebarContext.Provider>

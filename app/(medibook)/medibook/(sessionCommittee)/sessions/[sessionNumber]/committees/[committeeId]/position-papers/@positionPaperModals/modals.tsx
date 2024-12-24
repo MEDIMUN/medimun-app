@@ -189,7 +189,7 @@ export function ModalReturnPositionPaper({ selectedPositionPaper }) {
 						</RadioField>
 					</RadioGroup>
 				</Fieldset>
-				<Textarea className=" " name="comment" placeholder="Add a comment..." maxLength={1000} />
+				<Textarea className=" " name="comment" placeholder="Add a comment..." maxLength={10000} />
 			</DialogBody>
 			<DialogActions>
 				<Button disabled={isLoading} plain onClick={onClose}>

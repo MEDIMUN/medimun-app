@@ -9,7 +9,7 @@ import prisma from "@/prisma/client";
 import { isPinned } from "@mantine/hooks/lib/use-headroom/use-headroom";
 import { AnnouncementPrivacyTypes } from "@prisma/client";
 import { processSlug } from "@/lib/text";
-import { unstable_after as after } from "next/server";
+import { after } from "next/server";
 import { sendEmailAnnouncement } from "@/email/send";
 
 export async function publishAnnouncement(formData: FormData, params) {

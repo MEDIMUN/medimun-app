@@ -202,10 +202,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 				token.user = user;
 				return token;
 			} else {
-				const prismaUser = await prisma.user.findFirstOrThrow({
-					where: { id: token.user.id },
-					include: { ...generateUserDataObject() },
-				});
+				const dateNow = new Date();
+				let prismaUser = null;
+				try {
+					prismaUser = await prisma.user.update({
+						where: { id: token.user.id },
+						include: { ...generateUserDataObject() },
+						data: { lastSessionUpdate: dateNow },
+					});
+				} catch (error) {
+					throw new UserNotFoundError();
+				}
+				if (prismaUser === null) return;
 				const userData = generateUserData(prismaUser);
 				token.user = userData;
 				token.version = "1.0.0";

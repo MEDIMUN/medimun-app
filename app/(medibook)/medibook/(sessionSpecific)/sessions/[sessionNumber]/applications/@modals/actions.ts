@@ -12,7 +12,7 @@ import {
 import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { getSocketInstance } from "@/socket/server";
-import { unstable_after as after } from "next/server";
+import { after } from "next/server";
 import { sortProposal } from "../assignment/page";
 
 export async function approveSchoolDirectorApplication(applicationId: string) {

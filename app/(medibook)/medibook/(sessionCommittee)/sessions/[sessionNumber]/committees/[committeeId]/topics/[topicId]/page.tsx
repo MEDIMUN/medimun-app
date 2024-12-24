@@ -11,11 +11,11 @@ import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
 export default async function Page(props) {
-    const params = await props.params;
-    const authSession = await auth();
-    const isManagement = authorize(authSession, [s.management]);
+	const params = await props.params;
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
 
-    const selectedTopic = await prisma.topic
+	const selectedTopic = await prisma.topic
 		.findUniqueOrThrow({
 			where: {
 				id: params.topicId,
@@ -27,11 +27,12 @@ export default async function Page(props) {
 		})
 		.catch(() => redirect(`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/topics`));
 
-    const isChairOfCommittee = authorizeChairCommittee(authSession.currentRoles, selectedTopic.committee.id);
+	const isChairOfCommittee = authorizeChairCommittee(authSession.currentRoles, selectedTopic.committee.id);
 
-    return (
+	return (
 		<>
 			<TopBar
+				hideBackdrop
 				buttonText={`${selectedTopic.committee.name} Topics`}
 				buttonHref={`/medibook/sessions/${selectedTopic.committee.session.number}/committees/${
 					selectedTopic.committee.slug || selectedTopic.committee.id
@@ -44,8 +45,8 @@ export default async function Page(props) {
 			<Suspense fallback={<div>404</div>}>
 				<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedTopic.description} />
 			</Suspense>
-			<Divider className="mt-[512px]" />
-			<Subheading className="mt-10 !font-extralight">
+			<Divider className="mt-[750px]" />
+			<Subheading className="!font-extralight">
 				{"We are not responsible for the contents of topic descriptions. Please refer to our "}
 				<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
 					code of conduct

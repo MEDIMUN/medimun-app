@@ -37,6 +37,9 @@ export async function createTopic(formData: FormData, selectedCommitteeId) {
 
 export async function editTopic(formData: FormData, selectedTopicId: string) {
 	const authSession = await auth();
+
+	if (!authSession) return { ok: false, message: ["Unauthorized."] };
+
 	const isManagement = authorize(authSession, [s.management]);
 
 	const selectedTopic = await prisma.topic.findFirst({
@@ -47,7 +50,7 @@ export async function editTopic(formData: FormData, selectedTopicId: string) {
 	if (!selectedTopic) return { ok: false, message: ["Invalid topic."] };
 	if (!selectedTopic.committee) return { ok: false, message: ["Invalid committee."] };
 
-	const isAuthorized = isManagement || authorizeChairCommittee(authSession.currentRoles, selectedTopic.committee.id);
+	const isAuthorized = isManagement || authorizeChairCommittee(authSession.user.currentRoles, selectedTopic.committee.id);
 	if (!isAuthorized) return { ok: false, message: ["Unauthorized."] };
 
 	const schema = z.object({
