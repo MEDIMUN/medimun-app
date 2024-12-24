@@ -1,4 +1,4 @@
-FROM node:22-alpine as builder
+FROM node:20-alpine as builder
 
 # Define build arguments for build-time usage
 ARG DB_USER
