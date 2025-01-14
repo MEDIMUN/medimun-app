@@ -20,8 +20,6 @@ import { MatomoAnalytics } from "@/components/analytics";
 import { JSX, Suspense } from "react";
 import { SocketHandler } from "./client-components";
 import ThemedHTMLElement from "./html-element";
-/* import TopFl from "./flprovider";
- */
 
 export const metadata: Metadata = {
 	title: {
@@ -132,17 +130,6 @@ export default async function RootLayout({
 							</Navbar>
 						}
 						sidebar={<Sidebar sessions={sessions} />}>
-						<NextTopLoader
-							color="#AE2D28"
-							showSpinner={false}
-							initialPosition={0.08}
-							crawlSpeed={200}
-							height={2}
-							crawl={true}
-							easing="ease"
-							speed={200}
-						/>
-						{/*<TopFl />*/}
 						{announcement}
 						{children}
 					</SidebarLayout>
@@ -151,4 +138,9 @@ export default async function RootLayout({
 			</body>
 		</ThemedHTMLElement>
 	);
+}
+
+{
+	/* <NextTopLoader color="#AE2D28" showSpinner={false} initialPosition={0.08} crawlSpeed={200} height={2} crawl={true} easing="ease" speed={200} />;
+	 */
 }

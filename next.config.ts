@@ -34,6 +34,10 @@ const nextConfig = {
 	},
 	transpilePackages: ["next-auth", "prettier"],
 	experimental: {
+		staleTimes: {
+			dynamic: 30,
+			static: 180,
+		},
 		ppr: "incremental",
 		turbo: { optimizeImages: true },
 		optimizePackageImports: ["@heroicons/react/16/solid", "@heroicons/react/16/outline", "@react-email", "@react-pdf/renderer"],
