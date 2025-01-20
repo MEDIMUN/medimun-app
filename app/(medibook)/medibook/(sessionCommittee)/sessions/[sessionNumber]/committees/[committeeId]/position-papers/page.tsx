@@ -211,7 +211,7 @@ export default async function Page(props) {
                      <TableBody>
                         {positionPapers.map((paper) => {
                            const user = paper.user;
-                           const selectedCountry = allCountries.find((country) => country.countryCode === user?.delegate[0].country);
+                           const selectedCountry = allCountries.find((country) => country.countryCode === user?.delegate[0]?.country);
                            return (
                               <TableRow key={paper.id}>
                                  <TableCell>
@@ -332,7 +332,7 @@ export default async function Page(props) {
                         <TableBody>
                            {positionPapersVisibleToDelegate.map((paper) => {
                               const user = paper.user;
-                              const selectedCountry = allCountries.find((country) => country.countryCode === user?.delegate[0].country);
+                              const selectedCountry = allCountries.find((country) => country.countryCode === user?.delegate[0]?.country);
                               const fullName = user.displayName || `${user.officialName} ${user.officialSurname}`;
                               return (
                                  <TableRow key={paper.id}>
