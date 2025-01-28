@@ -25,7 +25,7 @@ WORKDIR /usr/src/app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
 # Copy the Prisma schema
-COPY prisma ./prisma
+COPY prisma /usr/src/app/prisma
 
 # Copy the rest of the application files
 COPY . /usr/src/app
