@@ -1,3 +1,4 @@
+"use cache";
 import { PrismaClient } from "@prisma/client";
 
 // add prisma to the NodeJS global type
@@ -16,7 +17,6 @@ DB_PORT='5432'
 DB_NAME='production' */
 
 const db_url = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
-
 const prisma =
 	global.prisma ||
 	new PrismaClient({
