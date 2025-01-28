@@ -17,6 +17,7 @@ ENV DB_HOST='db1.cluster.medimun.org'
 
 # Copy package.json and install dependencies
 COPY package.json /tmp/package.json
+COPY prisma /tmp/prisma
 RUN cd /tmp && bun install --ignore-engines
 RUN mkdir -p /usr/src/app && cp -a /tmp/node_modules /usr/src/app/
 
