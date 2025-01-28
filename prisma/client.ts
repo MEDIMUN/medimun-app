@@ -15,13 +15,14 @@ DB_HOST='db1.cluster.medimun.org'
 DB_PORT='5432'
 DB_NAME='production' */
 
-const db_url = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
+/* const db_url = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
+ */
 
 const prisma =
 	global.prisma ||
-	new PrismaClient({
+	new PrismaClient(/* {
 		datasources: { db: { url: db_url } },
-	}); /* .$extends({
+	} */); /* .$extends({
 		result: {
 			user: {
 				fullName: {
