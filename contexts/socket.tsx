@@ -36,6 +36,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 		// Create a socket instance with the provided configuration
 		const socketInstance: Socket = io({
 			transports: ["websocket"],
+			addTrailingSlash: false,
 		});
 
 		socketInstance.on("connect", () => {
