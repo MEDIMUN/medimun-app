@@ -42,4 +42,4 @@ ENV PORT 3000
 EXPOSE 3000
 
 # Run the application
-CMD ["bun", "start"]
+CMD ["npm", "start"]
