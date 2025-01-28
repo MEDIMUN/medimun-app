@@ -152,7 +152,6 @@ const config = {
 	},
 	plugins: [
 		heroui(),
-		require("tailwind-scrollbar-hide"),
 		require("tailwindcss-animate"),
 		function ({ matchUtilities, theme }) {
 			matchUtilities(
