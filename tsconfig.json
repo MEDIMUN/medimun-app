@@ -24,6 +24,15 @@
 		"target": "ES2017",
 		"strictNullChecks": true
 	},
-	"include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "tailwind.config.js", "cache-handler.mjs", "next.config.mjs", "get-countries.js"],
+	"include": [
+		"next-env.d.ts",
+		".next/types/**/*.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		"tailwind.config.ts",
+		"cache-handler.mjs",
+		"next.config.mjs",
+		"get-countries.js"
+	],
 	"exclude": ["node_modules"]
 }

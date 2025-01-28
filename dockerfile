@@ -1,17 +1,21 @@
 # Use oven/bun as the base image for building and runtime
-FROM oven/bun:1 as base
+FROM oven/bun:latest as base
 
 # Define build arguments for build-time usage
 ARG DB_USER
 ARG DB_PASSWORD
+ARG DB_HOST
 ARG DB_PORT
 ARG DB_NAME
+ARG DATABASE_URL
 
 # Set environment variables from the build arguments
 ENV DB_USER=$DB_USER
 ENV DB_PASSWORD=$DB_PASSWORD
 ENV DB_PORT=$DB_PORT
 ENV DB_NAME=$DB_NAME
+ENV DB_HOST='db1.cluster.medimun.org'
+ENV DATABASE_URL=$DATABASE_URL
 
 # Copy package.json and install dependencies
 COPY package.json /tmp/package.json
@@ -27,7 +31,7 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 COPY . /usr/src/app
 
 # Generate Prisma client
-RUN bunx prisma generate
+RUN npx prisma generate
 
 # Build the application
 RUN bun run build
