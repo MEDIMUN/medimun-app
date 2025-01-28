@@ -2,15 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { Badge } from "@nextui-org/badge";
-import { Avatar } from "@nextui-org/avatar";
-import { Card, CardBody } from "@nextui-org/card";
-import { Link } from "@nextui-org/link";
+import { Badge } from "@heroui/badge";
+import { Avatar } from "@heroui/avatar";
+import { Card, CardBody } from "@heroui/card";
+import { Link } from "@heroui/link";
 import { flushSync } from "react-dom";
-import Icon from "@/components/icon";
 import { toast } from "sonner";
 import { deleteProfilePictureForUser, updateProfilePictureForUser } from "../../../@userModals/actions";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
+import { Pencil, Plus } from "lucide-react";
 
 export function ProfileUploader({ user }) {
 	const router = useRouter();
@@ -67,11 +67,7 @@ export function ProfileUploader({ user }) {
 							}}
 							content={
 								<Button disabled={loading} onPress={() => ref.current.click()} className="h-5 w-5 min-w-5 bg-background p-0 text-default-500">
-									{user?.profilePicture ? (
-										<Icon className="h-[9px] w-[9px]" icon="solar:pen-linear" />
-									) : (
-										<Icon className="h-[10px] w-[10px]" icon="fluent:add-24-filled" width={25} />
-									)}
+									{user?.profilePicture ? <Pencil className="h-[9px] w-[9px]" /> : <Plus className="h-[10px] w-[10px]" width={25} />}
 								</Button>
 							}
 							placement="bottom-right"

@@ -1,13 +1,5 @@
-import { BuildingOffice2Icon, EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
-import { contactUs } from "./actions";
-import { Badge } from "@/components/badge";
-import { Button } from "@/components/button";
-import { Field, Label } from "@/components/fieldset";
-import { Input } from "@/components/input";
-import { Textarea } from "@/components/textarea";
-import { ContactUsForm, RecaptchaComp } from "./client-components";
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
-import Link from "next/link";
+import { ContactUsForm } from "./client-components";
+import { Building, Mail, Phone } from "lucide-react";
 
 export default async function Page(props) {
 	const searchParams = await props.searchParams;
@@ -41,7 +33,7 @@ export default async function Page(props) {
 							<div className="flex gap-x-4">
 								<dt className="flex-none">
 									<span className="sr-only">Address</span>
-									<BuildingOffice2Icon className="h-7 w-6 text-gray-400" aria-hidden="true" />
+									<Building className="h-7 w-6 text-gray-400" aria-hidden="true" />
 								</dt>
 								<dd>
 									0 Kyriakou Matsi Avenue & Presidential Palace Road
@@ -52,7 +44,7 @@ export default async function Page(props) {
 							<div className="flex gap-x-4">
 								<dt className="flex-none">
 									<span className="sr-only">Telephone</span>
-									<PhoneIcon className="h-7 w-6 text-gray-400" aria-hidden="true" />
+									<Phone className="h-7 w-6 text-gray-400" aria-hidden="true" />
 								</dt>
 								<dd>
 									<a className="hover:text-gray-900" href="tel:+35722799300">
@@ -63,7 +55,7 @@ export default async function Page(props) {
 							<div className="flex gap-x-4">
 								<dt className="flex-none">
 									<span className="sr-only">Email</span>
-									<EnvelopeIcon className="h-7 w-6 text-gray-400" aria-hidden="true" />
+									<Mail className="h-7 w-6 text-gray-400" aria-hidden="true" />
 								</dt>
 								<dd>
 									<a className="hover:text-gray-900" href="medimun.cyprus@gmail.com">

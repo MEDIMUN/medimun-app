@@ -2,9 +2,9 @@ import prisma from "@/prisma/client";
 import { ModalDeleteDepartment } from "./modals";
 
 export default async function Modals(props) {
-    const searchParams = await props.searchParams;
-    let editDepartment = {};
-    if (searchParams["delete-department"]) {
+	const searchParams = await props.searchParams;
+	let editDepartment = {};
+	if (searchParams["delete-department"]) {
 		try {
 			editDepartment = await prisma.department.findFirstOrThrow({ where: { id: searchParams["delete-department"] } });
 		} catch (e) {
@@ -12,5 +12,5 @@ export default async function Modals(props) {
 		}
 	}
 
-    return <ModalDeleteDepartment selectedDepartment={editDepartment} />;
+	return <ModalDeleteDepartment selectedDepartment={editDepartment} />;
 }

@@ -1,7 +1,7 @@
 import prisma from "@/prisma/client";
 import { ModalUploadResource } from "./modalCreateResource";
 import { ModalEditResource } from "./modalEditResource";
-import { Resource, ResourcePrivacyTypes } from "@prisma/client";
+import { Resource } from "@prisma/client";
 import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, authorizeManagerDepartment, s } from "@/lib/authorize";
 import { ModalDeleteResource } from "./modalDeleteResource";
@@ -189,12 +189,12 @@ export function authorizedToEditResource(authSession, editResourceData) {
 }
 
 export default async function Modals(props) {
-    const searchParams = await props.searchParams;
-    const authSession = await auth();
-    let editResourceData: Resource | null = null;
-    let deleteResourceData: Resource | null = null;
+	const searchParams = await props.searchParams;
+	const authSession = await auth();
+	let editResourceData: Resource | null = null;
+	let deleteResourceData: Resource | null = null;
 
-    if (searchParams["edit-resource"]) {
+	if (searchParams["edit-resource"]) {
 		editResourceData = await prisma.resource.findFirst({
 			where: { id: searchParams["edit-resource"] },
 			include: { session: true, committee: { include: { session: true } }, department: { include: { session: true } } },
@@ -205,7 +205,7 @@ export default async function Modals(props) {
 		}
 	}
 
-    if (searchParams["delete-resource"]) {
+	if (searchParams["delete-resource"]) {
 		deleteResourceData = await prisma.resource.findFirst({
 			where: { id: searchParams["delete-resource"] },
 			include: { session: true, committee: { include: { session: true } }, department: { include: { session: true } } },
@@ -216,7 +216,7 @@ export default async function Modals(props) {
 		}
 	}
 
-    return (
+	return (
 		<>
 			<ModalDeleteResource selectedResource={deleteResourceData} />
 			<ModalEditResource selectedResource={editResourceData} />

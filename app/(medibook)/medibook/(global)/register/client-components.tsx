@@ -1,22 +1,20 @@
 "use client";
-
 import { useSocket } from "@/contexts/socket";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
-import { Progress } from "@nextui-org/progress";
+import { Progress } from "@heroui/progress";
 import { Scanner } from "@yudiel/react-qr-scanner";
-import { changeRegMorning, deleteRegUser } from "./actions";
+import { changeRegMorning } from "./actions";
 import { Button } from "@/components/button";
 import { Text } from "@/components/text";
 import { SearchBar } from "../../client-components";
-import { Heading } from "@/components/heading";
 import { Description, Field, Label } from "@/components/fieldset";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
-import { Avatar } from "@nextui-org/avatar";
+import { Avatar } from "@heroui/avatar";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
-import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import { toast } from "sonner";
+import { Ellipsis } from "lucide-react";
 
 export function RegisterQRCodeBox({ code }) {
 	const router = useRouter();
@@ -137,7 +135,7 @@ export function QRReader({ delegates }) {
 									<TableCell>
 										<Dropdown>
 											<DropdownButton plain>
-												<EllipsisVerticalIcon />
+												<Ellipsis width={18} />
 											</DropdownButton>
 											<DropdownMenu>
 												{delegate.MorningPresent.length ? (

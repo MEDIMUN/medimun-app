@@ -1,8 +1,11 @@
-import { Code, Text, TextLink } from "@/components/text";
+"use cache";
+
+import { Text, TextLink } from "@/components/text";
 import WhiteLogo from "@/public/assets/branding/logos/logo-medired.svg";
 import ThimunLogo from "@/public/assets/branding/thimun/thimun-logo-by-medimun-dot-org.png";
 import Image from "next/image";
 import Link from "next/link";
+import { unstable_cacheLife as cacheLife } from "next/cache";
 
 const navigation = {
 	conference: [
@@ -90,10 +93,12 @@ const navigation = {
 	],
 };
 
-export function Footer() {
+export async function Footer() {
+	cacheLife("days");
 	const currentYear = new Date().getFullYear();
+
 	return (
-		<footer className="absolute z-[200] w-full bg-zinc-900 font-thin" aria-labelledby="footer-heading">
+		<footer className="absolute z-[200] w-full bg-black font-thin" aria-labelledby="footer-heading">
 			<h2 id="footer-heading" className="sr-only">
 				Footer
 			</h2>
@@ -109,7 +114,7 @@ export function Footer() {
 								We are affiliated with the{" "}
 								<TextLink
 									href={"https://foundation.thimun.org/affiliation-programme/affiliated-conferences"}
-									className="!text-white no-underline duration-300 md:hover:tracking-widest">
+									className="!text-white !hover:underline">
 									THIMUN Foundation
 								</TextLink>
 								.

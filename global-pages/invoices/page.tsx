@@ -1,11 +1,13 @@
-import { PdfDownloadButton } from "@/global-pages/invoices/client-components";
 import { Badge } from "@/components/badge";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import Paginator from "@/components/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
-import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
 import { Suspense } from "react";
 import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import dynamic from "next/dynamic";
+import { Ellipsis } from "lucide-react";
+
+const PdfDownloadButton = dynamic(() => import("@/global-pages/invoices/client-components").then((mod) => mod.PdfDownloadButton));
 
 export default async function InvoicesPage({ topbarProps, invoices, totalItems, hiddenColumns = [] }) {
 	return (
@@ -36,7 +38,7 @@ export default async function InvoicesPage({ topbarProps, invoices, totalItems, 
 									<TableCell>
 										<Dropdown>
 											<DropdownButton plain aria-label="More options">
-												<EllipsisHorizontalIcon />
+												<Ellipsis />
 											</DropdownButton>
 											<DropdownMenu className="max-w-max">
 												<Suspense fallback={<DropdownItem disabled>Download PDF</DropdownItem>}>

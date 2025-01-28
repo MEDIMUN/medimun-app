@@ -16,9 +16,9 @@ import { toast } from "sonner";
 import { useFlushState } from "@/hooks/use-flush-state";
 import { romanize } from "@/lib/romanize";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { useState } from "react";
+import { Info } from "lucide-react";
 
 function onClose(searchParams: ReadonlyURLSearchParams, router: any[] | AppRouterInstance) {
 	/* 	if (searchParams.has("return")) router.push(searchParams.get("return"));
@@ -92,7 +92,7 @@ export function ModalEditCommittee({ selectedCommittee }) {
 				<div className="mt-4 rounded-md bg-zinc-50 p-4">
 					<div className="flex">
 						<div className="flex-shrink-0">
-							<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+							<Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 						</div>
 						<div className="ml-3 flex-1 md:flex md:justify-between">
 							<p className="text-sm text-zinc-700">More committee options</p>

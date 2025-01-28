@@ -1,6 +1,5 @@
 import prisma from "@/prisma/client";
 
-import { authorize, s } from "@/lib/authorize";
 import InvoicesPage from "@/global-pages/invoices/page";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";

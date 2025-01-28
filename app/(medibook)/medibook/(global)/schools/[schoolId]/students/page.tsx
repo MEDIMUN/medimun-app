@@ -1,18 +1,18 @@
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
-import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsDropDropdownItem, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 
 import Paginator from "@/components/pagination";
 import { generateUserData, generateUserDataObject } from "@/lib/user";
-import { Avatar } from "@nextui-org/avatar";
+import { Avatar } from "@heroui/avatar";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { UserIdDisplay } from "@/lib/display-name";
 import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/display-roles";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
-import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
+import { Ellipsis } from "lucide-react";
 
 const itemsPerPage = 10;
 
@@ -125,7 +125,7 @@ export default async function Page(props) {
 									<TableCell>
 										<Dropdown>
 											<DropdownButton plain aria-label="More options">
-												<EllipsisHorizontalIcon />
+												<Ellipsis width={18} />
 											</DropdownButton>
 											<DropdownMenu>
 												<SearchParamsDropDropdownItem searchParams={{ "edit-user": student.id }}>Edit User</SearchParamsDropDropdownItem>

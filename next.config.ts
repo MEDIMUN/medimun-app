@@ -1,31 +1,31 @@
+import { NextConfig } from "next";
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
 	/* 	cacheHandler: require.resolve("./cache-handler.mjs"),
 	 */ generateBuildId: async () => {
 		return process.env.GIT_HASH || Math.random().toString(36).slice(2);
 	},
+	images: {
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "assets.aceternity.com",
+				port: "",
+			},
+			{
+				protocol: "https",
+				hostname: "images.unsplash.com",
+				port: "",
+			},
+		],
+	},
 	async redirects() {
 		return [
-			{
-				source: "/privacy",
-				destination: "/policies/privacy",
-				permanent: true,
-			},
-			{
-				source: "/conduct",
-				destination: "/policies/conduct",
-				permanent: true,
-			},
-			{
-				source: "/terms",
-				destination: "/policies/terms",
-				permanent: true,
-			},
-			{
-				source: "/policies",
-				destination: "/policies/privacy",
-				permanent: false,
-			},
+			{ source: "/privacy", destination: "/policies/privacy", permanent: true },
+			{ source: "/conduct", destination: "/policies/conduct", permanent: true },
+			{ source: "/terms", destination: "/policies/terms", permanent: true },
+			{ source: "/policies", destination: "/policies/privacy", permanent: false },
 		];
 	},
 	typescript: { ignoreBuildErrors: true },
@@ -34,29 +34,25 @@ const nextConfig = {
 	},
 	transpilePackages: ["next-auth", "prettier"],
 	experimental: {
+		dynamicIO: true,
+		ppr: true,
+		reactCompiler: true,
+		inlineCss: true,
 		staleTimes: {
 			dynamic: 30,
-			static: 180,
+			static: 3600,
 		},
-		ppr: "incremental",
-		turbo: { optimizeImages: true },
-		optimizePackageImports: ["@heroicons/react/16/solid", "@heroicons/react/16/outline", "@react-email", "@react-pdf/renderer"],
+		optimizePackageImports: ["@react-email", "@react-pdf/renderer", "lucide-react", "@headlessui/react"],
 		serverActions: {
 			bodySizeLimit: "50mb",
 			allowedOrigins: ["https://www.medimun.org", "www.medimun.org", "www.medimun.org.", "https://www.medimun.org."],
-		},
-		reactCompiler: true,
-	},
-	webpack: {
-		fallback: {
-			fs: false,
 		},
 	},
 	reactStrictMode: true,
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
-	enabled: process.env.ANALYZE === "true",
+	enabled: true,
 });
 
 export default withBundleAnalyzer(nextConfig);

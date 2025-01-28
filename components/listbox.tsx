@@ -91,7 +91,8 @@ export function Listbox<T>({
 					// Shadows
 					"shadow-lg ring-1 ring-zinc-950/10 dark:ring-inset dark:ring-white/10",
 					// Transitions
-					"transition-opacity duration-100 ease-in data-[transition]:pointer-events-none data-[closed]:data-[leave]:opacity-0"
+					"transition-opacity duration-100 ease-in data-[transition]:pointer-events-none data-[closed]:data-[leave]:opacity-0",
+					"z-[50]"
 				)}>
 				{options}
 			</Headless.ListboxOptions>

@@ -52,3 +52,4 @@ package-lock.json
 
 hasher.ts
 certificates
+bun.lockb

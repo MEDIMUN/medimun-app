@@ -3,9 +3,6 @@ import { AnnouncementsTable } from "../../server-components";
 import { auth } from "@/auth";
 import { parseOrderDirection } from "@/lib/order-direction";
 import prisma from "@/prisma/client";
-import { TopBar } from "../../client-components";
-import { Button } from "@/components/button";
-import Paginator from "@/components/pagination";
 
 const itemsPerPage = 10;
 

@@ -1,12 +1,10 @@
 "use client";
-
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 import { useSearchParams, useRouter, ReadonlyURLSearchParams } from "next/navigation";
 import { s, authorize } from "@/lib/authorize";
 import { useSession } from "next-auth/react";
 import { addSchool, deleteCoverImage, deleteSchool, editSchool, updateCoverImage } from "./actions";
-import { countries } from "@/data/countries";
 import { SlugInput } from "@/components/slugInput";
 import { toast } from "sonner";
 import { useFlushState } from "@/hooks/use-flush-state";

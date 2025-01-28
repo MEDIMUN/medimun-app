@@ -1,5 +1,4 @@
 import { TopBar } from "../../client-components";
-import QRCode from "react-qr-code";
 import { QRReader, RegisterQRCodeBox } from "./client-components";
 import { auth } from "@/auth";
 import prisma from "@/prisma/client";
@@ -7,9 +6,8 @@ import { notFound } from "next/navigation";
 import { authorize, authorizeDirect, s } from "@/lib/authorize";
 import Image from "next/image";
 import Confirm from "@/public/assets/confirm.gif";
-import { Code, Text } from "@/components/text";
+import { Text } from "@/components/text";
 import { ActionList } from "@/app/components/actions-list";
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
 
 export default async function RegistrationPage(props) {
 	const authSession = await auth();

@@ -1,11 +1,10 @@
 import prisma from "@/prisma/client";
 import HeroImage from "./hero-image";
-import { ArrowRightIcon, CheckCircleIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { getOrdinal } from "@/lib/get-ordinal";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { JSX } from "react";
+import { ArrowRight, CircleCheck } from "lucide-react";
 
 export const metadata = {
 	title: {
@@ -15,11 +14,9 @@ export const metadata = {
 		"Mediterranean Model United Nations, the largest and oldest THIMUN-affiliated MUN conference in the Mediterranean region, is a simulation of the United Nations for high school students.",
 };
 
-export default async function Page(): Promise<JSX.Element> {
+export default async function Page() {
 	return <HomePage />;
 }
-
-export const revalidate = 120;
 
 const benefits = ["7 - 9 Feb 2025", "7 Committees", "500 Delegates", "100s of Volunteers"];
 
@@ -41,23 +38,23 @@ export async function HomePage() {
 		{
 			name: "Messaging",
 			description: "Send messages to other delegates, chairs, and secretariat members.",
-			icon: ArrowRightIcon,
+			icon: ArrowRight,
 		},
 		{
 			name: "Resolutions",
 			description: "Create and submit resolutions for your committee.",
-			icon: ArrowRightIcon,
+			icon: ArrowRight,
 		},
 		{
 			name: "Debate",
 			description: "Submit your vote digitally for a whole new debate experience.",
-			icon: ArrowRightIcon,
+			icon: ArrowRight,
 		},
 	];
 
 	return (
 		<>
-			<section className="-bg-gradient-to-r h-svh from-transparent to-neutral-900/5">
+			<section className="-bg-gradient-to-r bg-white light h-svh from-transparent to-neutral-900/5">
 				<svg
 					className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
 					aria-hidden="true">
@@ -79,8 +76,8 @@ export async function HomePage() {
 					</div>
 				</div>
 			</section>
-			<div className="mb-10 font-[GilroyLight]">
-				<div className="relative mt-32 sm:mt-40">
+			<div className="pb-10 font-[GilroyLight] bg-white">
+				<div className="relative pt-32 sm:pt-40">
 					<div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
 						<div className="mx-auto flex max-w-2xl flex-col gap-16 bg-primary/20 px-6 py-16 ring-1 ring-black/10 sm:rounded-3xl sm:p-8 lg:mx-0 lg:max-w-none lg:flex-row lg:items-center lg:py-20 xl:gap-x-20 xl:px-20">
 							{currentSession?.cover ? (
@@ -109,7 +106,7 @@ export async function HomePage() {
 								<ul role="list" className="mt-10 grid grid-cols-1 gap-x-8 gap-y-3 text-base leading-7 text-black sm:grid-cols-2">
 									{benefits.map((benefit) => (
 										<li key={benefit} className="flex gap-x-3">
-											<CheckCircleIcon aria-hidden="true" className="h-7 w-5 flex-none" />
+											<CircleCheck aria-hidden="true" className="h-7 w-5 flex-none" />
 											{benefit}
 										</li>
 									))}
@@ -133,7 +130,7 @@ export async function HomePage() {
 					</div>
 				</div>
 			</div>
-			<div className="mt-32 overflow-hidden font-[GilroyLight] sm:mt-40">
+			<div className="pt-32 overflow-hidden font-[GilroyLight] bg-white sm:pt-40">
 				<div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
 					<div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-12 gap-y-16 lg:mx-0 lg:min-w-full lg:max-w-none lg:flex-none lg:gap-y-8">
 						<div className="lg:col-end-1 lg:w-full lg:max-w-lg lg:pb-8">
@@ -193,7 +190,7 @@ export async function HomePage() {
 					</div>
 				</div>
 			</div>
-			<div className="overflow-hidden py-24 font-[GilroyLight] sm:py-32">
+			<div className="overflow-hidden py-24 bg-white font-[GilroyLight] sm:py-32">
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
 					<div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
 						<div className="lg:pr-8 lg:pt-4">

@@ -1,9 +1,6 @@
 "use server";
-
 import { auth } from "@/auth";
-import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
-import { redirect } from "next/navigation";
 /*@ts-ignore*/
 import { minio } from "@/minio/client";
 import { nanoid } from "nanoid";

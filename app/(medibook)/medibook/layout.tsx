@@ -1,22 +1,14 @@
 import "@/styles/globals.css";
 
-import { Avatar } from "@nextui-org/avatar";
-import { Dropdown, DropdownButton } from "@/components/dropdown";
-import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "@/components/navbar";
-import { SidebarLayout } from "@/components/sidebar-layout";
+import { Avatar } from "@heroui/avatar";
 import Link from "next/link";
 import { auth } from "@/auth";
-import { Sidebar } from "./sidebar";
-import { AccountDropdownMenu } from "./sidebar";
 import prisma from "@/prisma/client";
-import { Providers, SidebarContextProvider } from "./providers";
+import { Providers } from "./providers";
 import { Toaster } from "sonner";
-import NextTopLoader from "nextjs-toploader";
-
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
-import { cn } from "@/lib/cn";
-import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
-import { MatomoAnalytics } from "@/components/analytics";
 import { JSX, Suspense } from "react";
 import { SocketHandler } from "./client-components";
 import ThemedHTMLElement from "./html-element";
@@ -29,12 +21,63 @@ export const metadata: Metadata = {
 	description: "",
 };
 
+export function NoScript() {
+	return (
+		<noscript className="fixed z-[1000] flex min-h-[100vh] w-full flex-col bg-primary text-white">
+			<div className="mx-auto my-auto w-full max-w-lg p-4 text-center">
+				<Link href="/home">
+					<img src={`/assets/branding/logos/logo-medired.svg`} className="mx-auto mb-10 h-[60px] font-[Gilroy]" alt="MediBook" />
+				</Link>
+				<p>
+					Your browser does not support JavaScript or it&apos;s turned off. The MediBook App and the MEDIMUN Website require JavaScript to function
+					properly. Please enable JavaScript in your browser settings.
+				</p>
+				<br />
+				<p>If you believe this is an error, please contact us.</p>
+				<br />
+				<p className="text-xs">
+					If you need to access MediBook without JavaScript, please email us using the email address you registered with for the conference. We will
+					consider remotely enabling a limited version of the app for you.
+				</p>
+			</div>
+		</noscript>
+	);
+}
+
+async function UserAvatar() {
+	const authSession = await auth();
+	return (
+		<Avatar
+			src={`/api/users/${authSession?.user?.id}/avatar`}
+			className="m-0 h-6 w-6 rounded-sm bg-primary"
+			showFallback
+			isBordered
+			size="sm"
+			radius="none"
+		/>
+	);
+}
+
+async function SessionsSidebar() {
+	const sessionsPromise = await prisma.session
+		.findMany({
+			take: 5,
+			orderBy: [{ isMainShown: "desc" }, { numberInteger: "desc" }],
+		})
+		.catch();
+
+	const authSessionPromise = await auth();
+
+	const [sessions, authSession] = await Promise.all([sessionsPromise, authSessionPromise]);
+
+	return <AppSidebar authSession={authSession} sessions={sessions} />;
+}
+
 export default async function RootLayout({
 	children,
 	userModals,
 	resourceModals,
 	schoolModals,
-	locationModals,
 	committeeModals,
 	announcement,
 	sessionModals,
@@ -43,18 +86,9 @@ export default async function RootLayout({
 	departmentModalCreate,
 	departmentModalEdit,
 	rollCallModals,
-	dayModals,
 	topicsModals,
 	privateMessageModals,
 }): Promise<JSX.Element> {
-	const authSession = await auth();
-	const sessions = await prisma.session
-		.findMany({
-			take: 5,
-			orderBy: [{ isMainShown: "desc" }, { numberInteger: "desc" }],
-		})
-		.catch();
-
 	return (
 		<ThemedHTMLElement>
 			<head>
@@ -64,83 +98,43 @@ export default async function RootLayout({
 				<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
 				<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
 			</head>
-			<body className="h-full">
-				<noscript className="fixed z-[1000] flex min-h-[100vh] w-full flex-col bg-primary text-white">
-					<div className="mx-auto my-auto w-full max-w-lg p-4 text-center">
-						<Link href="/home">
-							<img src={`/assets/branding/logos/logo-medired.svg`} className="mx-auto mb-10 h-[60px] font-[montserrat]" alt="MediBook" />
-						</Link>
-						<p>
-							Your browser does not support JavaScript or it&apos;s turned off. The MediBook App and the MEDIMUN Website require JavaScript to
-							function properly. Please enable JavaScript in your browser settings.
-						</p>
-						<br />
-						<p>If you believe this is an error, please contact us.</p>
-						<br />
-						<p className="text-xs">
-							If you need to access MediBook without JavaScript, please email us using the email address you registered with for the conference. We
-							will consider remotely enabling a limited version of the app for you.
-						</p>
-					</div>
-				</noscript>
+			<body className="h-full w-full !font-sans flex flex-col">
+				<NoScript />
 				<Providers>
 					<Suspense fallback={null}>
 						<SocketHandler />
 					</Suspense>
-					<Suspense>
-						<MatomoAnalytics />
+					<Suspense fallback={null}>
+						{departmentModals}
+						{committeeModals}
+						{schoolModals}
+						{resourceModals}
+						{userModals}
+						{sessionModals}
+						{departmentModalDelete}
+						{departmentModalCreate}
+						{departmentModalEdit}
+						{rollCallModals}
+						{topicsModals}
+						{privateMessageModals}
 					</Suspense>
-					{departmentModals}
-					{committeeModals}
-					{locationModals}
-					{schoolModals}
-					{resourceModals}
-					{userModals}
-					{sessionModals}
-					{departmentModalDelete}
-					{departmentModalCreate}
-					{departmentModalEdit}
-					{dayModals}
-					{rollCallModals}
-					{topicsModals}
-					{privateMessageModals}
-					<SidebarLayout
-						navbar={
-							<Navbar>
-								<Link href="/medibook" className="ml-1">
-									<img src={`/assets/branding/logos/medibook-logo-white-2.svg`} className="h-[18px]" alt="MediBook" />
-								</Link>
-								<NavbarSpacer />
-								<div className="rounded-full border bg-content1/80 px-6 py-1 text-sm font-light shadow-md">Upcoming</div>
-								<NavbarSection>
-									<Dropdown>
-										<DropdownButton className="p-0" as={NavbarItem}>
-											<Avatar
-												src={`/api/users/${authSession?.user?.id}/avatar`}
-												className="m-0 h-6 w-6 rounded-sm bg-primary"
-												showFallback
-												isBordered
-												size="sm"
-												radius="none"
-											/>
-										</DropdownButton>
-										<AccountDropdownMenu anchor="bottom end" />
-									</Dropdown>
-								</NavbarSection>
-							</Navbar>
-						}
-						sidebar={<Sidebar sessions={sessions} />}>
-						{announcement}
-						{children}
-					</SidebarLayout>
-					<Toaster richColors visibleToasts={3} closeButton />
+					<SidebarProvider>
+						<Suspense fallback={null}>
+							<SessionsSidebar />
+						</Suspense>
+						<div className="max-h-dvh relative w-full overflow-y-scroll overflow-x-hidden">
+							<main id="main-element" className="overflow-x-hidden w-full overflow-y-scroll">
+								<Suspense fallback={null}>
+									<div className="h-[65px] shadow-sm"></div>
+									{children}
+									{announcement}
+								</Suspense>
+							</main>
+						</div>
+					</SidebarProvider>
+					<Toaster richColors visibleToasts={4} closeButton />
 				</Providers>
 			</body>
 		</ThemedHTMLElement>
 	);
-}
-
-{
-	/* <NextTopLoader color="#AE2D28" showSpinner={false} initialPosition={0.08} crawlSpeed={200} height={2} crawl={true} easing="ease" speed={200} />;
-	 */
 }

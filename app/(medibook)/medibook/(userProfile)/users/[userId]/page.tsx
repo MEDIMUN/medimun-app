@@ -1,12 +1,13 @@
 import { userData as userGetter } from "@/lib/user";
 import prisma from "@/prisma/client";
-import { Avatar } from "@nextui-org/avatar";
+import { Avatar } from "@heroui/avatar";
 import ProfileTabs from "./ProfileTabs";
 import { Dropdown, DropdownButton, DropdownMenu } from "@/components/dropdown";
 import { Button } from "@/components/button";
 import { SearchParamsDropDropdownItem, TopBar } from "../../../client-components";
 import { authorize, authorizeChairDelegate, authorizeManagerMember, authorizeSchoolDirectorStudent, s } from "@/lib/authorize";
 import { auth } from "@/auth";
+import { notFound } from "next/navigation";
 
 export default async function Page(props) {
 	const params = await props.params;
@@ -14,6 +15,7 @@ export default async function Page(props) {
 	const selectedUser = await prisma.user.findFirst({
 		where: { OR: [{ id: params.userId }, { username: params.userId }] },
 	});
+	if (!selectedUser) return notFound();
 	const userData = await userGetter(selectedUser.id);
 	const fullName = userData?.user.displayName || `${userData?.user.officialName} ${userData?.user.officialSurname}`;
 	const randomintegerupto6 = Math.floor(Math.random() * 5) + 1;

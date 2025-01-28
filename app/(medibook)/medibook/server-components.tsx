@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { ResourceViewer, SearchParamsButton, SearchParamsDropDropdownItem, SessionResourceDropdown, TopBar } from "./client-components";
-import { Link } from "@/components/link";
+import { FastLink, FastLink as Link } from "@/components/fast-link";
 import { Badge } from "@/components/badge";
 import { romanize } from "@/lib/romanize";
 import { capitaliseEachWord, processMarkdownPreview } from "@/lib/text";
@@ -10,7 +10,6 @@ import { Divider } from "@/components/divider";
 import { Text } from "@/components/text";
 import { Button } from "@/components/button";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
-import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import { announcementWebsitecomponents, authorizedToEditAnnouncement } from "./@announcement/default";
 import Paginator from "@/components/pagination";
 import { authorize, s } from "@/lib/authorize";
@@ -21,8 +20,11 @@ import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { Subheading } from "@/components/heading";
 import { PageCreateAnnouncement } from "./@announcement/pageCreateAnnouncement";
 import { cn } from "@/lib/cn";
+/* @ts-ignore */
 import { minio } from "@/minio/client";
 import mimeExt from "mime-ext";
+import { Ellipsis } from "lucide-react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const columns = ["Name", "Uploader", "Date Uploaded", "Tags"];
 
@@ -155,61 +157,55 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 				{showPublishButton && <Button href={baseUrl + "/publish"}>Publish</Button>}
 			</TopBar>
 			{!!announcements.length && (
-				<ul className="grid grid-flow-row">
+				<ul className="grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-4">
 					{announcements.map((announcement, index) => {
 						const fullName = announcement.user.displayName || `${announcement.user.officialName} ${announcement.user.officialSurname}`;
 						const url = `${baseUrl}/${announcement.id}${announcement.slug ? "/" : ""}${announcement.slug ? announcement.slug : ""}`;
 						const isTimeSame = announcement.time.toLocaleTimeString() == announcement.editTime.toLocaleTimeString();
 						return (
-							<Fragment key={announcement.id}>
-								<li className="my-6 min-h-24">
-									<div className="flex gap-2">
-										<div className="max-w-auto w-full">
-											<Link href={url} className="!cursor-pointer hover:underline">
-												<h3 className="text-base/6 font-semibold">{announcement.title}</h3>
-											</Link>
-											<Text className="line-clamp-2">{processMarkdownPreview(announcement.markdown)}</Text>
-											<div className="mt-2 flex flex-wrap gap-2 md:flex-row">
-												<Badge className="max-w-max px-2 !rounded-full">
-													{announcement?.privacy === "ANONYMOUS" && (isManagement ? `${fullName} (Anonymous)` : "Anonymous")}
-													{announcement?.privacy === "BOARD" &&
-														(isManagement ? `${fullName} (Anonymous - Board of Directors)` : "Board of Directors")}
-													{announcement?.privacy === "NORMAL" && fullName}
-													{announcement?.privacy === "SECRETARIAT" && (isManagement ? `${fullName} (Secretariat)` : "Secretariat")}
-												</Badge>
-												{isTimeSame ? (
-													<Badge className="max-w-max px-2 !rounded-full">{announcement.time.toLocaleString("uk").replace(",", " -")}</Badge>
-												) : (
-													<Badge className="max-w-max px-2 !rounded-full">
-														Edited {announcement.editTime.toLocaleString("uk").replace(",", " -")}
-													</Badge>
+							<FastLink href={url} key={index}>
+								<Card>
+									<CardHeader>
+										<CardTitle>{announcement.title}</CardTitle>
+										<CardDescription>
+											{isTimeSame ? (
+												<span className="">{announcement.time.toLocaleString("uk").replace(",", " -")}</span>
+											) : (
+												<span className="">Edited {announcement.editTime.toLocaleString("uk").replace(",", " -")}</span>
+											)}
+											{" • by "}
+											<span>
+												{announcement?.privacy === "ANONYMOUS" && (isManagement ? `${fullName} (Anonymous)` : "Anonymous")}
+												{announcement?.privacy === "BOARD" && (isManagement ? `${fullName} (Anonymous - Board of Directors)` : "Board of Directors")}
+												{announcement?.privacy === "NORMAL" && fullName}
+												{announcement?.privacy === "SECRETARIAT" && (isManagement ? `${fullName} (Secretariat)` : "Secretariat")}
+											</span>
+										</CardDescription>
+									</CardHeader>
+									<CardContent>
+										<span className="line-clamp-2">{processMarkdownPreview(announcement.markdown)}</span>
+									</CardContent>
+									<CardFooter className="flex !hidden flex-1 gap-1">
+										<Dropdown>
+											<DropdownButton className="ml-auto max-h-max" aria-label="More options">
+												Options
+											</DropdownButton>
+											<DropdownMenu anchor="bottom end">
+												{authorizedToEditAnnouncement(authSession, announcement) && (
+													<>
+														<SearchParamsDropDropdownItem url={url} searchParams={{ "edit-announcement": announcement.id }}>
+															Edit
+														</SearchParamsDropDropdownItem>
+														<SearchParamsDropDropdownItem searchParams={{ "delete-announcement": announcement.id }}>
+															Delete
+														</SearchParamsDropDropdownItem>
+													</>
 												)}
-											</div>
-										</div>
-										<div className="ml-2 flex">
-											<Dropdown>
-												<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
-													<EllipsisVerticalIcon />
-												</DropdownButton>
-												<DropdownMenu anchor="bottom end">
-													<DropdownItem href={url}>View</DropdownItem>
-													{authorizedToEditAnnouncement(authSession, announcement) && (
-														<>
-															<SearchParamsDropDropdownItem url={url} searchParams={{ "edit-announcement": announcement.id }}>
-																Edit
-															</SearchParamsDropDropdownItem>
-															<SearchParamsDropDropdownItem searchParams={{ "delete-announcement": announcement.id }}>
-																Delete
-															</SearchParamsDropDropdownItem>
-														</>
-													)}
-												</DropdownMenu>
-											</Dropdown>
-										</div>
-									</div>
-								</li>
-								{index < announcements.length - 1 && <Divider />}
-							</Fragment>
+											</DropdownMenu>
+										</Dropdown>
+									</CardFooter>
+								</Card>
+							</FastLink>
 						);
 					})}
 				</ul>

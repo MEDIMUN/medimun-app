@@ -1,7 +1,7 @@
 "use client";
 
-import { ScrollShadow } from "@nextui-org/scroll-shadow";
-import { Tabs, Tab } from "@nextui-org/tabs";
+import { ScrollShadow } from "@heroui/scroll-shadow";
+import { Tabs, Tab } from "@heroui/tabs";
 import { useEffect, useState } from "react";
 import { getOrdinal } from "@/lib/get-ordinal";
 import { Button } from "@/components/button";

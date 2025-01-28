@@ -1,4 +1,4 @@
-import { Link } from "@/components/link";
+import { FastLink as Link } from "@/components/fast-link";
 import { cn } from "@/lib/cn";
 
 export function ActionList({ actions }) {

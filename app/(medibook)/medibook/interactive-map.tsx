@@ -1,7 +1,7 @@
 "use client";
 
 import { countries } from "@/data/countries";
-import { Tooltip } from "@nextui-org/tooltip";
+import { Tooltip } from "@heroui/tooltip";
 
 const countriesSvg = (
 	<>

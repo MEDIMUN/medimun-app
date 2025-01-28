@@ -40,7 +40,8 @@ export function DropdownMenu({ anchor = "bottom", className, ...props }: { class
 				// Define grid at the menu level if subgrid is supported
 				"supports-[grid-template-columns:subgrid]:grid supports-[grid-template-columns:subgrid]:grid-cols-[auto_1fr_1.5rem_0.5rem_auto]",
 				// Transitions
-				"transition data-[closed]:data-[leave]:opacity-0 data-[leave]:duration-100 data-[leave]:ease-in"
+				"transition data-[closed]:data-[leave]:opacity-0 data-[leave]:duration-100 data-[leave]:ease-in",
+				"z-[12]"
 			)}
 		/>
 	);

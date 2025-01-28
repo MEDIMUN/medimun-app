@@ -1,27 +1,24 @@
 import { Badge } from "@/components/badge";
-import { Button } from "@/components/button";
 import { Divider } from "@/components/divider";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
-import { Heading } from "@/components/heading";
-import { Input, InputGroup } from "@/components/input";
 import { Link } from "@/components/link";
-import { Select } from "@/components/select";
 import { cn } from "@/lib/cn";
 import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
-import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import Paginator from "@/components/pagination";
 import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
-import { Code } from "@/components/text";
 import { Fragment } from "react";
+import { Ellipsis } from "lucide-react";
 
 export const metadata: Metadata = {
-	title: "All Sessions",
+	title: "All Conference Sessions",
 };
+
+export const experimental_ppr = true;
 
 const sessionsPerPage = 6;
 
@@ -126,7 +123,7 @@ export default async function Sessions(props) {
 															</>
 														) : (
 															`Session ${romanized}`
-														)}{" "}
+														)}
 														{!session.isPartlyVisible && <Badge color="red">Hidden</Badge>}
 													</Link>
 												</div>
@@ -139,7 +136,7 @@ export default async function Sessions(props) {
 										<div className="flex items-center gap-4">
 											<Dropdown>
 												<DropdownButton plain aria-label="More options">
-													<EllipsisVerticalIcon />
+													<Ellipsis width={18} />
 												</DropdownButton>
 												<DropdownMenu anchor="bottom end">
 													<DropdownItem href={`/medibook/sessions/${session?.number}`}>View</DropdownItem>

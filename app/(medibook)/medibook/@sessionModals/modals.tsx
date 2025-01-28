@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/button";
 import { useSearchParams, useRouter, ReadonlyURLSearchParams, useParams, usePathname } from "next/navigation";
 import { s, authorize } from "@/lib/authorize";
@@ -7,13 +6,10 @@ import { useSession } from "next-auth/react";
 import { addSession } from "./actions";
 import { toast } from "sonner";
 import { useFlushState } from "@/hooks/use-flush-state";
-import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
+import { removeSearchParams } from "@/lib/search-params";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { Text } from "@/components/text";
-import { romanize } from "@/lib/romanize";
-import { Field, Label } from "@/components/fieldset";
-import { Input } from "@/components/input";
 
 function onClose(searchParams: ReadonlyURLSearchParams, router: any[] | AppRouterInstance) {
 	if (searchParams.has("return")) {

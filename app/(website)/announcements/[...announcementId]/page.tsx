@@ -1,8 +1,6 @@
 import prisma from "@/prisma/client";
 import { AnnouncementViewPage } from "../../server-components";
 
-export const dynamic = "force-dynamic";
-
 export async function generateMetadata(props: { params: Promise<{ announcementId: string }> }) {
 	const params = await props.params;
 	const selectedAnnouncement = await prisma.announcement.findFirst({

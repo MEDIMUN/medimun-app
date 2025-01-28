@@ -1,10 +1,10 @@
 "use client";
 
-import { Pagination } from "@nextui-org/pagination";
+import { Pagination } from "@heroui/pagination";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { updateSearchParams } from "@/lib/search-params";
 import { useEffect } from "react";
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
+import { Info } from "lucide-react";
 
 export function Paginator({
 	totalItems,
@@ -41,7 +41,7 @@ export function Paginator({
 				<div className="mx-auto w-full rounded-md bg-zinc-100 p-4">
 					<div className="flex">
 						<div className="flex-shrink-0">
-							<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+							<Info size={18} aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 						</div>
 						<div className="ml-3 flex-1 md:flex md:justify-between">
 							<p className="text-sm text-zinc-700">No items {searchParams.get("search") ? "found" : "yet"}.</p>
@@ -55,7 +55,7 @@ export function Paginator({
 				<div className="mx-auto w-full max-w-[400px] rounded-md bg-zinc-100 p-4">
 					<div className="flex">
 						<div className="flex-shrink-0">
-							<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+							<Info size={18} aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 						</div>
 						<div className="ml-3 flex-1 md:flex md:justify-between">
 							<p className="text-sm text-zinc-700">No items {searchParams.get("search") ? "found" : "yet"}.</p>

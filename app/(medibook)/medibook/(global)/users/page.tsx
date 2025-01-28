@@ -5,22 +5,22 @@ import { auth } from "@/auth";
 import { UserSelector } from "./components/UserSelector";
 import Paginator from "@/components/pagination";
 import { usersPerPage } from "@/data/constants";
-import { Tooltip } from "@nextui-org/tooltip";
-import { Image } from "@nextui-org/image";
+import { Tooltip } from "@heroui/tooltip";
+import { Image } from "@heroui/image";
 import { SelectedContextProvider } from "./components/StateStateProvider";
 import { SelectedUsersWindow } from "./components/SelectedUsersWindow";
 import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
-import { Avatar } from "@nextui-org/avatar";
+import { Avatar } from "@heroui/avatar";
 import { Badge } from "@/components/badge";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { UserIdDisplay } from "@/lib/display-name";
 import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/display-roles";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
-import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
+import { Ellipsis } from "lucide-react";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+/* export const dynamic = "force-dynamic";
+export const revalidate = 0; */
 
 const userTypeColorMap = {
 	Active: "green",
@@ -122,6 +122,7 @@ export default async function Page(props) {
 				sortOptions={sortOptions}>
 				<SearchParamsButton searchParams={{ "create-user": true }}>Add User</SearchParamsButton>
 			</TopBar>
+
 			<SelectedContextProvider defaultUserData={editUsers}>
 				<SelectedUsersWindow />
 				<div className="relative">
@@ -148,6 +149,7 @@ export default async function Page(props) {
 								<TableHeader className="visible md:invisible"></TableHeader>
 							</TableRow>
 						</TableHead>
+
 						<TableBody>
 							{processedUsers.map((user) => {
 								return (
@@ -181,7 +183,7 @@ export default async function Page(props) {
 										<TableCell className="visible md:invisible">
 											<Dropdown>
 												<DropdownButton plain aria-label="More options">
-													<EllipsisHorizontalIcon />
+													<Ellipsis width={18} />
 												</DropdownButton>
 											</Dropdown>
 										</TableCell>
@@ -222,7 +224,7 @@ export default async function Page(props) {
 									<TableCell>
 										<Dropdown>
 											<DropdownButton plain aria-label="More options">
-												<EllipsisHorizontalIcon />
+												<Ellipsis width={18} />
 											</DropdownButton>
 											<DropdownMenu>
 												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>

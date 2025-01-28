@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { SearchParamsButton, TopBar } from "../../client-components";
 import { ResourcesTable } from "../../server-components";
 import { parseOrderDirection } from "@/lib/order-direction";
-import { authorize, authorizePerRole, authorizePerSession, s } from "@/lib/authorize";
+import { authorize, authorizePerRole, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import Paginator from "@/components/pagination";
 

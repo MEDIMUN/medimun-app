@@ -2,9 +2,12 @@ import { auth } from "@/auth";
 import { SearchParamsButton, TopBar } from "../../client-components";
 import { ResourcesTable } from "../../server-components";
 import { parseOrderDirection } from "@/lib/order-direction";
-import { authorize, authorizePerSession, s } from "@/lib/authorize";
+import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import Paginator from "@/components/pagination";
+import { unstable_cacheLife as cacheLife } from "next/cache";
+import { Suspense } from "react";
+import { LoadingTable } from "@/app/components/loading-table";
 
 const itemsPerPage = 10;
 
@@ -15,15 +18,14 @@ const sortOptions = [
 	{ value: "time", order: "desc", label: "Date Uploaded" },
 ];
 
-export default async function Page(props) {
+export async function TableOfContents({ props }) {
+	const authSession = await auth();
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 	const currentPage = Number(searchParams.page) || 1;
-	const authSession = await auth();
 	const query = searchParams.search || "";
 	const orderBy = searchParams.order || "name";
 	const orderDirection = parseOrderDirection(searchParams.direction);
-
 	const whereObject = {
 		user: { id: authSession.user.id },
 		name: { contains: query, mode: "insensitive" },
@@ -42,9 +44,6 @@ export default async function Page(props) {
 	const isManagement = authorize(authSession, [s.management]);
 	return (
 		<>
-			<TopBar sortOptions={sortOptions} buttonHref="/medibook" buttonText="Home" defaultSort="timedesc" title="Personal Files">
-				<SearchParamsButton searchParams={{ uploadresource: true }}>Upload File</SearchParamsButton>
-			</TopBar>
 			<ResourcesTable
 				baseUrl={"/medibook/drive"}
 				tableColumns={["Name", "Scope", "Date Uploaded", "Tags"]}
@@ -52,6 +51,19 @@ export default async function Page(props) {
 				isManagement={isManagement}
 			/>
 			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
+		</>
+	);
+}
+
+export default async function Page(props) {
+	return (
+		<>
+			<TopBar sortOptions={sortOptions} buttonHref="/medibook" buttonText="Home" defaultSort="timedesc" title="Personal Files">
+				<SearchParamsButton searchParams={{ uploadresource: true }}>Upload File</SearchParamsButton>
+			</TopBar>
+			<Suspense fallback={<LoadingTable columns={["Name", "Scope", "Date Uploaded", "Tags"]} />}>
+				<TableOfContents props={props} />
+			</Suspense>
 		</>
 	);
 }

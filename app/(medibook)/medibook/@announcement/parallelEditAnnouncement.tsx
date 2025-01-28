@@ -1,15 +1,9 @@
 "use client";
-
 import { useRouter, useSearchParams } from "next/navigation";
-import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
-import { Dropdown, DropdownButton, DropdownHeading, DropdownItem, DropdownLabel, DropdownMenu } from "@/components/dropdown";
-import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
+import { removeSearchParams } from "@/lib/search-params";
 import { Button } from "@/components/button";
-import { Dialog, DialogActions, DialogBody, DialogTitle } from "@/components/dialog";
-import { Description, Field, Label } from "@/components/fieldset";
 import { Input } from "@/components/input";
 import { useFlushState } from "@/hooks/use-flush-state";
-import { Select } from "@/components/select";
 import { toast } from "sonner";
 import { TopBar } from "../client-components";
 import { Divider } from "@/components/divider";
@@ -21,14 +15,13 @@ import { useSession } from "next-auth/react";
 import { Textarea } from "@/components/textarea";
 import { cn } from "@/lib/cn";
 import { Suspense, useEffect, useState } from "react";
-import { MDXClient } from "next-mdx-remote-client/csr";
 import { useDebouncedValue } from "@mantine/hooks";
-import { serialize } from "next-mdx-remote-client/serialize";
 import { Link } from "@/components/link";
-import { announcementWebsitecomponents } from "./default";
 import { editAnnouncement } from "./actions";
 import { SlugInput } from "@/components/slugInput";
-import { MDXRemoteOptions } from "next-mdx-remote-client/rsc";
+import dynamic from "next/dynamic";
+
+const MarkDownViewer = dynamic(() => import("./_components/markdown-viewer").then((mod) => mod.MarkDownViewer), { ssr: false });
 
 export function ModalEditAnnouncement({ selectedAnnouncement }) {
 	const router = useRouter();
@@ -36,7 +29,6 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 	const { data: authSession } = useSession();
 	const [isLoading, setIsLoading] = useFlushState(false);
 	const [markDown, setMarkDown] = useState(selectedAnnouncement?.markdown);
-	const [serializedMarkDown, setSerializedMarkDown] = useState("");
 	const [debouncedMarkDown] = useDebouncedValue(markDown, 5000);
 
 	function onClose() {
@@ -56,21 +48,6 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 		}
 		setIsLoading(false);
 	}
-
-	useEffect(() => {
-		const createPreview = async () => {
-			toast.loading("Creating Preview.", {
-				id: "preview",
-			});
-			const content = await serialize({ source: debouncedMarkDown });
-			setSerializedMarkDown(content);
-			toast.success("Preview Created.", {
-				id: "preview",
-			});
-		};
-
-		if (debouncedMarkDown) createPreview();
-	}, [debouncedMarkDown]);
 
 	useEffect(() => {
 		setMarkDown(selectedAnnouncement?.markdown);
@@ -180,12 +157,12 @@ export function ModalEditAnnouncement({ selectedAnnouncement }) {
 							Save
 						</Button>
 					</div>
-					<Divider className={cn("mt-10", serializedMarkDown && debouncedMarkDown && "invisible")} soft />
-					{serializedMarkDown && debouncedMarkDown && (
+					<Divider className={cn("mt-10", debouncedMarkDown && "invisible")} soft />
+					{debouncedMarkDown && (
 						<div className="max-w-full overflow-hidden bg-zinc-100 p-4">
 							<Text className="">Preview</Text>
 							<Suspense fallback={<div>Error</div>}>
-								<MDXClient onError={<div>Error</div>} components={announcementWebsitecomponents} {...serializedMarkDown} />
+								<MarkDownViewer markdown={debouncedMarkDown} />
 							</Suspense>
 						</div>
 					)}

@@ -3,15 +3,14 @@ import ReCAPTCHA from "react-google-recaptcha";
 
 import { useRef, useState } from "react";
 import { Field, Label } from "@/components/fieldset";
-import { Badge } from "@/components/badge";
 import { Input } from "@/components/input";
 import { Textarea } from "@/components/textarea";
 import { Button } from "@/components/button";
 import { Link } from "@/components/link";
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import { useSearchParams } from "next/navigation";
 import { checkTokenGoogle, contactUs } from "./actions";
 import { useFlushState } from "@/hooks/use-flush-state";
+import { Info } from "lucide-react";
 
 export function RecaptchaComp({
 	className,
@@ -62,7 +61,7 @@ export function ContactUsForm({ sitekey }) {
 					<div className="rounded-md bg-green-50 p-4">
 						<div className="flex">
 							<div className="flex-shrink-0">
-								<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-green-400" />
+								<Info aria-hidden="true" className="h-5 w-5 text-green-400" />
 							</div>
 							<div className="ml-3 flex-1 md:flex md:justify-between">
 								<p className="text-sm text-green-700">We will get back to you as soon as possible.</p>
@@ -80,7 +79,7 @@ export function ContactUsForm({ sitekey }) {
 					<div className="mb-4 rounded-md bg-red-50 p-4">
 						<div className="flex">
 							<div className="flex-shrink-0">
-								<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-red-400" />
+								<Info aria-hidden="true" className="h-5 w-5 text-red-400" />
 							</div>
 							<div className="ml-3 flex-1 md:flex md:justify-between">
 								<p className="text-sm text-red-700">You have entered invalid info.</p>
@@ -92,7 +91,7 @@ export function ContactUsForm({ sitekey }) {
 					<div className="rounded-md bg-red-50 p-4">
 						<div className="flex">
 							<div className="flex-shrink-0">
-								<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-red-400" />
+								<Info aria-hidden="true" className="h-5 w-5 text-red-400" />
 							</div>
 							<div className="ml-3 flex-1 md:flex md:justify-between">
 								<p className="text-sm text-red-700">

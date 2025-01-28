@@ -33,9 +33,9 @@ export function PoliciesNavbar({ allPolicies }) {
 				</div>
 				<div className="hidden sm:block">
 					<nav className="-mb-px flex justify-center space-x-8">
-						{allPolicies.map((tab) => (
+						{allPolicies.map((tab, index) => (
 							<Link
-								key={`${tab.name}-tab-${Math.random()}`}
+								key={index}
 								href={`/policies/${tab.slug}`}
 								aria-current={pathname == `/policies/${tab.slug}` ? "page" : undefined}
 								className={cn(

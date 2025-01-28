@@ -1,4 +1,3 @@
-import React from "react";
 import prisma from "@/prisma/client";
 import { EditUserModal, EditRolesModal, AddRolesModal, UnafilliateStudentModal, CreateUserModal, DeleteUserModal } from "./modals";
 import { generateUserData, generateUserDataObject } from "@/lib/user";

@@ -1,12 +1,9 @@
 "use server";
-
 import { auth } from "@/auth";
-import { authorize, authorizeChairCommittee, authorizeManagerDepartment, s } from "@/lib/authorize";
 import { parseFormData } from "@/lib/parse-form-data";
 import { z } from "zod";
-import { authorizedToEditAnnouncementMap, typeGreaterScopeMapList } from "./default";
+import { authorizedToEditAnnouncementMap } from "./default";
 import prisma from "@/prisma/client";
-import { isPinned } from "@mantine/hooks/lib/use-headroom/use-headroom";
 import { AnnouncementPrivacyTypes } from "@prisma/client";
 import { processSlug } from "@/lib/text";
 import { after } from "next/server";
@@ -157,6 +154,7 @@ export async function publishAnnouncement(formData: FormData, params) {
 
 	if (!!emails.length) {
 		after(async () => {
+			console.log(data.markdown);
 			const emailPromises = emails.map(async (email) => {
 				return sendEmailAnnouncement({
 					name: email?.name,

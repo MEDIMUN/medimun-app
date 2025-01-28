@@ -1,16 +1,15 @@
 "use server";
-
 import "server-only";
 
 import { authorize, s } from "@/lib/authorize";
-import { notFound, redirect } from "next/navigation";
-import { countries } from "@/data/countries";
+import { notFound } from "next/navigation";
 import prisma from "@/prisma/client";
 import { auth } from "@/auth";
 import { generateUserData, generateUserDataObject, userData } from "@/lib/user";
 import { parseFormData } from "@/lib/parse-form-data";
 import { z } from "zod";
 import { nameCase, postProcessUsername, processPronouns } from "@/lib/text";
+/* @ts-ignore */
 import { minio } from "@/minio/client";
 import { type Session } from "next-auth";
 import { nanoid } from "nanoid";

@@ -5,21 +5,15 @@ export function Announcement({ name, markdown, title }) {
 	return (
 		<Row>
 			<Column>
-				<Text className="mt-0 text-[15px]">
+				<Row className="text-[14px]">
 					Dear {name},
 					<br />
-					{title && (
-						<>
-							{title}
-							<br />
-							<br />
-						</>
-					)}
+					{title && <>{title}</>}
 					<Markdown>{markdown}</Markdown>
 					<br />
 					<br />
 					<span className="text-xs">You can also view this announcement on MediBook.</span>
-				</Text>
+				</Row>
 			</Column>
 		</Row>
 	);

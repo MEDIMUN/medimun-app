@@ -1,5 +1,5 @@
 import Paginator from "@/components/pagination";
-import { Suspense } from "react";
+import { Fragment, Suspense } from "react";
 import { Topbar } from "../server-components";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
@@ -8,11 +8,9 @@ import { cn } from "@/lib/cn";
 import Link from "next/link";
 import { Badge } from "@/components/badge";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
-import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import { Divider } from "@/components/divider";
 import { Code } from "@/components/text";
-
-export const revalidate = 60;
+import { Ellipsis } from "lucide-react";
 
 export default async function Page(props) {
 	const searchParams = await props.searchParams;
@@ -26,7 +24,7 @@ export default async function Page(props) {
 		.$transaction([
 			prisma.session.findMany({
 				where: whereObject,
-				take: 10,
+				take: 5,
 				include: { Day: { orderBy: { date: "asc" }, where: { type: "CONFERENCE" }, include: { location: true } } },
 				skip: (currentPage - 1) * 10,
 				orderBy: [{ isMainShown: "desc" }, { numberInteger: "desc" }],
@@ -45,7 +43,16 @@ export default async function Page(props) {
 
 	return (
 		<>
-			<Topbar title={"Sessions"} description={"All Past, Current and Future Sessions of our Conference."} />
+			<Topbar
+				title={"All conference sessions"}
+				description={
+					<>
+						Browse all past, current and future conference sessions.
+						<br />
+						See the details and find the the information you need.
+					</>
+				}
+			/>
 			{!!sessions.length && (
 				<ul className="mx-auto max-w-7xl px-5">
 					{sessions.map((session, index) => {
@@ -55,7 +62,7 @@ export default async function Page(props) {
 						const location = session?.Day[0]?.location?.name;
 						const romanized = romanize(session?.numberInteger);
 						return (
-							<>
+							<Fragment key={session.id}>
 								<li
 									className={cn("bg-cover", session?.isMainShown && "mb-6 overflow-hidden rounded-lg text-zinc-800 shadow-md duration-300")}
 									style={
@@ -64,8 +71,7 @@ export default async function Page(props) {
 												? { backgroundImage: `url(/api/sessions/${session.id}/cover)` }
 												: { backgroundImage: `url(/assets/gradients/${2}.jpg)` }
 											: null
-									}
-									key={session.id}>
+									}>
 									{!!index && !session?.isMainShown && <Divider soft={index > 0} />}
 									<div className={cn("flex items-center justify-between", session?.isMainShown && "bg-white bg-opacity-60 pl-6 pr-4")}>
 										<div key={session.id} className="flex gap-6 py-6">
@@ -113,7 +119,7 @@ export default async function Page(props) {
 										<div className="flex items-center gap-4">
 											<Dropdown>
 												<DropdownButton plain aria-label="More options">
-													<EllipsisVerticalIcon />
+													<Ellipsis width={18} />
 												</DropdownButton>
 												<DropdownMenu anchor="bottom end">
 													<DropdownItem href={`/medibook/sessions/${session?.number}`}>View</DropdownItem>
@@ -122,7 +128,7 @@ export default async function Page(props) {
 										</div>
 									</div>
 								</li>
-							</>
+							</Fragment>
 						);
 					})}
 				</ul>

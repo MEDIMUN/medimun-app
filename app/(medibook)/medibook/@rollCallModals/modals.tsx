@@ -1,10 +1,8 @@
 "use client";
-
 import { useSearchParams } from "next/navigation";
 import { createRollCall, deleteRollCall, editRollCall } from "./actions";
 import { useState } from "react";
 import { toast } from "sonner";
-import { flushSync as flush } from "react-dom";
 import { removeSearchParams } from "@/lib/search-params";
 import { useRouter } from "next/navigation";
 import { authorize, s } from "@/lib/authorize";
@@ -13,7 +11,6 @@ import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } fro
 import { Button } from "@/components/button";
 import { Field, Label } from "@/components/fieldset";
 import { Input } from "@/components/input";
-import { Badge } from "@/components/badge";
 
 export function EditRollCallModal({ selectedRollCall }) {
 	const searchParams = useSearchParams();

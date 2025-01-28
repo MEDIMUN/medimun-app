@@ -1,4 +1,3 @@
-import React from "react";
 import prisma from "@/prisma/client";
 import { AddLocationModal } from "./modals";
 

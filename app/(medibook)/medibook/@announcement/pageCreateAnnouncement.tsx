@@ -2,35 +2,27 @@
 
 import { Button } from "@/components/button";
 import { Divider } from "@/components/divider";
-import { Description, Field, Label } from "@/components/fieldset";
 import { Subheading } from "@/components/heading";
 import { Input } from "@/components/input";
 import { Link } from "@/components/link";
 import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/listbox";
-import { Select } from "@/components/select";
 import { useFlushState } from "@/hooks/use-flush-state";
 import { authorize, s } from "@/lib/authorize";
 import { cn } from "@/lib/cn";
-import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
 import { useSession } from "next-auth/react";
-import { notFound, redirect, useParams, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { notFound, useParams, useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { TopBar } from "../client-components";
 import { Code, Text } from "@/components/text";
 import { Textarea } from "@/components/textarea";
 import { publishAnnouncement } from "./actions";
-import {
-	announcementWebsitecomponents,
-	authorizedToEditAnnouncement,
-	authorizedToEditAnnouncementMap,
-	innerAnnouncementScopeList,
-	typeGreaterScopeMapList,
-} from "./default";
-import { serialize } from "next-mdx-remote-client/serialize";
-import { MDXClient } from "next-mdx-remote-client/csr";
+import { authorizedToEditAnnouncementMap, innerAnnouncementScopeList, typeGreaterScopeMapList } from "./default";
 import { useDebouncedValue } from "@mantine/hooks";
 import { SlugInput } from "@/components/slugInput";
+import dynamic from "next/dynamic";
+
+const MarkDownViewer = dynamic(() => import("./_components/markdown-viewer").then((mod) => mod.MarkDownViewer), { ssr: false });
 
 export function PageCreateAnnouncement({
 	committeeId,
@@ -51,7 +43,6 @@ export function PageCreateAnnouncement({
 	const [isLoading, setIsLoading] = useFlushState(false);
 	const [typeInput, setTypeInput] = useState(["WEBSITE"]);
 	const [markDown, setMarkDown] = useState();
-	const [serializedMarkDown, setSerializedMarkDown] = useState("");
 	const [debouncedMarkDown] = useDebouncedValue(markDown, 5000);
 
 	async function handleSubmit(formData: FormData) {
@@ -77,20 +68,6 @@ export function PageCreateAnnouncement({
 	const authGreaterScope = typeGreaterScopeMapList[type]?.[0]?.value;
 	const authInnerScope = innerAnnouncementScopeList[authGreaterScope]?.map((scope) => scope?.value);
 	const authBooleanMap = authInnerScope.map((scope) => authorizedToEditAnnouncementMap(authSession, committeeId, departmentId)[scope]);
-
-	useEffect(() => {
-		const createPreview = async () => {
-			toast.loading("Creating Preview.", {
-				id: "preview",
-			});
-			const content = await serialize({ source: debouncedMarkDown });
-			setSerializedMarkDown(content);
-			toast.success("Preview Created.", {
-				id: "preview",
-			});
-		};
-		if (debouncedMarkDown) createPreview();
-	}, [debouncedMarkDown]);
 
 	if (status !== "authenticated") return null;
 
@@ -245,12 +222,12 @@ export function PageCreateAnnouncement({
 						Publish
 					</Button>
 				</div>
-				<Divider className={cn("mt-10", serializedMarkDown && debouncedMarkDown && "invisible")} soft />
-				{serializedMarkDown && debouncedMarkDown && (
+				<Divider className={cn("mt-10", debouncedMarkDown && "invisible")} soft />
+				{debouncedMarkDown && (
 					<div className="max-w-full overflow-hidden bg-zinc-100 p-4">
 						<Text className="">Preview</Text>
 						<Suspense fallback={<div>Error</div>}>
-							<MDXClient onError={<div>Error</div>} components={announcementWebsitecomponents} {...serializedMarkDown} />
+							<MarkDownViewer markdown={debouncedMarkDown} />
 						</Suspense>
 					</div>
 				)}

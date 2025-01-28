@@ -2,20 +2,17 @@
 
 import { Description, ErrorMessage, Field } from "@/components/fieldset";
 import { Subheading } from "@/components/heading";
-import Icon from "@/components/icon";
 import { Input, InputGroup } from "@/components/input";
 import { Code, Text } from "@/components/text";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 import { checkUsername, clearBio, deletePrivateProfilePicture, updatePrivateProfilePicture } from "./actions";
 import { Button } from "@/components/button";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { flushSync } from "react-dom";
 import { toast } from "sonner";
-import { authorize, s } from "@/lib/authorize";
-import { auth } from "@/auth";
 import { useSession } from "next-auth/react";
-import { Badge } from "@/components/badge";
+import { LoaderCircle } from "lucide-react";
 
 export function UsernameField({ initialUsername }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +61,7 @@ export function UsernameField({ initialUsername }) {
 			<div className="my-auto">
 				<Field>
 					<InputGroup>
-						{isLoading && <Icon data-slot="icon" className="animate-spin" icon="gg:spinner" />}
+						{isLoading && <LoaderCircle className="animate-spin" size={18} />}
 						<Input
 							name="username"
 							type="search"

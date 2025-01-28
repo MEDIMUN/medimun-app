@@ -1,5 +1,4 @@
 "use client";
-
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { authorize, s } from "@/lib/authorize";
@@ -13,7 +12,6 @@ import { toast } from "sonner";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 import { deleteDepartment } from "./actions";
-import { useState } from "react";
 import { useFlushState } from "@/hooks/use-flush-state";
 
 function onClose(searchParams: ReadonlyURLSearchParams, router: any[] | AppRouterInstance) {

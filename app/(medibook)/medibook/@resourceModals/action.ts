@@ -2,18 +2,12 @@
 
 import { parseFormData } from "@/lib/parse-form-data";
 import { z } from "zod";
-import {
-	authorizedToEdit,
-	authorizedToEditResource,
-	greaterScopeList,
-	innerScopeList,
-	searchParamsGreaterScopeMap,
-	useableSearchParams,
-} from "./default";
+import { authorizedToEditResource, innerScopeList, searchParamsGreaterScopeMap, useableSearchParams } from "./default";
 import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, authorizeManagerDepartment, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { randomUUID } from "crypto";
+/* @ts-ignore */
 import { minio } from "@/minio/client";
 import mimeExt from "mime-ext";
 

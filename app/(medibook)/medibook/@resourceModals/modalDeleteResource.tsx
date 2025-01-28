@@ -1,16 +1,11 @@
 "use client";
-
 import { useRouter, useSearchParams } from "next/navigation";
-import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
-import { Dropdown, DropdownButton, DropdownHeading, DropdownItem, DropdownLabel, DropdownMenu } from "@/components/dropdown";
-import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
+import { removeSearchParams } from "@/lib/search-params";
 import { Button } from "@/components/button";
-import { Dialog, DialogActions, DialogBody, DialogTitle } from "@/components/dialog";
-import { Description, Field, Label } from "@/components/fieldset";
-import { Input } from "@/components/input";
+import { Dialog, DialogActions, DialogTitle } from "@/components/dialog";
+import { Description } from "@/components/fieldset";
 import { useFlushState } from "@/hooks/use-flush-state";
-import { Select } from "@/components/select";
-import { deleteResourceAction, editResourceDetails } from "./action";
+import { deleteResourceAction } from "./action";
 import { toast } from "sonner";
 
 export function ModalDeleteResource({ selectedResource }) {

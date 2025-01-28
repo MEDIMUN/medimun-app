@@ -1,5 +1,4 @@
 import prisma from "@/prisma/client";
-import { notFound } from "next/navigation";
 import { countries } from "@/data/countries";
 import { OptionsDropdown } from "./client-components";
 import { SearchParamsButton, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
@@ -11,7 +10,6 @@ import Paginator from "@/components/pagination";
 import { Link } from "@/components/link";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { Badge } from "@/components/badge";
-import { Fragment } from "react";
 
 const itemsPerPage = 10;
 

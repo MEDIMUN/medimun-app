@@ -6,8 +6,6 @@ import { authorize, authorizeChairCommittee, authorizeManagerDepartment, s } fro
 import { ModalDeleteAnnouncement } from "./modalDeleteAnnouncement";
 import { Link } from "@/components/link";
 
-export const dynamic = "force-dynamic";
-
 export function authorizedToEditAnnouncementMap(authSession, committeeId, departmentId) {
 	const isManagement = authorize(authSession, [s.management]);
 	const isChairCommittee = authorizeChairCommittee(authSession?.user.currentRoles, committeeId);

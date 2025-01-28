@@ -5,7 +5,6 @@ import prisma from "@/prisma/client";
 import sharp from "sharp";
 
 export async function GET(request, props) {
-	// Await `params` directly
 	const params = await props.params;
 
 	let userExists;
@@ -35,13 +34,15 @@ export async function GET(request, props) {
 		return notFound();
 	}
 
+	const dimesions = request.nextUrl?.searchParams?.get("size") ? Number(request.nextUrl.searchParams.get("size")) : 500;
+
 	// Use sharp to optimize and make the image a square
 	const optimizedImage = await sharp(imageBuffer)
-		.resize(500, 500, {
+		.resize(dimesions, dimesions, {
 			fit: sharp.fit.cover,
 			position: sharp.strategy.entropy, // Smart crop
 		})
-		.jpeg({ quality: 60 }) // Adjust quality as needed
+		.jpeg({ quality: request.nextUrl?.searchParams?.get("quality") ? Number(request.nextUrl.searchParams.get("quality")) : 60 }) // Adjust quality as needed
 		.toBuffer();
 
 	// Return the optimized image

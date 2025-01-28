@@ -4,8 +4,9 @@ import * as Headless from "@headlessui/react";
 import clsx from "clsx";
 import React, { forwardRef } from "react";
 import { Link } from "./link";
-import Icon from "./icon";
-import { Spinner } from "@nextui-org/spinner";
+import { Spinner } from "@heroui/spinner";
+import { Button as SButton } from "@/components/ui/button";
+import { FastLink } from "./fast-link";
 
 const styles = {
 	base: [
@@ -106,10 +107,12 @@ const styles = {
 		primary: [
 			"text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:primary)] [--btn-border:theme(colors.red.700/90%)]",
 			"[--btn-icon:theme(colors.red.300)] data-[active]:[--btn-icon:theme(colors.red.200)] data-[hover]:[--btn-icon:theme(colors.red.200)]",
+			"dark:bg-primary",
 		],
 		englishschool: [
-			"text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:englishschool])] [--btn-border:theme(colors.red.700/90%)]",
+			"text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:school])] [--btn-border:theme(colors.red.700/90%)]",
 			"[--btn-icon:theme(colors.red.300)] data-[active]:[--btn-icon:theme(colors.red.200)] data-[hover]:[--btn-icon:theme(colors.red.200)]",
+			"dark:bg-school light:bg-school dark:[--btn-bg:school])]",
 		],
 		orange: [
 			"text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:theme(colors.orange.500)] [--btn-border:theme(colors.orange.600/90%)]",
@@ -191,13 +194,13 @@ export const Button = forwardRef(function Button(
 	);
 
 	return "href" in props ? (
-		<Link {...props} className={classes} ref={ref as React.ForwardedRef<HTMLAnchorElement>}>
-			<TouchTarget>{loading ? <Spinner size="sm" /> : children}</TouchTarget>
-		</Link>
+		<FastLink {...props} ref={ref as React.ForwardedRef<FastLink>}>
+			<SButton className={classes}>{loading ? <Spinner size="sm" /> : children}</SButton>
+		</FastLink>
 	) : (
-		<Headless.Button {...props} className={clsx(classes, "cursor-default")} ref={ref}>
-			<TouchTarget>{loading ? <Spinner size="sm" /> : children}</TouchTarget>
-		</Headless.Button>
+		<SButton variant={plain ? "ghost" : undefined} {...props} className={clsx(classes, "cursor-default")} ref={ref}>
+			{loading ? <Spinner size="sm" /> : children}
+		</SButton>
 	);
 });
 

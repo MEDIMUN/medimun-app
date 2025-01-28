@@ -2,16 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { updateSearchParams } from "@/lib/search-params";
-import { Dropdown, DropdownButton, DropdownHeading, DropdownItem, DropdownLabel, DropdownMenu } from "@/components/dropdown";
-import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { Button } from "@/components/button";
+import { Ellipsis } from "lucide-react";
 
 export function OptionsDropdown({ location }) {
 	const router = useRouter();
 	return (
 		<Dropdown>
 			<DropdownButton plain aria-label="More options">
-				<EllipsisHorizontalIcon />
+				<Ellipsis width={18} />
 			</DropdownButton>
 			<DropdownMenu>
 				<DropdownItem onClick={() => router.push(`/medibook/locations/${location.slug || location.id}`)}>View Location Page</DropdownItem>

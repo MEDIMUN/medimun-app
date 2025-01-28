@@ -5,11 +5,9 @@ import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
-import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import { Button } from "@/components/button";
 import Paginator from "@/components/pagination";
-
-export const dynamic = "force-dynamic";
+import { Ellipsis } from "lucide-react";
 
 export default async function PoliciesPage(props) {
 	const searchParams = await props.searchParams;
@@ -73,7 +71,7 @@ export default async function PoliciesPage(props) {
 									{isManagement ? (
 										<Dropdown>
 											<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
-												<EllipsisVerticalIcon />
+												<Ellipsis width={18} />
 											</DropdownButton>
 											<DropdownMenu anchor="bottom end">
 												<DropdownItem href={`/medibook/policies/${policy.slug}`}>View</DropdownItem>

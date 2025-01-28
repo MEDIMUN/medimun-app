@@ -1,11 +1,9 @@
 "use client";
-
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { InformationCircleIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { roleRanks } from "@/data/constants";
 
 import { editUser, addRole, removeRole, unafilliateStudent, createUser, deleteUser } from "./actions";
@@ -26,9 +24,9 @@ import { Button } from "@/components/button";
 import { Badge } from "@/components/badge";
 import { Listbox, ListboxLabel, ListboxOption } from "@/components/listbox";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
-import { Avatar } from "@nextui-org/avatar";
-import { generateUserData } from "@/lib/user";
+import { Avatar } from "@heroui/avatar";
 import { ProfileUploader } from "../(global)/users/components/ProfilePictureFrame";
+import { Info, X } from "lucide-react";
 
 export function AssignUserChip({ uid, officialName, displayName }) {
 	const searchParams = useSearchParams();
@@ -74,7 +72,7 @@ export function DeleteRoleButton({ role, userID }) {
 			type="button"
 			className="inline-flex rounded-md bg-zinc-50 p-1.5 text-zinc-500 hover:bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-600 focus:ring-offset-2 focus:ring-offset-zinc-50">
 			<span className="sr-only">Delete Role</span>
-			<XMarkIcon aria-hidden="true" className="h-5 w-5" />
+			<X aria-hidden="true" className="h-5 w-5" />
 		</button>
 	);
 }
@@ -349,7 +347,7 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 							<div className="rounded-md bg-zinc-50 p-2">
 								<div className="flex">
 									<div className="flex-shrink-0">
-										<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+										<Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 									</div>
 									<div className="ml-3 flex-1 md:flex md:justify-between">
 										<p className="text-sm text-zinc-700">Select 2 or less users to assign more powerful roles.</p>
@@ -362,7 +360,7 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 							<div className="rounded-md bg-zinc-50 p-2">
 								<div className="flex">
 									<div className="flex-shrink-0">
-										<InformationCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+										<Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 									</div>
 									<div className="ml-3 flex-1 md:flex md:justify-between">
 										<p className="text-sm text-zinc-700">Select a single user to be able to assign Admin Roles.</p>
@@ -506,7 +504,7 @@ export function EditRolesModal({ selectedUser, highestRoleRank }) {
 					<div className="rounded-md bg-red-50 p-4">
 						<div className="flex">
 							<div className="flex-shrink-0">
-								<XCircleIcon aria-hidden="true" className="h-5 w-5 text-red-400" />
+								<X aria-hidden="true" className="h-5 w-5 text-red-400" />
 							</div>
 							<div className="ml-3">
 								<h3 className="text-sm font-medium text-red-800">{fullName} has no roles assigned to them.</h3>

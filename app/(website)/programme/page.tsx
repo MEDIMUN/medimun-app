@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody } from "@nextui-org/card";
+import { Card, CardHeader, CardBody } from "@heroui/card";
 import { Divider } from "@/components/divider";
 
 export const metadata = {
@@ -7,7 +7,6 @@ export const metadata = {
 };
 
 export default async function Page() {
-	const elId = Math.random().toString(36);
 	return (
 		<div className="bg-gray-100">
 			<div className="mx-auto h-auto max-w-[1248px] p-5 pt-24 font-[montserrat] text-white">

@@ -2,16 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { updateSearchParams } from "@/lib/search-params";
-import { Dropdown, DropdownButton, DropdownHeading, DropdownItem, DropdownLabel, DropdownMenu } from "@/components/dropdown";
-import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { Button } from "@/components/button";
+import { Ellipsis } from "lucide-react";
 
 export function OptionsDropdown({ school }) {
 	const router = useRouter();
 	return (
 		<Dropdown>
 			<DropdownButton plain aria-label="More options">
-				<EllipsisHorizontalIcon />
+				<Ellipsis width={18} />
 			</DropdownButton>
 			<DropdownMenu>
 				<DropdownItem onClick={() => router.push(`/medibook/schools/${school.slug || school.id}`)}>View School Page</DropdownItem>
@@ -77,7 +77,7 @@ export function EditDeleteSchoolButtons({ schoolId, schoolSlug, isDirector, isMa
 			<div className="hidden md:block">
 				<Dropdown>
 					<DropdownButton color="light" aria-label="More options">
-						<EllipsisHorizontalIcon />
+						<Ellipsis width={18} />
 					</DropdownButton>
 					<DropdownMenu>
 						{visibleButtons.map((button, index) => (

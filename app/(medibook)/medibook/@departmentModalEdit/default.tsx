@@ -2,9 +2,9 @@ import prisma from "@/prisma/client";
 import { ModalEditDepartment } from "./modals";
 
 export default async function Modals(props) {
-    const searchParams = await props.searchParams;
-    let editDepartment = {};
-    if (searchParams["edit-department"]) {
+	const searchParams = await props.searchParams;
+	let editDepartment = {};
+	if (searchParams["edit-department"]) {
 		try {
 			editDepartment = await prisma.department.findFirstOrThrow({ where: { id: searchParams["edit-department"] } });
 		} catch (e) {
@@ -12,5 +12,5 @@ export default async function Modals(props) {
 		}
 	}
 
-    return <ModalEditDepartment selectedDepartment={editDepartment} />;
+	return <ModalEditDepartment selectedDepartment={editDepartment} />;
 }

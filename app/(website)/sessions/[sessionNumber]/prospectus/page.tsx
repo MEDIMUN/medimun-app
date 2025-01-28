@@ -1,12 +1,11 @@
 import prisma from "@/prisma/client";
+/* @ts-ignore */
 import { minio } from "@/minio/client";
 import { Topbar } from "@/app/(website)/server-components";
 import { getOrdinal } from "@/lib/get-ordinal";
-import { ArrowDownCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
-export const revalidate = 60;
+import { CircleArrowDown, TriangleAlert } from "lucide-react";
 
 export async function generateMetadata(props) {
 	const params = await props.params;
@@ -43,7 +42,7 @@ export default async function Page(props: { params: Promise<{ sessionNumber: str
 					<div className="mx-auto max-w-7xl rounded-md bg-yellow-50 p-4">
 						<div className="flex">
 							<div className="flex-shrink-0">
-								<ExclamationTriangleIcon aria-hidden="true" className="h-5 w-5 text-yellow-400" />
+								<TriangleAlert aria-hidden="true" className="h-5 w-5 text-yellow-400" />
 							</div>
 							<div className="ml-3">
 								<h3 className="text-sm font-medium text-yellow-800">No prospectus available for the session yet.</h3>
@@ -77,7 +76,7 @@ export default async function Page(props: { params: Promise<{ sessionNumber: str
 				<div className="w-4xl mx-auto mt-8 rounded-md bg-zinc-50 p-4">
 					<div className="flex">
 						<div className="flex-shrink-0">
-							<ArrowDownCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+							<CircleArrowDown aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 						</div>
 						<div className="ml-3 flex-1 md:flex md:justify-between">
 							<p className="text-sm text-zinc-700">

@@ -1,11 +1,9 @@
 "use server";
-
 import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { auth } from "@/auth";
-import { generateUserData, generateUserDataObject, userData } from "@/lib/user";
+import { userData } from "@/lib/user";
 import { minio } from "@/minio/client";
-import { type Session } from "next-auth";
 import { nanoid } from "nanoid";
 
 export async function updateProfilePictureForUser(targetUserId: string, formData: FormData) {

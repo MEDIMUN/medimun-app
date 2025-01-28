@@ -2,12 +2,12 @@
 
 import { useSelectedContext } from "./StateStateProvider";
 import { toast } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { updateSearchParams } from "@/lib/search-params";
 import { toggleDisableOrEnableUsers } from "../../../@userModals/actions";
-import { CheckCircleIcon } from "@heroicons/react/16/solid";
 import { Badge } from "@/components/badge";
-import { Avatar } from "@nextui-org/avatar";
+import { Avatar } from "@heroui/avatar";
+import { CircleCheck } from "lucide-react";
 
 export function UserChip({ uid, officialName, displayName }) {
 	const { setSelected } = useSelectedContext();
@@ -53,7 +53,7 @@ export function SelectedUsersWindow() {
 			<div className="rounded-md bg-zinc-50 p-4">
 				<div className="flex">
 					<div className="flex-shrink-0">
-						<CheckCircleIcon aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+						<CircleCheck aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 					</div>
 					<div className="ml-3 overflow-x-scroll">
 						<h3 className="text-sm font-medium text-zinc-800">{!!selected.length ? "Select Users" : "Select users to access bulk actions."}</h3>

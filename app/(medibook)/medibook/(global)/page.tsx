@@ -1,19 +1,13 @@
 import { ActionList } from "@/app/components/actions-list";
-import { auth } from "@/auth";
-import { Heading } from "@/components/heading";
-import { Text } from "@/components/text";
-import { cn } from "@/lib/cn";
 import MediBookWelcome from "@/public/assets/medibook-welcome.webp";
 import Image from "next/image";
+import { NameDisplay } from "./_components/name";
+import prisma from "@/prisma/client";
+import { countries } from "@/data/countries";
+
+export const experimental_ppr = true;
 
 export default async function Home() {
-	const authSession = await auth();
-	const officialName = authSession?.user?.officialName;
-	const displayName = authSession?.user?.displayName;
-	const preferredName = displayName?.split(" ")[0] || officialName;
-	const userId = authSession?.user?.id;
-	const greeting = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening";
-
 	const actions = [
 		{
 			title: "All Sessions",
@@ -57,21 +51,46 @@ export default async function Home() {
 		},
 	];
 
-	if (!userId) return null;
+	/* const delegates = await prisma.delegate.findMany({
+		where: {
+			committee: {
+				session: {
+					isMainShown: true,
+				},
+				shortName: "ICJ",
+			},
+		},
+		select: {
+			country: true,
+		},
+	});
+
+	const extraCountries = await prisma.extraCountry.findMany({});
+
+	const allCountries = countries.concat(extraCountries);
+
+	const countriesD = delegates.map((delegate) => allCountries.find((country) => country.countryCode === delegate.country)?.countryNameEn).sort();
+
+	console.log(countriesD); */
 
 	return (
 		<>
-			<div>
-				<Heading>
-					{greeting}, {preferredName}
-				</Heading>
-				<Text>
-					Your User ID is {userId.slice(0, 4)}-{userId.slice(4, 8)}-{userId.slice(8, 12)}
-				</Text>
-			</div>
-			<div className="w-full overflow-hidden rounded-xl shadow-md">
+			<div className="w-full overflow-hidden">
 				<Image alt="Welcome to MediBook." quality={100} className="!relative object-cover" src={MediBookWelcome} fill />
 			</div>
+			<div>
+				<NameDisplay />
+			</div>
+			{/* <div className="flex flex-col">
+				{countriesD.map(
+					(country) =>
+						country && (
+							<div key={country} className="text-gray-500">
+								{country}
+							</div>
+						)
+				)}
+			</div> */}
 			<ActionList actions={actions} />
 		</>
 	);

@@ -9,7 +9,6 @@ import prisma from "@/prisma/client";
 import { notFound, redirect } from "next/navigation";
 import { EditDeleteSchoolButtons } from "../client-components";
 import { TopBar } from "../../../client-components";
-import { ActionList } from "@/app/components/actions-list";
 import { SchoolSessionActionsList } from "./client-components";
 
 export default async function Page(props: { params: Promise<any> }) {
@@ -69,7 +68,7 @@ export default async function Page(props: { params: Promise<any> }) {
 				buttonText={isManagement ? "Schools" : "Home"}
 				buttonHref={isManagement ? "/medibook/schools" : "/medibook"}
 				subheading={`${location?.state || location?.city || ""}
-                    ${`${location?.state || location?.city ? "," : ""}`} ${countryNameEn || "No Address Set"}`}>
+                ${`${location?.state || location?.city ? "," : ""}`} ${countryNameEn || "No Address Set"}`}>
 				{isManagement && (
 					<EditDeleteSchoolButtons
 						isManagement={isManagement}

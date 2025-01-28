@@ -153,7 +153,9 @@ export async function sendEmail({
 			</MainTemplate>,
 			{ pretty: true }
 		);
-	} catch (error) {}
+	} catch (error) {
+		console.error("Error rendering email template");
+	}
 
 	return sendEmailTransport({
 		to,

@@ -2,6 +2,8 @@
 
 import { cn } from "@/lib/cn";
 import { useEffect, useState } from "react";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 
 export default function ThemedHTMLElement({ children }) {
 	const [theme, setTheme] = useState("");
@@ -43,7 +45,12 @@ export default function ThemedHTMLElement({ children }) {
 	return (
 		<html
 			lang="en"
-			className={cn("antialiased !scrollbar-hide h-full", theme === "dark" ? "bg-black text-white dark" : "lg:bg-zinc-100 text-zinc-950 light")}
+			className={cn(
+				"antialiased h-full",
+				theme === "dark" ? "bg-black text-white dark" : "lg:bg-zinc-100 text-zinc-950 light",
+				GeistSans.variable,
+				GeistMono.variable
+			)}
 			suppressHydrationWarning>
 			{children}
 		</html>

@@ -4,12 +4,10 @@ import { WebsiteNavbar } from "@/app/(website)/navbar";
 
 import { NextAuthProvider } from "./providers";
 import { Toaster } from "sonner";
-import { StrictMode, Suspense } from "react";
+import { Suspense } from "react";
 import prisma from "@/prisma/client";
 import { Footer } from "@/app/(website)/main-footer";
-import NextTopLoader from "nextjs-toploader";
 import { notFound } from "next/navigation";
-import { MatomoAnalytics } from "@/components/analytics";
 
 export const metadata = {
 	metadataBase: new URL("https://www.medimun.org"),
@@ -25,33 +23,26 @@ export const metadata = {
 	},
 };
 
-export default async function RootLayout({ children }) {
+async function DynamicNavbar() {
 	const selectedSession = await prisma.session.findFirst({ where: { isMainShown: true } }).catch(notFound);
 
+	return <WebsiteNavbar selectedSession={selectedSession} />;
+}
+
+export default async function RootLayout({ children }) {
 	return (
-		<StrictMode>
-			<html lang="en" className="bg-content1 !scrollbar-hide">
-				<head>
-					<meta name="facebook-domain-verification" content="znip7rtrzxmwzw42ursabu6wfn8m7v" />
-					<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
-				</head>
-				<body id="remove-scrollbar" className="m-0 bg-transparent p-0">
+		<html suppressHydrationWarning lang="en" className="bg-black dark !scrollbar-hide">
+			<head>
+				<meta name="facebook-domain-verification" content="znip7rtrzxmwzw42ursabu6wfn8m7v" />
+				<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
+			</head>
+			<body id="remove-scrollbar" className="m-0 bg-transparent p-0">
+				<Suspense fallback={null}>
 					<NextAuthProvider>
-						<Suspense>
-							<MatomoAnalytics />
+						<Suspense fallback={null}>
+							<DynamicNavbar />
 						</Suspense>
-						<NextTopLoader
-							color="#AE2D28"
-							showSpinner={false}
-							initialPosition={0.08}
-							crawlSpeed={200}
-							height={2}
-							crawl={true}
-							easing="ease"
-							speed={200}
-						/>
-						<WebsiteNavbar selectedSession={selectedSession} />
-						<main className="min-h-svh">
+						<main className="min-h-svh bg-black">
 							<div
 								className="absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu overflow-hidden blur-3xl lg:ml-24 xl:ml-48"
 								aria-hidden="true">
@@ -68,8 +59,8 @@ export default async function RootLayout({ children }) {
 						<Footer />
 						<Toaster />
 					</NextAuthProvider>
-				</body>
-			</html>
-		</StrictMode>
+				</Suspense>
+			</body>
+		</html>
 	);
 }

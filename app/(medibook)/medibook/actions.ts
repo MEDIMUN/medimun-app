@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import prisma from "@/prisma/client";
-import { areSchoolDirectorApplicationsOpen } from "./(sessionSpecific)/sessions/[sessionNumber]/applications/school-director/page";
+import { areSchoolDirectorApplicationsOpen } from "./(session)/sessions/[sessionNumber]/applications/school-director/page";
 import { authorize, s } from "@/lib/authorize";
 import { generateUserData, generateUserDataObject } from "@/lib/user";
 

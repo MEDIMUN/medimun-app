@@ -1,7 +1,7 @@
 "use client";
 
 import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelectedContext } from "./StateStateProvider";
 import { Checkbox } from "@/components/checkbox";
 

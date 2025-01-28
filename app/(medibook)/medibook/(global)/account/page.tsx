@@ -1,6 +1,6 @@
 import { Button } from "@/components/button";
 import { Divider } from "@/components/divider";
-import { Heading, Subheading } from "@/components/heading";
+import { Subheading } from "@/components/heading";
 import { Input } from "@/components/input";
 import { Code, Text } from "@/components/text";
 import { Textarea } from "@/components/textarea";
@@ -15,11 +15,10 @@ import { ClearBioButton, UsernameField, PrivateProfilePictureUploader } from "./
 import { parseFormData } from "@/lib/parse-form-data";
 import { z } from "zod";
 import { nameCase, processPronouns } from "@/lib/text";
-import { CheckCircleIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
-import { Badge } from "@/components/badge";
 import { Select } from "@/components/select";
 import { TopBar } from "../../client-components";
+import { CircleCheck, X } from "lucide-react";
 
 export const metadata: Metadata = {
 	title: "User Settings",
@@ -304,7 +303,7 @@ export default async function Settings(props) {
 					<div id="notice" className="mb-10 rounded-md bg-red-50 p-4">
 						<div className="flex">
 							<div className="flex-shrink-0">
-								<CheckCircleIcon aria-hidden="true" className="h-5 w-5 text-red-400" />
+								<CircleCheck aria-hidden="true" className="h-5 w-5 text-red-400" />
 							</div>
 							<div className="ml-3">
 								<p className="text-sm font-medium text-red-800">{searchParams.error || "Changes saved."}</p>
@@ -316,7 +315,7 @@ export default async function Settings(props) {
 											type="button"
 											className="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50">
 											<span className="sr-only">Dismiss</span>
-											<XMarkIcon aria-hidden="true" className="h-5 w-5" />
+											<X aria-hidden="true" className="h-5 w-5" />
 										</button>
 									</Link>
 								</div>
@@ -328,7 +327,7 @@ export default async function Settings(props) {
 					<div id="notice" className="mb-10 rounded-md bg-green-50 p-4">
 						<div className="flex">
 							<div className="flex-shrink-0">
-								<CheckCircleIcon aria-hidden="true" className="h-5 w-5 text-green-400" />
+								<CircleCheck aria-hidden="true" className="h-5 w-5 text-green-400" />
 							</div>
 							<div className="ml-3">
 								<p className="text-sm font-medium text-green-800">{searchParams.success || "Changes saved."}</p>
@@ -340,7 +339,7 @@ export default async function Settings(props) {
 											type="button"
 											className="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50">
 											<span className="sr-only">Dismiss</span>
-											<XMarkIcon aria-hidden="true" className="h-5 w-5" />
+											<X aria-hidden="true" className="h-5 w-5" />
 										</button>
 									</Link>
 								</div>

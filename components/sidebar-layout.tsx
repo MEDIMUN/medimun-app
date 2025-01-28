@@ -1,7 +1,7 @@
 "use client";
 
 import * as Headless from "@headlessui/react";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { NavbarItem } from "./navbar";
 import { cn } from "@/lib/cn";
 import { usePathname } from "next/navigation";
@@ -31,8 +31,8 @@ function MobileSidebar({ open, close, children }: React.PropsWithChildren<{ open
 			/>
 			<Headless.DialogPanel
 				transition
-				className="fixed inset-y-0 w-full max-w-80 p-2 transition !overflow-x-hidden duration-300 ease-in-out data-[closed]:-translate-x-full">
-				<div className="flex h-full flex-col relative rounded-lg bg-white !overflow-x-hidden shadow-sm ring-1 ring-zinc-950/5 dark:bg-zinc-900 dark:ring-white/10">
+				className="fixed inset-y-0 w-full transition !overflow-x-hidden duration-300 ease-in-out data-[closed]:-translate-x-full">
+				<div className="flex h-full flex-col relative bg-white !overflow-x-hidden shadow-sm dark:bg-zinc-900 dark:ring-white/10">
 					<div className="-mb-3 px-4 pt-3">
 						<Headless.CloseButton as={NavbarItem} aria-label="Close navigation">
 							<CloseMenuIcon />
@@ -45,13 +45,36 @@ function MobileSidebar({ open, close, children }: React.PropsWithChildren<{ open
 	);
 }
 
+export function PathBasedNavbar({ setShowSidebar, navbar, scrollY }) {
+	const pathname = usePathname();
+	if (!pathname) return null;
+
+	const hiddenPaths = ["/medibook/messenger/"];
+
+	const pathIsHidden = hiddenPaths.some((path) => pathname.startsWith(path)) || pathname?.includes("chat");
+
+	if (!pathIsHidden)
+		return (
+			<>
+				<div className="min-h-[60px] lg:hidden"></div>
+				<div className={cn("-bg-red-500 fixed z-[1000] h-[60px] w-full border-b bg-white lg:hidden", !!scrollY && "shadow-md")}>
+					{/* Navbar on mobile */}
+					<header className="-ring-1 mx-2 flex w-[calc(100%-16px)] items-center px-2 ring-zinc-950/5">
+						<div className="py-2.5">
+							<NavbarItem onClick={() => setShowSidebar(true)} aria-label="Open navigation">
+								<OpenMenuIcon />
+							</NavbarItem>
+						</div>
+						<div className="min-w-0 flex-1">{navbar}</div>
+					</header>
+				</div>
+			</>
+		);
+}
+
 export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChildren<{ navbar: React.ReactNode; sidebar: React.ReactNode }>) {
 	let [showSidebar, setShowSidebar] = useState(false);
 	const [scrollY, setScrollY] = useState(0);
-	const hiddenPaths = ["/medibook/messenger/"];
-	const pathname = usePathname();
-
-	const pathIsHidden = hiddenPaths.some((path) => pathname.startsWith(path)) || pathname?.includes("chat");
 
 	useEffect(() => {
 		function handleScroll() {
@@ -62,32 +85,19 @@ export function SidebarLayout({ navbar, sidebar, children }: React.PropsWithChil
 	}, []);
 
 	return (
-		<div className="relative isolate flex h-full min-h-svh w-full flex-col bg-white dark:bg-zinc-900 lg:bg-zinc-100 dark:lg:bg-zinc-950">
+		<div className="relative isolate flex h-full min-h-svh w-full font-[Gilroy] font-extrabold flex-col bg-white dark:bg-zinc-900 lg:bg-zinc-100 dark:lg:bg-zinc-950">
 			{/* Sidebar on desktop */}
 			<div className="fixed inset-y-0 left-0 hidden w-64 lg:block">{sidebar}</div>
 			{/* Sidebar on mobile */}
 			<MobileSidebar open={showSidebar} close={() => setShowSidebar(false)}>
 				{sidebar}
 			</MobileSidebar>
-			{!pathIsHidden && (
-				<>
-					<div className="min-h-[60px] lg:hidden"></div>
-					<div className={cn("-bg-red-500 fixed z-[1000] h-[60px] w-full border-b bg-white lg:hidden", !!scrollY && "shadow-md")}>
-						{/* Navbar on mobile */}
-						<header className="-ring-1 mx-2 flex w-[calc(100%-16px)] items-center px-2 ring-zinc-950/5">
-							<div className="py-2.5">
-								<NavbarItem onClick={() => setShowSidebar(true)} aria-label="Open navigation">
-									<OpenMenuIcon />
-								</NavbarItem>
-							</div>
-							<div className="min-w-0 flex-1">{navbar}</div>
-						</header>
-					</div>
-				</>
-			)}
+			<Suspense fallback={null}>
+				<PathBasedNavbar setShowSidebar={setShowSidebar} navbar={navbar} scrollY={scrollY} />
+			</Suspense>
 			{/* Content */}
 			<main className="flex h-full flex-1 flex-col lg:min-w-0 lg:pl-64 lg:pr-2 lg:pt-2">
-				{children}
+				<Suspense fallback={null}>{children}</Suspense>
 				<div className="min-h-2 h-2" />
 			</main>
 		</div>

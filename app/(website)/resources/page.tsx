@@ -9,8 +9,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Topbar } from "../server-components";
 
-export const dynamic = "force-dynamic";
-
 function PublicResourcesTable({ resources }) {
 	const tableColumns = ["Name", "Date Uploaded", "Tags"];
 
@@ -148,7 +146,12 @@ export default async function Page(props) {
 
 	return (
 		<>
-			<Topbar title={"Resources"} description={"Global Resources and Resources from the latest session."} />
+			<Topbar
+				title={"Files & Resources"}
+				description={
+					"Access essential global files and resources to support your experience. For materials specific to a session, check the relevant session page for more details."
+				}
+			/>
 			<PublicResourcesTable resources={resources}></PublicResourcesTable>
 			<Paginator totalItems={totalItems} itemsOnPage={resources.length} itemsPerPage={20} />
 		</>

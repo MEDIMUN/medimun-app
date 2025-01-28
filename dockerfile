@@ -15,15 +15,14 @@ ENV DB_NAME=$DB_NAME
 ENV DB_HOST='db1.cluster.medimun.org'
 
 COPY package.json /tmp/package.json
-RUN cd /tmp && npm install --ignore-engines --legacy-peer-deps
+RUN cd /tmp && bun install --ignore-engines
 RUN mkdir -p /usr/src/app && cp -a /tmp/node_modules /usr/src/app/
 
 WORKDIR /usr/src/app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 COPY . /usr/src/app
-RUN npx prisma generate
-RUN npm run build
+RUN bun run build
 ENV NODE_ENV production
 ENV PORT 3000
 EXPOSE 3000
-CMD ["npm", "start"]
+CMD ["bun", "start"]

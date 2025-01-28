@@ -1,6 +1,6 @@
 "use client";
 
-import Icon from "@/components/icon";
+import { ClipboardCopy } from "lucide-react";
 import { toast } from "sonner";
 
 export function UserIdDisplay({ userId }): string | null {
@@ -28,7 +28,7 @@ export function UserIdDisplay({ userId }): string | null {
 				<span className="select-none">-</span>
 				{thirdPart}
 			</span>
-			<Icon icon="solar:copy-outline" className="my-auto ml-1 cursor-pointer text-zinc-500 hover:text-zinc-700" onClick={onClickHandler} />
+			<ClipboardCopy className="my-auto ml-1 cursor-pointer text-zinc-500 hover:text-zinc-700" onClick={onClickHandler} />
 		</span>
 	);
 }
