@@ -1,4 +1,4 @@
-FROM node:20-alpine as builder
+FROM oven/bun:1 AS base
 
 # Define build arguments for build-time usage
 ARG DB_USER
