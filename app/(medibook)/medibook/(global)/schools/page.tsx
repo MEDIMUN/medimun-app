@@ -10,6 +10,7 @@ import Paginator from "@/components/pagination";
 import { Link } from "@/components/link";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { Badge } from "@/components/badge";
+import { MainWrapper } from "../../server-components";
 
 const itemsPerPage = 10;
 
@@ -121,56 +122,58 @@ export default async function Page(props) {
 				searchText="Search schools...">
 				{authorize(authSession, [s.management]) && <SearchParamsButton searchParams={{ "add-school": true }}>Add School</SearchParamsButton>}
 			</TopBar>
-			{!!numberOfSchools && (
-				<Table className="showscrollbar">
-					<TableHead>
-						<TableRow>
-							{rows.map((row, i) => (
-								<TableHeader key={i}>{row}</TableHeader>
-							))}
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{schools.map((school, index) => {
-							const country = countries.find((country) => country.countryCode === school?.location?.country);
-							const directors = (
-								<div className="flex gap-2">
-									{school.director.map((director, index) => (
-										<Link
-											key={`${director.id}-${index}`}
-											className="text-primary hover:underline"
-											href={`/medibook/users/${director.user.username || director.user.id}`}>
-											<UserTooltip userId={director.user.id} key={`${director.id}-${index}`}>
-												{director.user.displayName ||
-													`${director.user.officialName} ${director.user.officialSurname}${index < school.director.length - 1 ? ", " : ""}`}
-											</UserTooltip>
-										</Link>
-									))}
-								</div>
-							);
-							return (
-								<TableRow href={!school.director.length ? `/medibook/schools/${school.slug || school.id}` : null} key={school.id}>
-									<TableCell>
-										<OptionsDropdown school={school} />
-									</TableCell>
-									<TableCell>{school.name}</TableCell>
-									<TableCell>{country?.countryNameEn || "-"}</TableCell>
-									<TableCell>{school.slug || "-"}</TableCell>
-									<TableCell>{school.isPublic ? <Badge color="green">Public</Badge> : <Badge color="red">Private</Badge>}</TableCell>
-									<TableCell>{directors}</TableCell>
-									<TableCell>{school._count.User || "None"}</TableCell>
-									<TableCell>{unafilliatedCount[index]._count.User || "None"}</TableCell>
-									<TableCell>{school.phone || "-"}</TableCell>
-									<TableCell>{school.email || "-"}</TableCell>
-									<TableCell>{school.website || "-"}</TableCell>
-									<TableCell>{school.joinYear || "-"}</TableCell>
-								</TableRow>
-							);
-						})}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator itemsOnPage={schools.length} itemsPerPage={itemsPerPage} totalItems={numberOfSchools} />
+			<MainWrapper>
+				{!!numberOfSchools && (
+					<Table className="showscrollbar">
+						<TableHead>
+							<TableRow>
+								{rows.map((row, i) => (
+									<TableHeader key={i}>{row}</TableHeader>
+								))}
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{schools.map((school, index) => {
+								const country = countries.find((country) => country.countryCode === school?.location?.country);
+								const directors = (
+									<div className="flex gap-2">
+										{school.director.map((director, index) => (
+											<Link
+												key={`${director.id}-${index}`}
+												className="text-primary hover:underline"
+												href={`/medibook/users/${director.user.username || director.user.id}`}>
+												<UserTooltip userId={director.user.id} key={`${director.id}-${index}`}>
+													{director.user.displayName ||
+														`${director.user.officialName} ${director.user.officialSurname}${index < school.director.length - 1 ? ", " : ""}`}
+												</UserTooltip>
+											</Link>
+										))}
+									</div>
+								);
+								return (
+									<TableRow href={!school.director.length ? `/medibook/schools/${school.slug || school.id}` : null} key={school.id}>
+										<TableCell>
+											<OptionsDropdown school={school} />
+										</TableCell>
+										<TableCell>{school.name}</TableCell>
+										<TableCell>{country?.countryNameEn || "-"}</TableCell>
+										<TableCell>{school.slug || "-"}</TableCell>
+										<TableCell>{school.isPublic ? <Badge color="green">Public</Badge> : <Badge color="red">Private</Badge>}</TableCell>
+										<TableCell>{directors}</TableCell>
+										<TableCell>{school._count.User || "None"}</TableCell>
+										<TableCell>{unafilliatedCount[index]._count.User || "None"}</TableCell>
+										<TableCell>{school.phone || "-"}</TableCell>
+										<TableCell>{school.email || "-"}</TableCell>
+										<TableCell>{school.website || "-"}</TableCell>
+										<TableCell>{school.joinYear || "-"}</TableCell>
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator itemsOnPage={schools.length} itemsPerPage={itemsPerPage} totalItems={numberOfSchools} />
+			</MainWrapper>
 		</>
 	);
 }

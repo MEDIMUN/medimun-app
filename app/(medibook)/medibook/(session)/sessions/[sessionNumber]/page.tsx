@@ -1,7 +1,6 @@
 import prisma from "@/prisma/client";
 import { getOrdinal } from "@/lib/get-ordinal";
 import { notFound } from "next/navigation";
-import { Button } from "@/components/button";
 import { romanize } from "@/lib/romanize";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
@@ -9,6 +8,9 @@ import { TopBar } from "@/app/(medibook)/medibook/client-components";
 import { Text } from "@/components/text";
 import { Divider } from "@/components/divider";
 import { ActionList } from "@/app/components/actions-list";
+import { MainWrapper } from "../../../server-components";
+import { Button } from "@/components/ui/button";
+import { FastLink } from "@/components/fast-link";
 
 export async function generateMetadata(props: { params: Promise<{ sessionNumber: string }> }) {
 	const params = await props.params;
@@ -21,7 +23,6 @@ export async function generateMetadata(props: { params: Promise<{ sessionNumber:
 }
 
 export default async function Page(props) {
-	const searchParams = await props.searchParams;
 	const params = await props.params;
 	const authSession = await auth();
 	const actions = [
@@ -192,37 +193,43 @@ export default async function Page(props) {
 						`The ${selectedSession.number + getOrdinal(selectedSession.numberInteger)} Annual Session`
 					)
 				}>
-				{authorize(authSession, [s.management]) && <Button href={`/medibook/sessions/${selectedSession.number}/settings`}>Edit Session</Button>}
+				{authorize(authSession, [s.management]) && (
+					<FastLink href={`/medibook/sessions/${selectedSession.number}/settings`}>
+						<Button className={"w-full"}>Edit Session</Button>
+					</FastLink>
+				)}
 			</TopBar>
-			<div className="flex h-[200px] w-full overflow-hidden rounded-xl bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right ring-1 ring-gray-200 md:h-[328px]">
+			<div className="flex h-[200px] shadow-md w-full overflow-hidden bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right md:h-[328px]">
 				<div className="mt-auto p-5">
 					<p className="mb-1 font-[canela] text-2xl text-primary md:text-4xl">{selectedSession.theme}</p>
 					<p className="font-[canela] text-xl text-zinc-700 dark:text-zinc-300 md:text-2xl">{selectedSession.subTheme}</p>
 				</div>
 			</div>
-			{secretaryGeneral && selectedSession.welcomeText && (
-				<div className="rounded-xl bg-zinc-100/20 p-4 ring-1 ring-gray-200">
-					<Text>{selectedSession.welcomeText}</Text>
-					<Divider className="invisible my-2" />
-					<p className="my-auto font-[JackyBlack] text-sm">
-						<span className="text-primary">
-							{secretaryGeneral.displayName || `${secretaryGeneral.officialName} ${secretaryGeneral.officialSurname}`}
-						</span>
-						, Secretary-General
-					</p>
-				</div>
-			)}
 			{selectedSession.isVisible && (
-				<dl className="grid grid-cols-2 gap-0.5 divide-gray-200 overflow-hidden rounded-2xl text-center ring-1 ring-gray-200 sm:grid-cols-2 lg:grid-cols-4">
+				<dl className="grid grid-cols-2 gap-0.5 shadow-md divide-gray-800 overflow-hidden text-center sm:grid-cols-2 lg:grid-cols-4">
 					{statsArray.map((stat, index) => (
-						<div key={index + Math.random()} className="flex flex-col bg-gray-200/5 p-8">
-							<dt className="text-sm font-semibold leading-6 text-gray-600">{stat.title}</dt>
-							<dd className="order-first text-3xl font-semibold tracking-tight text-gray-900">{stat.data}</dd>
+						<div key={index + "statcard"} className="flex flex-col bg-gray-300/5 p-8">
+							<dt className="text-sm font-semibold dark:text-white leading-6 text-gray-600">{stat.title}</dt>
+							<dd className="order-first text-3xl dark:text-zinc-300 font-semibold tracking-tight text-gray-900">{stat.data}</dd>
 						</div>
 					))}
 				</dl>
 			)}
-			<ActionList actions={actions} />
+			<MainWrapper>
+				{secretaryGeneral && selectedSession.welcomeText && (
+					<div className="rounded-xl bg-zinc-100/20 p-4 ring-1 ring-gray-200">
+						<Text>{selectedSession.welcomeText}</Text>
+						<Divider className="invisible my-2" />
+						<p className="my-auto font-[JackyBlack] text-sm">
+							<span className="text-primary">
+								{secretaryGeneral.displayName || `${secretaryGeneral.officialName} ${secretaryGeneral.officialSurname}`}
+							</span>
+							, Secretary-General
+						</p>
+					</div>
+				)}
+				<ActionList actions={actions} />
+			</MainWrapper>
 		</>
 	);
 }

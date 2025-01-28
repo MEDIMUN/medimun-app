@@ -9,6 +9,8 @@ import prisma from "@/prisma/client";
 import { notFound, redirect } from "next/navigation";
 import { EditDeleteLocationButtons } from "../client-components";
 import { ChevronLeft } from "lucide-react";
+import { TopBar } from "../../../client-components";
+import { MainWrapper } from "../../../server-components";
 
 export default async function Page(props) {
 	const params = await props.params;
@@ -49,99 +51,87 @@ export default async function Page(props) {
 	}
 
 	return (
-		<main>
-			{authorize(authSession, [s.management]) && (
-				<div className="max-lg:hidden -ml-1">
-					<Link href="/medibook/locations" className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
-						<ChevronLeft className="size-4 fill-zinc-400 dark:fill-zinc-500" />
-						Locations
-					</Link>
-				</div>
-			)}
-			{isVisible && !location.isPublic && (
-				<div className="mt-4 rounded-lg border bg-zinc-100 p-2 text-center text-sm md:text-left">This page is private.</div>
-			)}
-			<div className="mt-4 flex flex-wrap items-end justify-between gap-4">
-				<div className="flex flex-wrap items-center gap-6">
-					{location.cover && (
-						<div className="aspect-[3/2] w-32 shrink-0 rounded-lg p-1 shadow">
-							<img className=" aspect-[3/2] rounded-md object-cover " src={`/api/schools/${location.id}/cover`} alt="" />
-						</div>
-					)}
+		<>
+			<TopBar
+				buttonHref={isManagement ? "/medibook/locations" : "/medibook"}
+				buttonText={isManagement ? "Locations" : "Home"}
+				title={location.name}
+				hideSearchBar
+				subheading={
+					<>
+						{location?.state || location?.city}
+						{`${location?.state || location?.city ? "," : ""}`} {countryNameEn || "No country specified"}
+					</>
+				}>
+				{isManagement && <EditDeleteLocationButtons locationId={location?.id} />}
+			</TopBar>
+			<MainWrapper>
+				{isVisible && !location.isPublic && (
+					<div className="rounded-lg border bg-zinc-100 p-2 text-center text-sm md:text-left">This page is private.</div>
+				)}
+				{isVisible ? (
 					<div>
-						<div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-							<Heading>{location?.name}</Heading>
-						</div>
-						<div className="mt-2 text-sm/6 text-zinc-500">
-							{location?.state || location?.city}
-							{`${location?.state || location?.city ? "," : ""}`} {countryNameEn || "Earth"}
-						</div>
+						<Subheading>Details</Subheading>
+						<Divider className="mt-4" />
+						<DescriptionList className="mt-2">
+							{location?.email && (
+								<>
+									<DescriptionTerm>Email</DescriptionTerm>
+									<DescriptionDetails>{location?.email}</DescriptionDetails>
+								</>
+							)}
+							{location?.phone && (
+								<>
+									<DescriptionTerm>Phone</DescriptionTerm>
+									<DescriptionDetails>{location?.phone}</DescriptionDetails>
+								</>
+							)}
+							{location?.website && (
+								<>
+									<DescriptionTerm>Website</DescriptionTerm>
+									<DescriptionDetails>{location?.website}</DescriptionDetails>
+								</>
+							)}
+							{location?.name && location?.street && location?.zipCode && location?.state && location?.country && (
+								<>
+									<DescriptionTerm>Address</DescriptionTerm>
+									<DescriptionDetails>{fullAddress}</DescriptionDetails>
+								</>
+							)}
+						</DescriptionList>
 					</div>
-				</div>
-				{authorize(authSession, [s.management]) && <EditDeleteLocationButtons locationId={location?.id} />}
-			</div>
-			{isVisible ? (
-				<div className="mt-12">
-					<Subheading>Details</Subheading>
-					<Divider className="mt-4" />
-					<DescriptionList className="mt-2">
-						{location?.email && (
-							<>
-								<DescriptionTerm>Email</DescriptionTerm>
-								<DescriptionDetails>{location?.email}</DescriptionDetails>
-							</>
+				) : (
+					<div className="mt-8 rounded-lg border bg-zinc-100 p-4 text-center text-sm md:text-left">
+						The location page is not available yet as address details haven&apos;t been added.
+						<br />
+						The current full address is <span className="font-semibold">{fullAddress}</span>.
+						<Divider className="my-2" />
+						<span className="text-xs">Only you and other management members can see this page.</span>
+						{location.isPublic && (
+							<span className="text-xs">
+								<br />
+								This location&apos;s visibility is set to &quot;Public&quot;, as soon as you add enough address details this page will be generated
+								and made public.
+							</span>
 						)}
-						{location?.phone && (
-							<>
-								<DescriptionTerm>Phone</DescriptionTerm>
-								<DescriptionDetails>{location?.phone}</DescriptionDetails>
-							</>
-						)}
-						{location?.website && (
-							<>
-								<DescriptionTerm>Website</DescriptionTerm>
-								<DescriptionDetails>{location?.website}</DescriptionDetails>
-							</>
-						)}
-						{location?.name && location?.street && location?.zipCode && location?.state && location?.country && (
-							<>
-								<DescriptionTerm>Address</DescriptionTerm>
-								<DescriptionDetails>{fullAddress}</DescriptionDetails>
-							</>
-						)}
-					</DescriptionList>
-				</div>
-			) : (
-				<div className="mt-8 rounded-lg border bg-zinc-100 p-4 text-center text-sm md:text-left">
-					The location page is not available yet as address details haven&apos;t been added.
-					<br />
-					The current full address is <span className="font-semibold">{fullAddress}</span>.
-					<Divider className="my-2" />
-					<span className="text-xs">Only you and other management members can see this page.</span>
-					{location.isPublic && (
-						<span className="text-xs">
-							<br />
-							This location&apos;s visibility is set to &quot;Public&quot;, as soon as you add enough address details this page will be generated and
-							made public.
-						</span>
-					)}
-				</div>
-			)}
-			{location?.name && location?.street && location?.zipCode && location?.state && location?.country && (
-				<div className="mt-4">
-					<Subheading>Map</Subheading>
-					<Divider className="mt-4" />
-					<iframe
-						width="600"
-						height="450"
-						loading="lazy"
-						className="mt-6 w-full rounded-sm"
-						allowFullScreen
-						referrerPolicy="no-referrer-when-downgrade"
-						src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDMHJLLYDXJgkkua9LIxHh1xyuaWmEjwKA&q=${fullAddress.replace(/ /g, "+")}`}
-					/>
-				</div>
-			)}
-		</main>
+					</div>
+				)}
+				{location?.name && location?.street && location?.zipCode && location?.state && location?.country && (
+					<div className="mt-4">
+						<Subheading>Map</Subheading>
+						<Divider className="mt-4" />
+						<iframe
+							width="600"
+							height="450"
+							loading="lazy"
+							className="mt-6 w-full rounded-sm"
+							allowFullScreen
+							referrerPolicy="no-referrer-when-downgrade"
+							src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDMHJLLYDXJgkkua9LIxHh1xyuaWmEjwKA&q=${fullAddress.replace(/ /g, "+")}`}
+						/>
+					</div>
+				)}
+			</MainWrapper>
+		</>
 	);
 }

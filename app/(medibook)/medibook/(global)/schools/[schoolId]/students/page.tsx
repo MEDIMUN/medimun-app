@@ -13,6 +13,7 @@ import { UserIdDisplay } from "@/lib/display-name";
 import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/display-roles";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { Ellipsis } from "lucide-react";
+import { MainWrapper } from "@/app/(medibook)/medibook/server-components";
 
 const itemsPerPage = 10;
 
@@ -109,59 +110,61 @@ export default async function Page(props) {
 				defaultSort="officialNameasc"
 				searchText="Search students..."
 			/>
-			{!!totalItems && (
-				<Table className="showscrollbar">
-					<TableHead>
-						<TableRow>
-							{rows.map((row, i) => (
-								<TableHeader key={i}>{row}</TableHeader>
-							))}
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{usersWithData.map((student) => {
-							return (
-								<TableRow key={student.id}>
-									<TableCell>
-										<Dropdown>
-											<DropdownButton plain aria-label="More options">
-												<Ellipsis width={18} />
-											</DropdownButton>
-											<DropdownMenu>
-												<SearchParamsDropDropdownItem searchParams={{ "edit-user": student.id }}>Edit User</SearchParamsDropDropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "unafilliate-student": student.id }}>
-													Unafilliate Student
-												</SearchParamsDropDropdownItem>
-												<DropdownItem href={`/medibook/users/${student.username || student.id}`}>View Profile</DropdownItem>
-											</DropdownMenu>
-										</Dropdown>
-									</TableCell>
-									<TableCell>
-										<UserTooltip userId={student.id} key={student.id}>
-											<Avatar size="md" radius="md" showFallback src={`/api/users/${student.id}/avatar`} alt={student.displayName} />
-										</UserTooltip>
-									</TableCell>
-									<TableCell>{student.officialName}</TableCell>
-									<TableCell>{student.officialSurname}</TableCell>
-									<TableCell>{student.displayName || "-"}</TableCell>
-									<TableCell className="font-mono">
-										<UserIdDisplay userId={student.id} />
-									</TableCell>
-									<TableCell>{student.email || "-"}</TableCell>
-									<TableCell>{student.username || "-"}</TableCell>
-									<TableCell>
-										<DisplayCurrentRoles user={student} />
-									</TableCell>
-									<TableCell>
-										<DisplayPastRoles user={student} />
-									</TableCell>
-								</TableRow>
-							);
-						})}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator itemsPerPage={itemsPerPage} totalItems={totalItems} itemsOnPage={usersWithData.length} />
+			<MainWrapper>
+				{!!totalItems && (
+					<Table className="showscrollbar">
+						<TableHead>
+							<TableRow>
+								{rows.map((row, i) => (
+									<TableHeader key={i}>{row}</TableHeader>
+								))}
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{usersWithData.map((student) => {
+								return (
+									<TableRow key={student.id}>
+										<TableCell>
+											<Dropdown>
+												<DropdownButton plain aria-label="More options">
+													<Ellipsis width={18} />
+												</DropdownButton>
+												<DropdownMenu>
+													<SearchParamsDropDropdownItem searchParams={{ "edit-user": student.id }}>Edit User</SearchParamsDropDropdownItem>
+													<SearchParamsDropDropdownItem searchParams={{ "unafilliate-student": student.id }}>
+														Unafilliate Student
+													</SearchParamsDropDropdownItem>
+													<DropdownItem href={`/medibook/users/${student.username || student.id}`}>View Profile</DropdownItem>
+												</DropdownMenu>
+											</Dropdown>
+										</TableCell>
+										<TableCell>
+											<UserTooltip userId={student.id} key={student.id}>
+												<Avatar size="md" radius="md" showFallback src={`/api/users/${student.id}/avatar`} alt={student.displayName} />
+											</UserTooltip>
+										</TableCell>
+										<TableCell>{student.officialName}</TableCell>
+										<TableCell>{student.officialSurname}</TableCell>
+										<TableCell>{student.displayName || "-"}</TableCell>
+										<TableCell className="font-mono">
+											<UserIdDisplay userId={student.id} />
+										</TableCell>
+										<TableCell>{student.email || "-"}</TableCell>
+										<TableCell>{student.username || "-"}</TableCell>
+										<TableCell>
+											<DisplayCurrentRoles user={student} />
+										</TableCell>
+										<TableCell>
+											<DisplayPastRoles user={student} />
+										</TableCell>
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator itemsPerPage={itemsPerPage} totalItems={totalItems} itemsOnPage={usersWithData.length} />
+			</MainWrapper>
 		</>
 	);
 }

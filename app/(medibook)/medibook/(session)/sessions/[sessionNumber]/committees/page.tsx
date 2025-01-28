@@ -13,6 +13,8 @@ import { Link } from "@/components/link";
 import Paginator from "@/components/pagination";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu, DropdownSection } from "@/components/dropdown";
 import { Ellipsis } from "lucide-react";
+import { MainWrapper } from "@/app/(medibook)/medibook/server-components";
+import { Button } from "@/components/ui/button";
 
 const itemsPerPage = 10;
 
@@ -81,68 +83,78 @@ export default async function Component(props) {
 				subheading={`${totalItems} committees are part of this session.`}>
 				{isManagement && <SearchParamsButton searchParams={{ "create-committee": true }}>Create New</SearchParamsButton>}
 			</TopBar>
-			{!!committees.length && (
-				<ul>
-					{committees.map((committee, index) => {
-						const chairs = committee?.chair;
-						const chairsLength = chairs.length;
-						const isInvolved = currentCommitteeIds.includes(committee.id);
-						return (
-							<Fragment key={`session-${committee.id}-${Math.random()}`}>
-								<li>
-									<Divider soft={index > 0} />
-									<div className="flex items-center justify-between">
-										<div key={committee.id} className="flex gap-6 py-6">
-											<div className="w-12 shrink-0">
-												<Link href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || committee.id}`} aria-hidden="true">
-													<div className="aspect-square flex items-center text-center justify-center font-[Calsans] bg-primary text-white rounded-lg shadow">
-														<span className="-mt-[1px]">{committee.shortName}</span>
-													</div>
-												</Link>
-											</div>
-											<div className="space-y-1.5">
-												<div className="text-base/6 font-semibold">
-													<Link href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || committee.id}`}>
-														{committee.name} {isInvolved && <Badge className="-translate-y-[2px]">My Committee</Badge>}
-														{!committee.isVisible && (
-															<Badge color="red" className="-translate-y-[2px]">
-																Hidden
-															</Badge>
-														)}
+			<MainWrapper>
+				{!!committees.length && (
+					<ul>
+						{committees.map((committee, index) => {
+							const chairs = committee?.chair;
+							const chairsLength = chairs.length;
+							const isInvolved = currentCommitteeIds.includes(committee.id);
+							return (
+								<Fragment key={`session-${committee.id}`}>
+									<li>
+										<Divider soft={!(index > 0)} />
+										<div className="flex items-center justify-between">
+											<div key={committee.id} className="flex gap-6 py-6">
+												<div className="w-12 shrink-0">
+													<Link href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || committee.id}`} aria-hidden="true">
+														<div className="aspect-square flex items-center text-center justify-center font-[Calsans] bg-primary text-white rounded-lg shadow">
+															<span className="-mt-[1px]">{committee.shortName}</span>
+														</div>
 													</Link>
 												</div>
-												<div className="text-xs/6 text-zinc-500">
-													{!!chairsLength ? "Chaired by " : "No Chairs Assigned"}
-													<ChairDisplay chairs={chairs} />
+												<div className="space-y-1.5">
+													<div className="text-base/6 font-semibold">
+														<Link href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || committee.id}`}>
+															{committee.name} {isInvolved && <Badge className="-translate-y-[2px]">My Committee</Badge>}
+															{!committee.isVisible && (
+																<Badge color="red" className="-translate-y-[2px]">
+																	Hidden
+																</Badge>
+															)}
+														</Link>
+													</div>
+													<div className="text-xs/6 text-zinc-500">
+														{!!chairsLength ? "Chaired by " : "No Chairs Assigned"}
+														<ChairDisplay chairs={chairs} />
+													</div>
 												</div>
 											</div>
+											<div className="flex items-center gap-4">
+												{isManagement ? (
+													<Dropdown>
+														<DropdownButton plain aria-label="More options">
+															<Ellipsis width={18} />
+														</DropdownButton>
+														<DropdownMenu anchor="bottom end">
+															<DropdownItem href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || committee.id}`}>
+																View
+															</DropdownItem>
+															<DropdownSection aria-label="Actions">
+																<SearchParamsDropDropdownItem searchParams={{ "edit-committee": committee.id }}>Edit</SearchParamsDropDropdownItem>
+																<SearchParamsDropDropdownItem searchParams={{ "delete-committee": committee.id }}>
+																	Delete
+																</SearchParamsDropDropdownItem>
+															</DropdownSection>
+														</DropdownMenu>
+													</Dropdown>
+												) : (
+													<Link
+														href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || committee.id}`}
+														className="text-primary">
+														<Button className="w-full">View</Button>
+													</Link>
+												)}
+											</div>
 										</div>
-										<div className="flex items-center gap-4">
-											<Dropdown>
-												<DropdownButton plain aria-label="More options">
-													<Ellipsis width={18} />
-												</DropdownButton>
-												<DropdownMenu anchor="bottom end">
-													<DropdownItem href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || committee.id}`}>
-														View
-													</DropdownItem>
-													{isManagement && (
-														<DropdownSection aria-label="Actions">
-															<SearchParamsDropDropdownItem searchParams={{ "edit-committee": committee.id }}>Edit</SearchParamsDropDropdownItem>
-															<SearchParamsDropDropdownItem searchParams={{ "delete-committee": committee.id }}>Delete</SearchParamsDropDropdownItem>
-														</DropdownSection>
-													)}
-												</DropdownMenu>
-											</Dropdown>
-										</div>
-									</div>
-								</li>
-							</Fragment>
-						);
-					})}
-				</ul>
-			)}
-			<Paginator itemsOnPage={committees.length} itemsPerPage={itemsPerPage} totalItems={totalItems} />
+									</li>
+								</Fragment>
+							);
+						})}
+					</ul>
+				)}
+				<Paginator itemsOnPage={committees.length} itemsPerPage={itemsPerPage} totalItems={totalItems} />
+			</MainWrapper>
 		</Fragment>
 	);
 }

@@ -37,7 +37,6 @@ const nextConfig: NextConfig = {
 		dynamicIO: true,
 		ppr: true,
 		reactCompiler: true,
-		inlineCss: true,
 		staleTimes: {
 			dynamic: 30,
 			static: 3600,

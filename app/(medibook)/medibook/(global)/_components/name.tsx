@@ -15,10 +15,10 @@ export function NameDisplay() {
 	if (status === "authenticated" && userId)
 		return (
 			<>
-				<Heading>
+				<Heading as={"p"}>
 					{greeting}, {preferredName}
 				</Heading>
-				<Text>
+				<Text as={"p"}>
 					Your User ID is {userId.slice(0, 4)}-{userId.slice(4, 8)}-{userId.slice(8, 12)}
 				</Text>
 			</>
@@ -26,10 +26,10 @@ export function NameDisplay() {
 
 	return (
 		<>
-			<Heading>
+			<Heading as="p">
 				<span className="animate-pulse bg-gray-200 dark:bg-gray-800 h-8 w-64 rounded-md"></span>
 			</Heading>
-			<Text>
+			<Text as={"p"}>
 				<span className="flex mt-1 w-64 h-5 animate-pulse delay-500 bg-gray-100 dark:bg-gray-800 rounded-md"></span>
 			</Text>
 		</>

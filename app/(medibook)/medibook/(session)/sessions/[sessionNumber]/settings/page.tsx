@@ -6,6 +6,7 @@ import { romanize } from "@/lib/romanize";
 import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 import { Badge } from "@/components/badge";
+import { MainWrapper } from "@/app/(medibook)/medibook/server-components";
 
 export default async function Page(props) {
 	const params = await props.params;
@@ -39,7 +40,9 @@ export default async function Page(props) {
 					</>
 				}
 			/>
-			<SettingsForm selectedSession={selectedSession} />
+			<MainWrapper>
+				<SettingsForm selectedSession={selectedSession} />
+			</MainWrapper>
 		</>
 	);
 }

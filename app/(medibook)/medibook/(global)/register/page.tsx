@@ -8,6 +8,7 @@ import Image from "next/image";
 import Confirm from "@/public/assets/confirm.gif";
 import { Text } from "@/components/text";
 import { ActionList } from "@/app/components/actions-list";
+import { MainWrapper } from "../../server-components";
 
 export default async function RegistrationPage(props) {
 	const authSession = await auth();
@@ -44,10 +45,12 @@ export default async function RegistrationPage(props) {
 					buttonText="Home"
 					subheading={`Your User ID is ${authSession.user.id.slice(0, 4)}-${authSession.user.id.slice(4, 8)}-${authSession.user.id.slice(8, 12)}`}
 				/>
-				<Text>
-					Keep this page open before arriving at the conference on any conference or workshop day. Delegates and members must show their QR code to
-					enter the conference venue. On conference days, a QR code will be displayed on this page.
-				</Text>
+				<MainWrapper>
+					<Text>
+						Keep this page open before arriving at the conference on any conference or workshop day. Delegates and members must show their QR code to
+						enter the conference venue. On conference days, a QR code will be displayed on this page.
+					</Text>
+				</MainWrapper>
 			</>
 		);
 
@@ -138,25 +141,27 @@ export default async function RegistrationPage(props) {
 					buttonText="Home"
 					subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`}
 				/>
-				<div className="border flex gap-2 md:flex-row flex-col shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 text-center">
-					<div className="md:h-[40px] h-[60px] w-[60px] m-8 md:m-0 md:w-[40px] mx-auto md:mx-0">
-						<Image alt="Tick" src={Confirm} unoptimized className="!select-none aspect-square h-[60px] md:h-[40px] object-scale-down !relative" />
-					</div>
-					<Text className="!text-white m-auto font-[montserrat] !text-lg">You have been registered for today.</Text>
-					{isPresent?.id && (
-						<Text className="mb-1 md:hidden">
-							<i>{isPresent.id}</i>
-						</Text>
-					)}
-					<div className="rounded-md md:hidden bg-zinc-50 p-4 z-[100] mt-8">
-						<div className="flex">
-							<div className="md:flex">
-								<p className="text-sm text-zinc-700">Have your QR code ready for each day of the conference.</p>
+				<MainWrapper>
+					<div className="border flex gap-2 md:flex-row flex-col shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 text-center">
+						<div className="md:h-[40px] h-[60px] w-[60px] m-8 md:m-0 md:w-[40px] mx-auto md:mx-0">
+							<Image alt="Tick" src={Confirm} unoptimized className="!select-none aspect-square h-[60px] md:h-[40px] object-scale-down !relative" />
+						</div>
+						<Text className="!text-white m-auto font-[montserrat] !text-lg">You have been registered for today.</Text>
+						{isPresent?.id && (
+							<Text className="mb-1 md:hidden">
+								<i>{isPresent.id}</i>
+							</Text>
+						)}
+						<div className="rounded-md md:hidden bg-zinc-50 p-4 z-[100] mt-8">
+							<div className="flex">
+								<div className="md:flex">
+									<p className="text-sm text-zinc-700">Have your QR code ready for each day of the conference.</p>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<ActionList actions={actions} />
+					<ActionList actions={actions} />
+				</MainWrapper>
 			</>
 		);
 

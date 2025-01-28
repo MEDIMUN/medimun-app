@@ -1,10 +1,13 @@
 import { auth } from "@/auth";
 import { SearchParamsButton, TopBar } from "../../client-components";
-import { ResourcesTable } from "../../server-components";
+import { MainWrapper, ResourcesTable } from "../../server-components";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { authorize, authorizePerRole, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import Paginator from "@/components/pagination";
+import { Suspense } from "react";
+import { LoadingTable } from "@/app/components/loading-table";
+import { notFound } from "next/navigation";
 
 const itemsPerPage = 10;
 
@@ -16,6 +19,31 @@ const sortOptions = [
 ];
 
 export default async function Page(props) {
+	return (
+		<>
+			<TopBar sortOptions={sortOptions} defaultSort="timedesc" title="Global Resources">
+				<Suspense fallback={null}>
+					<UploadButton />
+				</Suspense>
+			</TopBar>
+			<MainWrapper>
+				<Suspense fallback={<LoadingTable columns={["Name", "Scope", "Date Uploaded", "Tags"]} />}>
+					<TableOfContents props={props} />
+				</Suspense>
+			</MainWrapper>
+		</>
+	);
+}
+
+export async function UploadButton() {
+	const authSession = await auth();
+	if (!authSession) notFound();
+
+	if (authorize(authSession, [s.management]))
+		return <SearchParamsButton searchParams={{ uploadglobalresource: true }}>Upload Global Resource</SearchParamsButton>;
+}
+
+export async function TableOfContents({ props }) {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 	const currentPage = Number(searchParams.page) || 1;
@@ -23,6 +51,8 @@ export default async function Page(props) {
 	const orderBy = searchParams.order || "name";
 	const orderDirection = parseOrderDirection(searchParams.direction);
 	const authSession = await auth();
+
+	if (!authSession) notFound();
 
 	const hasSomeArray = [
 		"WEBSITE",
@@ -71,11 +101,6 @@ export default async function Page(props) {
 	const isManagement = authorize(authSession, [s.management]);
 	return (
 		<>
-			<TopBar sortOptions={sortOptions} defaultSort="timedesc" title="Global Resources">
-				{authorize(authSession, [s.management]) && (
-					<SearchParamsButton searchParams={{ uploadglobalresource: true }}>Upload Global Resource</SearchParamsButton>
-				)}
-			</TopBar>
 			<ResourcesTable baseUrl={`/medibook/resources`} resources={prismaResources} isManagement={isManagement} />
 			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
 		</>

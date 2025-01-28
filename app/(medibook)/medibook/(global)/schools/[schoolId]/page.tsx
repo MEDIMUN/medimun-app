@@ -10,6 +10,7 @@ import { notFound, redirect } from "next/navigation";
 import { EditDeleteSchoolButtons } from "../client-components";
 import { TopBar } from "../../../client-components";
 import { SchoolSessionActionsList } from "./client-components";
+import { MainWrapper } from "../../../server-components";
 
 export default async function Page(props: { params: Promise<any> }) {
 	const params = await props.params;
@@ -78,75 +79,77 @@ export default async function Page(props: { params: Promise<any> }) {
 					/>
 				)}
 			</TopBar>
-			{isVisible ? (
-				<div className="mt-4">
-					<Subheading>Details</Subheading>
-					<Divider className="mt-4" />
-					<DescriptionList className="mt-2">
-						{school?.email && (
+			<MainWrapper>
+				{isVisible ? (
+					<div className="mt-4">
+						<Subheading>Details</Subheading>
+						<Divider className="mt-4" />
+						<DescriptionList className="mt-2">
+							{school?.email && (
+								<>
+									<DescriptionTerm>Email</DescriptionTerm>
+									<DescriptionDetails>{school?.email}</DescriptionDetails>
+								</>
+							)}
+							{school?.phone && (
+								<>
+									<DescriptionTerm>Phone</DescriptionTerm>
+									<DescriptionDetails>{school?.phone}</DescriptionDetails>
+								</>
+							)}
+							{school?.website && (
+								<>
+									<DescriptionTerm>Website</DescriptionTerm>
+									<Link target="_blank" href={`https://${school?.website}`}>
+										<DescriptionDetails>{school?.website}</DescriptionDetails>
+									</Link>
+								</>
+							)}
+							{location?.name && location?.street && location?.zipCode && location?.state && location?.country && (
+								<>
+									<DescriptionTerm>Address</DescriptionTerm>
+									<DescriptionDetails>{fullAddress}</DescriptionDetails>
+								</>
+							)}
+						</DescriptionList>
+					</div>
+				) : (
+					<div className="rounded-xl border bg-zinc-100 dark:bg-zinc-900 p-4 text-center text-sm md:text-left">
+						This is the public profile page of this school. It&apos;s not available yet as address details haven&apos;t been added.
+						{fullAddress && (
 							<>
-								<DescriptionTerm>Email</DescriptionTerm>
-								<DescriptionDetails>{school?.email}</DescriptionDetails>
+								<br />
+								The current full address is <span className="font-semibold">{fullAddress}</span>.
 							</>
 						)}
-						{school?.phone && (
-							<>
-								<DescriptionTerm>Phone</DescriptionTerm>
-								<DescriptionDetails>{school?.phone}</DescriptionDetails>
-							</>
+						<Divider className="my-2" />
+						<span className="text-xs">Only you and management members can see this page.</span>
+						{school.isPublic && isManagement && (
+							<span className="text-xs">
+								<br />
+								This school&apos;s visibility is set to &quot;Public&quot;, as soon as you add enough address details this page will be generated and
+								made public.
+							</span>
 						)}
-						{school?.website && (
-							<>
-								<DescriptionTerm>Website</DescriptionTerm>
-								<Link target="_blank" href={`https://${school?.website}`}>
-									<DescriptionDetails>{school?.website}</DescriptionDetails>
-								</Link>
-							</>
-						)}
-						{location?.name && location?.street && location?.zipCode && location?.state && location?.country && (
-							<>
-								<DescriptionTerm>Address</DescriptionTerm>
-								<DescriptionDetails>{fullAddress}</DescriptionDetails>
-							</>
-						)}
-					</DescriptionList>
-				</div>
-			) : (
-				<div className="rounded-xl border bg-zinc-100 dark:bg-zinc-900 p-4 text-center text-sm md:text-left">
-					This is the public profile page of this school. It&apos;s not available yet as address details haven&apos;t been added.
-					{fullAddress && (
-						<>
-							<br />
-							The current full address is <span className="font-semibold">{fullAddress}</span>.
-						</>
-					)}
-					<Divider className="my-2" />
-					<span className="text-xs">Only you and management members can see this page.</span>
-					{school.isPublic && isManagement && (
-						<span className="text-xs">
-							<br />
-							This school&apos;s visibility is set to &quot;Public&quot;, as soon as you add enough address details this page will be generated and
-							made public.
-						</span>
-					)}
-				</div>
-			)}
-			{location?.name && location?.street && location?.zipCode && location?.state && location?.country && (
-				<div className="mt-4">
-					<Subheading>Map</Subheading>
-					<Divider className="mt-4" />
-					<iframe
-						width="600"
-						height="450"
-						loading="lazy"
-						className="mt-6 w-full rounded-xl"
-						allowFullScreen
-						referrerPolicy="no-referrer-when-downgrade"
-						src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDMHJLLYDXJgkkua9LIxHh1xyuaWmEjwKA&q=${fullAddress.replace(/ /g, "+")}`}
-					/>
-				</div>
-			)}
-			<SchoolSessionActionsList school={school} isManagementOrDirector={isManagementOrDirector} />
+					</div>
+				)}
+				{location?.name && location?.street && location?.zipCode && location?.state && location?.country && (
+					<div className="mt-4">
+						<Subheading>Map</Subheading>
+						<Divider className="mt-4" />
+						<iframe
+							width="600"
+							height="450"
+							loading="lazy"
+							className="mt-6 w-full rounded-xl"
+							allowFullScreen
+							referrerPolicy="no-referrer-when-downgrade"
+							src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDMHJLLYDXJgkkua9LIxHh1xyuaWmEjwKA&q=${fullAddress.replace(/ /g, "+")}`}
+						/>
+					</div>
+				)}
+				<SchoolSessionActionsList school={school} isManagementOrDirector={isManagementOrDirector} />
+			</MainWrapper>
 		</>
 	);
 }

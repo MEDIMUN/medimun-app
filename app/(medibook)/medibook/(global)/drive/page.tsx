@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { SearchParamsButton, TopBar } from "../../client-components";
-import { ResourcesTable } from "../../server-components";
+import { MainWrapper, ResourcesTable } from "../../server-components";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
@@ -61,9 +61,11 @@ export default async function Page(props) {
 			<TopBar sortOptions={sortOptions} buttonHref="/medibook" buttonText="Home" defaultSort="timedesc" title="Personal Files">
 				<SearchParamsButton searchParams={{ uploadresource: true }}>Upload File</SearchParamsButton>
 			</TopBar>
-			<Suspense fallback={<LoadingTable columns={["Name", "Scope", "Date Uploaded", "Tags"]} />}>
-				<TableOfContents props={props} />
-			</Suspense>
+			<MainWrapper>
+				<Suspense fallback={<LoadingTable columns={["Name", "Scope", "Date Uploaded", "Tags"]} />}>
+					<TableOfContents props={props} />
+				</Suspense>
+			</MainWrapper>
 		</>
 	);
 }

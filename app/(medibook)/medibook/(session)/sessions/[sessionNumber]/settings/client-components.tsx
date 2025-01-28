@@ -259,7 +259,6 @@ export function SettingsForm({ selectedSession }) {
 
 	return (
 		<>
-			<Divider className="my-10 mb-16" />
 			{/* @ts-ignore Server Action */}
 			<form action={handleSubmitThemesForm} id="themes">
 				<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">

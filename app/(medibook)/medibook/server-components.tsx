@@ -156,61 +156,64 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 			<TopBar buttonHref={buttonHref} buttonText={buttonText} title={title || "Announcements"}>
 				{showPublishButton && <Button href={baseUrl + "/publish"}>Publish</Button>}
 			</TopBar>
-			{!!announcements.length && (
-				<ul className="grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-4">
-					{announcements.map((announcement, index) => {
-						const fullName = announcement.user.displayName || `${announcement.user.officialName} ${announcement.user.officialSurname}`;
-						const url = `${baseUrl}/${announcement.id}${announcement.slug ? "/" : ""}${announcement.slug ? announcement.slug : ""}`;
-						const isTimeSame = announcement.time.toLocaleTimeString() == announcement.editTime.toLocaleTimeString();
-						return (
-							<FastLink href={url} key={index}>
-								<Card>
-									<CardHeader>
-										<CardTitle>{announcement.title}</CardTitle>
-										<CardDescription>
-											{isTimeSame ? (
-												<span className="">{announcement.time.toLocaleString("uk").replace(",", " -")}</span>
-											) : (
-												<span className="">Edited {announcement.editTime.toLocaleString("uk").replace(",", " -")}</span>
-											)}
-											{" • by "}
-											<span>
-												{announcement?.privacy === "ANONYMOUS" && (isManagement ? `${fullName} (Anonymous)` : "Anonymous")}
-												{announcement?.privacy === "BOARD" && (isManagement ? `${fullName} (Anonymous - Board of Directors)` : "Board of Directors")}
-												{announcement?.privacy === "NORMAL" && fullName}
-												{announcement?.privacy === "SECRETARIAT" && (isManagement ? `${fullName} (Secretariat)` : "Secretariat")}
-											</span>
-										</CardDescription>
-									</CardHeader>
-									<CardContent>
-										<span className="line-clamp-2">{processMarkdownPreview(announcement.markdown)}</span>
-									</CardContent>
-									<CardFooter className="flex !hidden flex-1 gap-1">
-										<Dropdown>
-											<DropdownButton className="ml-auto max-h-max" aria-label="More options">
-												Options
-											</DropdownButton>
-											<DropdownMenu anchor="bottom end">
-												{authorizedToEditAnnouncement(authSession, announcement) && (
-													<>
-														<SearchParamsDropDropdownItem url={url} searchParams={{ "edit-announcement": announcement.id }}>
-															Edit
-														</SearchParamsDropDropdownItem>
-														<SearchParamsDropDropdownItem searchParams={{ "delete-announcement": announcement.id }}>
-															Delete
-														</SearchParamsDropDropdownItem>
-													</>
+			<MainWrapper>
+				{!!announcements.length && (
+					<ul className="grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-4">
+						{announcements.map((announcement, index) => {
+							const fullName = announcement.user.displayName || `${announcement.user.officialName} ${announcement.user.officialSurname}`;
+							const url = `${baseUrl}/${announcement.id}${announcement.slug ? "/" : ""}${announcement.slug ? announcement.slug : ""}`;
+							const isTimeSame = announcement.time.toLocaleTimeString() == announcement.editTime.toLocaleTimeString();
+							return (
+								<FastLink href={url} key={index}>
+									<Card>
+										<CardHeader>
+											<CardTitle>{announcement.title}</CardTitle>
+											<CardDescription>
+												{isTimeSame ? (
+													<span className="">{announcement.time.toLocaleString("uk").replace(",", " -")}</span>
+												) : (
+													<span className="">Edited {announcement.editTime.toLocaleString("uk").replace(",", " -")}</span>
 												)}
-											</DropdownMenu>
-										</Dropdown>
-									</CardFooter>
-								</Card>
-							</FastLink>
-						);
-					})}
-				</ul>
-			)}
-			<Paginator itemsOnPage={announcements.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
+												{" • by "}
+												<span>
+													{announcement?.privacy === "ANONYMOUS" && (isManagement ? `${fullName} (Anonymous)` : "Anonymous")}
+													{announcement?.privacy === "BOARD" &&
+														(isManagement ? `${fullName} (Anonymous - Board of Directors)` : "Board of Directors")}
+													{announcement?.privacy === "NORMAL" && fullName}
+													{announcement?.privacy === "SECRETARIAT" && (isManagement ? `${fullName} (Secretariat)` : "Secretariat")}
+												</span>
+											</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<span className="line-clamp-2">{processMarkdownPreview(announcement.markdown)}</span>
+										</CardContent>
+										<CardFooter className="flex !hidden flex-1 gap-1">
+											<Dropdown>
+												<DropdownButton className="ml-auto max-h-max" aria-label="More options">
+													Options
+												</DropdownButton>
+												<DropdownMenu anchor="bottom end">
+													{authorizedToEditAnnouncement(authSession, announcement) && (
+														<>
+															<SearchParamsDropDropdownItem url={url} searchParams={{ "edit-announcement": announcement.id }}>
+																Edit
+															</SearchParamsDropDropdownItem>
+															<SearchParamsDropDropdownItem searchParams={{ "delete-announcement": announcement.id }}>
+																Delete
+															</SearchParamsDropDropdownItem>
+														</>
+													)}
+												</DropdownMenu>
+											</Dropdown>
+										</CardFooter>
+									</Card>
+								</FastLink>
+							);
+						})}
+					</ul>
+				)}
+				<Paginator itemsOnPage={announcements.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
+			</MainWrapper>
 		</>
 	);
 }
@@ -428,4 +431,8 @@ export async function ResourceViewPage(props) {
 			)}
 		</>
 	);
+}
+
+export function MainWrapper({ children }) {
+	return <div className="md:p-10 p-4 flex flex-col gap-4">{children}</div>;
 }

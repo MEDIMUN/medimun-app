@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 import Paginator from "@/components/pagination";
 import { parseOrderDirection } from "@/lib/order-direction";
+import { MainWrapper } from "../../server-components";
 
 const locationsPerPage = 10;
 
@@ -71,40 +72,42 @@ export default async function Page(props) {
 					<SearchParamsButton searchParams={{ "create-location": true }}>Create Location</SearchParamsButton>
 				)}
 			</TopBar>
-			{!!numberOfSchools && (
-				<Table className="showscrollbar">
-					<TableHead>
-						<TableRow>
-							{rows.map((row, i) => (
-								<TableHeader key={i}>{row}</TableHeader>
-							))}
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{locations.map((location) => {
-							const country = countries.find((country) => country.countryCode === location.country);
-							const others = `${location?.school[0]?.name} ${
-								location?.school?.length > 1 && ` + ${location?.school.length - 1} other${location?.school.length > 2 ? "s" : ""}`
-							}`;
-							return (
-								<TableRow href={`/medibook/locations/${location.slug || location.id}`} key={location.id}>
-									<TableCell>
-										<OptionsDropdown location={location} />
-									</TableCell>
-									<TableCell>{location.name}</TableCell>
-									<TableCell>{country?.countryNameEn || "-"}</TableCell>
-									<TableCell>{location.slug || "-"}</TableCell>
-									<TableCell>{!!location?.school.length ? others : "-"}</TableCell>
-									<TableCell>{location.phone || "-"}</TableCell>
-									<TableCell>{location.email || "-"}</TableCell>
-									<TableCell>{location.website || "-"}</TableCell>
-								</TableRow>
-							);
-						})}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator itemsOnPage={locations.length} itemsPerPage={locationsPerPage} totalItems={numberOfSchools} />
+			<MainWrapper>
+				{!!numberOfSchools && (
+					<Table className="showscrollbar">
+						<TableHead>
+							<TableRow>
+								{rows.map((row, i) => (
+									<TableHeader key={i}>{row}</TableHeader>
+								))}
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{locations.map((location) => {
+								const country = countries.find((country) => country.countryCode === location.country);
+								const others = `${location?.school[0]?.name} ${
+									location?.school?.length > 1 && ` + ${location?.school.length - 1} other${location?.school.length > 2 ? "s" : ""}`
+								}`;
+								return (
+									<TableRow href={`/medibook/locations/${location.slug || location.id}`} key={location.id}>
+										<TableCell>
+											<OptionsDropdown location={location} />
+										</TableCell>
+										<TableCell>{location.name}</TableCell>
+										<TableCell>{country?.countryNameEn || "-"}</TableCell>
+										<TableCell>{location.slug || "-"}</TableCell>
+										<TableCell>{!!location?.school.length ? others : "-"}</TableCell>
+										<TableCell>{location.phone || "-"}</TableCell>
+										<TableCell>{location.email || "-"}</TableCell>
+										<TableCell>{location.website || "-"}</TableCell>
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator itemsOnPage={locations.length} itemsPerPage={locationsPerPage} totalItems={numberOfSchools} />
+			</MainWrapper>
 		</>
 	);
 }

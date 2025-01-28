@@ -12,6 +12,7 @@ import type { Metadata } from "next";
 import { JSX, Suspense } from "react";
 import { SocketHandler } from "./client-components";
 import ThemedHTMLElement from "./html-element";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
 	title: {
@@ -72,6 +73,8 @@ async function SessionsSidebar() {
 
 	return <AppSidebar authSession={authSession} sessions={sessions} />;
 }
+
+if (process.env.NODE_ENV === "development") await connection();
 
 export default async function RootLayout({
 	children,

@@ -47,11 +47,13 @@ export function Providers({ children }) {
 		<SocketProvider>
 			<SidebarContextProvider>
 				<SessionProvider>
-					<NUIP className="h-full" navigate={router.push}>
-						<NextThemesProvider attribute="class" enableSystem defaultTheme="light">
-							{children}
-						</NextThemesProvider>
-					</NUIP>
+					{/* 					<NUIP className="h-full" navigate={router.push}>
+					 */}
+					<NextThemesProvider attribute="class" enableSystem defaultTheme="light">
+						{children}
+					</NextThemesProvider>
+					{/* 					</NUIP>
+					 */}
 				</SessionProvider>
 			</SidebarContextProvider>
 		</SocketProvider>

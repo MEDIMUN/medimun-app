@@ -4,10 +4,13 @@ import Image from "next/image";
 import { NameDisplay } from "./_components/name";
 import prisma from "@/prisma/client";
 import { countries } from "@/data/countries";
-
-export const experimental_ppr = true;
+import { TopBar } from "../client-components";
+import { Suspense } from "react";
+import { MainWrapper } from "../server-components";
 
 export default async function Home() {
+	"use cache";
+
 	const actions = [
 		{
 			title: "All Sessions",
@@ -51,47 +54,23 @@ export default async function Home() {
 		},
 	];
 
-	/* const delegates = await prisma.delegate.findMany({
-		where: {
-			committee: {
-				session: {
-					isMainShown: true,
-				},
-				shortName: "ICJ",
-			},
-		},
-		select: {
-			country: true,
-		},
-	});
-
-	const extraCountries = await prisma.extraCountry.findMany({});
-
-	const allCountries = countries.concat(extraCountries);
-
-	const countriesD = delegates.map((delegate) => allCountries.find((country) => country.countryCode === delegate.country)?.countryNameEn).sort();
-
-	console.log(countriesD); */
-
 	return (
 		<>
-			<div className="w-full overflow-hidden">
-				<Image alt="Welcome to MediBook." quality={100} className="!relative object-cover" src={MediBookWelcome} fill />
-			</div>
-			<div>
-				<NameDisplay />
-			</div>
-			{/* <div className="flex flex-col">
-				{countriesD.map(
-					(country) =>
-						country && (
-							<div key={country} className="text-gray-500">
-								{country}
-							</div>
-						)
-				)}
-			</div> */}
-			<ActionList actions={actions} />
+			<TopBar
+				hideSearchBar
+				hideBreadcrums
+				title={
+					<Suspense fallback="Loading...">
+						<NameDisplay />
+					</Suspense>
+				}
+			/>
+			<MainWrapper>
+				<div className="w-full overflow-hidden rounded-xl ring-zinc-300 ring-1">
+					<Image alt="Welcome to MediBook." quality={100} className="!relative object-cover" src={MediBookWelcome} fill />
+				</div>
+				<ActionList actions={actions} />
+			</MainWrapper>
 		</>
 	);
 }

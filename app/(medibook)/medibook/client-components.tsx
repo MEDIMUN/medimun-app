@@ -194,6 +194,7 @@ export function TopBar({
 	searchText = "Search...",
 	hideSearchBar = false,
 	subheading = "",
+	hideBreadcrums = false,
 	buttonText = "",
 	buttonHref = "",
 	showDivider = false,
@@ -206,6 +207,7 @@ export function TopBar({
 	children?: React.ReactNode;
 	searchText?: string;
 	hideSearchBar?: boolean;
+	hideBreadcrums?: boolean;
 	subheading?: string;
 	buttonText?: string;
 	buttonHref?: string;
@@ -220,6 +222,7 @@ export function TopBar({
 	const isSearchActive = !(searchParams?.get("search") == undefined);
 	const [debouncedSearch] = useDebouncedValue(searchParams?.get("search") || "", 500);
 	const searchInputRef = useRef(null);
+	const spacerRef = useRef(null);
 
 	useLayoutEffect(() => {
 		setIsMounted(true);
@@ -241,17 +244,21 @@ export function TopBar({
 										<BreadcrumbItem>
 											<BreadcrumbLink href="/medibook" className="flex gap-2 items-center">
 												<Image alt="Mini MediBook Logo" src={MiniLogo} />
-												<BreadcrumbPage className="hidden md:block">MediBook</BreadcrumbPage>
+												<BreadcrumbPage className={cn("md:block", !hideBreadcrums && "hidden")}>MediBook</BreadcrumbPage>
 											</BreadcrumbLink>
 										</BreadcrumbItem>
-										<BreadcrumbSeparator />
-										<BreadcrumbItem>
-											<BreadcrumbLink href={buttonHref}>{buttonText}</BreadcrumbLink>
-										</BreadcrumbItem>
-										<BreadcrumbSeparator />
-										<BreadcrumbItem>
-											<BreadcrumbPage>{title}</BreadcrumbPage>
-										</BreadcrumbItem>
+										{!hideBreadcrums && (
+											<>
+												<BreadcrumbSeparator />
+												<BreadcrumbItem>
+													<BreadcrumbLink href={buttonHref}>{buttonText}</BreadcrumbLink>
+												</BreadcrumbItem>
+												<BreadcrumbSeparator />
+												<BreadcrumbItem>
+													<BreadcrumbPage>{title}</BreadcrumbPage>
+												</BreadcrumbItem>
+											</>
+										)}
 									</BreadcrumbList>
 								</Breadcrumb>
 							</div>
@@ -300,8 +307,10 @@ export function TopBar({
 				</div>
 			</header>
 			<div
+				ref={spacerRef}
+				id="clientTopbar"
 				className={cn(
-					"flex bg-sidebar-accent dark:bg-sidebar-accent md:w-full absolute right-0 top-0 p-7 border-b border-sidebar-border flex-wrap items-end z-[10] justify-between gap-4",
+					"flex bg-sidebar-accent w-full dark:bg-sidebar-accent md:w-full right-0 top-0 p-7 border-b border-sidebar-border flex-wrap items-end z-[10] justify-between gap-4",
 					className
 				)}>
 				<div className="w-full sm:flex-1">
@@ -343,9 +352,6 @@ export function TopBar({
 				</div>
 				{children && <div className="grid w-full grid-cols-1 gap-4 md:flex md:w-auto md:flex-row">{children}</div>}
 			</div>
-			<div className="h-40"></div>
-
-			{showDivider && <Divider soft />}
 		</>
 	);
 }

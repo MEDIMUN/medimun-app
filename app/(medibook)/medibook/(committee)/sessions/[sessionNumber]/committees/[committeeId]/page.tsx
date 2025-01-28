@@ -1,4 +1,5 @@
 import { SearchParamsButton, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
+import { MainWrapper } from "@/app/(medibook)/medibook/server-components";
 import { ActionList } from "@/app/components/actions-list";
 import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, s } from "@/lib/authorize";
@@ -111,9 +112,8 @@ export default async function Page(props) {
 										? user?.displayName
 										: user?.displayName?.split(" ")[0] + " " + user?.displayName?.split(" ")[1][0] + ".";
 								const fullName = user?.displayName ? displayNameShortened : user?.officialName.split(" ")[0] + " " + user?.officialSurname[0] + ".";
-
 								return (
-									<UserTooltip userId={user.id} key={Math.random()}>
+									<UserTooltip userId={user.id} key={(index + 1) ** index}>
 										{`${fullName} ${index < selectedCommittee.chair.length - 2 ? ", " : index === selectedCommittee.chair.length - 2 ? " & " : ""}`}
 									</UserTooltip>
 								);
@@ -126,13 +126,15 @@ export default async function Page(props) {
 				hideSearchBar>
 				{isManagement && <SearchParamsButton searchParams={{ "edit-committee": selectedCommittee.id }}>Edit Committee</SearchParamsButton>}
 			</TopBar>
-			<div className="flex h-[200px] w-full overflow-hidden rounded-xl bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right ring-1 ring-gray-200 md:h-[328px]">
+			<div className="flex h-[200px] w-full overflow-hidden bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right shadow-md md:h-[328px]">
 				<div className="mt-auto p-5">
 					<p className="font-[canela] text-2xl text-primary md:text-4xl">{displayNumberInSentenceAsText(selectedCommittee.name)}</p>
 					{selectedCommittee.description && <p className="font-[canela] text-medium text-zinc-700 md:text-2xl">{selectedCommittee.description}</p>}
 				</div>
 			</div>
-			<ActionList actions={actions} />
+			<MainWrapper>
+				<ActionList actions={actions} />
+			</MainWrapper>
 		</>
 	);
 }
