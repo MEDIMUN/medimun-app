@@ -31,7 +31,7 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 COPY . /usr/src/app
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN bunx prisma generate
 
 # Build the application
 RUN bun run build

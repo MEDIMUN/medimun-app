@@ -50,6 +50,6 @@ next-env.d.ts
 
 package-lock.json
 
-hasher.ts
+/tools
 certificates
-bun.lockb
+bun.lock

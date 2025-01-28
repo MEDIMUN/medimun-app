@@ -151,7 +151,7 @@ const config = {
 		},
 	},
 	plugins: [
-		/* 	heroui(),
+		heroui(),
 		require("tailwindcss-animate"),
 		function ({ matchUtilities, theme }) {
 			matchUtilities(
@@ -169,7 +169,7 @@ const config = {
 				{ values: flattenColorPalette(theme("backgroundColor")), type: "color" }
 			);
 		},
-		require("tailwindcss-animate"), */
+		require("tailwindcss-animate"),
 	],
 } satisfies Config;
 
