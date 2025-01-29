@@ -174,8 +174,8 @@ export function ModalUploadResource() {
 								<>
 									<Field>
 										<Label>Direct File Upload</Label>
-										<Description>Max 30MB. Documents and images only, use the drive upload for other file types.</Description>
-										<Button className="mt-2 w-full" onClick={() => inputRef.current.click()}>
+										<Description>Max 50MB. Documents and images only, use the drive upload for other file types.</Description>
+										<Button type="button" className="mt-2 w-full" onClick={() => inputRef.current.click()}>
 											Select a File
 										</Button>
 									</Field>
