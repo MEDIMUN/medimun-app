@@ -1,20 +1,7 @@
 # Use oven/bun as the base image for building and runtime
 FROM node:20-alpine as builder
 
-# Define build arguments for build-time usage
-ARG DB_USER
-ARG DB_PASSWORD
-ARG DB_HOST
-ARG DB_PORT
-ARG DB_NAME
 ARG DATABASE_URL
-
-# Set environment variables from the build arguments
-ENV DB_USER=$DB_USER
-ENV DB_PASSWORD=$DB_PASSWORD
-ENV DB_PORT=$DB_PORT
-ENV DB_NAME=$DB_NAME
-ENV DB_HOST='db1.medimun-arm-3.medimun.app'
 ENV DATABASE_URL=$DATABASE_URL
 
 # Copy package.json and install dependencies
