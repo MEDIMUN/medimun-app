@@ -43,7 +43,7 @@ export const ColorRevealImage = () => {
 	return (
 		<div
 			ref={containerRef}
-			className="absolute w-[50%] right-0 h-full overflow-hidden reveal-container"
+			className="md:absolute w-[50%] hidden right-0 h-full overflow-hidden reveal-container"
 			onMouseMove={handleMouseMove}
 			onMouseLeave={() => setIsHovered(false)}>
 			{isHovered && (
