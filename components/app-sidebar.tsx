@@ -213,18 +213,21 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
 			title: "Announcements",
 			url: "/medibook/announcements",
 			icon: Megaphone,
+			isVisible: true,
 		},
 		{
 			title: "Resources",
 			url: "/medibook/resources",
 			icon: Folder,
+			isVisible: true,
 		},
 		{
 			title: "Policies",
 			url: "/medibook/policies",
 			icon: ScrollText,
+			isVisible: true,
 		},
-	];
+	].filter((item) => item.isVisible);
 
 	const sessionBasePath = `/medibook/sessions/${selectedSession}`;
 

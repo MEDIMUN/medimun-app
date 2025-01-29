@@ -372,7 +372,7 @@ export function ChatLayout({ group, authSession }) {
 				<div className="w-full overflow-y-auto max-w-5xl mx-auto dark:bg-zinc-900 flex-col-reverse flex">
 					{selectedMessageId && <div className="min-h-[50px]" />}
 
-					<div className="flex-grow flex w-full mx-auto flex-col-reverse overflow-y-auto">
+					<div className="flex-grow flex w-full px-2 mx-auto flex-col-reverse overflow-y-auto">
 						<div className="min-h-32" />
 						{messages.map((message, index) => {
 							const isMyMessage = message?.userId === authSession.user.id;
@@ -392,11 +392,20 @@ export function ChatLayout({ group, authSession }) {
 								index === messages.length - 1 ||
 								new Date(message.createdAt).toLocaleDateString() !== new Date(messages[index + 1]?.createdAt).toLocaleDateString();
 
+							const isLastMessageOfDay =
+								index === 0 || new Date(message.createdAt).toLocaleDateString() !== new Date(messages[index - 1]?.createdAt).toLocaleDateString();
+
 							const MessageDayDivider = () => (
-								<Badge className="text-center text-xs mx-auto text-gray-500 mt-2">{new Date(message.createdAt).toLocaleDateString("en-GB")}</Badge>
+								<Badge className="text-center !rounded-full text-xs mx-auto opacity-80 text-gray-500 mt-2">
+									{new Date(message.createdAt).toLocaleDateString("en-GB")}
+								</Badge>
 							);
 
-							if (isMyMessage && !message.replyTo) {
+							if (isMyMessage) {
+								const isReplyTo = !!message.replyTo;
+								const name = isReplyTo
+									? message.replyTo.user.displayName || `${message.replyTo.user.officialName} ${message.replyTo.user.officialSurname}`
+									: "";
 								return (
 									<Fragment key={message.id}>
 										<div
@@ -405,20 +414,29 @@ export function ChatLayout({ group, authSession }) {
 												setSelectedMessageId(message.id);
 												setReplyToId("");
 											}}
-											className={cn("flex gap-2 justify-end group", !isBeforeMyMessage && "mt-2")}>
-											<div className="flex gap-1">
+											className={cn("flex flex-col justify-end gap-2 group", !isBeforeMyMessage && "mt-2")}>
+											{isReplyTo && (
+												<div className="ml-auto flex gap-1 flex-col">
+													<Text className="!text-[9px] text-right text-gray-500  mr-2 -mb-2">Replied to {name}</Text>
+													<div className="text-xs px-2 py-3 pb-6 rounded-xl min-w-[80px] dark:text-black text-right ml-auto bg-gray-200/80 -mb-6 line-clamp-2 text-wrap truncate max-w-[300px]">
+														{message.replyTo.markdown}
+													</div>
+												</div>
+											)}
+											<div className="flex gap-1 ml-auto">
 												<div className="flex flex-col">
 													<div
 														className={cn(
-															"max-w-[300px] md:max-w-[400px] mr-2 text-sm min-w-[35px] text-right",
-															"bg-gray-100 dark:bg-zinc-600 p-2 hyphens-auto break-words overflow-hidden ml-auto rounded-lg",
-															isAfterMyMessage && !messageAfter.replyTo && "rounded-br-none mb-[2px]",
-															isBeforeMyMessage && "rounded-tr-none",
+															"min-w-[60px]",
+															"max-w-[300px] md:max-w-[400px] text-sm min-w-[35px] text-right",
+															"bg-blue-500 text-white px-2 py-1 hyphens-auto break-words overflow-hidden ml-auto rounded-xl",
+															isAfterMyMessage && !messageAfter.replyTo && !isLastMessageOfDay && "rounded-br-none mb-[2px]",
+															isBeforeMyMessage && !isFirstMessageOfDay && !isReplyTo && "rounded-tr-none",
 															messageAfter.replyTo && "mb-3",
-															selectedMessageId === message.id && "bg-zinc-200 dark:bg-zinc-700 duration-200 shadow-md"
+															selectedMessageId === message.id && "bg-zinc-200 dark:bg-zinc-700 duration-200 shadow-xl"
 														)}>
 														{message.markdown}
-														<div className="mr-auto text-left text-xs text-zinc-500 mt-1">
+														<div className="text-right text-[10px] text-white">
 															{new Date(message.createdAt).toLocaleTimeString("en-GB").slice(0, 5)}
 														</div>
 													</div>
@@ -428,59 +446,14 @@ export function ChatLayout({ group, authSession }) {
 										{isFirstMessageOfDay && <MessageDayDivider />}
 									</Fragment>
 								);
-							}
-
-							if (isMyMessage && message.replyTo) {
-								const name = message.replyTo.user.displayName || `${message.replyTo.user.officialName} ${message.replyTo.user.officialSurname}`;
-								return (
-									<Fragment key={message.id}>
-										<div
-											onMouseDown={(e) => {
-												e.preventDefault();
-												setSelectedMessageId(message.id);
-												setReplyToId("");
-											}}
-											className={cn("flex gap-2 justify-end group", !isBeforeMyMessage && "mt-2")}>
-											<div className="flex gap-1">
-												<div className="flex flex-col">
-													<div className="flex flex-col gap-1 mb-1 max-w-[300px] mr-auto">
-														<div className="flex gap-1">
-															<Text className="!text-[9px] text-gray-500 mr-12 -mb-2">{name}</Text>
-														</div>
-														<div className="flex ml-auto gap-1">
-															<div className="bg-gray-100/80 dark:bg-zinc-600/60 p-3 rounded-md overflow-hidden">
-																<div className="text-xs w-full flex-1 my-auto line-clamp-2 break-words h-full truncate">
-																	{message.replyTo.markdown}
-																</div>
-															</div>
-															<Image alt="" src={`/assets/message-reply.svg`} width={40} height={40} />
-														</div>
-													</div>
-													<div
-														className={cn(
-															"max-w-[300px] md:max-w-[400px] mr-2 text-sm min-w-[35px] text-right",
-															"bg-gray-100 dark:bg-zinc-600 p-2 hyphens-auto break-words overflow-hidden ml-auto rounded-lg",
-															isAfterMyMessage && !messageAfter.replyTo && "rounded-br-none mb-[2px]",
-															isBeforeMyMessage && "rounded-tr-none",
-															messageAfter.replyTo && "mb-3",
-															selectedMessageId === message.id && "bg-zinc-200 dark:bg-zinc-700 duration-200 shadow-md"
-														)}>
-														{message.markdown}
-														<div className="mr-auto text-left text-xs text-zinc-500 mt-1">
-															{new Date(message.createdAt).toLocaleTimeString("en-GB").slice(0, 5)}
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										{isFirstMessageOfDay && <MessageDayDivider />}
-									</Fragment>
-								);
-							}
-
-							if (!isMyMessage && !message.replyTo) {
+							} else {
 								const isPreviousSamePersons = messages[index - 1]?.userId === message.userId;
 								const isNextSamePersons = messages[index + 1]?.userId === message.userId;
+								const isReplyTo = !!message.replyTo;
+								const name = isReplyTo
+									? message.replyTo.user.displayName || `${message.replyTo.user.officialName} ${message.replyTo.user.officialSurname}`
+									: "";
+								const fullName = message.user.displayName || `${message.user.officialName} ${message.user.officialSurname}`;
 								return (
 									<Fragment key={message.id}>
 										<div
@@ -489,83 +462,37 @@ export function ChatLayout({ group, authSession }) {
 												setSelectedMessageId(message.id);
 												setReplyToId("");
 											}}
-											className={cn("flex gap-2", "justify-start group")}>
-											<div className="flex gap-1 ml-2">
-												{!isPreviousSamePersons ? (
-													<UserTooltip userId={message.userId} className="w-8 mt-auto">
-														<Avatar showFallback radius="sm" size="sm" className="w-8 mt-auto" src={`/api/users/${message.userId}/avatar`} />
-													</UserTooltip>
-												) : (
-													<div className="w-8" />
-												)}
-												<div className="flex flex-col">
-													<div
-														className={cn(
-															"max-w-[400px] break-words text-sm min-w-[35px] text-left",
-															"bg-gray-100 dark:bg-zinc-600 p-2 rounded-lg",
-															isPreviousSamePersons && !messageAfter.replyTo && "rounded-bl-none mb-[2px]",
-															isNextSamePersons && "rounded-tl-none",
-															selectedMessageId === message.id && "bg-zinc-200 dark:bg-zinc-700 duration-200 shadow-md"
-														)}>
-														{message.markdown}
-														<div className="mr-auto text-right text-xs text-zinc-500 mt-1">
-															{new Date(message.createdAt).toLocaleTimeString("en-GB").slice(0, 5)}
-														</div>
+											className={cn("flex flex-col justify-start gap-2 group")}>
+											{!isNextSamePersons && <Text className="!text-[9px] text-left text-gray-500 ml-11 -mb-2">{fullName}</Text>}
+
+											{isReplyTo && (
+												<div className="mr-auto ml-9 flex gap-1 flex-col">
+													<Text className="!text-[9px] text-left text-gray-500 ml-2 -mb-2">
+														{fullName == name ? `${fullName} replied to themselves` : `${fullName} Replied to ${name}`}
+													</Text>
+													<div className="text-xs px-2 py-3 pb-6 rounded-xl min-w-[80px] text-left mr-auto bg-gray-200/80 dark:bg-gray-600/80 -mb-6 line-clamp-2 text-wrap truncate max-w-[300px]">
+														{message.replyTo.markdown}
 													</div>
 												</div>
-											</div>
-										</div>
-										{!isNextSamePersons && <Text className="!text-[9px] text-gray-500 ml-12 -mb-1">{message.user.officialName}</Text>}
-										{isFirstMessageOfDay && <MessageDayDivider />}
-									</Fragment>
-								);
-							}
-
-							if (!isMyMessage && message.replyTo) {
-								const isPreviousSamePersons = messages[index - 1]?.userId === message.userId;
-								const replyName = message.replyTo.user.displayName || `${message.replyTo.user.officialName} ${message.replyTo.user.officialSurname}`;
-								return (
-									<Fragment key={message.id}>
-										<div
-											onMouseDown={(e) => {
-												e.preventDefault();
-												setSelectedMessageId(message.id);
-												setReplyToId("");
-											}}
-											className={cn("flex gap-2", "justify-start group")}>
-											<div className="flex gap-1 ml-2">
-												{!isPreviousSamePersons ? (
-													<UserTooltip userId={message.userId} className="w-8 mt-auto">
-														<Avatar showFallback radius="sm" size="sm" className="w-8 mt-auto" src={`/api/users/${message.userId}/avatar`} />
-													</UserTooltip>
+											)}
+											<div className="flex gap-1 mr-auto">
+												{!isPreviousSamePersons || isLastMessageOfDay ? (
+													<Avatar showFallback radius="sm" size="sm" className="w-8 mt-auto rounded-xl" src={`/api/users/${message.userId}/avatar`} />
 												) : (
 													<div className="w-8" />
 												)}
 												<div className="flex flex-col">
-													<div className="flex flex-col gap-1 mb-1 max-w-[300px] mr-auto">
-														<div className="flex gap-1">
-															<Text className="!text-[9px]  ml-12 -mb-2">{replyName}</Text>
-														</div>
-														<div className="flex mr-auto gap-1">
-															<Image alt="" src={`/assets/message-reply.svg`} className="scale-x-[-1]" width={40} height={40} />
-															<div className="bg-gray-100/80 dark:bg-zinc-600 p-3 rounded-md overflow-hidden">
-																<div className="text-xs w-full flex-1 my-auto line-clamp-2 break-words h-full truncate">
-																	{message.replyTo.markdown}
-																</div>
-															</div>
-														</div>
-													</div>
-
 													<div
 														className={cn(
-															"max-w-[400px] break-words text-sm min-w-[35px] w-max text-left",
-															"bg-gray-100 dark:bg-zinc-600 p-2 rounded-lg",
-															isPreviousSamePersons && !messageAfter.replyTo && "rounded-bl-none mb-[2px]",
-															messageAfter.replyTo && "mb-3",
-															selectedMessageId === message.id && "bg-zinc-200 dark:bg-zinc-400 duration-200 shadow-md"
+															"min-w-[60px]",
+															"max-w-[300px] md:max-w-[400px] text-sm text-left",
+															"bg-gray-100 text-zinc-900 dark:bg-zinc-600 dark:text-white px-2 py-1 hyphens-auto break-words overflow-hidden mr-auto rounded-xl",
+															isPreviousSamePersons && !messageAfter.replyTo && !isLastMessageOfDay && "rounded-bl-none mb-[2px]",
+															isNextSamePersons && !isFirstMessageOfDay && !isReplyTo && "rounded-tl-none",
+															selectedMessageId === message.id && "bg-zinc-200 dark:bg-zinc-700 duration-200 shadow-xl"
 														)}>
 														{message.markdown}
-														<div className="mr-auto text-right text-xs text-zinc-500 mt-1">
+														<div className="text-left text-[10px] text-black dark:text-white">
 															{new Date(message.createdAt).toLocaleTimeString("en-GB").slice(0, 5)}
 														</div>
 													</div>
@@ -577,21 +504,7 @@ export function ChatLayout({ group, authSession }) {
 								);
 							}
 						})}
-						{(receivedFinalMessage || messages.length < 50) && (
-							<div className="mx-auto p-10">
-								<div className="p-12 text-center flex flex-col backdrop-blur-lg mt-6 shadow-md gap-6 rounded-2xl font-[montserrat] bg-zinc-100 dark:bg-zinc-800">
-									<Image alt="MediChat Logo" className="mx-auto grayscale dark:grayscale-0" src={MediBookLogo} width={200} height={200} />
-									<Text>
-										Messages can be accessed by the management in case of a report.
-										<br />
-										Please be respectful in your messages.
-										<br />
-										<br />
-										<i>Messages will be deleted at the start of the next Session of the conference.</i>
-									</Text>
-								</div>
-							</div>
-						)}
+
 						{!receivedFinalMessage && messages.length > 49 && (
 							<i onClick={handleLoadMoreMessages} className="z-[1000000] text-zinc-500 text-sm cursor-pointer text-center" ref={observerRef}>
 								Click to load more messages...
@@ -739,179 +652,3 @@ export function ChatLayout({ group, authSession }) {
 }
 
 export default ChatLayout;
-
-/* 	socket.on("update:private-message", async ({ groupId, messageId, action, data, replyToId }) => {
-		const authSession = await socketAuth(socket);
-		if (!authSession) return socket.emit("error", "Unauthorized");
-
-		if (action === "DELETE") {
-			const selectedMessage = await prisma.message.update({
-				where: { id: messageId, userId: authSession.user.id },
-				include: { user: true },
-				data: { isDeleted: true },
-			});
-			socket.to(`room:private-group-${groupId}`).emit("update:private-message", "UPDATE", selectedMessage);
-		}
-		if (action === "EDIT") {
-			const selectedMessage = await prisma.message.update({
-				where: { id: messageId, userId: authSession.user.id },
-				include: { user: true },
-				data: { markdown: data },
-			});
-			socket.to(`room:private-group-${groupId}`).emit("update:private-message", "UPDATE", selectedMessage);
-		}
-		if (action === "REPLY") {
-			const selectedMessage = await prisma.message.findFirst({
-				where: { id: replyToId },
-				include: {
-					group: true,
-					user: {
-						select: {
-							id: true,
-							officialName: true,
-							officialSurname: true,
-							displayName: true,
-						},
-					},
-					MessageReaction: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									officialName: true,
-									officialSurname: true,
-									displayName: true,
-								},
-							},
-						},
-					},
-				},
-			});
-
-			if (!selectedMessage) {
-				socket.emit("error", "Message not found");
-				return;
-			}
-
-			const newMessage = await prisma.message.create({
-				data: {
-					groupId: selectedMessage.groupId,
-					replyToId,
-					userId: authSession.user.id,
-					markdown: data,
-					isDeleted: false,
-				},
-				include: { user: true },
-			});
-			socket.to(`room:private-group-${groupId}`).emit("update:private-message", "NEW", newMessage);
-		}
-		if (action === "NEW") {
-			const selectedGroup = await prisma.group.findUnique({
-				where: { id: groupId, GroupMember: { some: { userId: authSession.user.id } } },
-			});
-			if (!selectedGroup) return socket.emit("error", "Group not found");
-			const newMessage = await prisma.message.create({
-				data: {
-					groupId: selectedGroup.id,
-					userId: authSession.user.id,
-					markdown: data,
-					isDeleted: false,
-				},
-				include: {
-					user: {
-						select: {
-							id: true,
-							officialName: true,
-							officialSurname: true,
-							displayName: true,
-						},
-					},
-					MessageReaction: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									officialName: true,
-									officialSurname: true,
-									displayName: true,
-								},
-							},
-						},
-					},
-				},
-			});
-			socket.to(`room:private-group-${groupId}`).emit("update:private-message", "NEW", newMessage);
-		}
-		if (action === "REACTION") {
-			const selectedMessage = await prisma.message.findFirst({
-				where: {
-					id: messageId,
-					group: {
-						GroupMember: { some: { userId: authSession.user.id } },
-					},
-				},
-			});
-
-			if (!selectedMessage) {
-				socket.emit("error", "Message not found");
-				return;
-			}
-
-			if (data === null) {
-				await prisma.messageReaction.delete({
-					where: {
-						userId_messageId: {
-							userId: authSession.user.id,
-							messageId,
-						},
-					},
-				});
-			}
-			const newReaction = await prisma.messageReaction.upsert({
-				where: {
-					userId_messageId: {
-						userId: authSession.user.id,
-						messageId,
-					},
-				},
-				include: { user: true },
-				update: { reaction: data },
-				create: {
-					userId: authSession.user.id,
-					messageId,
-					reaction: data,
-				},
-			});
-
-			const finalMessage = await prisma.message.findFirst({
-				where: { id: messageId },
-				include: {
-					user: {
-						select: {
-							id: true,
-							officialName: true,
-							officialSurname: true,
-							displayName: true,
-						},
-					},
-					MessageReaction: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									officialName: true,
-									officialSurname: true,
-									displayName: true,
-								},
-							},
-						},
-					},
-				},
-			});
-			socket.to(`room:private-group-${groupId}`).emit("update:private-message", "UPDATE", finalMessage);
-			//typing
-			if (action === "TYPING") {
-				socket.to(`room:private-group-${groupId}`).emit("update:private-message", "TYPING", authSession.user.id);
-			}
-		}
-	}); */

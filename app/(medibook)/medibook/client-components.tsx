@@ -526,12 +526,16 @@ export function UserTooltip({ userId, children }) {
 						avatarProps={{ src: `/api/users/${userId}/avatar`, showFallback: true, isBordered: true, size: "sm", radius: "md" }}
 					/>
 					<div className="gap-2 flex ml-auto">
-						<Button color="primary" className="h-8 my-auto" href={`/medibook/messenger/@${user?.username || user?.id}?new=true`}>
-							Message
-						</Button>
-						<Button href={`/medibook/users/${user?.username || user?.id}`} className="h-8 my-auto" onClick={() => setIsOpen(false)}>
-							Profile
-						</Button>
+						<FastLink href={`/medibook/messenger/@${user?.username || user?.id}?new=true`}>
+							<Button color="primary" className="h-8 my-auto">
+								Message
+							</Button>
+						</FastLink>
+						<FastLink href={`/medibook/users/${user?.username || user?.id}`}>
+							<Button className="h-8 my-auto" onClick={() => setIsOpen(false)}>
+								Profile
+							</Button>
+						</FastLink>
 					</div>
 				</div>
 				<div className="flex gap-2 flex-wrap">
