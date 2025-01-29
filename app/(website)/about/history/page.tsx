@@ -211,7 +211,7 @@ export default async function Example() {
 				title={"History of the Mediterranean Model United Nations"}
 				description={"Explore how we started and grew over the years. Learn about the key moments that shaped what it is today."}
 			/>
-			<Timeline data={data} />
+			<Timeline data={[]} />
 		</div>
 	);
 }

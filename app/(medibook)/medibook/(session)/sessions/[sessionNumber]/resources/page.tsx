@@ -6,6 +6,7 @@ import { romanize } from "@/lib/romanize";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { Paginator } from "@/components/pagination";
 import { ResourcesTable } from "@/app/(medibook)/medibook/server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const itemsPerPage = 10;
 
@@ -90,8 +91,10 @@ export default async function Page(props) {
 					</>
 				)}
 			</TopBar>
-			<ResourcesTable baseUrl={`/medibook/sessions/${params.sessionNumber}/resources`} resources={prismaResources} isManagement={isManagement} />
-			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
+			<MainWrapper>
+				<ResourcesTable baseUrl={`/medibook/sessions/${params.sessionNumber}/resources`} resources={prismaResources} isManagement={isManagement} />
+				<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
+			</MainWrapper>
 		</>
 	);
 }

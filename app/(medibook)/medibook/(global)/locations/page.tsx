@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 import Paginator from "@/components/pagination";
 import { parseOrderDirection } from "@/lib/order-direction";
-import { MainWrapper } from "../../server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const locationsPerPage = 10;
 

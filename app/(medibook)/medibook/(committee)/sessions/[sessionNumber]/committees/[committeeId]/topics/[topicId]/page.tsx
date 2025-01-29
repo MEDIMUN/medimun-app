@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { Divider } from "@/components/divider";
 import { Subheading } from "@/components/heading";
 import { Link } from "@/components/link";
+import { MainWrapper } from "@/components/main-wrapper";
 import { authorize, authorizeChairCommittee, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
@@ -42,21 +43,23 @@ export default async function Page(props) {
 				{isManagement && <SearchParamsButton searchParams={{ "delete-topic": selectedTopic.id }}>Delete</SearchParamsButton>}
 				{(isManagement || isChairOfCommittee) && <SearchParamsButton searchParams={{ "edit-topic": selectedTopic.id }}>Edit</SearchParamsButton>}
 			</TopBar>
-			<Suspense fallback={<div>404</div>}>
-				<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedTopic.description} />
-			</Suspense>
-			<Divider className="mt-[750px]" />
-			<Subheading className="!font-extralight">
-				{"We are not responsible for the contents of topic descriptions. Please refer to our "}
-				<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
-					code of conduct
-				</Link>
-				{" and "}
-				<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
-					terms of service
-				</Link>
-				{" for more information."}
-			</Subheading>
+			<MainWrapper>
+				<Suspense fallback={<div>404</div>}>
+					<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedTopic.description} />
+				</Suspense>
+				<Divider className="mt-[750px]" />
+				<Subheading className="!font-extralight">
+					{"We are not responsible for the contents of topic descriptions. Please refer to our "}
+					<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
+						code of conduct
+					</Link>
+					{" and "}
+					<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
+						terms of service
+					</Link>
+					{" for more information."}
+				</Subheading>
+			</MainWrapper>
 		</>
 	);
 }

@@ -18,7 +18,7 @@ import { UserIdDisplay } from "@/lib/display-name";
 import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/display-roles";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { Ellipsis } from "lucide-react";
-import { MainWrapper } from "../../server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 import { Suspense } from "react";
 import { LoadingTable } from "@/app/components/loading-table";
 

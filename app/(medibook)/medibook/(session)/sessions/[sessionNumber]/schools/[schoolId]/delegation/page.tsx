@@ -16,6 +16,7 @@ import { Fragment } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { CircleX, Ellipsis, Info } from "lucide-react";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export default async function Page(props) {
 	const searchParams = await props.searchParams;
@@ -144,49 +145,51 @@ export default async function Page(props) {
 		return (
 			<>
 				<TopBar buttonText={selectedSchool.name} buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`} title="My Delegation" />
-				<Table className="showscrollbar">
-					<TableHead>
-						<TableRow>
-							<TableHeader>
-								<span className="sr-only">Actions</span>
-							</TableHeader>
-							<TableHeader>Official Name</TableHeader>
-							<TableHeader>Official Surname</TableHeader>
-							<TableHeader>Display Name</TableHeader>
-							<TableHeader>Committee</TableHeader>
-							<TableHeader>Country/Entity</TableHeader>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{assignedDelegatesOfSchoolAndSession.map((assignment, index) => {
-							const user = assignment.user;
-							const committee = assignment.committee;
-							const allCountries = countries.concat(committee.ExtraCountry);
-							const selectedCountry = allCountries.find((c) => c.countryCode === assignment.country);
-							return (
-								<TableRow key={index + user.id}>
-									<TableCell>
-										<Dropdown>
-											<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
-												<Ellipsis width={18} />
-											</DropdownButton>
-											<DropdownMenu anchor="bottom end">
-												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View User</DropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit User</SearchParamsDropDropdownItem>
-												<DropdownItem href={`/medibook/committees/${committee.slug || committee.id}`}>View Committee</DropdownItem>
-											</DropdownMenu>
-										</Dropdown>
-									</TableCell>
-									<TableCell>{user.officialName}</TableCell>
-									<TableCell>{user.officialSurname}</TableCell>
-									<TableCell>{user.displayName || "-"}</TableCell>
-									<TableCell>{committee.name}</TableCell>
-									<TableCell>{selectedCountry?.countryNameEn}</TableCell>
-								</TableRow>
-							);
-						})}
-					</TableBody>
-				</Table>
+				<MainWrapper>
+					<Table className="showscrollbar">
+						<TableHead>
+							<TableRow>
+								<TableHeader>
+									<span className="sr-only">Actions</span>
+								</TableHeader>
+								<TableHeader>Official Name</TableHeader>
+								<TableHeader>Official Surname</TableHeader>
+								<TableHeader>Display Name</TableHeader>
+								<TableHeader>Committee</TableHeader>
+								<TableHeader>Country/Entity</TableHeader>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{assignedDelegatesOfSchoolAndSession.map((assignment, index) => {
+								const user = assignment.user;
+								const committee = assignment.committee;
+								const allCountries = countries.concat(committee.ExtraCountry);
+								const selectedCountry = allCountries.find((c) => c.countryCode === assignment.country);
+								return (
+									<TableRow key={index + user.id}>
+										<TableCell>
+											<Dropdown>
+												<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
+													<Ellipsis width={18} />
+												</DropdownButton>
+												<DropdownMenu anchor="bottom end">
+													<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View User</DropdownItem>
+													<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit User</SearchParamsDropDropdownItem>
+													<DropdownItem href={`/medibook/committees/${committee.slug || committee.id}`}>View Committee</DropdownItem>
+												</DropdownMenu>
+											</Dropdown>
+										</TableCell>
+										<TableCell>{user.officialName}</TableCell>
+										<TableCell>{user.officialSurname}</TableCell>
+										<TableCell>{user.displayName || "-"}</TableCell>
+										<TableCell>{committee.name}</TableCell>
+										<TableCell>{selectedCountry?.countryNameEn}</TableCell>
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				</MainWrapper>
 			</>
 		);
 	}

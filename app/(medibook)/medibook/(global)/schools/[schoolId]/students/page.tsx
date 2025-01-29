@@ -13,7 +13,7 @@ import { UserIdDisplay } from "@/lib/display-name";
 import { DisplayCurrentRoles, DisplayPastRoles } from "@/lib/display-roles";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { Ellipsis } from "lucide-react";
-import { MainWrapper } from "@/app/(medibook)/medibook/server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const itemsPerPage = 10;
 

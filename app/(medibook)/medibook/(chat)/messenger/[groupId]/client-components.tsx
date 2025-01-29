@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState } from "react";
-import { TopBar, UserTooltip } from "../../../client-components";
+import { TopBar2 as TopBar, UserTooltip } from "../../../client-components";
 import { loadMoreMessages } from "./actions";
 import { cn } from "@/lib/cn";
 import { Avatar, AvatarGroup } from "@heroui/avatar";

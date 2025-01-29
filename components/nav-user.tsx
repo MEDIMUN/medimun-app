@@ -1,6 +1,6 @@
 "use client";
 
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
+import { BadgeCheck, ChevronsUpDown, CircleUser, Computer, Home, LogOut, Moon, Sun } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { signOut } from "next-auth/react";
+import { FastLink } from "./fast-link";
+import { cn } from "@/lib/cn";
+import { useTheme } from "next-themes";
 
 export function NavUser({
 	user,
@@ -22,9 +25,12 @@ export function NavUser({
 		name: string;
 		email: string;
 		avatar: string;
+		id?: string;
+		username?: string;
 	};
 }) {
 	const { isMobile } = useSidebar();
+	const { theme, setTheme } = useTheme();
 
 	return (
 		<SidebarMenu>
@@ -72,25 +78,57 @@ export function NavUser({
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem>
-								<Sparkles />
-								Upgrade to Pro
+							<DropdownMenuItem
+								disabled={theme == "dark"}
+								onClick={() => {
+									setTheme("dark");
+									window.dispatchEvent(new Event("storage"));
+								}}
+								className={cn(theme == "dark" && "bg-primary text-white !hover:bg-primary")}>
+								<Moon />
+								Dark
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								disabled={theme == "light"}
+								onClick={() => {
+									setTheme("light");
+									window.dispatchEvent(new Event("storage"));
+								}}
+								className={cn(theme == "light" && "bg-primary text-white !hover:bg-primary")}>
+								<Sun />
+								Light
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								disabled={theme == "system"}
+								onClick={() => {
+									setTheme("system");
+									window.dispatchEvent(new Event("storage"));
+								}}
+								className={cn(theme == "system" && "bg-primary text-white !hover:bg-primary")}>
+								<Computer />
+								System
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem>
-								<BadgeCheck />
-								Account
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<CreditCard />
-								Billing
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Bell />
-								Notifications
-							</DropdownMenuItem>
+							<FastLink href="/medibook/account">
+								<DropdownMenuItem>
+									<BadgeCheck />
+									Account Settings
+								</DropdownMenuItem>
+							</FastLink>
+							<FastLink href={`/medibook/users/${user.username || user.id}`}>
+								<DropdownMenuItem>
+									<CircleUser />
+									Profile Page
+								</DropdownMenuItem>
+							</FastLink>
+							<FastLink href="/home">
+								<DropdownMenuItem>
+									<Home />
+									View Home Page
+								</DropdownMenuItem>
+							</FastLink>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem onClick={() => signOut()}>

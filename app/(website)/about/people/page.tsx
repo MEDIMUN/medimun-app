@@ -30,7 +30,7 @@ function PlaceholderSection() {
 // Fetch Functions
 async function getShownSession() {
 	"use cache";
-	cacheLife("hours");
+	cacheLife("minutes");
 	return await prisma.session.findFirst({ where: { isMainShown: true } });
 }
 
@@ -117,8 +117,8 @@ async function fetchBoardMembers() {
 	"use cache";
 	cacheLife("minutes");
 	return await prisma.user.findMany({
-		where: { OR: [{ seniorDirecor: { some: {} } }, { Director: { some: {} } }] },
-		include: { seniorDirecor: true, Director: true },
+		where: { OR: [{ seniorDirector: { some: {} } }, { Director: { some: {} } }] },
+		include: { seniorDirector: true, Director: true },
 		orderBy: { officialName: "asc" },
 	});
 }
@@ -227,7 +227,7 @@ async function BoardCards() {
 	const boardMembers = await fetchBoardMembers();
 
 	const processedBoardMembers = boardMembers.map((user) => ({
-		description: !!user.seniorDirecor.length ? "Senior Director" : "Director",
+		description: !!user.seniorDirector.length ? "Senior Director" : "Director",
 		title: user.displayName || `${user.officialName} ${user.officialSurname}`,
 		src: user.profilePicture ? `/api/users/${user.id}/avatar?quality=100&size=1000` : "/placeholders/pfp.jpg",
 		ctaText: "View Profile",

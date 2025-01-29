@@ -173,7 +173,7 @@ export function WebsiteNavbar({ selectedSession }) {
 					</PopoverGroup>
 					<div className="hidden gap-4 lg:flex lg:flex-1 lg:justify-end">
 						{status !== "authenticated" && (
-							<FastLink href="/login" className="my-auto ml-auto text-sm font-semibold leading-6 text-gray-900">
+							<FastLink href="/login" className="my-auto ml-auto text-sm font-semibold leading-6 text-gray-100">
 								Log In <span aria-hidden="true">&rarr;</span>
 							</FastLink>
 						)}
@@ -187,7 +187,7 @@ export function WebsiteNavbar({ selectedSession }) {
 						</FastLink>
 					</div>
 				</nav>
-				<Dialog className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
+				<Dialog className="lg:hidden font-[Montserrat]" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
 					<div className="fixed inset-0 z-10" />
 					<DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
 						<div className="flex items-center justify-between">

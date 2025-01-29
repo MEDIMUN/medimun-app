@@ -1,5 +1,5 @@
 import { SearchParamsButton, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
-import { MainWrapper } from "@/app/(medibook)/medibook/server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 import { ActionList } from "@/app/components/actions-list";
 import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, s } from "@/lib/authorize";

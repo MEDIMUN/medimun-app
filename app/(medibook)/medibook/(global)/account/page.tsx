@@ -19,7 +19,7 @@ import Link from "next/link";
 import { Select } from "@/components/select";
 import { TopBar } from "../../client-components";
 import { CircleCheck, X } from "lucide-react";
-import { MainWrapper } from "../../server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export const metadata: Metadata = {
 	title: "User Settings",

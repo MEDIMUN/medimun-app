@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { TopBar } from "@/app/(medibook)/medibook/client-components";
 import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, s } from "@/lib/authorize";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export default async function Page(props) {
 	const searchParams = await props?.searchParams;
@@ -106,13 +107,15 @@ export default async function Page(props) {
 				title="Committee Roll Calls">
 				<DateSelector conferenceDays={conferenceDays} workshopDays={workshopDays} />
 			</TopBar>
-			<RollCallTable
-				isEditor={isEditor}
-				selectedDayId={searchParams.day || null}
-				selectedCommittee={selectedCommittee}
-				delegates={delegates}
-				rollCallsInit={rollCalls}
-			/>
+			<MainWrapper>
+				<RollCallTable
+					isEditor={isEditor}
+					selectedDayId={searchParams.day || null}
+					selectedCommittee={selectedCommittee}
+					delegates={delegates}
+					rollCallsInit={rollCalls}
+				/>
+			</MainWrapper>
 		</>
 	);
 }

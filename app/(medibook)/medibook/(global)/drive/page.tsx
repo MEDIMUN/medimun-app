@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { SearchParamsButton, TopBar } from "../../client-components";
-import { MainWrapper, ResourcesTable } from "../../server-components";
+import { ResourcesTable } from "../../server-components";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
@@ -8,6 +8,7 @@ import Paginator from "@/components/pagination";
 import { unstable_cacheLife as cacheLife } from "next/cache";
 import { Suspense } from "react";
 import { LoadingTable } from "@/app/components/loading-table";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const itemsPerPage = 10;
 

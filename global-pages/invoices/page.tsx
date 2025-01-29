@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { TopBar } from "@/app/(medibook)/medibook/client-components";
 import dynamic from "next/dynamic";
 import { Ellipsis } from "lucide-react";
-import { MainWrapper } from "@/app/(medibook)/medibook/server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const PdfDownloadButton = dynamic(() => import("@/global-pages/invoices/client-components").then((mod) => mod.PdfDownloadButton));
 

@@ -10,7 +10,7 @@ import { notFound, redirect } from "next/navigation";
 import { EditDeleteLocationButtons } from "../client-components";
 import { ChevronLeft } from "lucide-react";
 import { TopBar } from "../../../client-components";
-import { MainWrapper } from "../../../server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export default async function Page(props) {
 	const params = await props.params;

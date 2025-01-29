@@ -33,6 +33,7 @@ import {
 	ListTodo,
 	CircleDashed,
 	SquareDashed,
+	Printer,
 } from "lucide-react";
 
 import { NavCollapsible } from "@/components/nav-collapsible";
@@ -305,11 +306,18 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
 			title: "Resources",
 			url: `${sessionBasePath}/resources`,
 			icon: Folder,
+			isVisible: true,
 		},
 		{
 			title: "Roll Calls",
 			url: `${sessionBasePath}/roll-calls`,
 			icon: ListTodo,
+			isVisible: isManagement,
+		},
+		{
+			title: "Print Centre",
+			url: `${sessionBasePath}/print`,
+			icon: Printer,
 			isVisible: isManagement,
 		},
 		{
@@ -324,6 +332,8 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
 		name: `${authSession?.user?.officialName} ${authSession?.user?.officialSurname}`,
 		email: authSession?.user.currentRoleNames[0] || authSession?.user.id,
 		avatar: `/api/users/${authSession?.user?.id}/avatar`,
+		id: authSession?.user?.id,
+		username: authSession?.user?.username,
 	};
 
 	return (

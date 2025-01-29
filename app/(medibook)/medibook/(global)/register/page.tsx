@@ -8,7 +8,7 @@ import Image from "next/image";
 import Confirm from "@/public/assets/confirm.gif";
 import { Text } from "@/components/text";
 import { ActionList } from "@/app/components/actions-list";
-import { MainWrapper } from "../../server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export default async function RegistrationPage(props) {
 	const authSession = await auth();

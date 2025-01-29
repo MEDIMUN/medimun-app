@@ -84,9 +84,7 @@ export function SubmissionOptions({ selectedCommittee }) {
 	}, [debouncedAutoOpenTime, debouncedAutoCloseTime]);
 
 	return (
-		<form ref={formRef} className="rounded-lg bg-zinc-100 px-4 shadow-sm ring-1 ring-zinc-950/10" onSubmit={handleSubmit}>
-			<Divider className="invisible mb-5" />
-
+		<form ref={formRef} onSubmit={handleSubmit}>
 			<SwitchField disabled={isLoading}>
 				<Label>Position Paper Visibility</Label>
 				<Description>When this is on, all accepted position papers will be visible to all delegates in the committee.</Description>
@@ -153,7 +151,6 @@ export function SubmissionOptions({ selectedCommittee }) {
 							onChange={(e) => setAutoCloseTime(e.target.value)}
 						/>
 					</Field>
-					<Divider className="invisible mt-5" />
 				</>
 			)}
 		</form>

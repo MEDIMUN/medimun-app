@@ -10,7 +10,7 @@ import { notFound, redirect } from "next/navigation";
 import { EditDeleteSchoolButtons } from "../client-components";
 import { TopBar } from "../../../client-components";
 import { SchoolSessionActionsList } from "./client-components";
-import { MainWrapper } from "../../../server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export default async function Page(props: { params: Promise<any> }) {
 	const params = await props.params;

@@ -1,6 +1,7 @@
 import { TopBar } from "@/app/(medibook)/medibook/client-components";
 import { ActionList } from "@/app/components/actions-list";
 import { auth } from "@/auth";
+import { MainWrapper } from "@/components/main-wrapper";
 import { authorize, authorizeManagerDepartment, authorizeMemberDepartment, s } from "@/lib/authorize";
 import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
@@ -61,14 +62,14 @@ export default async function Page(props) {
 				buttonText={`Session ${romanize(params.sessionNumber)} Departments`}
 				hideSearchBar
 			/>
-			<div className="flex h-[200px] w-full overflow-hidden rounded-xl bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right ring-1 ring-gray-200 md:h-[328px]">
+			<div className="flex h-[200px] w-full overflow-hidden bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right shadow-md md:h-[328px]">
 				<div className="mt-auto p-5">
 					<p className="font-[canela] text-2xl text-primary md:text-4xl">{selectedDepartment.name}</p>
-					{/* 					{selectedDepartment.description && <p className="font-[canela] text-medium text-zinc-700 md:text-2xl">{selectedCommittee.description}</p>}
-					 */}
 				</div>
 			</div>
-			<ActionList actions={actions} />
+			<MainWrapper>
+				<ActionList actions={actions} />
+			</MainWrapper>
 		</>
 	);
 }

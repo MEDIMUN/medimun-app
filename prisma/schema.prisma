@@ -90,7 +90,7 @@ model User {
   chair                               Chair[]
   manager                             Manager[]
   globalAdmin                         GlobalAdmin[]
-  seniorDirecor                       SeniorDirector[]
+  seniorDirector                      SeniorDirector[]
   secretaryGeneral                    SecretaryGeneral[]
   presidentOfTheGeneralAssembly       PresidentOfTheGeneralAssembly[]
   deputySecretaryGeneral              DeputySecretaryGeneral[]

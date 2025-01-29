@@ -25,6 +25,7 @@ import { minio } from "@/minio/client";
 import mimeExt from "mime-ext";
 import { Ellipsis } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const columns = ["Name", "Uploader", "Date Uploaded", "Tags"];
 
@@ -158,14 +159,14 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 			</TopBar>
 			<MainWrapper>
 				{!!announcements.length && (
-					<ul className="grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-4">
+					<ul className="grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-4 grid-auto-rows-[minmax(300px,_1fr)]">
 						{announcements.map((announcement, index) => {
 							const fullName = announcement.user.displayName || `${announcement.user.officialName} ${announcement.user.officialSurname}`;
 							const url = `${baseUrl}/${announcement.id}${announcement.slug ? "/" : ""}${announcement.slug ? announcement.slug : ""}`;
 							const isTimeSame = announcement.time.toLocaleTimeString() == announcement.editTime.toLocaleTimeString();
 							return (
-								<FastLink href={url} key={index}>
-									<Card>
+								<Card key={index} className="h-full flex min-h-[200px] flex-col">
+									<FastLink href={url}>
 										<CardHeader>
 											<CardTitle>{announcement.title}</CardTitle>
 											<CardDescription>
@@ -184,30 +185,35 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 												</span>
 											</CardDescription>
 										</CardHeader>
-										<CardContent>
+									</FastLink>
+									<FastLink href={url}>
+										<CardContent className="mt-auto">
 											<span className="line-clamp-2">{processMarkdownPreview(announcement.markdown)}</span>
 										</CardContent>
-										<CardFooter className="flex !hidden flex-1 gap-1">
+									</FastLink>
+									<CardFooter className="flex mt-auto flex-1 gap-1">
+										{authorizedToEditAnnouncement(authSession, announcement) ? (
 											<Dropdown>
-												<DropdownButton className="ml-auto max-h-max" aria-label="More options">
+												<DropdownButton className="ml-auto mt-auto max-h-max" aria-label="More options">
 													Options
 												</DropdownButton>
 												<DropdownMenu anchor="bottom end">
-													{authorizedToEditAnnouncement(authSession, announcement) && (
-														<>
-															<SearchParamsDropDropdownItem url={url} searchParams={{ "edit-announcement": announcement.id }}>
-																Edit
-															</SearchParamsDropDropdownItem>
-															<SearchParamsDropDropdownItem searchParams={{ "delete-announcement": announcement.id }}>
-																Delete
-															</SearchParamsDropDropdownItem>
-														</>
-													)}
+													<DropdownItem href={url}>View</DropdownItem>
+													<SearchParamsDropDropdownItem url={url} searchParams={{ "edit-announcement": announcement.id }}>
+														Edit
+													</SearchParamsDropDropdownItem>
+													<SearchParamsDropDropdownItem searchParams={{ "delete-announcement": announcement.id }}>
+														Delete
+													</SearchParamsDropDropdownItem>
 												</DropdownMenu>
 											</Dropdown>
-										</CardFooter>
-									</Card>
-								</FastLink>
+										) : (
+											<FastLink className="ml-auto" href={url}>
+												<Button className="ml-auto mt-auto">View</Button>
+											</FastLink>
+										)}
+									</CardFooter>
+								</Card>
 							);
 						})}
 					</ul>
@@ -317,10 +323,12 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 				)}
 				{authorizedToEdit && <SearchParamsButton searchParams={{ "edit-announcement": selectedAnnouncement.id }}>Edit</SearchParamsButton>}
 			</TopBar>
-			<Suspense fallback={<div>404</div>}>
-				{/* @ts-ignore */}
-				<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedAnnouncement.markdown} />
-			</Suspense>
+			<MainWrapper>
+				<Suspense fallback={<div>404</div>}>
+					{/* @ts-ignore */}
+					<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedAnnouncement.markdown} />
+				</Suspense>
+			</MainWrapper>
 		</>
 	);
 }
@@ -431,8 +439,4 @@ export async function ResourceViewPage(props) {
 			)}
 		</>
 	);
-}
-
-export function MainWrapper({ children }) {
-	return <div className="md:p-10 p-4 flex flex-col gap-4">{children}</div>;
 }

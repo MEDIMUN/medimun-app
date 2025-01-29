@@ -54,8 +54,17 @@ export async function HomePage() {
 
 	return (
 		<>
-			<section className="-bg-gradient-to-r bg-white light h-svh from-transparent to-neutral-900/5">
-				<svg
+			<div className="relative bg-black h-svh font-[Gilroy] isolate pt-14">
+				<div aria-hidden="true" className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+					<div
+						style={{
+							clipPath:
+								"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+						}}
+						className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+					/>
+				</div>
+				{/* <svg
 					className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
 					aria-hidden="true">
 					<defs>
@@ -67,19 +76,19 @@ export async function HomePage() {
 						<path d="M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z" strokeWidth={0} />
 					</svg>
 					<rect width="100%" height="100%" strokeWidth={0} fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)" />
-				</svg>
+				</svg> */}
 				<HeroImage />
 				<div className="absolute mx-auto mt-[20svh] flex w-full flex-col md:mt-[35vh]">
-					<div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 text-left text-primary md:gap-2 md:text-center">
+					<div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 text-left text-white md:gap-2 md:text-center">
 						{currentSession?.theme && <h1 className="font-[canela] text-5xl !leading-[50px] md:text-6xl">{currentSession.theme}</h1>}
-						{currentSession?.subTheme && <h2 className="font-[LondiniaMedium] text-4xl text-zinc-800">{currentSession.subTheme}</h2>}
+						{currentSession?.subTheme && <h2 className="font-[LondiniaMedium] text-4xl text-zinc-300">{currentSession.subTheme}</h2>}
 					</div>
 				</div>
-			</section>
-			<div className="pb-10 font-[GilroyLight] bg-white">
+			</div>
+			<div className="pb-10 font-[GilroyLight] bg-black text-white">
 				<div className="relative pt-32 sm:pt-40">
 					<div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-						<div className="mx-auto flex max-w-2xl flex-col gap-16 bg-primary/20 px-6 py-16 ring-1 ring-black/10 sm:rounded-3xl sm:p-8 lg:mx-0 lg:max-w-none lg:flex-row lg:items-center lg:py-20 xl:gap-x-20 xl:px-20">
+						<div className="mx-auto flex max-w-2xl flex-col gap-16 bg-white/70 px-6 py-16 ring-1 ring-black/10 sm:rounded-3xl sm:p-8 lg:mx-0 lg:max-w-none lg:flex-row lg:items-center lg:py-20 xl:gap-x-20 xl:px-20">
 							{currentSession?.cover ? (
 								<div
 									style={{
@@ -130,12 +139,12 @@ export async function HomePage() {
 					</div>
 				</div>
 			</div>
-			<div className="pt-32 overflow-hidden font-[GilroyLight] bg-white sm:pt-40">
+			<div className="pt-32 overflow-hidden font-[GilroyLight] bg-black sm:pt-40">
 				<div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
 					<div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-12 gap-y-16 lg:mx-0 lg:min-w-full lg:max-w-none lg:flex-none lg:gap-y-8">
 						<div className="lg:col-end-1 lg:w-full lg:max-w-lg lg:pb-8">
-							<h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Our people</h2>
-							<p className="mt-6 text-xl leading-8 text-gray-600">
+							<h2 className="text-3xl font-bold tracking-tight text-gray-100 sm:text-4xl">Our people</h2>
+							<p className="mt-6 text-xl leading-8 text-gray-200">
 								Mediterranean Model United Nations, the largest and oldest THIMUN-affiliated MUN conference in the Mediterranean region, is a
 								simulation of the United Nations for high school students.{" "}
 							</p>
@@ -190,20 +199,20 @@ export async function HomePage() {
 					</div>
 				</div>
 			</div>
-			<div className="overflow-hidden py-24 bg-white font-[GilroyLight] sm:py-32">
+			<div className="overflow-hidden py-24 bg-black font-[GilroyLight] sm:py-32">
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
 					<div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
 						<div className="lg:pr-8 lg:pt-4">
 							<div className="lg:max-w-lg">
-								<h2 className="text-base font-semibold leading-7 text-gray-900">Introdoucing</h2>
+								<h2 className="text-base font-semibold leading-7 text-gray-100">Introdoucing</h2>
 								<p className="mt-2 font-[canela] text-3xl text-primary sm:text-4xl">MediBook</p>
-								<p className="mt-6 text-lg leading-8 text-gray-600">
+								<p className="mt-6 text-lg leading-8 text-gray-200">
 									Our brand-new state of the art platform for everything related to the conference.
 								</p>
-								<dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
+								<dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-200 lg:max-w-none">
 									{features.map((feature) => (
 										<div key={feature.name} className="relative pl-9">
-											<dt className="inline font-semibold text-gray-900">
+											<dt className="inline font-semibold text-red-500">
 												<feature.icon aria-hidden="true" className="absolute left-1 top-1 h-5 w-5 text-primary" />
 												{feature.name}
 											</dt>{" "}

@@ -8,7 +8,7 @@ import { TopBar } from "@/app/(medibook)/medibook/client-components";
 import { Text } from "@/components/text";
 import { Divider } from "@/components/divider";
 import { ActionList } from "@/app/components/actions-list";
-import { MainWrapper } from "../../../server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 import { Button } from "@/components/ui/button";
 import { FastLink } from "@/components/fast-link";
 

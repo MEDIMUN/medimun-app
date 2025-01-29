@@ -9,7 +9,7 @@ export function generateUserDataObject(obj = {}) {
 	const userDataObject = {
 		globalAdmin: true,
 		admin: true,
-		seniorDirecor: true,
+		seniorDirector: true,
 		Director: true,
 		Student: true,
 		delegate: { include: { committee: { select: { session: true, name: true, id: true, slug: true } } } },
@@ -174,7 +174,7 @@ export function generateUserData(userObject) {
 			roleIdentifier: roleIdentifier,
 		};
 	});
-	let directorRole = userObject.seniorDirecor.map(() => {
+	let directorRole = userObject.seniorDirector.map(() => {
 		const roleName = "Director";
 		const shortRoleName = "Director";
 		const roleIdentifier = "director";
@@ -186,7 +186,7 @@ export function generateUserData(userObject) {
 			roleIdentifier: roleIdentifier,
 		};
 	});
-	let seniorDirectorRole = userObject.seniorDirecor.map(() => {
+	let seniorDirectorRole = userObject.seniorDirector.map(() => {
 		const roleName = "Senior Director";
 		const shortRoleName = "Senior Director";
 		const roleIdentifier = "seniorDirector";
@@ -321,7 +321,7 @@ export async function userData(user) {
 		include: {
 			globalAdmin: true,
 			admin: true,
-			seniorDirecor: true,
+			seniorDirector: true,
 			Director: true,
 			Student: true,
 			delegate: { include: { committee: { select: { session: true, name: true, id: true, slug: true } } } },
@@ -484,7 +484,7 @@ export async function userData(user) {
 			roleIdentifier: roleIdentifier,
 		};
 	});
-	let directorRole = roles.seniorDirecor.map(() => {
+	let directorRole = roles.seniorDirector.map(() => {
 		const roleName = "Director";
 		const shortRoleName = "Director";
 		const roleIdentifier = "director";
@@ -496,7 +496,7 @@ export async function userData(user) {
 			roleIdentifier: roleIdentifier,
 		};
 	});
-	let seniorDirectorRole = roles.seniorDirecor.map(() => {
+	let seniorDirectorRole = roles.seniorDirector.map(() => {
 		const roleName = "Senior Director";
 		const shortRoleName = "Senior Director";
 		const roleIdentifier = "seniorDirector";

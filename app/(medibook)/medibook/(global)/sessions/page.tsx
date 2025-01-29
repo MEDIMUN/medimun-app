@@ -13,7 +13,7 @@ import Paginator from "@/components/pagination";
 import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
 import { Fragment } from "react";
 import { Ellipsis } from "lucide-react";
-import { MainWrapper } from "../../server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export const metadata: Metadata = {
 	title: "All Conference Sessions",

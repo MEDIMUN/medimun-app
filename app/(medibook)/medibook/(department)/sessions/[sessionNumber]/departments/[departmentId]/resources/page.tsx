@@ -7,6 +7,7 @@ import prisma from "@/prisma/client";
 import Paginator from "@/components/pagination";
 import { notFound } from "next/navigation";
 import { ResourcePrivacyTypes } from "@prisma/client";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const itemsPerPage = 10;
 
@@ -83,14 +84,16 @@ export default async function Page(props) {
 				title="Department Resources">
 				<SearchParamsButton searchParams={{ uploaddepartmentresource: true }}>Upload Department Resource</SearchParamsButton>
 			</TopBar>
-			{!!prismaResources.length && (
-				<ResourcesTable
-					baseUrl={`/medibook/sessions/${params.sessionNumber}/departments/${selectedDepartment.slug || selectedDepartment.id}/resources`}
-					resources={prismaResources}
-					isManagement={isManagement}
-				/>
-			)}
-			<Paginator totalItems={totalItems} itemsOnPage={prismaResources.length} itemsPerPage={itemsPerPage} />
+			<MainWrapper>
+				{!!prismaResources.length && (
+					<ResourcesTable
+						baseUrl={`/medibook/sessions/${params.sessionNumber}/departments/${selectedDepartment.slug || selectedDepartment.id}/resources`}
+						resources={prismaResources}
+						isManagement={isManagement}
+					/>
+				)}
+				<Paginator totalItems={totalItems} itemsOnPage={prismaResources.length} itemsPerPage={itemsPerPage} />
+			</MainWrapper>
 		</>
 	);
 }

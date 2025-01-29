@@ -13,7 +13,7 @@ import Image from "next/image";
 import { Button as MButton } from "@/components/button";
 import { useUpdateEffect } from "@/hooks/use-update-effect";
 import { Badge } from "@/components/badge";
-import { TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
+import { TopBar2 as TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { SelectedGroupProps } from "./page";
 import { Session } from "next-auth";
 import { ArrowRight, X } from "lucide-react";

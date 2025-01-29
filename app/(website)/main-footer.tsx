@@ -1,5 +1,3 @@
-"use cache";
-
 import { Text, TextLink } from "@/components/text";
 import WhiteLogo from "@/public/assets/branding/logos/logo-medired.svg";
 import ThimunLogo from "@/public/assets/branding/thimun/thimun-logo-by-medimun-dot-org.png";
@@ -94,11 +92,12 @@ const navigation = {
 };
 
 export async function Footer() {
-	cacheLife("days");
+	"use cache";
+	cacheLife("hours");
 	const currentYear = new Date().getFullYear();
 
 	return (
-		<footer className="absolute z-[200] w-full bg-black font-thin" aria-labelledby="footer-heading">
+		<footer className="absolute z-[200] font-[montserrat] w-full bg-black font-thin" aria-labelledby="footer-heading">
 			<h2 id="footer-heading" className="sr-only">
 				Footer
 			</h2>

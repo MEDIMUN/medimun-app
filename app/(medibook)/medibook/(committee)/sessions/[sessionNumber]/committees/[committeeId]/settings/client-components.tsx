@@ -50,7 +50,6 @@ export function CommitteeSettingsForm({ selectedCommittee }) {
 
 	return (
 		<form action={editCommitteeHandler} id="committee-settings" className="mx-auto">
-			<Divider className="my-10" soft />
 			<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 				<div className="space-y-1">
 					<Subheading>Committee Name</Subheading>

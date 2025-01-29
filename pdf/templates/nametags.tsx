@@ -83,7 +83,7 @@ export const MyDocument = async ({ invoice }) => {
 	const queryObject = {
 		OR: [
 			{ Director: { some: {} } },
-			{ seniorDirecor: { some: {} } },
+			{ seniorDirector: { some: {} } },
 			{ delegate: { some: { committee: { session: { number: params.sessionNumber } } } } },
 			{ chair: { some: { committee: { session: { number: params.sessionNumber } } } } },
 			{ member: { some: { department: { session: { number: params.sessionNumber } } } } },

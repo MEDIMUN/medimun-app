@@ -1,6 +1,7 @@
 import { SearchParamsDropDropdownItem, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { auth } from "@/auth";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
+import { MainWrapper } from "@/components/main-wrapper";
 import Paginator from "@/components/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { countries } from "@/data/countries";
@@ -36,6 +37,7 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 						include: {
 							ExtraCountry: true,
 							delegate: {
+								orderBy: { user: { officialName: "asc" } },
 								where: {
 									OR: [
 										{
@@ -153,64 +155,66 @@ export default async function Page(props: { searchParams: any; params: Promise<{
 				title="Committee Delegates"
 				subheading={`${totalItems} Delegates`}
 			/>
-			{!!selectedCommittee.delegate.length && (
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableHeader>
-								<span className="sr-only">Actions</span>
-							</TableHeader>
-							<TableHeader>
-								<span className="sr-only">Avatar</span>
-							</TableHeader>
-							<TableHeader>Name</TableHeader>
-							<TableHeader>Country</TableHeader>
-							{(isChairOfCommittee || isManagement) && <TableHeader>Email</TableHeader>}
-							{(isChairOfCommittee || isManagement) && <TableHeader>User ID</TableHeader>}
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{delegates.map((delegate) => {
-							const user = delegate.user;
-							const selectedCountry = allCountries.find((country) => country.countryCode === delegate.country);
-							const isChairOfDelegate = authorizeChairCommittee(authSession?.user?.currentRoles || [], selectedSession.committee[0].id);
-							return (
-								<TableRow key={delegate.id}>
-									<TableCell>
-										<Dropdown>
-											<DropdownButton plain>
-												<Ellipsis width={18} />
-											</DropdownButton>
-											<DropdownMenu>
-												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
-												<DropdownItem href={`/medibook/users/${user.username || user.id}?new=true`}>Message</DropdownItem>
-												{(isChairOfDelegate || isManagement) && (
-													<SearchParamsDropDropdownItem
-														searchParams={{
-															"edit-user": user.id,
-														}}>
-														Edit User
-													</SearchParamsDropDropdownItem>
-												)}
-											</DropdownMenu>
-										</Dropdown>
-									</TableCell>
-									<TableCell>
-										<UserTooltip userId={user.id}>
-											<Avatar showFallback radius="md" src={`/api/users/${user.id}/avatar`} />
-										</UserTooltip>
-									</TableCell>
-									<TableCell>{user.displayName || `${user.officialName} ${user.officialSurname}`}</TableCell>
-									<TableCell>{selectedCountry?.countryNameEn || "Not Assigned"}</TableCell>
-									{(isChairOfCommittee || isManagement) && <TableCell>{user.email}</TableCell>}
-									{(isChairOfCommittee || isManagement) && <TableCell>{<UserIdDisplay userId={user.id} />}</TableCell>}
-								</TableRow>
-							);
-						})}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator totalItems={totalItems} itemsPerPage={itemsPerPage} itemsOnPage={selectedCommittee.delegate.length} />
+			<MainWrapper>
+				{!!selectedCommittee.delegate.length && (
+					<Table>
+						<TableHead>
+							<TableRow>
+								<TableHeader>
+									<span className="sr-only">Actions</span>
+								</TableHeader>
+								<TableHeader>
+									<span className="sr-only">Avatar</span>
+								</TableHeader>
+								<TableHeader>Name</TableHeader>
+								<TableHeader>Country</TableHeader>
+								{(isChairOfCommittee || isManagement) && <TableHeader>Email</TableHeader>}
+								{(isChairOfCommittee || isManagement) && <TableHeader>User ID</TableHeader>}
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{delegates.map((delegate) => {
+								const user = delegate.user;
+								const selectedCountry = allCountries.find((country) => country.countryCode === delegate.country);
+								const isChairOfDelegate = authorizeChairCommittee(authSession?.user?.currentRoles || [], selectedSession.committee[0].id);
+								return (
+									<TableRow key={delegate.id}>
+										<TableCell>
+											<Dropdown>
+												<DropdownButton plain>
+													<Ellipsis width={18} />
+												</DropdownButton>
+												<DropdownMenu>
+													<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
+													<DropdownItem href={`/medibook/users/${user.username || user.id}?new=true`}>Message</DropdownItem>
+													{(isChairOfDelegate || isManagement) && (
+														<SearchParamsDropDropdownItem
+															searchParams={{
+																"edit-user": user.id,
+															}}>
+															Edit User
+														</SearchParamsDropDropdownItem>
+													)}
+												</DropdownMenu>
+											</Dropdown>
+										</TableCell>
+										<TableCell>
+											<UserTooltip userId={user.id}>
+												<Avatar showFallback radius="md" src={`/api/users/${user.id}/avatar`} />
+											</UserTooltip>
+										</TableCell>
+										<TableCell>{user.displayName || `${user.officialName} ${user.officialSurname}`}</TableCell>
+										<TableCell>{selectedCountry?.countryNameEn || "Not Assigned"}</TableCell>
+										{(isChairOfCommittee || isManagement) && <TableCell>{user.email}</TableCell>}
+										{(isChairOfCommittee || isManagement) && <TableCell>{<UserIdDisplay userId={user.id} />}</TableCell>}
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator totalItems={totalItems} itemsPerPage={itemsPerPage} itemsOnPage={selectedCommittee.delegate.length} />
+			</MainWrapper>
 		</>
 	);
 }

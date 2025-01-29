@@ -6,7 +6,7 @@ import { romanize } from "@/lib/romanize";
 import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 import { Badge } from "@/components/badge";
-import { MainWrapper } from "@/app/(medibook)/medibook/server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export default async function Page(props) {
 	const params = await props.params;

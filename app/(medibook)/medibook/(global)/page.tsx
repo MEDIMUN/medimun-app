@@ -6,11 +6,9 @@ import prisma from "@/prisma/client";
 import { countries } from "@/data/countries";
 import { TopBar } from "../client-components";
 import { Suspense } from "react";
-import { MainWrapper } from "../server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export default async function Home() {
-	"use cache";
-
 	const actions = [
 		{
 			title: "All Sessions",
@@ -66,7 +64,7 @@ export default async function Home() {
 				}
 			/>
 			<MainWrapper>
-				<div className="w-full overflow-hidden rounded-xl ring-zinc-300 ring-1">
+				<div className="w-full rounded-xl overflow-hidden shadow-md">
 					<Image alt="Welcome to MediBook." quality={100} className="!relative object-cover" src={MediBookWelcome} fill />
 				</div>
 				<ActionList actions={actions} />

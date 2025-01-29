@@ -36,7 +36,7 @@ export default async function RootLayout({ children }) {
 				<meta name="facebook-domain-verification" content="znip7rtrzxmwzw42ursabu6wfn8m7v" />
 				<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
 			</head>
-			<body id="remove-scrollbar" className="m-0 bg-transparent p-0">
+			<body id="remove-scrollbar" className="m-0 bg-transparent dark p-0">
 				<Suspense fallback={null}>
 					<NextAuthProvider>
 						<Suspense fallback={null}>

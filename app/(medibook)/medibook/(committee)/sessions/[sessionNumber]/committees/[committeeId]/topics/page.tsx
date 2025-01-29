@@ -9,6 +9,7 @@ import { Button } from "@/components/button";
 import { processMarkdownPreview } from "@/lib/text";
 import Paginator from "@/components/pagination";
 import { Ellipsis } from "lucide-react";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export default async function Page(props) {
 	const params = await props.params;
@@ -40,64 +41,66 @@ export default async function Page(props) {
 				buttonHref={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}`}>
 				{isManagement && <SearchParamsButton searchParams={{ "create-topic": selectedCommittee.id }}>Create Topic</SearchParamsButton>}
 			</TopBar>
-			{!!topics.length && (
-				<Table>
-					<TableHead>
-						<TableRow>
-							{!(!isManagement && !isChairOfCommittee && !howManyTOpicsHaveDescription) && (
-								<TableHeader>
-									<span className="sr-only">Actions</span>
-								</TableHeader>
-							)}
-							<TableHeader>Topic</TableHeader>
-							<TableHeader>Description</TableHeader>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{topics.map((topic) => (
-							<TableRow className="max-w-max" key={topic.id}>
-								{!(!isManagement && !isChairOfCommittee && !topic.description) && (
-									<TableCell>
-										{isChairOfCommittee || isManagement ? (
-											<Dropdown>
-												<DropdownButton plain aria-label="More options">
-													<Ellipsis width={18} />
-												</DropdownButton>
-												<DropdownMenu anchor="bottom end">
-													{topic.description && (
-														<DropdownItem
-															href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
-																topic.id
-															}`}>
-															View
-														</DropdownItem>
-													)}
-													<SearchParamsDropDropdownItem searchParams={{ "edit-topic": topic.id }}>Edit Topic</SearchParamsDropDropdownItem>
-													{isManagement && (
-														<SearchParamsDropDropdownItem searchParams={{ "delete-topic": topic.id }}>Delete Topic</SearchParamsDropDropdownItem>
-													)}
-												</DropdownMenu>
-											</Dropdown>
-										) : (
-											<Button
-												disabled={!topic.description}
-												href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
-													topic.id
-												}`}
-												plain>
-												Details
-											</Button>
-										)}
-									</TableCell>
+			<MainWrapper>
+				{!!topics.length && (
+					<Table>
+						<TableHead>
+							<TableRow>
+								{!(!isManagement && !isChairOfCommittee && !howManyTOpicsHaveDescription) && (
+									<TableHeader>
+										<span className="sr-only">Actions</span>
+									</TableHeader>
 								)}
-								<TableCell>{topic.title}</TableCell>
-								<TableCell>{topic.description ? processMarkdownPreview(topic.description) : "-"}</TableCell>
+								<TableHeader>Topic</TableHeader>
+								<TableHeader>Description</TableHeader>
 							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator totalItems={topics.length} itemsPerPage={10} itemsOnPage={topics.length} />
+						</TableHead>
+						<TableBody>
+							{topics.map((topic) => (
+								<TableRow className="max-w-max" key={topic.id}>
+									{!(!isManagement && !isChairOfCommittee && !topic.description) && (
+										<TableCell>
+											{isChairOfCommittee || isManagement ? (
+												<Dropdown>
+													<DropdownButton plain aria-label="More options">
+														<Ellipsis width={18} />
+													</DropdownButton>
+													<DropdownMenu anchor="bottom end">
+														{topic.description && (
+															<DropdownItem
+																href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
+																	topic.id
+																}`}>
+																View
+															</DropdownItem>
+														)}
+														<SearchParamsDropDropdownItem searchParams={{ "edit-topic": topic.id }}>Edit Topic</SearchParamsDropDropdownItem>
+														{isManagement && (
+															<SearchParamsDropDropdownItem searchParams={{ "delete-topic": topic.id }}>Delete Topic</SearchParamsDropDropdownItem>
+														)}
+													</DropdownMenu>
+												</Dropdown>
+											) : (
+												<Button
+													disabled={!topic.description}
+													href={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/topics/${
+														topic.id
+													}`}
+													plain>
+													Details
+												</Button>
+											)}
+										</TableCell>
+									)}
+									<TableCell>{topic.title}</TableCell>
+									<TableCell>{topic.description ? processMarkdownPreview(topic.description) : "-"}</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator totalItems={topics.length} itemsPerPage={10} itemsOnPage={topics.length} />
+			</MainWrapper>
 		</>
 	);
 }

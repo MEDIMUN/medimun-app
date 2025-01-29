@@ -10,7 +10,7 @@ import Paginator from "@/components/pagination";
 import { Link } from "@/components/link";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { Badge } from "@/components/badge";
-import { MainWrapper } from "../../server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const itemsPerPage = 10;
 

@@ -10,6 +10,7 @@ import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 import { Badge } from "@/components/badge";
 import { Ellipsis } from "lucide-react";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export default async function Page(props) {
 	const searchParams = await props.searchParams;
@@ -69,47 +70,49 @@ export default async function Page(props) {
 					Create New
 				</SearchParamsButton>
 			</TopBar>
-			{!!rollCalls?.length && (
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableHeader>
-								<span className="sr-only">Actions</span>
-							</TableHeader>
-							<TableHeader>
-								<span className="sr-only">Index</span>
-							</TableHeader>
-							<TableHeader>Name</TableHeader>
-							<TableHeader>ID</TableHeader>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{rollCalls.map((rc, index) => (
-							<TableRow key={rc.id}>
-								<TableCell>
-									<Dropdown>
-										<DropdownButton plain>
-											<Ellipsis width={18} />
-										</DropdownButton>
-										<DropdownMenu>
-											<MoveUpButton rcId={rc.id} />
-											<MoveDownButton rcId={rc.id} />
-											<SearchParamsDropDropdownItem searchParams={{ "edit-roll-call": rc.id }}>Edit</SearchParamsDropDropdownItem>
-											<SearchParamsDropDropdownItem searchParams={{ "delete-roll-call": rc.id }}>Delete</SearchParamsDropDropdownItem>
-										</DropdownMenu>
-									</Dropdown>
-								</TableCell>
-								<TableCell>
-									<Badge>{index + 1}</Badge>
-								</TableCell>
-								<TableCell>{rc.name || `Roll Call ${index + 1}`}</TableCell>
-								<TableCell>{rc.id}</TableCell>
+			<MainWrapper>
+				{!!rollCalls?.length && (
+					<Table>
+						<TableHead>
+							<TableRow>
+								<TableHeader>
+									<span className="sr-only">Actions</span>
+								</TableHeader>
+								<TableHeader>
+									<span className="sr-only">Index</span>
+								</TableHeader>
+								<TableHeader>Name</TableHeader>
+								<TableHeader>ID</TableHeader>
 							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator totalItems={rollCalls.length} itemsOnPage={rollCalls.length} />
+						</TableHead>
+						<TableBody>
+							{rollCalls.map((rc, index) => (
+								<TableRow key={rc.id}>
+									<TableCell>
+										<Dropdown>
+											<DropdownButton plain>
+												<Ellipsis width={18} />
+											</DropdownButton>
+											<DropdownMenu>
+												<MoveUpButton rcId={rc.id} />
+												<MoveDownButton rcId={rc.id} />
+												<SearchParamsDropDropdownItem searchParams={{ "edit-roll-call": rc.id }}>Edit</SearchParamsDropDropdownItem>
+												<SearchParamsDropDropdownItem searchParams={{ "delete-roll-call": rc.id }}>Delete</SearchParamsDropDropdownItem>
+											</DropdownMenu>
+										</Dropdown>
+									</TableCell>
+									<TableCell>
+										<Badge>{index + 1}</Badge>
+									</TableCell>
+									<TableCell>{rc.name || `Roll Call ${index + 1}`}</TableCell>
+									<TableCell>{rc.id}</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator totalItems={rollCalls.length} itemsOnPage={rollCalls.length} />
+			</MainWrapper>
 		</>
 	);
 }

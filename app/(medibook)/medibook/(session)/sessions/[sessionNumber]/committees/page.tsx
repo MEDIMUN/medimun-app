@@ -13,7 +13,7 @@ import { Link } from "@/components/link";
 import Paginator from "@/components/pagination";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu, DropdownSection } from "@/components/dropdown";
 import { Ellipsis } from "lucide-react";
-import { MainWrapper } from "@/app/(medibook)/medibook/server-components";
+import { MainWrapper } from "@/components/main-wrapper";
 import { Button } from "@/components/ui/button";
 
 const itemsPerPage = 10;

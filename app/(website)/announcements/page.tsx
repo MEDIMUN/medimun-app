@@ -50,7 +50,12 @@ export default async function AnnouncementsPage(props) {
 
 	return (
 		<>
-			<Topbar title={"Announcements"} description={"Global Announcements and Announcements from the latest session."} />
+			<Topbar
+				title={"Announcements"}
+				description={
+					"Global Announcements and Announcements from the latest session. This page is being deprecetaed and will be replaced with a new page."
+				}
+			/>
 			<div className="py-12 sm:py-12">
 				<div className="mx-auto max-w-2xl px-2 lg:max-w-7xl lg:px-2">
 					<AnnouncementsTable baseUrl={"/announcements"} announcements={prismaAnnouncements} totalItems={totalItems} />

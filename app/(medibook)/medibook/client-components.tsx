@@ -32,6 +32,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Heading, Subheading } from "@/components/heading";
 import { Divider } from "@/components/divider";
 import { FastLink as Link } from "@/components/fast-link";
+import { Dialog, DialogActions, DialogBody, DialogTitle } from "@/components/dialog";
 
 export function DirectionDropdown({ defaultValue, items, ...props }) {
 	const router = useRouter();
@@ -82,7 +83,6 @@ export function SearchBar({ placeholder = "Search...", debounceDelay = 500, defa
 
 	return (
 		<InputGroup className={cn("w-full", className)}>
-			<Search size={18} />
 			<Input onChange={(e) => setSearch(e.target.value)} value={search} name="search" type="search" placeholder={placeholder} />
 		</InputGroup>
 	);
@@ -199,6 +199,7 @@ export function TopBar({
 	buttonHref = "",
 	showDivider = false,
 	hideBackdrop = false,
+	config,
 }: {
 	className?: string;
 	title?: string;
@@ -213,6 +214,7 @@ export function TopBar({
 	buttonHref?: string;
 	showDivider?: boolean;
 	hideBackdrop?: boolean;
+	config?: any;
 }) {
 	sortOptions = sortOptions && sortOptions.map((option, index) => ({ ...option, key: index }));
 
@@ -223,6 +225,7 @@ export function TopBar({
 	const [debouncedSearch] = useDebouncedValue(searchParams?.get("search") || "", 500);
 	const searchInputRef = useRef(null);
 	const spacerRef = useRef(null);
+	const [configShown, setConfigShown] = useState(false);
 
 	useLayoutEffect(() => {
 		setIsMounted(true);
@@ -234,6 +237,13 @@ export function TopBar({
 	/* 	if (isMounted)
 	 */ return (
 		<>
+			<Dialog open={configShown} onClose={() => setConfigShown(false)} title="Options" className="w-full max-w-[500px]">
+				<DialogTitle>Options</DialogTitle>
+				<DialogBody>{config}</DialogBody>
+				<DialogActions>
+					<Button onClick={() => setConfigShown(false)}>Close</Button>
+				</DialogActions>
+			</Dialog>
 			<header className="flex z-[50] flex-col bg-sidebar-primary-foreground dark:bg-sidebar right-0 fixed top-0 w-full md:w-[calc(100%-288px)] border-b border-sidebar-border h-[65px] shrink-0 items-center -transition-[width,height] -ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
 				<div className="flex items-center h-[65px] w-full">
 					<div className="flex items-center w-full">
@@ -350,7 +360,12 @@ export function TopBar({
 						)}
 					</div>
 				</div>
-				{children && <div className="grid w-full grid-cols-1 gap-4 md:flex md:w-auto md:flex-row">{children}</div>}
+				{(children || config) && (
+					<div className="grid w-full grid-cols-1 gap-4 md:flex md:w-auto md:flex-row">
+						{children}
+						{config && <Button onClick={() => setConfigShown(!configShown)}>Options</Button>}
+					</div>
+				)}
 			</div>
 		</>
 	);
@@ -674,9 +689,9 @@ export function SearchParamsDropDropdownItem({
 	//if dev http://localhost, if prod https://www.medimun.org
 
 	function handleOnClick() {
-		const domain = process.env.NODE_ENV === "development" ? "http://localhost" : "https://www.medimun.org";
+		const domain = process.env.NODE_ENV === "development" ? "https://localhost" : "https://www.medimun.org";
 		if (url) {
-			const baseUrl = new URL(url ? `${domain}/${url}` : window.location.href);
+			const baseUrl = new URL(url ? `${domain}${url}` : window.location.href);
 			for (const [key, value] of Object.entries(searchParams)) {
 				baseUrl.searchParams.set(key, value);
 			}

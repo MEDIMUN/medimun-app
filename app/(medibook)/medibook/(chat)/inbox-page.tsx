@@ -1,4 +1,4 @@
-import { SearchBar, SearchParamsButton, TopBar } from "../client-components";
+import { SearchBar, SearchParamsButton, TopBar, TopBar2 } from "../client-components";
 import prisma from "@/prisma/client";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
@@ -63,8 +63,8 @@ export default async function InboxesPage({ children, searchParams }) {
 	return (
 		<div className="h-full w-full md:w-[400px] md:border-r">
 			<div className="px-4 py-4 bg-zinc-100 dark:bg-zinc-900">
-				<TopBar hideBackdrop title="Messages" buttonHref="/medibook" hideSearchBar buttonText="Home"></TopBar>
-				<div className="flex flex-col gap-2 mt-1 w-full">
+				<TopBar2 hideBackdrop title="Messages" buttonHref="/medibook" hideSearchBar buttonText="Home"></TopBar2>
+				<div className="flex flex-col gap-2 mb mt-1 w-full">
 					<SearchBar className="!w-[500px] flex-1" />
 					<SearchParamsButton disabled>New Group</SearchParamsButton>
 				</div>
