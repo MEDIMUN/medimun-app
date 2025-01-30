@@ -19,8 +19,8 @@ export default function MainTemplate(props) {
 			}}>
 			<Head />
 			<Preview>{props.preview}</Preview>
-			<Html className="font-arial bg-white">
-				<Section className="mt-[40px] rounded-b-lg bg-zinc-100 px-[32px] py-[40px]">
+			<Html className="font-arial w-full flex flex-col items-center">
+				<Section className="mt-[40px] max-w-[600px] mx-auto rounded-b-lg bg-zinc-100 px-[32px] py-[40px]">
 					<Row>
 						<Column className="w-[80%]">
 							<Img alt="MEDIMUN Logo" height="42" src={`${baseUrl}/assets/branding/logos/logo-white-email.png`} />
@@ -55,11 +55,11 @@ export default function MainTemplate(props) {
 						<Hr className="my-[16px] border-t-2 bg-zinc-100" />
 					</>
 				)}
-				<Section className="rounded-lg bg-zinc-100 px-[40px] py-[16px] font-extralight">{props.children}</Section>
-				<Hr className="my-[16px] border-t-2 bg-zinc-100" />
+				<Section className="rounded-lg max-w-[600px] mx-auto bg-zinc-100 px-[40px] py-[16px] font-extralight">{props.children}</Section>
+				<Hr className="my-[16px] max-w-[600px] mx-auto border-t-2 bg-zinc-100" />
 				{!props.hideAd && (
 					<>
-						<Section className="rounded-lg bg-zinc-100 px-[40px] py-[16px]">
+						<Section className="rounded-lg max-w-[600px] mx-auto bg-zinc-100 px-[40px] py-[16px]">
 							<Section>
 								<Row>
 									<Text className="mt-[8px] text-[16px] font-thin leading-[24px] text-zinc-800">
@@ -112,7 +112,7 @@ export default function MainTemplate(props) {
 						<Hr className="my-[16px] border-t-2 bg-zinc-100" />
 					</>
 				)}
-				<Section className="rounded-t-lg bg-zinc-100 p-[40px]">
+				<Section className="rounded-t-lg max-w-[600px] mx-auto bg-zinc-100 p-[40px]">
 					<Row>
 						<Column colSpan={4}>
 							<Img alt="MEDIMUN Mini Logo" className="rounded-full shadow-md" height="42" src={`${baseUrl}/email/logos/logo-mini.png`} />
