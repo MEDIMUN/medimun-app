@@ -150,7 +150,7 @@ export function processMarkdownPreview(markdown: string): string {
 	markdown = markdown.replace(/\n/g, " ");
 
 	// Remove all characters except a-z 0-9 and -
-	markdown = markdown.replace(/[^a-zA-Z0-9 ]/gi, "᧢");
+	markdown = markdown.replace(/[^a-zA-Z0-9 \-:]/gi, "᧢");
 
 	//replace all multiple @s with a single @
 

@@ -8,6 +8,7 @@ import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/componen
 import { Button } from "@/components/button";
 import Paginator from "@/components/pagination";
 import { Ellipsis } from "lucide-react";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export default async function PoliciesPage(props) {
 	const searchParams = await props.searchParams;
@@ -53,46 +54,48 @@ export default async function PoliciesPage(props) {
 					</SearchParamsButton>
 				)}
 			</TopBar>
-			{!!policies.length && (
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableHeader>
-								<span className="sr-only">Actions</span>
-							</TableHeader>
-							<TableHeader>Policy</TableHeader>
-							<TableHeader>Description</TableHeader>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{policies.map((policy) => (
-							<TableRow key={policy.id}>
-								<TableCell>
-									{isManagement ? (
-										<Dropdown>
-											<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
-												<Ellipsis width={18} />
-											</DropdownButton>
-											<DropdownMenu anchor="bottom end">
-												<DropdownItem href={`/medibook/policies/${policy.slug}`}>View</DropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "edit-policy": policy.id }}>Edit</SearchParamsDropDropdownItem>
-												<SearchParamsDropDropdownItem searchParams={{ "delete-policy": policy.id }}>Delete</SearchParamsDropDropdownItem>
-											</DropdownMenu>
-										</Dropdown>
-									) : (
-										<Button plain href={`/medibook/policies/${policy.slug}`}>
-											View
-										</Button>
-									)}
-								</TableCell>
-								<TableCell>{policy.title}</TableCell>
-								<TableCell className="w-full">{policy.description || "-"}</TableCell>
+			<MainWrapper>
+				{!!policies.length && (
+					<Table>
+						<TableHead>
+							<TableRow>
+								<TableHeader>
+									<span className="sr-only">Actions</span>
+								</TableHeader>
+								<TableHeader>Policy</TableHeader>
+								<TableHeader>Description</TableHeader>
 							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator totalItems={totalItems} itemsOnPage={policies.length} />
+						</TableHead>
+						<TableBody>
+							{policies.map((policy) => (
+								<TableRow key={policy.id}>
+									<TableCell>
+										{isManagement ? (
+											<Dropdown>
+												<DropdownButton className="my-auto max-h-max" plain aria-label="More options">
+													<Ellipsis width={18} />
+												</DropdownButton>
+												<DropdownMenu anchor="bottom end">
+													<DropdownItem href={`/medibook/policies/${policy.slug}`}>View</DropdownItem>
+													<SearchParamsDropDropdownItem searchParams={{ "edit-policy": policy.id }}>Edit</SearchParamsDropDropdownItem>
+													<SearchParamsDropDropdownItem searchParams={{ "delete-policy": policy.id }}>Delete</SearchParamsDropDropdownItem>
+												</DropdownMenu>
+											</Dropdown>
+										) : (
+											<Button plain href={`/medibook/policies/${policy.slug}`}>
+												View
+											</Button>
+										)}
+									</TableCell>
+									<TableCell>{policy.title}</TableCell>
+									<TableCell className="w-full">{policy.description || "-"}</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator totalItems={totalItems} itemsOnPage={policies.length} />
+			</MainWrapper>
 		</>
 	);
 }

@@ -13,6 +13,7 @@ import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { ApplicationOptions } from "./client-components";
 import { Ellipsis } from "lucide-react";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const itemsPerPage = 10;
 
@@ -83,91 +84,93 @@ export default async function SchoolDirectorApplicationsPage(props: { params: Pr
 				title="School Director Applications"
 				subheading={`${approvedCount || "None"} Approved, ${pendingCount || "None"} Pending`}
 			/>
-			<div className="rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
-				<Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
-			</div>
-			<ApplicationOptions selectedSession={selectedSession} />
-			{!!applications.length && (
-				<Table className="showscrollbar">
-					<TableHead>
-						<TableRow>
-							<TableHeader>
-								<span className="sr-only">Actions</span>
-							</TableHeader>
-							<TableHeader>Status</TableHeader>
-							<TableHeader>Official Name</TableHeader>
-							<TableHeader>Official Surname</TableHeader>
-							<TableHeader>Email</TableHeader>
-							<TableHeader>School</TableHeader>
-							<TableHeader>Previous School Director Roles</TableHeader>
-							<TableHeader>Best Time to Reach</TableHeader>
-							<TableHeader>Date Applied</TableHeader>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{applications.map((application) => {
-							return (
-								<TableRow key={application.id}>
-									<TableCell>
-										<Dropdown>
-											<DropdownButton plain>
-												<Ellipsis width={18} />
-											</DropdownButton>
-											<DropdownMenu>
-												<DropdownItem href={`/medibook/schools/${application.school.slug || application.school.id}`}>View School</DropdownItem>
-												<DropdownItem href={`/medibook/users/${application.user.username || application.user.id}`}>View User</DropdownItem>
-												{!application.isApproved && (
-													<>
-														<SearchParamsDropDropdownItem searchParams={{ "approve-school-director-application": application.id }}>
-															Approve
-														</SearchParamsDropDropdownItem>
-														<SearchParamsDropDropdownItem searchParams={{ "delete-school-director-application": application.id }}>
-															Delete
-														</SearchParamsDropDropdownItem>
-													</>
-												)}
-											</DropdownMenu>
-										</Dropdown>
-									</TableCell>
-									<TableCell>{application.isApproved ? <Badge color="green">Approved</Badge> : <Badge color="yellow">Pending</Badge>}</TableCell>
-									<TableCell>{application.user.officialName}</TableCell>
-									<TableCell>{application.user.officialSurname}</TableCell>
-									<TableCell>{application.user.email}</TableCell>
-									<TableCell>
-										<Link href={`/medibook/schools/${application.school.slug || application.school.id}`}>{application.school.name}</Link>
-									</TableCell>
-									<TableCell>
-										{application.user.schoolDirector.length == 0 ? "None" : application.user.schoolDirector.length} Role
-										{application.user.schoolDirector.length == 1 ? "" : "s"}
-										{!!application.user.schoolDirector.length && (
+			<MainWrapper>
+				<div className="rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
+					<Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
+				</div>
+				<ApplicationOptions selectedSession={selectedSession} />
+				{!!applications.length && (
+					<Table className="showscrollbar">
+						<TableHead>
+							<TableRow>
+								<TableHeader>
+									<span className="sr-only">Actions</span>
+								</TableHeader>
+								<TableHeader>Status</TableHeader>
+								<TableHeader>Official Name</TableHeader>
+								<TableHeader>Official Surname</TableHeader>
+								<TableHeader>Email</TableHeader>
+								<TableHeader>School</TableHeader>
+								<TableHeader>Previous School Director Roles</TableHeader>
+								<TableHeader>Best Time to Reach</TableHeader>
+								<TableHeader>Date Applied</TableHeader>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{applications.map((application) => {
+								return (
+									<TableRow key={application.id}>
+										<TableCell>
 											<Dropdown>
-												<DropdownButton className="ml-2" plain>
-													View
+												<DropdownButton plain>
+													<Ellipsis width={18} />
 												</DropdownButton>
 												<DropdownMenu>
-													{application.user.schoolDirector.map((sd) => {
-														return (
-															<DropdownItem key={Math.random()} href={`/medibook/sessions/${sd.session.number}`}>
-																<DropdownLabel>{sd.school.name}</DropdownLabel>
-																<DropdownDescription>
-																	Session {romanize(sd.session.numberInteger)} ({sd.session.number})
-																</DropdownDescription>
-															</DropdownItem>
-														);
-													})}
+													<DropdownItem href={`/medibook/schools/${application.school.slug || application.school.id}`}>View School</DropdownItem>
+													<DropdownItem href={`/medibook/users/${application.user.username || application.user.id}`}>View User</DropdownItem>
+													{!application.isApproved && (
+														<>
+															<SearchParamsDropDropdownItem searchParams={{ "approve-school-director-application": application.id }}>
+																Approve
+															</SearchParamsDropDropdownItem>
+															<SearchParamsDropDropdownItem searchParams={{ "delete-school-director-application": application.id }}>
+																Delete
+															</SearchParamsDropDropdownItem>
+														</>
+													)}
 												</DropdownMenu>
 											</Dropdown>
-										)}
-									</TableCell>
-									<TableCell>{application.user.bestTimeToReach || "-"}</TableCell>
-									<TableCell>{application.date.toLocaleString("en-GB").replace(",", " at ")}</TableCell>
-								</TableRow>
-							);
-						})}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator itemsOnPage={applications.length} itemsPerPage={itemsPerPage} totalItems={pendingCount + approvedCount} />
+										</TableCell>
+										<TableCell>{application.isApproved ? <Badge color="green">Approved</Badge> : <Badge color="yellow">Pending</Badge>}</TableCell>
+										<TableCell>{application.user.officialName}</TableCell>
+										<TableCell>{application.user.officialSurname}</TableCell>
+										<TableCell>{application.user.email}</TableCell>
+										<TableCell>
+											<Link href={`/medibook/schools/${application.school.slug || application.school.id}`}>{application.school.name}</Link>
+										</TableCell>
+										<TableCell>
+											{application.user.schoolDirector.length == 0 ? "None" : application.user.schoolDirector.length} Role
+											{application.user.schoolDirector.length == 1 ? "" : "s"}
+											{!!application.user.schoolDirector.length && (
+												<Dropdown>
+													<DropdownButton className="ml-2" plain>
+														View
+													</DropdownButton>
+													<DropdownMenu>
+														{application.user.schoolDirector.map((sd) => {
+															return (
+																<DropdownItem key={Math.random()} href={`/medibook/sessions/${sd.session.number}`}>
+																	<DropdownLabel>{sd.school.name}</DropdownLabel>
+																	<DropdownDescription>
+																		Session {romanize(sd.session.numberInteger)} ({sd.session.number})
+																	</DropdownDescription>
+																</DropdownItem>
+															);
+														})}
+													</DropdownMenu>
+												</Dropdown>
+											)}
+										</TableCell>
+										<TableCell>{application.user.bestTimeToReach || "-"}</TableCell>
+										<TableCell>{application.date.toLocaleString("en-GB").replace(",", " at ")}</TableCell>
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator itemsOnPage={applications.length} itemsPerPage={itemsPerPage} totalItems={pendingCount + approvedCount} />
+			</MainWrapper>
 		</>
 	);
 }

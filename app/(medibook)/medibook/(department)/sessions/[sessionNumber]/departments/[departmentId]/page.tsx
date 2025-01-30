@@ -58,7 +58,7 @@ export default async function Page(props) {
 		<>
 			<TopBar
 				title={selectedDepartment.name}
-				buttonHref={`/medibook/medibook/sessionDepartment/sessions/${params.sessionNumber}/departments`}
+				buttonHref={`/medibook/sessions/${params.sessionNumber}/departments`}
 				buttonText={`Session ${romanize(params.sessionNumber)} Departments`}
 				hideSearchBar
 			/>

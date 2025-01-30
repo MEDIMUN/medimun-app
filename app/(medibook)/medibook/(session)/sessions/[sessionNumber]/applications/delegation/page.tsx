@@ -3,6 +3,7 @@ import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
 import { ApplicationOptions, CountryAssign } from "./client-components";
 import { Text } from "@/components/text";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export function areDelegateApplicationsOpen(selectedSession) {
 	if (!selectedSession) return false;
@@ -41,11 +42,13 @@ export default async function Page(props) {
 				hideSearchBar
 				title="Delegation Requests"
 			/>
-			<div className="rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
-				<Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
-			</div>
-			<ApplicationOptions selectedSession={selectedSession} />
-			<CountryAssign selectedSession={selectedSession} applicationsOfSession={applicationsOfSession} schools={schools} />
+			<MainWrapper>
+				<div className="rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
+					<Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
+				</div>
+				<ApplicationOptions selectedSession={selectedSession} />
+				<CountryAssign selectedSession={selectedSession} applicationsOfSession={applicationsOfSession} schools={schools} />
+			</MainWrapper>
 		</>
 	);
 }

@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
-import { ResourceViewer, SearchParamsButton, SearchParamsDropDropdownItem, SessionResourceDropdown, TopBar } from "./client-components";
+import { SearchParamsButton, SearchParamsDropDropdownItem, SessionResourceDropdown, TopBar } from "./client-components";
 import { FastLink, FastLink as Link } from "@/components/fast-link";
 import { Badge } from "@/components/badge";
 import { romanize } from "@/lib/romanize";
@@ -26,6 +26,7 @@ import mimeExt from "mime-ext";
 import { Ellipsis } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { MainWrapper } from "@/components/main-wrapper";
+import { ResourceViewer } from "@/components/resource-viewer";
 
 const columns = ["Name", "Uploader", "Date Uploaded", "Tags"];
 
@@ -339,14 +340,6 @@ export async function ResourceViewPage(props) {
 	if (!authSession) notFound();
 	const selectedResource = await prisma.resource.findFirst({ where: { id: params.resourceId } });
 
-	const minioClient = minio();
-	let presignedFileUrl;
-	try {
-		presignedFileUrl = await minioClient.presignedGetObject(process.env.BUCKETNAME, `resources/${selectedResource.fileId}`, 60 * 60);
-	} catch (e) {
-		notFound();
-	}
-
 	const isDrive = props?.isDrive;
 
 	let buttonText = isDrive ? "Personal Drive" : "Global Resources";
@@ -391,21 +384,6 @@ export async function ResourceViewPage(props) {
 
 	if (!selectedResource) notFound();
 
-	const encodedUrl = encodeURIComponent(presignedFileUrl);
-	const gviewUrl = `https://docs.google.com/gview?embedded=true&url=${encodedUrl}`;
-
-	const gviewMimeTypes = [
-		"application/vnd.google-apps.document",
-		"application/vnd.google-apps.spreadsheet",
-		"application/vnd.google-apps.presentation",
-		"application/vnd.google-apps.drawing",
-		"application/vnd.google-apps.script",
-		"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-		"application/vnd.openxmlformats-officedocument.presentationml.presentation",
-		"application/msword",
-	];
-
 	return (
 		<>
 			<TopBar hideBackdrop hideSearchBar buttonHref={buttonHref} buttonText={buttonText} title={selectedResource.name}>
@@ -417,26 +395,8 @@ export async function ResourceViewPage(props) {
 						<SearchParamsButton searchParams={{ "edit-resource": selectedResource.id }}>Edit</SearchParamsButton>
 					</>
 				)}
-				<Button
-					href={
-						selectedResource.fileId ? decodeURIComponent(presignedFileUrl.replace("http://", "https://")) : `https://${selectedResource.driveUrl}`
-					}
-					target="_blank"
-					download={selectedResource.fileId ? `Resource.${mimeExt(selectedResource.mimeType)}` : false}>
-					Download
-				</Button>
 			</TopBar>
-			{gviewMimeTypes.includes(selectedResource?.mimeType) ? (
-				<ResourceViewer frameUrl={gviewUrl} />
-			) : selectedResource.mimeType?.includes("image") ? (
-				<div className="bg-zinc-100 rounded-md overflow-scroll w-full p-4">
-					<img className="flex-1 w-full" src={presignedFileUrl} alt={selectedResource.name} />
-				</div>
-			) : (
-				<div className="bg-zinc-100 rounded-md overflow-scroll w-full min-h-screen">
-					<iframe className="w-full min-h-screen" src={presignedFileUrl.replace("http://", "https://")} />
-				</div>
-			)}
+			<ResourceViewer resourceId={selectedResource.id} />
 		</>
 	);
 }

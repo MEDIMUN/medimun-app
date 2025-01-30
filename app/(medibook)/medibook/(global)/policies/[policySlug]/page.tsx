@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SearchParamsButton, TopBar } from "../../../client-components";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export async function generateMetadata(props: { params: Promise<{ policySlug: string }> }) {
 	const params = await props.params;
@@ -40,7 +41,9 @@ export default async function Page(props) {
 					</>
 				)}
 			</TopBar>
-			<MDXRemote components={{ h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={selectedPolicy.markdown} />
+			<MainWrapper>
+				<MDXRemote components={{ h1, h2, h3, h4, h5, h6, p, a, hr, li, ol, ul }} source={selectedPolicy.markdown} />
+			</MainWrapper>
 		</>
 	);
 }

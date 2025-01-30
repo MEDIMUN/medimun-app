@@ -6,6 +6,7 @@ import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { FinalAssignDelegates } from "./client-components";
 import { romanize } from "@/lib/romanize";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export function sortProposal(proposal, committees) {
 	return proposal
@@ -86,10 +87,12 @@ export default async function Page(props) {
 				buttonHref={`/medibook/sessions/${selectedSession.number}/applications`}>
 				<SearchParamsButton searchParams={{ "add-delegation-proposal": true }}>Add Proposal</SearchParamsButton>
 			</TopBar>
-			{!!delegateProposals.length && (
-				<FinalAssignDelegates selectedSession={selectedSession} users={allUsers} delegateProposalsInitial={parsedDelegateProposals} />
-			)}
-			<Paginator totalItems={totalItems} itemsPerPage={10} itemsOnPage={delegateProposals.length} />
+			<MainWrapper>
+				{!!delegateProposals.length && (
+					<FinalAssignDelegates selectedSession={selectedSession} users={allUsers} delegateProposalsInitial={parsedDelegateProposals} />
+				)}
+				<Paginator totalItems={totalItems} itemsPerPage={10} itemsOnPage={delegateProposals.length} />
+			</MainWrapper>
 		</>
 	);
 }

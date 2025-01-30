@@ -13,6 +13,7 @@ import { Fragment } from "react";
 import { romanize } from "@/lib/romanize";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { Ellipsis } from "lucide-react";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const itemsPerPage = 10;
 
@@ -91,85 +92,87 @@ export default async function Page(props) {
 				defaultSort="nameasc"
 				searchText="Search schools..."
 			/>
-			{!!numberOfSchools && (
-				<Table className="showscrollbar">
-					<TableHead>
-						<TableRow>
-							{rows.map((row, i) => (
-								<TableHeader key={i}>{row}</TableHeader>
-							))}
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{schools.map((school, index) => {
-							const directors = school.director.map((director, index) => (
-								<Fragment key={index}>
-									<Link className="text-primary hover:underline" href={`/medibook/users/${director.user.username || director.user.id}`}>
-										{director.user.displayName || `${director.user.officialName} ${director.user.officialSurname}`}
-									</Link>
-									<span>{index < school.director.length - 1 ? ", " : ""}</span>
-								</Fragment>
-							));
-							return (
-								<TableRow href={!school.director.length ? `/medibook/schools/${school.slug || school.id}` : null} key={school.id}>
-									<TableCell>
-										<Dropdown>
-											<DropdownButton plain>
-												<Ellipsis width={18} />
-											</DropdownButton>
-											<DropdownMenu anchor="right">
-												<DropdownItem href={`/medibook/schools/${school.slug || school.id}`}>View School</DropdownItem>
-											</DropdownMenu>
-										</Dropdown>
-									</TableCell>
-									<TableCell>{school.name}</TableCell>
-									<TableCell>{directors}</TableCell>
-									<TableCell>
-										{(() => {
-											if (school.ApplicationGrantedDelegationCountries.length) return <Badge color="green">Approved</Badge>;
-											if (school.ApplicationDelegationPreferences.length)
-												return (
-													<Badge color="yellow">
-														Received {school.ApplicationDelegationPreferences[0].date.toLocaleString("en-GB").slice(0, 17)}
-													</Badge>
-												);
-											return <Badge color="red">Not Received</Badge>;
-										})()}
-									</TableCell>
-									<TableCell>
-										{(() => {
-											if (school.finalDelegation.length) {
-												const numberOfDelegates = school.finalDelegation[0].delegation.match(new RegExp("committeeId", "g")).length;
-												return <Badge color="green">Approved ({numberOfDelegates} Delegates)</Badge>;
-											}
-											if (school.SchoolDelegationProposal.length) {
-												const selectedDelegation = school.SchoolDelegationProposal[0].changes
-													? school.SchoolDelegationProposal[0].changes
-													: school.SchoolDelegationProposal[0].assignment;
-												const numberOfDelegates = selectedDelegation.match(new RegExp("committeeId", "g")).length;
-												return (
-													<Badge color={school.SchoolDelegationProposal[0].changes ? "blue" : "yellow"}>
-														Received {school.SchoolDelegationProposal[0].date.toLocaleString("en-GB").slice(0, 17)}
-														{school.SchoolDelegationProposal[0].changes && " & Modified"} ({numberOfDelegates} Delegates)
-													</Badge>
-												);
-											}
-											return <Badge color="red">Not Received</Badge>;
-										})()}
-									</TableCell>
-									<TableCell>
-										{(() => {
-											if (school.finalDelegation.length) return <Badge color="green">Invoice Generated</Badge>;
-											return <Badge color="red">Not Made</Badge>;
-										})()}
-									</TableCell>
-								</TableRow>
-							);
-						})}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator itemsOnPage={schools.length} itemsPerPage={itemsPerPage} totalItems={numberOfSchools} />
+			<MainWrapper>
+				{!!numberOfSchools && (
+					<Table className="showscrollbar">
+						<TableHead>
+							<TableRow>
+								{rows.map((row, i) => (
+									<TableHeader key={i}>{row}</TableHeader>
+								))}
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{schools.map((school, index) => {
+								const directors = school.director.map((director, index) => (
+									<Fragment key={index}>
+										<Link className="text-primary hover:underline" href={`/medibook/users/${director.user.username || director.user.id}`}>
+											{director.user.displayName || `${director.user.officialName} ${director.user.officialSurname}`}
+										</Link>
+										<span>{index < school.director.length - 1 ? ", " : ""}</span>
+									</Fragment>
+								));
+								return (
+									<TableRow href={!school.director.length ? `/medibook/schools/${school.slug || school.id}` : null} key={school.id}>
+										<TableCell>
+											<Dropdown>
+												<DropdownButton plain>
+													<Ellipsis width={18} />
+												</DropdownButton>
+												<DropdownMenu anchor="right">
+													<DropdownItem href={`/medibook/schools/${school.slug || school.id}`}>View School</DropdownItem>
+												</DropdownMenu>
+											</Dropdown>
+										</TableCell>
+										<TableCell>{school.name}</TableCell>
+										<TableCell>{directors}</TableCell>
+										<TableCell>
+											{(() => {
+												if (school.ApplicationGrantedDelegationCountries.length) return <Badge color="green">Approved</Badge>;
+												if (school.ApplicationDelegationPreferences.length)
+													return (
+														<Badge color="yellow">
+															Received {school.ApplicationDelegationPreferences[0].date.toLocaleString("en-GB").slice(0, 17)}
+														</Badge>
+													);
+												return <Badge color="red">Not Received</Badge>;
+											})()}
+										</TableCell>
+										<TableCell>
+											{(() => {
+												if (school.finalDelegation.length) {
+													const numberOfDelegates = school.finalDelegation[0].delegation.match(new RegExp("committeeId", "g")).length;
+													return <Badge color="green">Approved ({numberOfDelegates} Delegates)</Badge>;
+												}
+												if (school.SchoolDelegationProposal.length) {
+													const selectedDelegation = school.SchoolDelegationProposal[0].changes
+														? school.SchoolDelegationProposal[0].changes
+														: school.SchoolDelegationProposal[0].assignment;
+													const numberOfDelegates = selectedDelegation.match(new RegExp("committeeId", "g")).length;
+													return (
+														<Badge color={school.SchoolDelegationProposal[0].changes ? "blue" : "yellow"}>
+															Received {school.SchoolDelegationProposal[0].date.toLocaleString("en-GB").slice(0, 17)}
+															{school.SchoolDelegationProposal[0].changes && " & Modified"} ({numberOfDelegates} Delegates)
+														</Badge>
+													);
+												}
+												return <Badge color="red">Not Received</Badge>;
+											})()}
+										</TableCell>
+										<TableCell>
+											{(() => {
+												if (school.finalDelegation.length) return <Badge color="green">Invoice Generated</Badge>;
+												return <Badge color="red">Not Made</Badge>;
+											})()}
+										</TableCell>
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator itemsOnPage={schools.length} itemsPerPage={itemsPerPage} totalItems={numberOfSchools} />
+			</MainWrapper>
 		</>
 	);
 }

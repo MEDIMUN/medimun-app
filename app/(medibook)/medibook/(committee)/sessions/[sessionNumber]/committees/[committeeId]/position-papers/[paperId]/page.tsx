@@ -3,17 +3,16 @@ import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
-import { minio } from "@/minio/client";
 import { Button } from "@/components/button";
 import { cn } from "@/lib/cn";
 import { Text } from "@/components/text";
-import mimeExt from "mime-ext";
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from "@/components/description-list";
 import { countries } from "@/data/countries";
 import { Badge } from "@/components/badge";
 import { statusMap } from "../page";
-import { ViewPositionPaperFrame } from "../client-components";
 import Link from "next/link";
+import { MainWrapper } from "@/components/main-wrapper";
+import { ResourceViewer } from "@/components/resource-viewer";
 
 export default async function ViewPositionPaper(props) {
 	const authSession = await auth();
@@ -86,41 +85,6 @@ export default async function ViewPositionPaper(props) {
 	const fullName =
 		selectedPositionPaper.user.displayName || `${selectedPositionPaper.user.officialName} ${selectedPositionPaper.user.officialSurname}`;
 
-	let frameUrl = "";
-
-	const selectedResource = selectedPositionPaper.resource;
-
-	if (!selectedResource) notFound();
-
-	if (selectedResource.driveUrl) {
-		frameUrl = `https://${selectedResource.driveUrl}`;
-	}
-
-	let presignedUrl = "";
-
-	if (selectedResource.fileId) {
-		const minioClient = minio();
-		presignedUrl = await minioClient.presignedGetObject(process.env.BUCKETNAME, `resources/${selectedResource.fileId}`, 30 * 60);
-
-		const mimeTypesGoogleDocsCanOpen = [
-			"application/vnd.google-apps.document",
-			"application/vnd.google-apps.spreadsheet",
-			"application/vnd.google-apps.presentation",
-			"application/vnd.google-apps.drawing",
-			"application/vnd.google-apps.script",
-			"application/pdf",
-			"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-			"application/msword",
-		];
-
-		//word document
-		if (mimeTypesGoogleDocsCanOpen.includes(selectedResource.mimeType)) {
-			presignedUrl = presignedUrl.replace("http://", "https://");
-			presignedUrl = encodeURIComponent(presignedUrl);
-			frameUrl = `https://docs.google.com/gview?embedded=true&url=${presignedUrl}`;
-		}
-	}
-
 	const allCountries = countries.concat(selectedCommittee.ExtraCountry || []);
 
 	const selectedCountry = allCountries.find((country) => country.countryCode === selectedPositionPaper.user.delegate[0].country);
@@ -141,65 +105,44 @@ export default async function ViewPositionPaper(props) {
 				{selectedPositionPaper.status == "PENDING" && (isChairOfCommittee || isManagement) && (
 					<SearchParamsButton searchParams={{ "return-position-paper": selectedPositionPaper.id }}>Return</SearchParamsButton>
 				)}
-				<SearchParamsButton searchParams={{ full: "true" }}>Full Screen</SearchParamsButton>
-				<Button
-					href={selectedResource ? decodeURIComponent(presignedUrl.replace("http://", "https://")) : frameUrl}
-					target="_blank"
-					download={selectedResource ? `PositionPaper.${mimeExt(selectedResource.mimeType)[0]}` : false}>
-					Download
-				</Button>
 			</TopBar>
-			<div>
-				<DescriptionList>
-					<DescriptionTerm>Submitter</DescriptionTerm>
-					<DescriptionDetails>{selectedCountry?.countryNameEn}</DescriptionDetails>
+			<MainWrapper>
+				<div>
+					<DescriptionList>
+						<DescriptionTerm>Submitter</DescriptionTerm>
+						<DescriptionDetails>{selectedCountry?.countryNameEn}</DescriptionDetails>
 
-					<DescriptionTerm>Delegate</DescriptionTerm>
-					<DescriptionDetails>
-						<Link
-							href={`/medibook/users/${selectedPositionPaper.user.username || selectedPositionPaper.user.id}`}
-							className="text-blue-600 hover:underline">
-							{fullName}
-						</Link>
-					</DescriptionDetails>
-					{(isSubmitterOfPositionPaper || isManagement || isChairOfCommittee) && (
-						<>
-							<DescriptionTerm>Submitted</DescriptionTerm>
-							<DescriptionDetails>{selectedPositionPaper.createdAt.toLocaleString("en-GB").replace(", ", " at ") || "-"}</DescriptionDetails>
+						<DescriptionTerm>Delegate</DescriptionTerm>
+						<DescriptionDetails>
+							<Link
+								href={`/medibook/users/${selectedPositionPaper.user.username || selectedPositionPaper.user.id}`}
+								className="text-blue-600 hover:underline">
+								{fullName}
+							</Link>
+						</DescriptionDetails>
+						{(isSubmitterOfPositionPaper || isManagement || isChairOfCommittee) && (
+							<>
+								<DescriptionTerm>Submitted</DescriptionTerm>
+								<DescriptionDetails>{selectedPositionPaper.createdAt.toLocaleString("en-GB").replace(", ", " at ") || "-"}</DescriptionDetails>
 
-							<DescriptionTerm>Status</DescriptionTerm>
-							<DescriptionDetails>
-								<Badge color={statusMap[selectedPositionPaper.status].color}>{statusMap[selectedPositionPaper.status].name.split(" &")[0]}</Badge>
-							</DescriptionDetails>
+								<DescriptionTerm>Status</DescriptionTerm>
+								<DescriptionDetails>
+									<Badge color={statusMap[selectedPositionPaper.status].color}>{statusMap[selectedPositionPaper.status].name.split(" &")[0]}</Badge>
+								</DescriptionDetails>
 
-							<DescriptionTerm>Returned</DescriptionTerm>
-							<DescriptionDetails>
-								{selectedPositionPaper.returnTime ? selectedPositionPaper.returnTime.toLocaleString("en-GB").replace(", ", " at ") : "-"}
-							</DescriptionDetails>
-							<DescriptionTerm>Chair Comments</DescriptionTerm>
-							<DescriptionDetails>{selectedPositionPaper.chairComment || "-"}</DescriptionDetails>
-						</>
-					)}
-				</DescriptionList>
-			</div>
-			<ViewPositionPaperFrame frameUrl={frameUrl} />
-			{seachParams.full == "true" && (
-				<div className={cn("bg-zinc-200 rounded-md w-full h-full fixed top-0 left-0 right-0 bottom-0 z-[2000]", seachParams.full == "true")}>
-					<div className="w-full h-16 p-4 flex">
-						<Text className="my-auto">
-							Viewing the position paper of {fullName} {selectedCountry && `-`} {selectedCountry?.countryNameEn}
-						</Text>
-						<SearchParamsButton
-							deleteSearchParams={{
-								full: "true",
-							}}
-							className="ml-auto">
-							Close
-						</SearchParamsButton>
-					</div>
-					<iframe className="h-full" src={frameUrl} width="100%" height="100%" />
+								<DescriptionTerm>Returned</DescriptionTerm>
+								<DescriptionDetails>
+									{selectedPositionPaper.returnTime ? selectedPositionPaper.returnTime.toLocaleString("en-GB").replace(", ", " at ") : "-"}
+								</DescriptionDetails>
+								<DescriptionTerm>Chair Comments</DescriptionTerm>
+								<DescriptionDetails>{selectedPositionPaper.chairComment || "-"}</DescriptionDetails>
+							</>
+						)}
+					</DescriptionList>
 				</div>
-			)}
+
+				<ResourceViewer resourceId={selectedPositionPaper.resourceId} />
+			</MainWrapper>
 		</>
 	);
 }
