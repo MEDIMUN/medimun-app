@@ -109,7 +109,7 @@ export default function MainTemplate(props) {
 								</Row>
 							</Section>
 						</Section>
-						<Hr className="my-[16px] border-t-2 bg-zinc-100" />
+						<Hr className="my-[16px] max-w-[600px] mx-auto border-t-2 bg-zinc-100" />
 					</>
 				)}
 				<Section className="rounded-t-lg max-w-[600px] mx-auto bg-zinc-100 p-[40px]">
