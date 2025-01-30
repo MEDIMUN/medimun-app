@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { minio } from "@/minio/client";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { connection, NextResponse } from "next/server";
 
 export async function GET(request, props) {
+	await connection()
 	const selectedResource = await prisma.resource.findFirst({ where: { id: params.resourceId } }).catch(notFound);
 
 	const minioClient = minio();
