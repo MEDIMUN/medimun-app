@@ -6,6 +6,7 @@ import { connection, NextResponse } from "next/server";
 
 export async function GET(request, props) {
 	await connection()
+	const params = await props.params;
 	const selectedResource = await prisma.resource.findFirst({ where: { id: params.resourceId } }).catch(notFound);
 
 	const minioClient = minio();
