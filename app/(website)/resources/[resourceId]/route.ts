@@ -5,9 +5,6 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
 export async function GET(request, props) {
-	const params = await props.params;
-	const authSession = await auth();
-	if (!authSession) notFound();
 	const selectedResource = await prisma.resource.findFirst({ where: { id: params.resourceId } }).catch(notFound);
 
 	const minioClient = minio();
