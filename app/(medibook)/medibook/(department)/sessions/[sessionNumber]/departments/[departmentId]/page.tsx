@@ -62,12 +62,12 @@ export default async function Page(props) {
 				buttonText={`Session ${romanize(params.sessionNumber)} Departments`}
 				hideSearchBar
 			/>
-			<div className="flex h-[200px] w-full overflow-hidden bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right shadow-md md:h-[328px]">
-				<div className="mt-auto p-5">
-					<p className="font-[canela] text-2xl text-primary md:text-4xl">{selectedDepartment.name}</p>
-				</div>
-			</div>
 			<MainWrapper>
+				<div className="flex h-[200px] ring-1 ring-gray-200 dark:bg-ring-gray-800 w-full rounded-xl overflow-hidden bg-[url(/assets/medibook-session-welcome.webp)] bg-cover bg-right md:h-[328px]">
+					<div className="mt-auto p-5">
+						<p className="font-[canela] text-2xl text-primary md:text-4xl">{selectedDepartment.name}</p>
+					</div>
+				</div>
 				<ActionList actions={actions} />
 			</MainWrapper>
 		</>
