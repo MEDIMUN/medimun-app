@@ -1,7 +1,6 @@
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { minio } from "@/minio/client";
-import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { connection, NextResponse } from "next/server";
 
