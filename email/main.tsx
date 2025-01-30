@@ -46,13 +46,13 @@ export default function MainTemplate(props) {
 						</Column>
 					</Row>
 				</Section>
-				<Hr className="my-[16px] border-t-2 bg-zinc-100" />
+				<Hr className="my-[16px] max-w-[600px] mx-auto border-t-2 bg-zinc-100" />
 				{props.title && (
 					<>
-						<Section className="rounded-lg bg-zinc-100 px-[40px]">
+						<Section className="rounded-lg max-w-[600px] mx-auto bg-zinc-100 px-[40px]">
 							<Heading className="!font-extralight">{props.title}</Heading>
 						</Section>
-						<Hr className="my-[16px] border-t-2 bg-zinc-100" />
+						<Hr className="my-[16px] max-w-[600px] mx-auto border-t-2 bg-zinc-100" />
 					</>
 				)}
 				<Section className="rounded-lg max-w-[600px] mx-auto bg-zinc-100 px-[40px] py-[16px] font-extralight">{props.children}</Section>
