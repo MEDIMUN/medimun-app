@@ -36,7 +36,7 @@ export default async function Page(props) {
 
 	const orderBy = searchParams.order || "officialName";
 	const orderDirection = parseOrderDirection(searchParams.direction);
-	const selectedSession = await prisma.session.findFirst({ where: { number: params.sessionNumber } }).catch(notFound);
+	const selectedSession = await prisma.session.findFirstOrThrow({ where: { number: params.sessionNumber } }).catch(notFound);
 
 	const queryObject = {
 		AND: [

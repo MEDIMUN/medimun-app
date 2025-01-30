@@ -106,7 +106,7 @@ export default async function Page(props) {
 	const numberOfDelegates = selectedSession?.committee?.reduce((acc, curr) => acc + curr._count.delegate, 0);
 	const roundedNumberOfDelegates = Math.ceil(numberOfDelegates / 50) * 50;
 
-	const numberOfMembers = selectedSession.department.reduce((acc, curr) => acc + curr._count.member, 0);
+	const numberOfMembers = selectedSession?.department?.reduce((acc, curr) => acc + curr._count.member, 0);
 	const roundedNumberOfMembers = Math.ceil(numberOfMembers / 5) * 5;
 
 	const statsArray = [
