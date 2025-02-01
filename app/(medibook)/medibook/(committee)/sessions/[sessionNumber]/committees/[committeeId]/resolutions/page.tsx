@@ -3,8 +3,10 @@ import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 export default async function Page(props) {
+	await connection();
 	const params = await props.params;
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
