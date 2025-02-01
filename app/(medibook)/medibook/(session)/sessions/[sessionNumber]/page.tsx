@@ -112,7 +112,7 @@ export default async function Page(props) {
 	const statsArray = [
 		{
 			title: "Committees",
-			data: selectedSession._count.committee,
+			data: selectedSession?.committee?.length,
 		},
 		{
 			title: "Delegates",
