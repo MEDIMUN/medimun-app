@@ -6,6 +6,7 @@ import { LayoutGroup, motion } from "framer-motion";
 import React, { Fragment, forwardRef, useId } from "react";
 import { TouchTarget } from "./button";
 import Link from "next/link";
+import { FastLink } from "./fast-link";
 
 export function Sidebar({ className, ...props }: React.ComponentPropsWithoutRef<"nav">) {
 	return <nav {...props} className={clsx(className, "flex h-full min-h-0 flex-col")} />;
@@ -100,9 +101,9 @@ export const SidebarItem = forwardRef(function SidebarItem(
 			{current && <motion.span layoutId="current-indicator" className="absolute inset-y-2 -left-4 w-0.5 rounded-full bg-zinc-950 dark:bg-white" />}
 			{"href" in props ? (
 				<Headless.CloseButton as={Fragment} ref={ref}>
-					<Link className={classes} {...props} data-current={current ? "true" : undefined}>
+					<FastLink className={classes} {...props} data-current={current ? "true" : undefined}>
 						<TouchTarget>{children}</TouchTarget>
-					</Link>
+					</FastLink>
 				</Headless.CloseButton>
 			) : (
 				<Headless.Button {...props} className={clsx("cursor-default", classes)} data-current={current ? "true" : undefined} ref={ref}>
