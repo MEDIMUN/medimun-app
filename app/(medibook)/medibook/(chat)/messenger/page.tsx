@@ -1,10 +1,24 @@
+import { Suspense } from "react";
 import InboxesPage from "../inbox-page";
+import { connection } from "next/server";
 //FIXME:
-export default function Messaging() {
+
+export default function Page() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<Messaging />
+		</Suspense>
+	);
+}
+
+export async function Messaging() {
+	await connection();
 	return (
 		<>
 			<div className="md:hidden w-full block">
-				<InboxesPage />
+				<Suspense fallback={<div>Loading...</div>}>
+					<InboxesPage />
+				</Suspense>
 			</div>
 			<div className="w-full hidden md:flex bg-zinc-100 dark:bg-zinc-900 p-6 h-full">
 				<div className="text-center mx-auto flex flex-col my-auto">

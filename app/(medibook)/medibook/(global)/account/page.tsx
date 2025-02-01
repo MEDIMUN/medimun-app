@@ -20,6 +20,8 @@ import { Select } from "@/components/select";
 import { TopBar } from "../../client-components";
 import { CircleCheck, X } from "lucide-react";
 import { MainWrapper } from "@/components/main-wrapper";
+import { Suspense } from "react";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
 	title: "User Settings",
@@ -33,7 +35,17 @@ const genders = [
 	{ label: "Prefer not to Answer", value: "PREFERNOTTOANSWER" },
 ];
 
-export default async function Settings(props) {
+export default async function Page(props) {
+	await connection();
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<Settings {...props} />
+		</Suspense>
+	);
+}
+
+export async function Settings(props) {
+	await connection();
 	const searchParams = await props.searchParams;
 	const authSession = await auth();
 	const selectedUser = await prisma.user

@@ -1,4 +1,4 @@
-import { AnnouncementViewPage } from "@/app/(medibook)/medibook/server-components";
+import { AnnouncementViewPage } from "@/global-pages/announcements/announcement-page";
 
 export default async function Page(props) {
 	const searchParams = await props.searchParams;

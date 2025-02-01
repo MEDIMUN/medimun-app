@@ -2,9 +2,9 @@ import { authorize, authorizePerSession, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { parseOrderDirection } from "@/lib/order-direction";
 import prisma from "@/prisma/client";
-import { AnnouncementsTable } from "@/app/(medibook)/medibook/server-components";
 import { notFound } from "next/navigation";
 import { romanize } from "@/lib/romanize";
+import { AnnouncementsTable } from "@/global-pages/announcements/announcements-table";
 
 const itemsPerPage = 10;
 

@@ -10,8 +10,10 @@ import { processMarkdownPreview } from "@/lib/text";
 import Paginator from "@/components/pagination";
 import { Ellipsis } from "lucide-react";
 import { MainWrapper } from "@/components/main-wrapper";
+import { connection } from "next/server";
 
 export default async function Page(props) {
+	await connection();
 	const params = await props.params;
 	const authSession = await auth();
 	if (!authSession) notFound();

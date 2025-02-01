@@ -1,12 +1,23 @@
 import { authorize, authorizePerRole, authorizePerSession, s } from "@/lib/authorize";
-import { AnnouncementsTable } from "../../server-components";
 import { auth } from "@/auth";
 import { parseOrderDirection } from "@/lib/order-direction";
 import prisma from "@/prisma/client";
+import { AnnouncementsTable } from "@/global-pages/announcements/announcements-table";
+import { Suspense } from "react";
+import { connection } from "next/server";
 
 const itemsPerPage = 10;
 
-export default async function AnnouncementsPage(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<Announcements {...props} />
+		</Suspense>
+	);
+}
+
+export async function Announcements(props) {
+	await connection();
 	const params = await props.params;
 	const searchParams = await props.searchParams;
 	const currentPage = Number(searchParams.page) || 1;

@@ -9,6 +9,7 @@ import { unstable_cacheLife as cacheLife } from "next/cache";
 import { Suspense } from "react";
 import { LoadingTable } from "@/app/components/loading-table";
 import { MainWrapper } from "@/components/main-wrapper";
+import { connection } from "next/server";
 
 const itemsPerPage = 10;
 
@@ -20,6 +21,7 @@ const sortOptions = [
 ];
 
 export async function TableOfContents({ props }) {
+	await connection();
 	const authSession = await auth();
 	const searchParams = await props.searchParams;
 	const params = await props.params;
@@ -56,7 +58,7 @@ export async function TableOfContents({ props }) {
 	);
 }
 
-export default async function Page(props) {
+export default function Page(props) {
 	return (
 		<>
 			<TopBar sortOptions={sortOptions} buttonHref="/medibook" buttonText="Home" defaultSort="timedesc" title="Personal Files">

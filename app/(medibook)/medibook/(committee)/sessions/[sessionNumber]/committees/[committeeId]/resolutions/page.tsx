@@ -4,8 +4,15 @@ import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, s } fro
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import { Suspense } from "react";
 
-export default async function Page(props) {
+export default function Page(props) {
+	<Suspense fallback={<div>Loading...</div>}>
+		<CommitteeResolutions {...props} />
+	</Suspense>;
+}
+
+export async function CommitteeResolutions(props) {
 	await connection();
 	const params = await props.params;
 	const authSession = await auth();

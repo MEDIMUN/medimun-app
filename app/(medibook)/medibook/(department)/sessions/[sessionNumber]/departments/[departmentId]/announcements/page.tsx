@@ -2,10 +2,12 @@ import { authorize, authorizeManagerDepartment, authorizeMemberDepartment, autho
 import { auth } from "@/auth";
 import { parseOrderDirection } from "@/lib/order-direction";
 import prisma from "@/prisma/client";
-import { AnnouncementsTable } from "@/app/(medibook)/medibook/server-components";
 import { notFound } from "next/navigation";
+import { AnnouncementsTable } from "@/global-pages/announcements/announcements-table";
+import { connection } from "next/server";
 
 export default async function AnnouncementsPage(props) {
+	await connection();
 	const params = await props.params;
 	const searchParams = await props.searchParams;
 	const currentPage = Number(searchParams.page) || 1;

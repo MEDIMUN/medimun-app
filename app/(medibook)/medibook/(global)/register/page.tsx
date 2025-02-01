@@ -10,8 +10,17 @@ import { Text } from "@/components/text";
 import { ActionList } from "@/app/components/actions-list";
 import { MainWrapper } from "@/components/main-wrapper";
 import { connection } from "next/server";
+import { Suspense } from "react";
 
-export default async function RegistrationPage(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<TopBar title="Morning Registration" buttonText="Home" buttonHref="/medibook" hideSearchBar hideBackdrop />}>
+			<Registration {...props} />
+		</Suspense>
+	);
+}
+
+export async function Registration(props) {
 	await connection();
 	const authSession = await auth();
 	if (!authSession) notFound();

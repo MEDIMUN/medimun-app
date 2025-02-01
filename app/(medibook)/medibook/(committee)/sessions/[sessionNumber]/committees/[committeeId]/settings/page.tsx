@@ -1,4 +1,4 @@
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { TopBar } from "@/components/top-bar";
 import { Badge } from "@/components/badge";
 import prisma from "@/prisma/client";
 import { CommitteeSettingsForm } from "./client-components";

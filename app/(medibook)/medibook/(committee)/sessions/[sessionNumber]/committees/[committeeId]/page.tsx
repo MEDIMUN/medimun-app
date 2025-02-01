@@ -1,4 +1,4 @@
-import { SearchParamsButton, TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsButton, UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { MainWrapper } from "@/components/main-wrapper";
 import { ActionList } from "@/app/components/actions-list";
 import { auth } from "@/auth";
@@ -7,9 +7,21 @@ import { romanize } from "@/lib/romanize";
 import { displayNumberInSentenceAsText } from "@/lib/text";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
+import { TopBar } from "@/components/top-bar";
+import { Suspense } from "react";
 
 export default async function Page(props) {
-	const searchParams = await props.searchParams;
+	await connection();
+	return (
+		<Suspense fallback={<TopBar title="Committee" />}>
+			<CommitteePage {...props} />
+		</Suspense>
+	);
+}
+
+export async function CommitteePage(props) {
+	await connection();
 	const params = await props.params;
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);

@@ -10,6 +10,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Paginator from "@/components/pagination";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { MainWrapper } from "@/components/main-wrapper";
+import { Suspense } from "react";
+import { connection } from "next/server";
 
 const locationsPerPage = 10;
 
@@ -35,7 +37,16 @@ const sortOptions = [
 	{ value: "country", order: "desc", label: "Country" },
 ];
 
-export default async function Page(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<TopBar title="Locations" buttonText={`Home`} buttonHref={`/medibook`}></TopBar>}>
+			<Locations {...props} />
+		</Suspense>
+	);
+}
+
+export async function Locations(props) {
+	await connection();
 	const searchParams = await props.searchParams;
 	const currentPage = parseInt(searchParams.page) || 1;
 	const query = searchParams.search || "";

@@ -1,4 +1,4 @@
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { TopBar } from "@/components/top-bar";
 import { ActionList } from "@/app/components/actions-list";
 import { auth } from "@/auth";
 import { MainWrapper } from "@/components/main-wrapper";

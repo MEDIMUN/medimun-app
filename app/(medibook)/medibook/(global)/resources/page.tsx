@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import { LoadingTable } from "@/app/components/loading-table";
 import { notFound } from "next/navigation";
 import { MainWrapper } from "@/components/main-wrapper";
+import { connection } from "next/server";
 
 const itemsPerPage = 10;
 
@@ -19,7 +20,7 @@ const sortOptions = [
 	{ value: "time", order: "desc", label: "Date Uploaded" },
 ];
 
-export default async function Page(props) {
+export default function Page(props) {
 	return (
 		<>
 			<TopBar buttonHref="/medibook" buttonText="Home" sortOptions={sortOptions} defaultSort="timedesc" title="Global Resources">
@@ -45,6 +46,7 @@ export async function UploadButton() {
 }
 
 export async function TableOfContents({ props }) {
+	await connection();
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 	const currentPage = Number(searchParams.page) || 1;

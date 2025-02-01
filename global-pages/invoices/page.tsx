@@ -10,10 +10,12 @@ import { MainWrapper } from "@/components/main-wrapper";
 import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 import { InvoiceDownloadButton, ReceiptDownloadButton } from "@/global-pages/invoices/client-components";
+import { connection } from "next/server";
 
 const PdfDownloadButton = dynamic(() => import("@/global-pages/invoices/client-components").then((mod) => mod.PdfDownloadButton));
 
 export default async function InvoicesPage({ topbarProps, invoices, totalItems, hiddenColumns = [] }) {
+	await connection();
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
 	return (

@@ -8,8 +8,17 @@ import { romanize } from "@/lib/romanize";
 import { cn } from "@/lib/utils";
 import prisma from "@/prisma/client";
 import { Ellipsis } from "lucide-react";
+import { Suspense } from "react";
 
-export default async function SpecificDaySchedulePage(props) {
+export default function Page(number) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<SpecificDaySchedule {...number} />
+		</Suspense>
+	);
+}
+
+export async function SpecificDaySchedule(props) {
 	const dayName = (await props?.params)?.dayName;
 	const sessionNumber = (await props?.params)?.sessionNumber;
 	const authSession = await auth();

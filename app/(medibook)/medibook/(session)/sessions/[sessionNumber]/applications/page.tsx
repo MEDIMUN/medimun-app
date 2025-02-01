@@ -1,4 +1,4 @@
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { TopBar } from "@/components/top-bar";
 import { cn } from "@/lib/cn";
 import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";

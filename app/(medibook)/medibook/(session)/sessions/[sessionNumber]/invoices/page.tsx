@@ -4,8 +4,19 @@ import InvoicesPage from "@/global-pages/invoices/page";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import { romanize } from "@/lib/romanize";
+import { Suspense } from "react";
+import { TopBar } from "@/components/top-bar";
+import { connection } from "next/server";
 
-export default async function SchoolInvoicesPage({ params, searchParams }) {
+export default async function Page({ params, searchParams }) {
+	return (
+		<Suspense fallback={<TopBar title="Session Invoices" buttonText={`Sessions`} buttonHref={`/medibook/sessions/`}></TopBar>}>
+			<SchoolInvoicesPage params={params} searchParams={searchParams} />
+		</Suspense>
+	);
+}
+export async function SchoolInvoicesPage({ params, searchParams }) {
+	await connection();
 	const { sessionNumber } = await params;
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);

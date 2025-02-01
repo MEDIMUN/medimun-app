@@ -1,12 +1,25 @@
 import prisma from "@/prisma/client";
 import { DateSelector, RollCallTable } from "./client-components";
 import { notFound, redirect } from "next/navigation";
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { TopBar } from "@/components/top-bar";
 import { auth } from "@/auth";
 import { authorize, authorizeChairCommittee, s } from "@/lib/authorize";
 import { MainWrapper } from "@/components/main-wrapper";
+import { unstable_cacheLife as cacheLife } from "next/cache";
+import { connection } from "next/server";
+import { Suspense } from "react";
 
 export default async function Page(props) {
+	await connection();
+	return (
+		<Suspense fallback={<TopBar title="Committee Roll Calls" />}>
+			<RollCallsPage {...props} />
+		</Suspense>
+	);
+}
+
+export async function RollCallsPage(props) {
+	await connection();
 	const searchParams = await props?.searchParams;
 	const params = await props?.params;
 	const sessionNumber = params.sessionNumber;

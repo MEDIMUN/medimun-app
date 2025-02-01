@@ -1,14 +1,25 @@
 import { notFound } from "next/navigation";
 import prisma from "@/prisma/client";
 import { SettingsForm } from "./client-components";
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { TopBar } from "@/components/top-bar";
 import { romanize } from "@/lib/romanize";
 import { auth } from "@/auth";
 import { authorize, s } from "@/lib/authorize";
 import { Badge } from "@/components/badge";
 import { MainWrapper } from "@/components/main-wrapper";
+import { Suspense } from "react";
+import { connection } from "next/server";
 
-export default async function Page(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<Settings {...props} />
+		</Suspense>
+	);
+}
+
+export async function Settings(props) {
+	await connection();
 	const params = await props.params;
 	const authSession = await auth();
 

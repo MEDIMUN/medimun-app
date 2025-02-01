@@ -5,8 +5,17 @@ import { notFound } from "next/navigation";
 import { MessageSidebar } from "./client-components";
 import { TriangleAlert } from "lucide-react";
 import { connection } from "next/server";
+import { Suspense } from "react";
 
-export default async function InboxesPage({ children, searchParams }) {
+export default function InboxPage(props) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<Inboxes {...props} />
+		</Suspense>
+	);
+}
+
+export async function Inboxes({ children, searchParams }) {
 	await connection();
 	const authSession = await auth();
 

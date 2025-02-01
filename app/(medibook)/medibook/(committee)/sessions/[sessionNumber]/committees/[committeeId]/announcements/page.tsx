@@ -1,13 +1,22 @@
 import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, authorizePerSession, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import prisma from "@/prisma/client";
-import { AnnouncementsTable } from "@/app/(medibook)/medibook/server-components";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import { AnnouncementsTable } from "@/global-pages/announcements/announcements-table";
+import { Suspense } from "react";
 
 const itemsPerPage = 10;
 
-export default async function AnnouncementsPage(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<AnnouncementsPage {...props} />
+		</Suspense>
+	);
+}
+
+export async function AnnouncementsPage(props) {
 	await connection();
 	const params = await props.params;
 	const searchParams = await props.searchParams;

@@ -4,8 +4,18 @@ import InvoicesPage from "@/global-pages/invoices/page";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import { Suspense } from "react";
+import { TopBar } from "@/components/top-bar";
 
-export default async function SchoolInvoicesPage({ params, searchParams }) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<TopBar title="Individual Invoices" buttonText={`Home`} buttonHref={`/medibook`}></TopBar>}>
+			<SchoolInvoicesPage {...props} />
+		</Suspense>
+	);
+}
+
+export async function SchoolInvoicesPage({ params, searchParams }) {
 	await connection();
 	const authSession = await auth();
 	const { page } = await searchParams;

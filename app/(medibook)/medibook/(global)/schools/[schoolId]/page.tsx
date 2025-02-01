@@ -11,8 +11,10 @@ import { EditDeleteSchoolButtons } from "../client-components";
 import { TopBar } from "../../../client-components";
 import { SchoolSessionActionsList } from "./client-components";
 import { MainWrapper } from "@/components/main-wrapper";
+import { connection } from "next/server";
 
 export default async function Page(props: { params: Promise<any> }) {
+	await connection();
 	const params = await props.params;
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);

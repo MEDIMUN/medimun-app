@@ -11,8 +11,17 @@ import { authorize, s } from "@/lib/authorize";
 import { Badge } from "@/components/badge";
 import { Ellipsis } from "lucide-react";
 import { MainWrapper } from "@/components/main-wrapper";
+import { Suspense } from "react";
 
 export default async function Page(props) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<RollCallsPage {...props} />
+		</Suspense>
+	);
+}
+
+export async function RollCallsPage(props) {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 	const authSession = await auth();

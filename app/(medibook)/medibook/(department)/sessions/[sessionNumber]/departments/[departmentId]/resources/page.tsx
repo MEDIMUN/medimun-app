@@ -8,6 +8,7 @@ import Paginator from "@/components/pagination";
 import { notFound } from "next/navigation";
 import { ResourcePrivacyTypes } from "@prisma/client";
 import { MainWrapper } from "@/components/main-wrapper";
+import { Suspense } from "react";
 
 const itemsPerPage = 10;
 
@@ -18,7 +19,15 @@ const sortOptions = [
 	{ value: "time", order: "desc", label: "Date Uploaded" },
 ];
 
-export default async function Page(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<DepartmentResources {...props} />
+		</Suspense>
+	);
+}
+
+export async function DepartmentResources(props) {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 	const currentPage = Number(searchParams.page) || 1;

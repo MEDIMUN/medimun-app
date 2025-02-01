@@ -1,4 +1,4 @@
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { TopBar } from "@/components/top-bar";
 import { ActionList } from "@/app/components/actions-list";
 import { auth } from "@/auth";
 import { MainWrapper } from "@/components/main-wrapper";
@@ -6,8 +6,19 @@ import { authorize, s } from "@/lib/authorize";
 import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
+import { Suspense } from "react";
 
-export default async function PrintCentre(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<TopBar title="Print Centre" buttonText={`Sessions`} buttonHref={`/medibook/sessions/`}></TopBar>}>
+			<PrintCentre {...props} />
+		</Suspense>
+	);
+}
+
+export async function PrintCentre(props) {
+	await connection();
 	const params = await props.params;
 
 	const authSession = await auth();

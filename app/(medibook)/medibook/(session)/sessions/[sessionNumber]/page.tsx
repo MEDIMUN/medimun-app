@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { romanize } from "@/lib/romanize";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { TopBar } from "@/components/top-bar";
 import { Text } from "@/components/text";
 import { Divider } from "@/components/divider";
 import { ActionList } from "@/app/components/actions-list";

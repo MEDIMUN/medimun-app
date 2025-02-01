@@ -11,19 +11,27 @@ import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import Paginator from "@/components/pagination";
 import { SearchParamsButton, TopBar } from "@/app/(medibook)/medibook/client-components";
-import { Fragment } from "react";
+import { Fragment, Suspense } from "react";
 import { Ellipsis } from "lucide-react";
 import { MainWrapper } from "@/components/main-wrapper";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
 	title: "All Conference Sessions",
 };
 
-export const experimental_ppr = true;
-
 const sessionsPerPage = 6;
 
-export default async function Sessions(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<Sessions {...props} />
+		</Suspense>
+	);
+}
+
+export async function Sessions(props) {
+	await connection();
 	const searchParams = await props.searchParams;
 	const currentPage = parseInt(searchParams.page) || 1;
 	const query = searchParams.search || "";

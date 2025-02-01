@@ -9,9 +9,11 @@ import { authorize, authorizeChairCommittee, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { Suspense } from "react";
 
 export default async function Page(props) {
+	await connection();
 	const params = await props.params;
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);

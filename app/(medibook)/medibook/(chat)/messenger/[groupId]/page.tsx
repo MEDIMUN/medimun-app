@@ -3,8 +3,19 @@ import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { ChatLayout } from "./client-components";
 import { generateUserData, generateUserDataObject } from "@/lib/user";
+import { connection } from "next/server";
+import { Suspense } from "react";
 
-export default async function MessagePage(props) {
+export default async function Page(props) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<Messages {...props} />
+		</Suspense>
+	);
+}
+
+export async function Messages(props) {
+	await connection();
 	const params = await props.params;
 	const groupId = decodeURIComponent(params.groupId);
 	const authSession = await auth();

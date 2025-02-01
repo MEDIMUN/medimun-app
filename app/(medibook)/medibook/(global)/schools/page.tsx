@@ -11,6 +11,8 @@ import { Link } from "@/components/link";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { Badge } from "@/components/badge";
 import { MainWrapper } from "@/components/main-wrapper";
+import { connection } from "next/server";
+import { Suspense } from "react";
 
 const itemsPerPage = 10;
 
@@ -41,6 +43,26 @@ const sortOptions = [
 ];
 
 export default async function Page(props) {
+	await connection();
+	return (
+		<Suspense
+			fallback={
+				<TopBar
+					buttonHref="/medibook"
+					buttonText="Home"
+					subheading={`Schools`}
+					sortOptions={sortOptions}
+					title="Schools"
+					defaultSort="nameasc"
+					searchText="Search schools..."></TopBar>
+			}>
+			<SchoolsPage {...props} />
+		</Suspense>
+	);
+}
+
+export async function SchoolsPage(props) {
+	await connection();
 	const searchParams = await props.searchParams;
 	const currentPage = parseInt(searchParams.page) || 1;
 	const query = searchParams.search || "";

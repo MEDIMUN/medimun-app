@@ -1,6 +1,6 @@
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { TopBar } from "@/components/top-bar";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
@@ -9,11 +9,12 @@ import Paginator from "@/components/pagination";
 import { Link } from "@/components/link";
 import { parseOrderDirection } from "@/lib/order-direction";
 import { Badge } from "@/components/badge";
-import { Fragment } from "react";
+import { Fragment, Suspense } from "react";
 import { romanize } from "@/lib/romanize";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { Ellipsis } from "lucide-react";
 import { MainWrapper } from "@/components/main-wrapper";
+import { connection } from "next/server";
 
 const itemsPerPage = 10;
 
@@ -42,7 +43,16 @@ const sortOptions = [
 	{ value: "finalDelegation", order: '{"_count":"asc"}', label: "Final Delegation" },
 ];
 
-export default async function Page(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<TopBar title="Application Status" buttonText={`Sessions`} buttonHref={`/medibook/sessions`}></TopBar>}>
+			<Status {...props} />
+		</Suspense>
+	);
+}
+
+export async function Status(props) {
+	await connection();
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 	const currentPage = parseInt(searchParams.page) || 1;
