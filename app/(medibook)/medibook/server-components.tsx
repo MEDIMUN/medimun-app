@@ -6,8 +6,7 @@ import { romanize } from "@/lib/romanize";
 import { capitaliseEachWord, processMarkdownPreview } from "@/lib/text";
 import { authorizedToEditResource } from "./@resourceModals/default";
 import { auth } from "@/auth";
-import { Divider } from "@/components/divider";
-import { Text } from "@/components/text";
+
 import { Button } from "@/components/button";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { announcementWebsitecomponents, authorizedToEditAnnouncement } from "./@announcement/default";
@@ -15,15 +14,10 @@ import Paginator from "@/components/pagination";
 import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { notFound, redirect } from "next/navigation";
-import { Fragment, Suspense } from "react";
+import { Suspense } from "react";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
-import { Subheading } from "@/components/heading";
 import { PageCreateAnnouncement } from "./@announcement/pageCreateAnnouncement";
-import { cn } from "@/lib/cn";
 /* @ts-ignore */
-import { minio } from "@/minio/client";
-import mimeExt from "mime-ext";
-import { Ellipsis } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { MainWrapper } from "@/components/main-wrapper";
 import { ResourceViewer } from "@/components/resource-viewer";

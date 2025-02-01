@@ -3,10 +3,12 @@ import { auth } from "@/auth";
 import prisma from "@/prisma/client";
 import { AnnouncementsTable } from "@/app/(medibook)/medibook/server-components";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 const itemsPerPage = 10;
 
 export default async function AnnouncementsPage(props) {
+	await connection();
 	const params = await props.params;
 	const searchParams = await props.searchParams;
 	const currentPage = Number(searchParams.page) || 1;
