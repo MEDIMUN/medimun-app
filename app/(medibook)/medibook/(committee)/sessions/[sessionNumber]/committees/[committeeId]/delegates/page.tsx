@@ -12,11 +12,19 @@ import { Avatar } from "@heroui/avatar";
 import { Ellipsis } from "lucide-react";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import { Suspense } from "react";
 
 const itemsPerPage = 10;
 
-//FIX
-export default async function Page(props: { searchParams: any; params: Promise<{ sessionNumber: string; committeeId: string; page: string }> }) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<TopBar title="Committee Delegates" subheading={`Delegates`} />}>
+			<Delegates {...props} />;
+		</Suspense>
+	);
+}
+
+export async function Delegates(props: { searchParams: any; params: Promise<{ sessionNumber: string; committeeId: string; page: string }> }) {
 	await connection();
 	const params = await props.params;
 	const searchParams = await props.searchParams;
