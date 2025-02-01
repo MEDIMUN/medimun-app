@@ -37,13 +37,8 @@ export default async function SchoolInvoicesPage({ params, searchParams }) {
 		<InvoicesPage
 			topbarProps={{
 				title: "School Session Invoices",
-				subheading: (
-					<>
-						Check out the <TextLink href={`/medibook/sessions/${sessionNumber}/resources`}>Session Resources</TextLink> for payment instructions.
-					</>
-				),
 				buttonText: selectedSchool.name,
-				buttonHref: `/medibook/sessions${sessionNumber}/schools/${schoolId}`,
+				buttonHref: `/medibook/schools/${schoolId}`,
 				hideSearchBar: true,
 			}}
 			hiddenColumns={["issuedTo"]}

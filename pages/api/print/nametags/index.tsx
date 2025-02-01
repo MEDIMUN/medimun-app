@@ -335,7 +335,7 @@ function DelegateNametag({ user, selectedSession }) {
 
 	return (
 		<View style={tw("w-[90mm] h-[57mm]")} key={user.id}>
-			<Image src={`${cwd}/public/assets/pdf/nametags/${imageUrl}.png`}></Image>
+			<Image alt="" src={`${cwd}/public/assets/pdf/nametags/${imageUrl}.png`}></Image>
 			<View style={tw("absolute w-full h-full")}>
 				<View style={tw("flex w-full mt-[77px] flex-col items-center justify-center")}>
 					<Text style={tw(`text-[${nameColor}] text-center font-[MADEMirage] font-[900] text-[17.49px]`)}>{fullName}</Text>

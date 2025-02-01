@@ -73,7 +73,6 @@ export function SessionSwitcher({ authSession, sessions }: { authSession; sessio
 		setIsLoading(true);
 		const moreSessions = await getMoreSessions(sessionsData.length);
 		setSessionsData((sessionsData || []).concat(moreSessions || []));
-		console.log("sessionsData", moreSessions);
 		setIsLoading(false);
 	}
 
@@ -111,10 +110,6 @@ export function SessionSwitcher({ authSession, sessions }: { authSession; sessio
 	useEffect(() => {
 		handleSessionChange();
 	}, [status]);
-
-	useEffect(() => {
-		console.log(selectedSession);
-	}, [selectedSession]);
 
 	const localSelected = sessionsData?.find((session) => session.number === selectedSession);
 

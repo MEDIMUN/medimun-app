@@ -11,6 +11,9 @@ import { SchoolReceiveInvoice } from "./templates/new-invoice-to-school";
 import { YourDelegatesAssignedToTheirCommittees } from "./templates/your-delegates-assigned-to-their-committees";
 import { ReturnDelegatePositionPaper } from "./templates/return-delegate-position-paper";
 import { Announcement } from "./templates/announcement";
+import { SchoolReceiveReceipt } from "./templates/new-receipt-to-school";
+import { UserReceiveReceipt } from "./templates/new-receipt-to-user";
+import { UserReceiveInvoice } from "./templates/new-invoice-to-user";
 
 export async function sendEmailVerificationEmail({ email, officialName, code }) {
 	return sendEmail({
@@ -154,13 +157,43 @@ export async function sendEmailAssignDelegateToCommittee({
 	});
 }
 
-export async function sendEmailSchoolInvoice({ officialName, email, schoolName }: { officialName: string; email: string; schoolName: string }) {
+export async function sendEmailUserInvoice({ officialName, email }: { officialName: string; email: string }) {
 	return await sendEmail({
+		to: email,
+		hideFooter: true,
+		subject: `New Invoice - MEDIMUN`,
+		preview: `Dear ${officialName}, go to MediBook to view your invoice.`,
+		html: <UserReceiveInvoice officialName={officialName} />,
+	});
+}
+
+export async function sendEmailSchoolInvoice({ officialName, email, schoolName }: { officialName: string; email: string; schoolName: string }) {
+	return sendEmail({
 		to: email,
 		hideFooter: true,
 		subject: `New School Invoice - MEDIMUN`,
 		preview: `Dear ${officialName}, go to MediBook to view your school's invoice.`,
 		html: <SchoolReceiveInvoice officialName={officialName} schoolName={schoolName} />,
+	});
+}
+
+export async function sendEmailSchoolReceipt({ officialName, email, schoolName }: { officialName: string; email: string; schoolName: string }) {
+	return sendEmail({
+		to: email,
+		hideFooter: true,
+		subject: `New School Receipt - MEDIMUN`,
+		preview: `Dear ${officialName}, go to MediBook to view your school's receipt.`,
+		html: <SchoolReceiveReceipt officialName={officialName} schoolName={schoolName} />,
+	});
+}
+
+export async function sendReceiptToUser({ officialName, email }: { officialName: string; email: string }) {
+	return sendEmail({
+		to: email,
+		hideFooter: true,
+		subject: `New Receipt - MEDIMUN`,
+		preview: `Dear ${officialName}, go to MediBook to view your recipt.`,
+		html: <UserReceiveReceipt officialName={officialName} />,
 	});
 }
 

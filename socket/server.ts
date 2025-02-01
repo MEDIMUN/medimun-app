@@ -143,7 +143,7 @@ export const initializeSocket = (server: any): Server => {
 						.filter((role) => role.roleIdentifier == "member")
 						.filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
 
-				const usersRegistered = await prisma.morningPresent.findUnique({
+				const userRegistered = await prisma.morningPresent.findUnique({
 					where: { userId_dayId: { dayId: selectedCode.day.id, userId: selectedCode.userId } },
 				});
 
@@ -153,10 +153,22 @@ export const initializeSocket = (server: any): Server => {
 					socket.nsp.to(`private-user-${authSession?.user.id}`).emit("toast.error", "Unauthorized");
 				}
 
-				if (!isManagement && !isMemberOfPIorIT && !isManager) return unauthorizedSocket;
-				if (isMemberOfPIorIT && !isManagement && !usersRegistered) return unauthorizedSocket;
+				const isManagementOrManager = isManagement || isManager;
 
-				if (usersRegistered) {
+				if (!isManagementOrManager && !isMemberOfPIorIT) return unauthorizedSocket;
+				if (isMemberOfPIorIT && !isManagementOrManager) {
+					const scanningUserRegistered = await prisma.morningPresent
+						.findUnique({
+							where: { userId_dayId: { dayId: selectedCode.day.id, userId: authSession.user.id } },
+						})
+						.catch((error) => {
+							socket.nsp.to(`private-user-${authSession?.user.id}`).emit("toast.error", "Error checking if user is registered.");
+							return;
+						});
+					if (!scanningUserRegistered) return unauthorizedSocket;
+				}
+
+				if (userRegistered) {
 					socket.nsp.to(`private-user-${authSession?.user.id}`).emit("toast.info", "User already registered.");
 				} else {
 					try {

@@ -176,11 +176,10 @@ export default async function RegistrationPage(props) {
 					buttonText="Home"
 					subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`}
 				/>
-				<RegisterQRCodeBox code={code.code} />
-				<Text>
-					Show this code to a member of staff in the morning at the door when you arrive. You can also ask your chair to register you if you are
-					unable to do so yourself. Further roll calls will be taken throughout the day by your chairs.
-				</Text>
+				<MainWrapper>
+					<RegisterQRCodeBox code={code.code} />
+					<Text>Show this code to a member of staff in the morning at the door when you arrive.</Text>
+				</MainWrapper>
 			</>
 		);
 
@@ -243,19 +242,21 @@ export default async function RegistrationPage(props) {
 					buttonText="Home"
 					subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`}
 				/>
-				{isPresent && (
-					<div className="border flex gap-2 md:flex-row flex-col shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 text-center">
-						<div className="h-[40px] w-[40px] mx-auto md:mx-0">
-							<Image alt="Tick" src={Confirm} unoptimized className="select-none aspect-square h-[40px] object-scale-down !relative" />
+				<MainWrapper>
+					{isPresent && (
+						<div className="border flex gap-2 md:flex-row flex-col shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 text-center">
+							<div className="h-[40px] w-[40px] mx-auto md:mx-0">
+								<Image alt="Tick" src={Confirm} unoptimized className="select-none aspect-square h-[40px] object-scale-down !relative" />
+							</div>
+							<Text className="!text-white m-auto font-[montserrat] !text-lg">You have been registered for today.</Text>
 						</div>
-						<Text className="!text-white m-auto font-[montserrat] !text-lg">You have been registered for today.</Text>
-					</div>
-				)}
-				<QRReader delegates={delegates} />
-				<Text>
-					Scan the QR code of a Delegate or Member to register them in the morning. Members can only register delegates while managers and management
-					members can register both delegates and members.
-				</Text>
+					)}
+					<QRReader delegates={delegates} />
+					<Text>
+						Scan the QR code of a Delegate or Member to register them in the morning. Members can only register delegates while managers and
+						management members can register both delegates and members.
+					</Text>
+				</MainWrapper>
 			</>
 		);
 }

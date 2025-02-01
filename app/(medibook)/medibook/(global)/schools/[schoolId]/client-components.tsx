@@ -22,7 +22,7 @@ export function SchoolSessionActionsList({ isManagementOrDirector, school }) {
 		{
 			title: "Invoices",
 			description: "View all invoices for this school",
-			href: `/medibook/sessions/${selectedSession}/schools/${school.slug || school.id}/delegation`,
+			href: `/medibook/sessions/${selectedSession}/schools/${school.slug || school.id}/invoices`,
 			isVisible: isManagementOrDirector,
 		},
 	].filter((action) => action.isVisible);

@@ -1,19 +1,26 @@
 import { Badge } from "@/components/badge";
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
+import { Dropdown, DropdownButton, DropdownDivider, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import Paginator from "@/components/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Suspense } from "react";
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
 import dynamic from "next/dynamic";
 import { Ellipsis } from "lucide-react";
 import { MainWrapper } from "@/components/main-wrapper";
+import { auth } from "@/auth";
+import { authorize, s } from "@/lib/authorize";
+import { InvoiceDownloadButton, ReceiptDownloadButton } from "@/global-pages/invoices/client-components";
 
 const PdfDownloadButton = dynamic(() => import("@/global-pages/invoices/client-components").then((mod) => mod.PdfDownloadButton));
 
 export default async function InvoicesPage({ topbarProps, invoices, totalItems, hiddenColumns = [] }) {
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
 	return (
 		<>
-			<TopBar hideBackdrop {...topbarProps} />
+			<TopBar hideBackdrop {...topbarProps}>
+				{isManagement && <SearchParamsButton searchParams={{ "create-invoice": "true" }}>Create Invoice</SearchParamsButton>}
+			</TopBar>
 			<MainWrapper>
 				{!!invoices.length && (
 					<Table>
@@ -43,9 +50,35 @@ export default async function InvoicesPage({ topbarProps, invoices, totalItems, 
 													<Ellipsis />
 												</DropdownButton>
 												<DropdownMenu className="max-w-max">
-													<Suspense fallback={<DropdownItem disabled>Download PDF</DropdownItem>}>
-														<PdfDownloadButton invoice={invoice} />
+													{isManagement && (
+														<>
+															<SearchParamsDropDropdownItem
+																searchParams={{
+																	"edit-invoice": invoice.id,
+																}}>
+																Edit Invoice
+															</SearchParamsDropDropdownItem>
+															<SearchParamsDropDropdownItem
+																searchParams={{
+																	"delete-invoice": invoice.id,
+																}}>
+																Delete Invoice
+															</SearchParamsDropDropdownItem>
+														</>
+													)}
+													<DropdownDivider />
+													<Suspense fallback={<DropdownItem disabled>Download Invoice</DropdownItem>}>
+														<InvoiceDownloadButton invoice={invoice} />
 													</Suspense>
+													<DropdownDivider />
+													{invoice.isPaid && (
+														<>
+															<Suspense fallback={<DropdownItem disabled>Download Receipt</DropdownItem>}>
+																<ReceiptDownloadButton invoice={invoice} />
+															</Suspense>
+															<DropdownDivider />
+														</>
+													)}
 													<DropdownItem href={`https://www.jccsmart.com/businesses/26057042/pay/10808`} target="_blank">
 														Pay with JCC Smart
 													</DropdownItem>

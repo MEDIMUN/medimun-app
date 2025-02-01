@@ -401,16 +401,20 @@ export function ChatLayout({ group, authSession }) {
 								</Badge>
 							);
 
+							const messageHasUrl = message.markdown.match(/(https?:\/\/[^\s]+)/g);
+							const fullUrl = messageHasUrl?.[0];
+
 							if (isMyMessage) {
 								const isReplyTo = !!message.replyTo;
 								const name = isReplyTo
 									? message.replyTo.user.displayName || `${message.replyTo.user.officialName} ${message.replyTo.user.officialSurname}`
 									: "";
+
 								return (
 									<Fragment key={message.id}>
 										<div
 											onMouseDown={(e) => {
-												e.preventDefault();
+												if (!messageHasUrl) e.preventDefault();
 												setSelectedMessageId(message.id);
 												setReplyToId("");
 											}}
@@ -427,15 +431,30 @@ export function ChatLayout({ group, authSession }) {
 												<div className="flex flex-col">
 													<div
 														className={cn(
-															"min-w-[60px]",
+															"min-w-[60px] duration-200",
 															"max-w-[300px] md:max-w-[400px] text-sm min-w-[35px] text-right",
 															"bg-blue-500 text-white px-2 py-1 hyphens-auto break-words overflow-hidden ml-auto rounded-xl",
 															isAfterMyMessage && !messageAfter.replyTo && !isLastMessageOfDay && "rounded-br-none mb-[2px]",
 															isBeforeMyMessage && !isFirstMessageOfDay && !isReplyTo && "rounded-tr-none",
 															messageAfter.replyTo && "mb-3",
-															selectedMessageId === message.id && "bg-zinc-200 dark:bg-zinc-700 duration-200 shadow-xl"
+															selectedMessageId === message.id && "mr-4 bg-blue-500/80"
 														)}>
-														{message.markdown}
+														{messageHasUrl
+															? message.markdown.split(fullUrl).map((part, index, array) => (
+																	<Fragment key={index + "mymessagelink"}>
+																		{part}
+																		{index < array.length - 1 && (
+																			<Link
+																				onClick={() => setSelectedMessageId("")}
+																				target="_blank"
+																				className="underline text-primary"
+																				href={fullUrl}>
+																				{fullUrl}
+																			</Link>
+																		)}
+																	</Fragment>
+																))
+															: message.markdown}
 														<div className="text-right text-[10px] text-white">
 															{new Date(message.createdAt).toLocaleTimeString("en-GB").slice(0, 5)}
 														</div>
@@ -458,7 +477,7 @@ export function ChatLayout({ group, authSession }) {
 									<Fragment key={message.id}>
 										<div
 											onMouseDown={(e) => {
-												e.preventDefault();
+												if (!messageHasUrl) e.preventDefault();
 												setSelectedMessageId(message.id);
 												setReplyToId("");
 											}}
@@ -484,14 +503,29 @@ export function ChatLayout({ group, authSession }) {
 												<div className="flex flex-col">
 													<div
 														className={cn(
-															"min-w-[60px]",
+															"min-w-[60px] duration-200",
 															"max-w-[300px] md:max-w-[400px] text-sm text-left",
 															"bg-gray-100 text-zinc-900 dark:bg-zinc-600 dark:text-white px-2 py-1 hyphens-auto break-words overflow-hidden mr-auto rounded-xl",
 															isPreviousSamePersons && !messageAfter.replyTo && !isLastMessageOfDay && "rounded-bl-none mb-[2px]",
 															isNextSamePersons && !isFirstMessageOfDay && !isReplyTo && "rounded-tl-none",
-															selectedMessageId === message.id && "bg-zinc-200 dark:bg-zinc-700 duration-200 shadow-xl"
+															selectedMessageId === message.id && "ml-4 bg-gray-100/80"
 														)}>
-														{message.markdown}
+														{messageHasUrl
+															? message.markdown.split(fullUrl).map((part, index, array) => (
+																	<Fragment key={index + "yourmessagelink"}>
+																		{part}
+																		{index < array.length - 1 && (
+																			<Link
+																				onClick={() => setSelectedMessageId("")}
+																				target="_blank"
+																				className="underline text-primary"
+																				href={fullUrl}>
+																				{fullUrl}
+																			</Link>
+																		)}
+																	</Fragment>
+																))
+															: message.markdown}
 														<div className="text-left text-[10px] text-black dark:text-white">
 															{new Date(message.createdAt).toLocaleTimeString("en-GB").slice(0, 5)}
 														</div>

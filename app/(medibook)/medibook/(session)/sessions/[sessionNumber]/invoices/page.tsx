@@ -15,27 +15,30 @@ export default async function SchoolInvoicesPage({ params, searchParams }) {
 
 	if (!isManagement) notFound();
 
+	const whereObject = {
+		session: { number: sessionNumber },
+		OR: [
+			{ user: { officialName: { contains: query, mode: "insensitive" } } },
+			{ user: { officialSurname: { contains: query, mode: "insensitive" } } },
+			{ user: { displayName: { contains: query, mode: "insensitive" } } },
+			{ user: { id: { contains: query, mode: "insensitive" } } },
+			{ user: { email: { contains: query, mode: "insensitive" } } },
+			{ user: { phoneNumber: { contains: query, mode: "insensitive" } } },
+			{ id: { contains: query, mode: "insensitive" } },
+			{ number: parseInt(query) || 0 },
+			{ school: { name: { contains: query, mode: "insensitive" } } },
+		],
+	};
+
 	const [invoices, totalItems] = await prisma.$transaction([
 		prisma.invoice.findMany({
-			where: {
-				session: { number: sessionNumber },
-				OR: [
-					{ user: { officialName: { contains: query, mode: "insensitive" } } },
-					{ user: { officialSurname: { contains: query, mode: "insensitive" } } },
-					{ user: { displayName: { contains: query, mode: "insensitive" } } },
-					{ user: { id: { contains: query, mode: "insensitive" } } },
-					{ user: { email: { contains: query, mode: "insensitive" } } },
-					{ user: { phoneNumber: { contains: query, mode: "insensitive" } } },
-					{ id: { contains: query, mode: "insensitive" } },
-					{ number: parseInt(query) || 0 },
-					{ school: { name: { contains: query, mode: "insensitive" } } },
-				],
-			},
+			where: whereObject,
 			include: { user: true, school: true },
 			skip: (currentPage - 1) * 10,
 			take: 10,
+			orderBy: { number: "desc" },
 		}),
-		prisma.invoice.count({ where: { session: { number: sessionNumber } } }),
+		prisma.invoice.count({ where: whereObject }),
 	]);
 
 	return (

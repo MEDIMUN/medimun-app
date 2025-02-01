@@ -40,7 +40,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 		});
 
 		socketInstance.on("connect", () => {
-			console.log("Connected to the MEDIMUN Server.");
+			console.log("Connected to MEDIMUN Servers.");
 		});
 
 		setSocket(socketInstance); // Store socket in state

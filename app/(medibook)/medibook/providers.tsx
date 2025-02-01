@@ -6,6 +6,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { SessionProvider } from "next-auth/react";
 import React, { createContext, useContext, useState } from "react";
 import { SocketProvider } from "@/contexts/socket";
+import { SSRProvider } from "react-aria";
 
 const SidebarContext = createContext({});
 
@@ -47,13 +48,11 @@ export function Providers({ children }) {
 		<SocketProvider>
 			<SidebarContextProvider>
 				<SessionProvider>
-					{/* 					<NUIP className="h-full" navigate={router.push}>
-					 */}
-					<NextThemesProvider attribute="class" enableSystem defaultTheme="light">
-						{children}
-					</NextThemesProvider>
-					{/* 					</NUIP>
-					 */}
+					<NUIP navigate={router.push}>
+						<NextThemesProvider attribute="class" enableSystem defaultTheme="light">
+							{children}
+						</NextThemesProvider>
+					</NUIP>
 				</SessionProvider>
 			</SidebarContextProvider>
 		</SocketProvider>

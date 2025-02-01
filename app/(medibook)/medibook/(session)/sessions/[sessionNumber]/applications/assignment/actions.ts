@@ -231,12 +231,12 @@ export async function handleFinalAssignDelegates(filteredAssignments, selectedSe
 
 	const itemsObject = [
 		{
-			description: "Delegate Fee",
+			description: "DELEGATE FEE",
 			amount: selectedSession.delegatePrice,
 			quantity: filteredAssignments.length,
 		},
 		{
-			description: "School Director Fee",
+			description: "SCHOOL DIRECTOR FEE",
 			amount: selectedSession.directorPrice,
 			quantity: selectedSchool._count.ApplicationSchoolDirector,
 		},

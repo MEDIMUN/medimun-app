@@ -154,7 +154,6 @@ export async function publishAnnouncement(formData: FormData, params) {
 
 	if (!!emails.length) {
 		after(async () => {
-			console.log(data.markdown);
 			const emailPromises = emails.map(async (email) => {
 				return sendEmailAnnouncement({
 					name: email?.name,

@@ -32,6 +32,10 @@ const nextConfig: NextConfig = {
 	compiler: {
 		removeConsole: process.env.NODE_ENV === "production",
 	},
+	webpack: (config) => {
+		config.resolve.alias.canvas = false;
+		return config;
+	},
 	transpilePackages: ["next-auth", "prettier"],
 	experimental: {
 		dynamicIO: true,
@@ -40,6 +44,11 @@ const nextConfig: NextConfig = {
 		staleTimes: {
 			dynamic: 30,
 			static: 3600,
+		},
+		turbo: {
+			resolveAlias: {
+				canvas: "./empty-module.ts",
+			},
 		},
 		optimizePackageImports: ["@react-email", "@react-pdf/renderer", "lucide-react", "@headlessui/react"],
 		serverActions: {

@@ -52,7 +52,7 @@ export function ResourceViewerClient({ resource, presignedUrl }: { resource: any
 			} else if (mimeTypesOfImagesImgCanOpen.includes(resource.mimeType)) {
 				newFrame = <img src={presignedUrl} alt="Image" />;
 			} else if (mimeTypesNativeIframeCanOpen.includes(resource.mimeType)) {
-				newFrame = <object className="min-h-[1000px] max-w-screen" data={presignedUrl} height="100%"></object>;
+				newFrame = <iframe src={presignedUrl} className="min-h-[1000px] w-full max-w-screen" height="100%"></iframe>;
 			} else {
 				newFrame = <a href={presignedUrl}>Download</a>;
 			}

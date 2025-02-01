@@ -1,6 +1,5 @@
 import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, authorizePerSession, s } from "@/lib/authorize";
 import { auth } from "@/auth";
-import { parseOrderDirection } from "@/lib/order-direction";
 import prisma from "@/prisma/client";
 import { AnnouncementsTable } from "@/app/(medibook)/medibook/server-components";
 import { notFound } from "next/navigation";

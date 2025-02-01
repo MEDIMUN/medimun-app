@@ -21,6 +21,9 @@ export async function signIn({ username, password }) {
 		if (isRedirectError(error)) {
 			return { ok: true, message: "Signed in.", firstLogin: selectedUser.lastLogin === null };
 		}
+		if (error.code === "Your password is incorrect") {
+			return { ok: false, message: "Your password is incorrect." };
+		}
 		return { ok: false, message: "User not found." };
 	}
 	return { ok: true, message: "Signed in.", firstLogin: selectedUser.lastLogin === null };

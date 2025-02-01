@@ -195,14 +195,18 @@ export async function approveSchoolDelegateAssignmentProposal(proposalId: string
 
 	const invoiceObject = [
 		{
-			description: "School Director Fee",
+			description: "SCHOOL DIRECTOR FEE",
 			price: selectedAssignmentProposal?.session.directorPrice || 0,
 			quantity: numberOfApprovedSchoolDirectorApplications,
+			quantityLocked: false,
+			descriptionLocked: true,
 		},
 		{
-			description: "Delegate Fee",
+			description: "DELEGATE FEE",
 			price: selectedAssignmentProposal?.session.delegatePrice || 0,
 			quantity: parsedSelectedAssignment.length,
+			quantityLocked: false,
+			descriptionLocked: true,
 		},
 	];
 

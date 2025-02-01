@@ -2,7 +2,6 @@ import { FastLink } from "@/components/fast-link";
 import DelegatesImage from "@/public/assets/images/plenary-flags.jpg";
 import Image from "next/image";
 import Logo from "@/public/assets/branding/logos/logo-medired.svg";
-import { ColorRevealImage } from "./_components/circular-image";
 
 export default function AuthLayout({ children }) {
 	return (
@@ -32,9 +31,8 @@ export default function AuthLayout({ children }) {
 					alt="Delegates stadning outside to take a conference photo."
 					className="absolute scale-x-[-1] grayscale inset-0 h-full w-full object-cover"
 				/>
-				<div className="w-full h-full absolute backdrop-blur-[2px]" />
+				<div className="w-full h-full absolute backdrop-blur-[3px]" />
 			</div>
-			<ColorRevealImage />
 		</div>
 	);
 }

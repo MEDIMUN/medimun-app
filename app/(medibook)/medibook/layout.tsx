@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 
-import { Avatar } from "@heroui/avatar";
 import Link from "next/link";
 import { auth } from "@/auth";
 import prisma from "@/prisma/client";
@@ -19,7 +18,7 @@ export const metadata: Metadata = {
 		template: "%s - MediBook",
 		default: "MediBook",
 	},
-	description: "",
+	description: "MediBook is the official platform for the MEDIMUN conference.",
 };
 
 export function NoScript() {
@@ -42,20 +41,6 @@ export function NoScript() {
 				</p>
 			</div>
 		</noscript>
-	);
-}
-
-async function UserAvatar() {
-	const authSession = await auth();
-	return (
-		<Avatar
-			src={`/api/users/${authSession?.user?.id}/avatar`}
-			className="m-0 h-6 w-6 rounded-sm bg-primary"
-			showFallback
-			isBordered
-			size="sm"
-			radius="none"
-		/>
 	);
 }
 
@@ -91,6 +76,7 @@ export default async function RootLayout({
 	rollCallModals,
 	topicsModals,
 	privateMessageModals,
+	invoiceModals,
 }): Promise<JSX.Element> {
 	return (
 		<ThemedHTMLElement>
@@ -120,6 +106,7 @@ export default async function RootLayout({
 						{rollCallModals}
 						{topicsModals}
 						{privateMessageModals}
+						{invoiceModals}
 					</Suspense>
 					<SidebarProvider>
 						<Suspense fallback={null}>

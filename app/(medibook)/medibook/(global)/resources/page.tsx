@@ -22,7 +22,7 @@ const sortOptions = [
 export default async function Page(props) {
 	return (
 		<>
-			<TopBar sortOptions={sortOptions} defaultSort="timedesc" title="Global Resources">
+			<TopBar buttonHref="/medibook" buttonText="Home" sortOptions={sortOptions} defaultSort="timedesc" title="Global Resources">
 				<Suspense fallback={null}>
 					<UploadButton />
 				</Suspense>
