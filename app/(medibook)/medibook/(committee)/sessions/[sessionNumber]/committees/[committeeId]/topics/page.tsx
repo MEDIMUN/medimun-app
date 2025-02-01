@@ -11,8 +11,17 @@ import Paginator from "@/components/pagination";
 import { Ellipsis } from "lucide-react";
 import { MainWrapper } from "@/components/main-wrapper";
 import { connection } from "next/server";
+import { Suspense } from "react";
 
-export default async function Page(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<Topics {...props} />
+		</Suspense>
+	);
+}
+
+export async function Topics(props) {
 	await connection();
 	const params = await props.params;
 	const authSession = await auth();

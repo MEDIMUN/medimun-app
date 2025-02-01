@@ -12,7 +12,15 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
-export default async function Page(props) {
+export default function Page(props) {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<SpecificTopic {...props} />
+		</Suspense>
+	);
+}
+
+export async function SpecificTopic(props) {
 	await connection();
 	const params = await props.params;
 	const authSession = await auth();
