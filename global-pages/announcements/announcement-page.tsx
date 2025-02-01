@@ -6,6 +6,7 @@ import { MainWrapper } from "@/components/main-wrapper";
 import { TopBar } from "@/components/top-bar";
 import { romanize } from "@/lib/romanize";
 import prisma from "@/prisma/client";
+import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
