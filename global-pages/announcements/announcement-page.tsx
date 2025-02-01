@@ -1,4 +1,4 @@
-import { authorizedToEditAnnouncement } from "@/app/(medibook)/medibook/@announcement/default";
+import { announcementWebsitecomponents, authorizedToEditAnnouncement } from "@/app/(medibook)/medibook/@announcement/default";
 import { PageCreateAnnouncement } from "@/app/(medibook)/medibook/@announcement/pageCreateAnnouncement";
 import { SearchParamsButton } from "@/app/(medibook)/medibook/client-components";
 import { auth } from "@/auth";

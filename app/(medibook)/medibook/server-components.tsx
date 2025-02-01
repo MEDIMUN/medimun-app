@@ -1,25 +1,14 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
-import { SearchParamsButton, SearchParamsDropDropdownItem, SessionResourceDropdown, TopBar } from "./client-components";
-import { FastLink, FastLink as Link } from "@/components/fast-link";
+import { SearchParamsButton, SessionResourceDropdown, TopBar } from "./client-components";
+import { FastLink as Link } from "@/components/fast-link";
 import { Badge } from "@/components/badge";
 import { romanize } from "@/lib/romanize";
-import { capitaliseEachWord, processMarkdownPreview } from "@/lib/text";
+import { capitaliseEachWord } from "@/lib/text";
 import { authorizedToEditResource } from "./@resourceModals/default";
 import { auth } from "@/auth";
 
-import { Button } from "@/components/button";
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
-import { announcementWebsitecomponents, authorizedToEditAnnouncement } from "./@announcement/default";
-import Paginator from "@/components/pagination";
-import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
-import { notFound, redirect } from "next/navigation";
-import { Suspense } from "react";
-import { MDXRemote } from "next-mdx-remote-client/rsc";
-import { PageCreateAnnouncement } from "./@announcement/pageCreateAnnouncement";
-/* @ts-ignore */
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { MainWrapper } from "@/components/main-wrapper";
+import { notFound } from "next/navigation";
 import { ResourceViewer } from "@/components/resource-viewer";
 import { connection } from "next/server";
 
