@@ -12,6 +12,8 @@ import { authorize, s } from "@/lib/authorize";
 import { processMarkdownPreview } from "@/lib/text";
 import { connection } from "next/server";
 
+const itemsPerPage = 10;
+
 export async function AnnouncementsTable({ title, announcements, baseUrl, totalItems, buttonHref, buttonText, showPublishButton }) {
 	await connection();
 	const authSession = await auth();
