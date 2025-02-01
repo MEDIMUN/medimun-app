@@ -12,9 +12,10 @@ import { Badge } from "@/components/badge";
 import { Button } from "@/components/button";
 import { Ellipsis } from "lucide-react";
 import { FastLink } from "@/components/fast-link";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export const metadata = {
-	title: "Conference Days",
+	title: "Conference Programme",
 	description: "Days of the session",
 };
 
@@ -57,94 +58,96 @@ export default async function Page(props) {
 					<SearchParamsButton searchParams={{ "create-day": selectedSession.id }}>Create New</SearchParamsButton>
 				)}
 			</TopBar>
-			{!!days.length && (
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableHeader>
-								<span className="sr-only">Actions</span>
-							</TableHeader>
-							<TableHeader>Day</TableHeader>
-							<TableHeader>Date</TableHeader>
-							<TableHeader>Type</TableHeader>
-							<TableHeader>Location</TableHeader>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{days.map((day) => {
-							if (day.type == "CONFERENCE") {
-								conferenceIndex++;
-								day.index = conferenceIndex;
-							}
-							if (day.type == "WORKSHOP") {
-								workshopIndex++;
-								day.index = workshopIndex;
-							}
-							if (day.type == "EVENT") {
-								eventIndex++;
-								day.index = eventIndex;
-							}
-							const standardName = `${DayTypeMap[day?.type]} Day ${(day?.index).toString()}`;
-							return (
-								<TableRow key={day.id}>
-									<TableCell>
-										{authorize(session, [s.admins, s.sd, s.director]) ? (
-											<Dropdown>
-												<DropdownButton plain aria-label="More options">
-													<Ellipsis width={18} />
-												</DropdownButton>
-												<DropdownMenu anchor="bottom end">
-													<DropdownItem
-														href={`/medibook/sessions/${params.sessionNumber}/programme/${day.type.toLocaleLowerCase()}${
-															["CONFERENCE", "WORKSHOP"].includes(day.type) && "-day"
-														}-${day?.index}`}>
-														Programme
-													</DropdownItem>
-													<SearchParamsDropDropdownItem
-														searchParams={{
-															"edit-day": day.id,
-														}}>
-														Edit
-													</SearchParamsDropDropdownItem>
-													<SearchParamsDropDropdownItem
-														searchParams={{
-															"delete-day": day.id,
-														}}>
-														Delete
-													</SearchParamsDropDropdownItem>
-												</DropdownMenu>
-											</Dropdown>
-										) : (
-											<Button
-												plain
-												href={`/medibook/sessions/${params.sessionNumber}/programme/${day.type.toLocaleLowerCase()}${
-													["CONFERENCE", "WORKSHOP"].includes(day.type) && "-day"
-												}-${day?.index}`}>
-												View Programme
-											</Button>
-										)}
-									</TableCell>
-									<TableCell>{day.name || standardName}</TableCell>
-									<TableCell>{day.date.toUTCString().slice(0, 16)}</TableCell>
-									<TableCell>
-										{day.type == "CONFERENCE" && <Badge color="green">Conference</Badge>}
-										{day.type == "WORKSHOP" && <Badge color="yellow">Workshop</Badge>}
-										{day.type == "EVENT" && <Badge color="zinc">Event</Badge>}
-									</TableCell>
-									<TableCell>
-										{day?.location?.isPublic ? (
-											<FastLink href={`/medibook/locations/${day.location.slug || day.location.id}`}>{day.location?.name}</FastLink>
-										) : (
-											"-"
-										)}
-									</TableCell>
-								</TableRow>
-							);
-						})}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator totalItems={totalItems} itemsOnPage={days.length} />
+			<MainWrapper>
+				{!!days.length && (
+					<Table>
+						<TableHead>
+							<TableRow>
+								<TableHeader>
+									<span className="sr-only">Actions</span>
+								</TableHeader>
+								<TableHeader>Day</TableHeader>
+								<TableHeader>Date</TableHeader>
+								<TableHeader>Type</TableHeader>
+								<TableHeader>Location</TableHeader>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{days.map((day) => {
+								if (day.type == "CONFERENCE") {
+									conferenceIndex++;
+									day.index = conferenceIndex;
+								}
+								if (day.type == "WORKSHOP") {
+									workshopIndex++;
+									day.index = workshopIndex;
+								}
+								if (day.type == "EVENT") {
+									eventIndex++;
+									day.index = eventIndex;
+								}
+								const standardName = `${DayTypeMap[day?.type]} Day ${(day?.index).toString()}`;
+								return (
+									<TableRow key={day.id}>
+										<TableCell>
+											{authorize(session, [s.admins, s.sd, s.director]) ? (
+												<Dropdown>
+													<DropdownButton plain aria-label="More options">
+														<Ellipsis width={18} />
+													</DropdownButton>
+													<DropdownMenu anchor="bottom end">
+														<DropdownItem
+															href={`/medibook/sessions/${params.sessionNumber}/programme/${day.type.toLocaleLowerCase()}${
+																["CONFERENCE", "WORKSHOP"].includes(day.type) && "-day"
+															}-${day?.index}`}>
+															Programme
+														</DropdownItem>
+														<SearchParamsDropDropdownItem
+															searchParams={{
+																"edit-day": day.id,
+															}}>
+															Edit
+														</SearchParamsDropDropdownItem>
+														<SearchParamsDropDropdownItem
+															searchParams={{
+																"delete-day": day.id,
+															}}>
+															Delete
+														</SearchParamsDropDropdownItem>
+													</DropdownMenu>
+												</Dropdown>
+											) : (
+												<Button
+													plain
+													href={`/medibook/sessions/${params.sessionNumber}/programme/${day.type.toLocaleLowerCase()}${
+														["CONFERENCE", "WORKSHOP"].includes(day.type) && "-day"
+													}-${day?.index.toString()}`}>
+													View Programme
+												</Button>
+											)}
+										</TableCell>
+										<TableCell>{day.name || standardName}</TableCell>
+										<TableCell>{day.date.toUTCString().slice(0, 16)}</TableCell>
+										<TableCell>
+											{day.type == "CONFERENCE" && <Badge color="green">Conference</Badge>}
+											{day.type == "WORKSHOP" && <Badge color="yellow">Workshop</Badge>}
+											{day.type == "EVENT" && <Badge color="zinc">Event</Badge>}
+										</TableCell>
+										<TableCell>
+											{day?.location?.isPublic ? (
+												<FastLink href={`/medibook/locations/${day.location.slug || day.location.id}`}>{day.location?.name}</FastLink>
+											) : (
+												"-"
+											)}
+										</TableCell>
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator totalItems={totalItems} itemsOnPage={days.length} />
+			</MainWrapper>
 		</>
 	);
 }

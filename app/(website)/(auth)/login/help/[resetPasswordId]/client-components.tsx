@@ -1,32 +1,16 @@
 "use client";
 
-import { Divider } from "@/components/divider";
 import { cn } from "@/lib/cn";
-import Image from "next/image";
-import Link from "next/link";
-import EsLogo from "@/public/assets/branding/logos/eslogo.svg";
-import Logo from "@/public/assets/branding/logos/logo-white.svg";
 import { Input } from "@/components/input";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/button";
-import { updateSearchParams } from "@/lib/search-params";
 import { Field, Label } from "@/components/fieldset";
-/* import { resetPassword } from "./actions";
- */ import { Text } from "@/components/text";
+import { Text } from "@/components/text";
 import { useFlushState } from "@/hooks/use-flush-state";
 import { resetPasswordFinal } from "./actions";
-
-function OrSpacer() {
-	return (
-		<div className="my-4 flex justify-stretch gap-1">
-			<Divider className="my-auto w-[40%]" />
-			<p className="-bg-content1 mx-auto rounded-full px-3 text-xs tracking-widest">OR</p>
-			<Divider className="my-auto w-[40%]" />
-		</div>
-	);
-}
+import { FastLink } from "@/components/fast-link";
 
 export function ConfirmResetPasswordForm({ passwordResetCode }) {
 	const [isLoading, , setIsLoading] = useFlushState(false);
@@ -63,12 +47,7 @@ export function ConfirmResetPasswordForm({ passwordResetCode }) {
 	const doPasswordsMatch = password === confirmPassword;
 
 	return (
-		<div className="flex h-full flex-col">
-			<div className="mx-auto h-14 w-[180px] md:mx-0">
-				<Link href="/">
-					<Image alt="MEDIMUN Logo" src={Logo} fill className="!relative" />
-				</Link>
-			</div>
+		<>
 			<form action={handleChangePassword} className="flex h-[calc(100%-56px)] flex-col">
 				<Text className="mt-5">Create a new password.</Text>
 				<Field className="mt-5">
@@ -118,12 +97,12 @@ export function ConfirmResetPasswordForm({ passwordResetCode }) {
 					Continue
 				</Button>
 			</form>
-			<div className="mt-auto flex w-full animate-appearance-in justify-between rounded-small bg-content2 p-3">
+			<div className="mt-4 flex w-full animate-appearance-in justify-between rounded-small bg-content2 p-3">
 				<p className="text-xs">Want to login instead?</p>
-				<Link href="/login" className="text-xs text-primary">
+				<FastLink href="/login" className="text-xs text-primary">
 					Back to Login
-				</Link>
+				</FastLink>
 			</div>
-		</div>
+		</>
 	);
 }

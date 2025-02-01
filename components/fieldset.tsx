@@ -3,6 +3,7 @@
 import * as Headless from "@headlessui/react";
 import clsx from "clsx";
 import type React from "react";
+import { Badge } from "./badge";
 
 export function Fieldset({ className, ...props }: { className?: string } & Omit<Headless.FieldsetProps, "className">) {
 	return <Headless.Fieldset {...props} className={clsx(className, "[&>*+[data-slot=control]]:mt-6 [&>[data-slot=text]]:mt-1")} />;
@@ -39,13 +40,35 @@ export function Field({ className, ...props }: { className?: string } & Omit<Hea
 	);
 }
 
-export function Label({ className, ...props }: { className?: string } & Omit<Headless.LabelProps, "className">) {
+export function Label({
+	className,
+	required = false,
+	optional = false,
+	...props
+}: { className?: string; required?: boolean; optional?: boolean } & Omit<Headless.LabelProps, "className">) {
+	if (required && optional) {
+		throw new Error("Label cannot be both required and optional");
+	}
+	const { children, ...rest } = props;
 	return (
 		<Headless.Label
 			data-slot="label"
-			{...props}
-			className={clsx(className, "select-none text-base/6 text-zinc-950 data-[disabled]:opacity-50 dark:text-white sm:text-sm/6")}
-		/>
+			{...rest}
+			className={clsx(className, "select-none text-base/6 text-zinc-950 data-[disabled]:opacity-50 dark:text-white sm:text-sm/6")}>
+			{children}
+			{required && (
+				<>
+					{" "}
+					<Badge color="red">Required</Badge>
+				</>
+			)}
+			{optional && (
+				<>
+					{" "}
+					<Badge color="yellow">Optional</Badge>
+				</>
+			)}
+		</Headless.Label>
 	);
 }
 

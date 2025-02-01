@@ -143,7 +143,7 @@ export function ChatLayout({ group, authSession }) {
 		const isBrowser = typeof window !== "undefined";
 		if (!isBrowser) return;
 		if (!socket) return;
-		await new Promise((resolve) => setTimeout(resolve, 1500));
+		await new Promise((resolve) => setTimeout(resolve, 10));
 		socket.emit("join:private-group", group.id);
 	}
 

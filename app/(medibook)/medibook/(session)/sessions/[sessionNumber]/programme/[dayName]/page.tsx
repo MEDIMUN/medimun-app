@@ -1,12 +1,19 @@
-import { TopBar } from "@/app/(medibook)/medibook/client-components";
+import { SearchParamsButton, SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
+import { auth } from "@/auth";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
+import { MainWrapper } from "@/components/main-wrapper";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { authorize, s } from "@/lib/authorize";
 import { romanize } from "@/lib/romanize";
+import { cn } from "@/lib/utils";
 import prisma from "@/prisma/client";
+import { Ellipsis } from "lucide-react";
 
 export default async function SpecificDaySchedulePage(props) {
 	const dayName = (await props?.params)?.dayName;
 	const sessionNumber = (await props?.params)?.sessionNumber;
-	let friendlyDayName = "";
-	//conference-day-n or workshop-day-n
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
 	const dayNameLower = dayName.toUpperCase();
 	const dayNameParts = dayNameLower.split("-");
 
@@ -14,26 +21,16 @@ export default async function SpecificDaySchedulePage(props) {
 	const dayIndex = parseInt(dayNameParts[2]);
 
 	const selectedDayPrisma = await prisma.day.findMany({
-		where: {
-			session: {
-				number: sessionNumber,
-			},
-			type: dayType,
-		},
+		where: { session: { number: sessionNumber }, type: dayType },
 		skip: dayIndex - 1,
 		take: 1,
-		include: {
-			DayEvent: true,
-			session: true,
-		},
+		include: { DayEvent: true, session: true },
 	});
 
 	const selectedDay = selectedDayPrisma[0];
-
 	const sortedEvents = selectedDay.DayEvent.sort((a, b) => parseInt(a.startTime.replace(":", "")) - parseInt(b.startTime.replace(":", "")));
-
 	const currentTime = new Date();
-	const currentTimeString = currentTime.toTimeString().slice(0, 5); // Extract HH:mm
+	const currentTimeString = currentTime.toTimeString().slice(0, 5);
 
 	return (
 		<>
@@ -41,29 +38,55 @@ export default async function SpecificDaySchedulePage(props) {
 				hideBackdrop
 				hideSearchBar
 				buttonHref={`/medibook/sessions/${sessionNumber}/programme`}
-				buttonText={`Session ${romanize(selectedDay.session.number)} Days`}
-				title={
-					<>
-						{selectedDay.type === "CONFERENCE" ? "Conference" : "Workshop"} Day {dayIndex} Programme
-					</>
-				}></TopBar>
-			<ol className="divide-y divide-gray-200 text-sm/6 text-gray-500">
-				{sortedEvents.map((event) => {
-					const isCurrent = currentTimeString >= event.startTime && currentTimeString <= event.endTime;
-
-					return (
-						<li key={event.id} className={`py-4 sm:flex p-2 ${isCurrent ? "bg-zinc-200 !font-bold" : ""}`}>
-							<time dateTime="2022-01-17" className="min-w-28 flex-none">
-								{event.name}
-							</time>
-							<p className="mt-2 flex-auto font-semibold text-gray-900 sm:mt-0">{event.description}</p>
-							<p className="flex-none sm:ml-6">
-								<time dateTime="2022-01-13T14:30">{event.startTime}</time> - <time dateTime="2022-01-13T16:30">{event.endTime}</time>
-							</p>
-						</li>
-					);
-				})}
-			</ol>
+				buttonText={`Session ${romanize(selectedDay.session.numberInteger)} Days`}
+				title={`${selectedDay.type === "CONFERENCE" ? "Conference" : "Workshop"} Day ${dayIndex} Programme`}>
+				{isManagement && <SearchParamsButton searchParams={{ "create-day-event": selectedDay.id }}>Create New</SearchParamsButton>}
+			</TopBar>
+			<MainWrapper>
+				<Table>
+					<TableHead>
+						<TableRow>
+							{isManagement && (
+								<TableHeader>
+									<span className="sr-only">Actions</span>
+								</TableHeader>
+							)}
+							<TableHeader>Name</TableHeader>
+							<TableHeader>Start</TableHeader>
+							<TableHeader>End</TableHeader>
+							<TableHeader>Location</TableHeader>
+							<TableHeader>Description</TableHeader>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{sortedEvents.map((dayEvent) => {
+							const isCurrent = currentTimeString >= dayEvent.startTime && currentTimeString <= dayEvent.endTime;
+							return (
+								<TableRow className={cn(isCurrent ? "bg-zinc-200 !font-bold !text-black" : "")} key={dayEvent.id}>
+									{isManagement && (
+										<TableCell>
+											<Dropdown>
+												<DropdownButton plain aria-label="More options">
+													<Ellipsis width={18} />
+												</DropdownButton>
+												<DropdownMenu anchor="bottom end">
+													<SearchParamsDropDropdownItem searchParams={{ "edit-day-event": dayEvent.id }}>Edit</SearchParamsDropDropdownItem>
+													<SearchParamsDropDropdownItem searchParams={{ "delete-day-event": dayEvent.id }}>Delete</SearchParamsDropDropdownItem>
+												</DropdownMenu>
+											</Dropdown>
+										</TableCell>
+									)}
+									<TableCell>{dayEvent.name}</TableCell>
+									<TableCell>{dayEvent.startTime}</TableCell>
+									<TableCell>{dayEvent.endTime}</TableCell>
+									<TableCell>{dayEvent.location}</TableCell>
+									<TableCell>{dayEvent.description}</TableCell>
+								</TableRow>
+							);
+						})}
+					</TableBody>
+				</Table>
+			</MainWrapper>
 		</>
 	);
 }

@@ -1,45 +1,62 @@
 import { TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
-import { auth } from "@/auth";
 import { Button } from "@/components/button";
 import { MainWrapper } from "@/components/main-wrapper";
 import prisma from "@/prisma/client";
 import { CircleUserRound, MessageCircleMore } from "lucide-react";
 import { notFound } from "next/navigation";
+import { unstable_cacheLife as cacheLife } from "next/cache";
 
 export default async function MeetTheChairsPage(props) {
-	const authSession = await auth(); //FIXME: add chair edit button for mgmt
+	"use cache";
+	cacheLife("minutes");
+
 	const params = await props.params;
 	const committeeId = params.committeeId;
 	const sessionNumber = params.sessionNumber;
 
-	const chairs = await prisma.chair
-		.findMany({
+	const selectedCommittee = await prisma.committee
+		.findFirstOrThrow({
 			where: {
-				committee: {
-					session: {
-						number: sessionNumber,
-					},
-					OR: [{ id: committeeId }, { slug: committeeId }],
-				},
+				OR: [
+					{ id: committeeId, session: { number: sessionNumber } },
+					{ slug: committeeId, session: { number: sessionNumber } },
+				],
 			},
-			include: {
-				user: {
+			select: {
+				name: true,
+				slug: true,
+				id: true,
+				chair: {
 					include: {
-						Student: true,
+						user: {
+							select: {
+								displayName: true,
+								officialName: true,
+								officialSurname: true,
+								profilePicture: true,
+								bio: true,
+								id: true,
+								username: true,
+								Student: {
+									select: {
+										name: true,
+									},
+								},
+							},
+						},
 					},
 				},
-				committee: true,
 			},
 		})
 		.catch(notFound);
 
-	const sortedChairs = chairs.sort((a, b) => (a.user.Student?.name === "The English School" ? -1 : 1));
+	const sortedChairs = selectedCommittee.chair.sort((a, b) => (a.user.Student?.name === "The English School" ? -1 : 1));
 
 	return (
 		<>
 			<TopBar
-				buttonText={chairs[0].committee.name}
-				buttonHref={`/medibook/sessions/${sessionNumber}/committees/${committeeId}`}
+				buttonText={selectedCommittee.name}
+				buttonHref={`/medibook/sessions/${sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}`}
 				hideBackdrop
 				hideSearchBar
 				title="Meet the Chairs"
@@ -54,7 +71,7 @@ export default async function MeetTheChairsPage(props) {
 									<img
 										alt="Profile picture of the chair"
 										src={chair.user.profilePicture ? `/api/users/${chair.user.id}/avatar` : "/placeholders/pfp.jpg"}
-										className="aspect-[4/5] w-52 flex-none rounded-2xl object-cover"
+										className="aspect-square md:w-64 w-full flex-none rounded-2xl object-cover"
 									/>
 								</UserTooltip>
 								<div className="max-w-xl flex flex-col flex-auto gap-4">

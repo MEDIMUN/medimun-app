@@ -17,17 +17,3 @@ export const metadata: Metadata = {
 export default function Page() {
 	return <LoginForm />;
 }
-
-{
-	/* <AuthPageWrapper>
-			<Suspense fallback={<Icon icon="line-md:loading-loop" width={22} />}>
-				<LoginForm allowLogin={process.env.ALLOW_LOGIN} />
-			</Suspense>
-			<div className="mt-auto flex w-full justify-between rounded-small p-3 bg-content2">
-				<p className="text-xs">Don&apos;t have an account?</p>
-				<FastLink prefetch={true} href="/signup" className="text-xs text-primary">
-					Sign Up
-				</FastLink>
-			</div>
-		</AuthPageWrapper> */
-}

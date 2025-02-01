@@ -13,33 +13,21 @@ import { MainWrapper } from "@/components/main-wrapper";
 export default async function PoliciesPage(props) {
 	const searchParams = await props.searchParams;
 	const authSession = await auth();
-	const isManagement = authorize(authSession, [s.management]);
+	const isManagement = authorize(authSession, [s.director, s.sd]);
 	const query = searchParams["search"];
 	const page = parseInt(searchParams["page"]) || 1;
 
 	const policies = await prisma.policy
 		.findMany({
-			where: {
-				title: {
-					contains: query,
-					mode: "insensitive",
-				},
-			},
-			orderBy: {
-				title: "asc",
-			},
+			where: { title: { contains: query, mode: "insensitive" } },
+			orderBy: { title: "asc" },
 			skip: (page - 1) * 10,
 			take: 10,
 		})
 		.catch(notFound);
 
 	const totalItems = await prisma.policy.count({
-		where: {
-			title: {
-				contains: query,
-				mode: "insensitive",
-			},
-		},
+		where: { title: { contains: query, mode: "insensitive" } },
 	});
 
 	return (

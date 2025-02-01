@@ -5,12 +5,17 @@ import { SearchParamsButton, TopBar } from "../../../client-components";
 import { authorize, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { MainWrapper } from "@/components/main-wrapper";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata(props: { params: Promise<{ policySlug: string }> }) {
 	const params = await props.params;
-	const selectedPolicy = await prisma.policy.findFirst({
-		where: { slug: params.policySlug },
-	});
+	const selectedPolicy = await prisma.policy
+		.findFirstOrThrow({
+			where: {
+				OR: [{ slug: params.policySlug }, { id: params.policySlug }],
+			},
+		})
+		.catch(notFound);
 	return {
 		title: `${selectedPolicy.title} - Conference Policies`,
 		description: selectedPolicy.description,
@@ -20,8 +25,11 @@ export async function generateMetadata(props: { params: Promise<{ policySlug: st
 export default async function Page(props) {
 	const params = await props.params;
 	const authSession = await auth();
-	const selectedPolicy = await prisma.policy.findFirst({ where: { slug: params.policySlug } });
-	const isManagement = authorize(authSession, [s.management]);
+	const selectedPolicy = await prisma.policy
+		.findFirstOrThrow({ where: { OR: [{ slug: params.policySlug }, { id: params.policySlug }] } })
+		.catch(notFound);
+
+	const isManagement = authorize(authSession, [s.director, s.sd]);
 
 	return (
 		<>
@@ -30,14 +38,12 @@ export default async function Page(props) {
 				hideSearchBar
 				buttonHref="/medibook/policies"
 				buttonText="All Policies"
-				subheading={selectedPolicy.description}
+				subheading={selectedPolicy?.description ? selectedPolicy.description : ""}
 				title={selectedPolicy.title}>
 				{isManagement && (
 					<>
-						<SearchParamsButton searchParams={{ "edit-policy": selectedPolicy.slug }}>Edit</SearchParamsButton>
-						<SearchParamsButton color="red" searchParams={{ "delete-policy": selectedPolicy.slug }}>
-							Delete
-						</SearchParamsButton>
+						<SearchParamsButton searchParams={{ "edit-policy": selectedPolicy.id }}>Edit</SearchParamsButton>
+						<SearchParamsButton searchParams={{ "delete-policy": selectedPolicy.id }}>Delete</SearchParamsButton>
 					</>
 				)}
 			</TopBar>
