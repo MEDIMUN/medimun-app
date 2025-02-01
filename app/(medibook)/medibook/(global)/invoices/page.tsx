@@ -3,8 +3,10 @@ import prisma from "@/prisma/client";
 import InvoicesPage from "@/global-pages/invoices/page";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 export default async function SchoolInvoicesPage({ params, searchParams }) {
+	await connection();
 	const authSession = await auth();
 	const { page } = await searchParams;
 	const currentPage = parseInt(page) || 1;

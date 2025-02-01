@@ -9,8 +9,10 @@ import Confirm from "@/public/assets/confirm.gif";
 import { Text } from "@/components/text";
 import { ActionList } from "@/app/components/actions-list";
 import { MainWrapper } from "@/components/main-wrapper";
+import { connection } from "next/server";
 
 export default async function RegistrationPage(props) {
+	await connection();
 	const authSession = await auth();
 	if (!authSession) notFound();
 

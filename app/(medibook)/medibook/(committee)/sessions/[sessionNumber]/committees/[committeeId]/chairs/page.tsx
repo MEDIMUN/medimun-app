@@ -5,12 +5,12 @@ import prisma from "@/prisma/client";
 import { CircleUserRound, MessageCircleMore } from "lucide-react";
 import { notFound } from "next/navigation";
 import { unstable_cacheLife as cacheLife } from "next/cache";
+import { Suspense } from "react";
+import { connection } from "next/server";
 
-export default async function MeetTheChairsPage(props) {
+export async function ChairsTable({ params }) {
 	"use cache";
 	cacheLife("minutes");
-
-	const params = await props.params;
 	const committeeId = params.committeeId;
 	const sessionNumber = params.sessionNumber;
 
@@ -100,6 +100,29 @@ export default async function MeetTheChairsPage(props) {
 					})}
 				</ul>
 			</MainWrapper>
+		</>
+	);
+}
+
+export default async function MeetTheChairsPage(props) {
+	await connection();
+
+	const params = await props.params;
+
+	return (
+		<>
+			<Suspense
+				fallback={
+					<TopBar
+						buttonText={"Committee"}
+						buttonHref={`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}`}
+						hideBackdrop
+						hideSearchBar
+						title="Meet the Chairs"
+					/>
+				}>
+				<ChairsTable params={params} />
+			</Suspense>
 		</>
 	);
 }

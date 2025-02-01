@@ -4,8 +4,10 @@ import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import { MessageSidebar } from "./client-components";
 import { TriangleAlert } from "lucide-react";
+import { connection } from "next/server";
 
 export default async function InboxesPage({ children, searchParams }) {
+	await connection();
 	const authSession = await auth();
 
 	if (!authSession) {

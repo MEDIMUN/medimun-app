@@ -21,6 +21,7 @@ import { PageCreateAnnouncement } from "./@announcement/pageCreateAnnouncement";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { MainWrapper } from "@/components/main-wrapper";
 import { ResourceViewer } from "@/components/resource-viewer";
+import { connection } from "next/server";
 
 const columns = ["Name", "Uploader", "Date Uploaded", "Tags"];
 
@@ -145,6 +146,7 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 const itemsPerPage = 10;
 
 export async function AnnouncementsTable({ title, announcements, baseUrl, totalItems, buttonHref, buttonText, showPublishButton }) {
+	await connection();
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
 	return (

@@ -8,8 +8,10 @@ import { SearchParamsDropDropdownItem, TopBar } from "../../../client-components
 import { authorize, authorizeChairDelegate, authorizeManagerMember, authorizeSchoolDirectorStudent, s } from "@/lib/authorize";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 export default async function Page(props) {
+	await connection();
 	const params = await props.params;
 	const authSession = await auth();
 	const selectedUser = await prisma.user.findFirst({
