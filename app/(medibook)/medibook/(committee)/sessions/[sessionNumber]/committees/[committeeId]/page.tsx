@@ -11,8 +11,7 @@ import { connection } from "next/server";
 import { TopBar } from "@/components/top-bar";
 import { Suspense } from "react";
 
-export default async function Page(props) {
-	await connection();
+export default function Page(props) {
 	return (
 		<Suspense fallback={<TopBar title="Committee" />}>
 			<CommitteePage {...props} />
