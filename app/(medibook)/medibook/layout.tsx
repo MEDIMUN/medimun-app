@@ -11,7 +11,6 @@ import type { Metadata } from "next";
 import { JSX, Suspense } from "react";
 import { SocketHandler } from "./client-components";
 import ThemedHTMLElement from "./html-element";
-import { connection } from "next/server";
 
 export const metadata: Metadata = {
 	title: {
