@@ -10,8 +10,12 @@ import { Suspense } from "react";
 async function ChairsTable(props) {
 	await connection();
 	const { params } = await props.params;
-	const committeeId = params.committeeId;
-	const sessionNumber = params.sessionNumber;
+	const committeeId = params?.committeeId;
+	const sessionNumber = params?.sessionNumber;
+
+	if (!committeeId || !sessionNumber) {
+		return notFound();
+	}
 
 	const selectedCommittee = await prisma.committee
 		.findFirstOrThrow({
