@@ -1,5 +1,5 @@
 # Use oven/bun as the base image for building and runtime
-FROM oven/bun:1 AS base
+FROM node:22-alpine as builder
 
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
@@ -7,7 +7,7 @@ ENV DATABASE_URL=$DATABASE_URL
 # Copy package.json and install dependencies
 COPY package.json /tmp/package.json
 COPY prisma /tmp/prisma
-RUN cd /tmp && bun install --ignore-engines
+RUN cd /tmp && npm install --ignore-engines --legacy-peer-deps
 RUN mkdir -p /usr/src/app && cp -a /tmp/node_modules /usr/src/app/
 
 # Set the working directory
@@ -18,10 +18,10 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 COPY . /usr/src/app
 
 # Generate Prisma client
-RUN bunx prisma generate
+RUN npx prisma generate
 
 # Build the application
-RUN bun run build
+RUN npm run build
 
 # Set environment for production and expose the app
 ENV NODE_ENV production
@@ -29,4 +29,4 @@ ENV PORT 3000
 EXPOSE 3000
 
 # Run the application
-CMD ["bun", "start"]
+CMD ["npm", "start"]
