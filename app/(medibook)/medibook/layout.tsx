@@ -59,7 +59,7 @@ async function SessionsSidebar() {
 	return <AppSidebar authSession={authSession} sessions={sessions} />;
 }
 
-export default async function RootLayout({
+export default function RootLayout({
 	children,
 	userModals,
 	resourceModals,
@@ -75,8 +75,7 @@ export default async function RootLayout({
 	topicsModals,
 	privateMessageModals,
 	invoiceModals,
-}): Promise<JSX.Element> {
-	await connection();
+}): JSX.Element {
 	return (
 		<ThemedHTMLElement>
 			<head>
