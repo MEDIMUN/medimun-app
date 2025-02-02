@@ -1,6 +1,7 @@
-import { TopBar, UserTooltip } from "@/app/(medibook)/medibook/client-components";
+import { UserTooltip } from "@/app/(medibook)/medibook/client-components";
 import { Button } from "@/components/button";
 import { MainWrapper } from "@/components/main-wrapper";
+import { TopBar } from "@/components/top-bar";
 import prisma from "@/prisma/client";
 import { CircleUserRound, MessageCircleMore } from "lucide-react";
 import { notFound } from "next/navigation";
