@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { ResourcePrivacyTypes } from "@prisma/client";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const itemsPerPage = 10;
 
@@ -108,11 +109,13 @@ export async function CommitteeResources(props) {
 					<SearchParamsButton searchParams={{ uploadcommitteeresource: selectedCommittee.id }}>Upload Committee Resource</SearchParamsButton>
 				)}
 			</TopBar>
-			<ResourcesTable
-				baseUrl={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/resources`}
-				resources={prismaResources}
-				isManagement={isManagement}
-			/>
+			<MainWrapper>
+				<ResourcesTable
+					baseUrl={`/medibook/sessions/${params.sessionNumber}/committees/${selectedCommittee.slug || selectedCommittee.id}/resources`}
+					resources={prismaResources}
+					isManagement={isManagement}
+				/>
+			</MainWrapper>
 			<Paginator itemsOnPage={prismaResources.length} totalItems={totalItems} itemsPerPage={itemsPerPage} />
 		</>
 	);

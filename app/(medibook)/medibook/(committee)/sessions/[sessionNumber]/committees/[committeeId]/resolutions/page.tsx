@@ -7,12 +7,14 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 export default function Page(props) {
-	<Suspense fallback={<div>Loading...</div>}>
-		<CommitteeResolutions {...props} />
-	</Suspense>;
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<CommitteeResolutions {...props} />
+		</Suspense>
+	);
 }
 
-export async function CommitteeResolutions(props) {
+async function CommitteeResolutions(props) {
 	await connection();
 	const params = await props.params;
 	const authSession = await auth();
@@ -51,6 +53,7 @@ export async function CommitteeResolutions(props) {
 			<TopBar
 				buttonHref={`/medibook/sessions/${selectedSession.number}/committees/${selectedSession.committee[0].slug || selectedSession.committee[0].id}`}
 				buttonText={selectedSession.committee[0].name}
+				subheading="Coming Soon"
 				title="Committee Resolutions">
 				<SearchParamsButton disabled searchParams={{ "add-committee-resolution": true }}>
 					Add Resolution
