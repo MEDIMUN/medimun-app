@@ -39,6 +39,7 @@ export function Listbox<T>({
 					"after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:ring-inset after:ring-transparent after:data-[focus]:ring-2 after:data-[focus]:ring-blue-500",
 					// Disabled state
 					"data-[disabled]:opacity-50 before:data-[disabled]:bg-zinc-950/5 before:data-[disabled]:shadow-none",
+					"z-[52]"
 				])}>
 				<Headless.ListboxSelectedOption
 					as="span"
@@ -92,7 +93,7 @@ export function Listbox<T>({
 					"shadow-lg ring-1 ring-zinc-950/10 dark:ring-inset dark:ring-white/10",
 					// Transitions
 					"transition-opacity duration-100 ease-in data-[transition]:pointer-events-none data-[closed]:data-[leave]:opacity-0",
-					"z-[50]"
+					"z-[52]"
 				)}>
 				{options}
 			</Headless.ListboxOptions>
@@ -135,7 +136,8 @@ export function ListboxOption<T>({
 							// Forced colors mode
 							"forced-color-adjust-none forced-colors:data-[focus]:bg-[Highlight] forced-colors:data-[focus]:text-[HighlightText]",
 							// Disabled
-							"data-[disabled]:opacity-50"
+							"data-[disabled]:opacity-50",
+							"z-[51]"
 						)}>
 						<svg
 							className="relative hidden size-5 self-center stroke-current group-data-[selected]/option:inline sm:size-4"
