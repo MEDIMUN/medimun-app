@@ -31,7 +31,7 @@ export function FinalAssignDelegates({ users, delegateProposalsInitial, selected
 	const [selectedDeleteProposal, setSelectedDeleteProposal] = useState(null);
 	const [addStudentsToProposal, setAddStudentsToProposal] = useState(null);
 	const router = useRouter();
-	const socket = useSocket();
+	const { socket } = useSocket();
 
 	useEffect(() => {
 		if (!socket) return;

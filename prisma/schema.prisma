@@ -476,27 +476,36 @@ model Manager {
 }
 
 model Delegate {
-  id               String             @id @default(uuid())
-  country          String?
+  id                       String                     @id @default(uuid())
+  country                  String?
   //
-  user             User               @relation(fields: [userId], references: [id])
-  userId           String
+  user                     User                       @relation(fields: [userId], references: [id])
+  userId                   String
   //
-  committee        Committee          @relation(fields: [committeeId], references: [id], onDelete: Cascade)
-  committeeId      String
-  CommitteeMessage CommitteeMessage[]
+  committee                Committee                  @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+  committeeId              String
+  CommitteeMessage         CommitteeMessage[]
+  Resolution               Resolution[]
+  CoSubmitters             CoSubmitters[]
+  CoSubmitterInvitation    CoSubmitterInvitation[]
+  Alliance                 Alliance[]
+  AllianceMember           AllianceMember[]
+  AllianceMemberInvitation AllianceMemberInvitation[]
+  PreambulatoryClause      PreambulatoryClause[]
+  OperativeClause          OperativeClause[]
 
   @@unique([userId, committeeId])
 }
 
 model Member {
-  id           Int        @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
   //
-  user         User       @relation(fields: [userId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
   userId       String
   //
-  department   Department @relation(fields: [departmentId], references: [id])
+  department   Department   @relation(fields: [departmentId], references: [id])
   departmentId String
+  Resolution   Resolution[]
 
   @@unique([userId, departmentId])
 }
@@ -537,22 +546,22 @@ enum RoleType {
 }
 
 model Committee {
-  id                                   String             @id @unique @default(uuid())
+  id                                   String                @id @unique @default(uuid())
   name                                 String
   description                          String?
   shortName                            String?
   slug                                 String?
-  isVisible                            Boolean            @default(false)
+  isVisible                            Boolean               @default(false)
   //
-  isPositionPapersVisible              Boolean            @default(false)
-  isPositionPaperSubmissionForceOpen   Boolean            @default(false)
-  isPositionPaperSubmissionAutoOpen    Boolean            @default(false)
+  isPositionPapersVisible              Boolean               @default(false)
+  isPositionPaperSubmissionForceOpen   Boolean               @default(false)
+  isPositionPaperSubmissionAutoOpen    Boolean               @default(false)
   positionPaperSubmissionAutoOpenTime  DateTime?
   positionPaperSubmissionAutoCloseTime DateTime?
   //
-  type                                 CommitteeType      @default(GENERALASSEMBLY)
+  type                                 CommitteeType         @default(GENERALASSEMBLY)
   //
-  session                              Session            @relation(fields: [sessionId], references: [id])
+  session                              Session               @relation(fields: [sessionId], references: [id])
   sessionId                            String
   //
   delegate                             Delegate[]
@@ -563,6 +572,10 @@ model Committee {
   Topic                                Topic[]
   CommitteeMessage                     CommitteeMessage[]
   PositionPaper                        PositionPaper[]
+  Resolution                           Resolution[]
+  PreambulatoryClause                  PreambulatoryClause[]
+  OperativeClause                      OperativeClause[]
+  Alliance                             Alliance[]
 
   @@unique([sessionId, name])
   @@unique([sessionId, shortName])
@@ -596,13 +609,15 @@ enum PositionPaperStatus {
 }
 
 model Topic {
-  id          String    @id @default(nanoid())
+  id          String       @id @default(nanoid())
   //
   title       String
   description String?
   //
-  committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+  committee   Committee    @relation(fields: [committeeId], references: [id], onDelete: Cascade)
   committeeId String
+  Resolution  Resolution[]
+  Alliance    Alliance[]
 }
 
 model ExtraCountry {
@@ -705,6 +720,173 @@ model School {
   PendingUser                           PendingUser[]
 }
 
+// RESOLUTIONS ///////////////////////////////////////////////////////////
+
+model Resolution {
+  id                    String                  @id @default(nanoid())
+  title                 String
+  status                ResolutionStatus        @default(DRAFT)
+  plenaryStatus         PlenaryStatus           @default(NOT_SELECTED)
+  //
+  number                Int                     @unique @default(autoincrement())
+  timeCreated           DateTime                @default(now())
+  //
+  topic                 Topic                   @relation(fields: [topicId], references: [id])
+  topicId               String
+  //
+  Resource              Resource?               @relation(fields: [resourceId], references: [id])
+  resourceId            String?
+  //
+  committee             Committee               @relation(fields: [committeeId], references: [id])
+  committeeId           String
+  //
+  mainSubmitter         Delegate                @relation(fields: [mainSubmitterId], references: [id])
+  mainSubmitterId       String
+  //
+  editor                Member?                 @relation(fields: [editorId], references: [id])
+  editorId              Int?
+  //
+  CoSubmitters          CoSubmitters[]
+  PreambulatoryClause   PreambulatoryClause[]
+  OperativeClause       OperativeClause[]
+  CoSubmitterInvitation CoSubmitterInvitation[]
+}
+
+model Alliance {
+  id                       String                     @id @default(nanoid())
+  //
+  number                   Int                        @unique @default(autoincrement())
+  timeCreated              DateTime                   @default(now())
+  //
+  topic                    Topic                      @relation(fields: [topicId], references: [id])
+  topicId                  String
+  //
+  committee                Committee                  @relation(fields: [committeeId], references: [id])
+  committeeId              String
+  //
+  mainSubmitter            Delegate                   @relation(fields: [mainSubmitterId], references: [id])
+  mainSubmitterId          String
+  //
+  AllianceMember           AllianceMember[]
+  PreambulatoryClause      PreambulatoryClause[]
+  OperativeClause          OperativeClause[]
+  AllianceMemberInvitation AllianceMemberInvitation[]
+}
+
+model AllianceMember {
+  id         String   @id @default(nanoid())
+  delegate   Delegate @relation(fields: [delegateId], references: [id])
+  delegateId String
+  alliance   Alliance @relation(fields: [allianceId], references: [id])
+  allianceId String
+  type       String   @default("CO_SUBMITTER")
+
+  @@unique([delegateId, allianceId])
+}
+
+model AllianceMemberInvitation {
+  id         String   @id @default(nanoid())
+  delegate   Delegate @relation(fields: [delegateId], references: [id])
+  delegateId String
+  alliance   Alliance @relation(fields: [allianceId], references: [id])
+  allianceId String
+
+  @@unique([delegateId, allianceId])
+}
+
+model PreambulatoryClause {
+  id              String                    @id @default(nanoid())
+  index           Int                       @default(autoincrement())
+  startingPhrase  PreambulatoryPhrases
+  status          PreambulatoryClauseStatus @default(DRAFT)
+  body            String
+  subClauses      String?
+  resolution      Resolution                @relation(fields: [resolutionId], references: [id])
+  resolutionId    String
+  scCommittee     Committee?                @relation(fields: [scCommitteeId], references: [id])
+  scCommitteeId   String?
+  alliance        Alliance?                 @relation(fields: [allianceId], references: [id])
+  allianceId      String?
+  mainSUbmitter   Delegate?                 @relation(fields: [mainSubmitterId], references: [id])
+  mainSubmitterId String?
+}
+
+enum PreambulatoryClauseStatus {
+  DRAFT
+  SENT_TO_CHAIRS
+  IN_DEBATE
+  VOTING
+  ADOPTED
+}
+
+model OperativeClause {
+  id              String                @id @default(nanoid())
+  index           Int                   @default(autoincrement())
+  startingPhrase  OperativePhrases
+  status          OperativeClauseStatus @default(DRAFT)
+  body            String
+  subClauses      String?
+  resolution      Resolution            @relation(fields: [resolutionId], references: [id])
+  resolutionId    String
+  scCommittee     Committee?            @relation(fields: [scCommitteeId], references: [id])
+  scCommitteeId   String?
+  alliance        Alliance?             @relation(fields: [allianceId], references: [id])
+  allianceId      String?
+  mainSubmitter   Delegate?             @relation(fields: [mainSubmitterId], references: [id])
+  mainSubmitterId String?
+}
+
+enum OperativeClauseStatus {
+  DRAFT
+  SENT_TO_CHAIRS
+  IN_DEBATE
+  VOTING
+  ADOPTED
+}
+
+enum ResolutionStatus {
+  DRAFT
+  SENT_TO_CHAIRS
+  SENT_TO_APPROVAL_PANEL
+  ASSIGNED_TO_EDITOR
+  SENT_BACK_TO_MANAGER
+  SENT_BACK_TO_COMMITTEE
+  IN_DEBATE
+  VOTING
+  ADOPTED
+  FAILED
+}
+
+enum PlenaryStatus {
+  NOT_SELECTED
+  SELECTED
+  IN_DEBATE
+  VOTING
+  ADOPTED
+  FAILED
+}
+
+model CoSubmitters {
+  id           String     @id @default(nanoid())
+  delegate     Delegate   @relation(fields: [delegateId], references: [id])
+  delegateId   String
+  resolution   Resolution @relation(fields: [resolutionId], references: [id])
+  resolutionId String
+  type         String     @default("CO_SUBMITTER")
+
+  @@unique([delegateId, resolutionId])
+}
+
+model CoSubmitterInvitation {
+  id           String     @id @default(nanoid())
+  delegate     Delegate   @relation(fields: [delegateId], references: [id])
+  delegateId   String
+  resolution   Resolution @relation(fields: [resolutionId], references: [id])
+  resolutionId String
+
+  @@unique([delegateId, resolutionId])
+}
+
 // ROLL CALLS ///////////////////////////////////////////////////////////
 
 model RollCall {
@@ -788,6 +970,7 @@ model Resource {
   CommitteeMessage   CommitteeMessage?      @relation(fields: [committeeMessageId], references: [id])
   committeeMessageId String?
   PositionPaper      PositionPaper[]
+  Resolution         Resolution[]
 }
 
 // ANNOUNCEMENT ///////////////////////////////////////////////////////////
@@ -978,12 +1161,172 @@ model ApplicationSchoolDirector {
   @@unique([userId, schoolId, sessionId])
 }
 
-//model Role {
-//  @@unique([userId, sessionId, type])
-//  @@unique([userId, schoolId, sessionId])
-//  @@unique([userId, country, committeeId])
-//  @@unique([userId, type, departmentId])
-//  @@unique([userId, type, committeeId])
-//  @@unique([userId, committeeId])
-//  @@unique([userId, departmentId])
-//}
+enum PreambulatoryPhrases {
+  Acknowledging
+  Acting
+  Affirming
+  Alarmed_by
+  Alarmed
+  Anxious
+  Appreciating
+  Approving
+  Aware_of
+  Bearing_in_mind
+  Believing
+  Cognizant
+  Concerned
+  Confident
+  Conscious
+  Considering
+  Contemplating
+  Convinced
+  Declaring
+  Deeply_concerned
+  Deeply_conscious
+  Deeply_convinced
+  Deeply_disturbed
+  Deeply_regretting
+  Deploring
+  Desiring
+  Determined
+  Emphasizing
+  Encouraged
+  Expecting
+  Expressing_appreciation
+  Noting_with_approval
+  Expressing_concern_also
+  Expressing_concern
+  Expressing_its_appreciation
+  Expressing_its_satisfaction
+  Expressing_satisfaction
+  Firmlyconvinced
+  Fulfilling
+  Fully_alarmed
+  Fully_aware
+  Fully_believing
+  Further_deploring
+  Further_recalling
+  Guided_by
+  Having_considered
+  Having_considered_further
+  Having_devoted_attention
+  Having_examined
+  Having_heard
+  Having_received
+  Having_reviewed
+  Having_studied
+  Having_adopted
+  Having_approved
+  Having_decided
+  Keeping_in_mind
+  Mindful
+  Noting
+  Noting_further
+  Noting_with_deep_concern
+  Noting_with_regret
+  Noting_with_satisfaction
+  Observing
+  Reaffirming
+  Reaffirming_also
+  Realizing
+  Recalling
+  Recalling_also
+  Recognizing
+  Recognizing_also
+  Recognizing_with_satisfaction
+  Referring
+  Regretting
+  Reiterating
+  Reiterating_its_call_for
+  Reminding
+  Seeking
+  Seized
+  Stressing
+  Taking_into_account
+  Taking_into_consideration
+  Taking_note
+  Taking_note_also
+  Taking_note_further
+  Underlining
+  Viewing_with_appreciation
+  Viewing_with_apprehension
+  Welcoming
+  Welcoming_also
+}
+
+enum OperativePhrases {
+  Accepts
+  Acknowledges
+  Adopts
+  Advises
+  Affirms
+  Also_calls_for
+  Also_recommends
+  Also_strongly_condemns
+  Also_urges
+  Appeals
+  Appreciates
+  Approves
+  Authorizes
+  Calls
+  Calls_for
+  Calls_upon
+  Commends
+  Concurs
+  Condemns
+  Confirms
+  Congratulates
+  Considers
+  Decides
+  Declares
+  Declares_accordingly
+  Demands
+  Deplores
+  Designates
+  Directs
+  Draws_the_attention
+  Emphasizes
+  Encourages
+  Endorses
+  Expresses_its_appreciation
+  Expresses_its_hope
+  Expresses_its_regret
+  Further_invites
+  Further_proclaims
+  Further_recommends
+  Further_reminds
+  Further_requests
+  Further_resolves
+  Has_resolved
+  Instructs
+  Introduces
+  Invites
+  Notes
+  Notes_with_satisfaction
+  Proclaims
+  Reaffirms
+  Recalls
+  Recognizes
+  Recommends
+  Regrets
+  Reiterates
+  Reminds
+  Renews_its_appeal
+  Repeats
+  Requests
+  Requires
+  Solemnly_affirms
+  Stresses
+  Strongly_advises
+  Strongly_condemns
+  Strongly_encourages
+  Suggests
+  Supports
+  Takes_note_of
+  Transmits
+  Trusts
+  Underlines
+  Underscores
+  Urges
+  Welcomes
+}

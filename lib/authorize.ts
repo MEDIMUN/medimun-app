@@ -1,4 +1,5 @@
 import { RoleObject } from "@/auth";
+import { DepartmentType } from "@prisma/client";
 import { Session } from "next-auth";
 
 export enum s {
@@ -84,6 +85,18 @@ export const authorize = (userdata: Session | null, scope: s[]): boolean => {
 
 	return false;
 };
+
+export function authorizeMemberDepartmentType(roleObject, departmentTypes: DepartmentType[]): boolean {
+	if (!roleObject) return false;
+	const managerRoles = roleObject?.filter((role) => role?.roleIdentifier === "member");
+	return !!managerRoles?.some((role) => role?.departmentTypes?.some((type) => departmentTypes?.includes(type)));
+}
+
+export function authorizeManagerDepartmentType(roleObject, departmentTypes: DepartmentType[]): boolean {
+	if (!roleObject) return false;
+	const managerRoles = roleObject?.filter((role) => role?.roleIdentifier === "manager");
+	return !!managerRoles?.some((role) => role?.departmentTypes?.some((type) => departmentTypes?.includes(type)));
+}
 
 export const authorizeDirect = (userdata: Session | null, scope: s[]): boolean => {
 	if (!userdata) return false;

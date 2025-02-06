@@ -12,13 +12,25 @@ interface SocketContextType {
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 // Custom hook to use the socket context in other components
-export const useSocket = (): Socket => {
+export const useSocket = (): { socket: Socket | null; isConnected: boolean | undefined } => {
 	const context = useContext(SocketContext);
+	const [connected, setConnected] = useState<boolean | undefined>(true);
 	if (context === undefined) {
 		throw new Error("useSocket must be used within a SocketProvider");
 	}
 
-	return context.socket;
+	context?.socket?.on("connect", () => {
+		setConnected(true);
+	});
+
+	context?.socket?.on("disconnect", () => {
+		setConnected(false);
+	});
+
+	return {
+		socket: context.socket,
+		isConnected: connected,
+	};
 };
 
 // Define the props for the provider

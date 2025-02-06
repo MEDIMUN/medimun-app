@@ -393,7 +393,7 @@ export function SearchParamsButton({
 }
 
 export function SocketHandler() {
-	const socket = useSocket();
+	const { socket } = useSocket();
 	const router = useRouter();
 	const [isConnected, setIsConnected] = useState(false);
 	const [notConnectedFor30Seconds, setNotConnectedFor30Seconds] = useState(false);

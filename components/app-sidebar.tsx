@@ -40,28 +40,12 @@ import { NavCollapsible } from "@/components/nav-collapsible";
 import { SimpleSection } from "@/components/nav-simple-section";
 import { NavUser } from "@/components/nav-user";
 import { SessionSwitcher } from "@/components/session-switcher";
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarFooter,
-	SidebarGroup,
-	SidebarGroupLabel,
-	SidebarHeader,
-	SidebarMenu,
-	SidebarRail,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarRail } from "@/components/ui/sidebar";
 import { FastLink } from "./fast-link";
 import { useSession } from "next-auth/react";
 import { arrayFromNumber } from "@/lib/array-from-number";
 import { useSidebarContext } from "@/app/(medibook)/medibook/providers";
-import {
-	authorize,
-	authorizeChairCommittee,
-	authorizeDelegateCommittee,
-	authorizeManagerDepartment,
-	authorizeMemberDepartment,
-	s,
-} from "@/lib/authorize";
+import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, authorizeDirect, authorizeManagerDepartment, authorizeMemberDepartment, s } from "@/lib/authorize";
 import { romanize } from "@/lib/romanize";
 
 // This is sample data
@@ -312,6 +296,12 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
 			isVisible: true,
 		},
 		{
+			title: "Approval Panel",
+			url: `${sessionBasePath}/approval-panel`,
+			icon: CalendarRange,
+			isVisible: true,
+		},
+		{
 			title: "Roll Calls",
 			url: `${sessionBasePath}/roll-calls`,
 			icon: ListTodo,
@@ -331,9 +321,11 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
 		},
 	].filter((item) => item.isVisible);
 
+	const isChair = authorizeDirect(authSession, [s.chair]);
+
 	const user = {
 		name: `${authSession?.user?.officialName} ${authSession?.user?.officialSurname}`,
-		email: authSession?.user.currentRoleNames[0] || authSession?.user.id,
+		email: authSession?.user.currentRoleNames[0] ? (authSession?.user.currentRoleNames[0] == "School Director" && isChair ? "Chair" : authSession?.user.currentRoleNames[0]) : authSession?.user.id,
 		avatar: `/api/users/${authSession?.user?.id}/avatar`,
 		id: authSession?.user?.id,
 		username: authSession?.user?.username,

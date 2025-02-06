@@ -10,7 +10,10 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 import { JSX, Suspense } from "react";
 import { SocketHandler } from "./client-components";
-import ThemedHTMLElement from "./html-element";
+/* import ThemedHTMLElement from "./html-element";
+ */ import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import { cn } from "@/lib/cn";
 
 export const metadata: Metadata = {
 	title: {
@@ -76,7 +79,7 @@ export default function RootLayout({
 	invoiceModals,
 }): JSX.Element {
 	return (
-		<ThemedHTMLElement>
+		<html lang="en" className={cn("antialiased h-full", GeistSans.variable, GeistMono.variable)} suppressHydrationWarning>
 			<head>
 				<link rel="manifest" href="/manifest.json" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
@@ -84,7 +87,7 @@ export default function RootLayout({
 				<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
 				<script defer src="https://cloud.umami.is/script.js" data-website-id="5a019229-4342-4469-95e7-15fce101a3da"></script>
 			</head>
-			<body className="h-full w-full !font-sans flex flex-col">
+			<body className="h-full w-full !font-sans flex flex-col dark:bg-black dark:text-white lg:white text-zinc-950 ">
 				<NoScript />
 				<Providers>
 					<Suspense fallback={null}>
@@ -111,17 +114,15 @@ export default function RootLayout({
 						</Suspense>
 						<div className="max-h-dvh relative w-full overflow-y-scroll overflow-x-hidden">
 							<main id="main-element" className="overflow-x-hidden w-full overflow-y-scroll">
-								<Suspense fallback={null}>
-									<div className="h-[65px] shadow-sm"></div>
-									{children}
-									{announcement}
-								</Suspense>
+								<div className="h-[65px] shadow-sm"></div>
+								{children}
+								{announcement}
 							</main>
 						</div>
 					</SidebarProvider>
 					<Toaster richColors visibleToasts={4} closeButton />
 				</Providers>
 			</body>
-		</ThemedHTMLElement>
+		</html>
 	);
 }

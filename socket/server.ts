@@ -3,6 +3,7 @@ import { createAdapter } from "@socket.io/redis-adapter";
 import { Redis } from "ioredis";
 import { socketAuth } from "@/socket/auth";
 import prisma from "@/prisma/client";
+import type { Clause, ClauseType } from "@/types/clause";
 import {
 	authorize,
 	authorizeChairCommittee,
@@ -17,6 +18,8 @@ import { generateUserData, generateUserDataObject } from "@/lib/user";
 import { handleSocketRollCall } from "./roll-call";
 import { privateMessageHandler } from "./private-message";
 import { committeeMessageHandler } from "./committee-message";
+import { ClauseUpdateEvent, SubClauseUpdateEvent, SubSubClauseUpdateEvent } from "@/types/socket-events";
+import { handleCreateClause, handleJoinResolution, handleUpdateClause } from "./resolution";
 
 declare global {
 	var io: Server | undefined;
@@ -70,6 +73,20 @@ export const initializeSocket = (server: any): Server => {
 					setIsLoading(false);
 				}
 			}; */
+			/////////////////////////////////
+			socket.on("join-resolution", (resolutionId: string) => {
+				handleJoinResolution(socket, resolutionId);
+			});
+
+			socket.on("clause:create", async (event: { type: ClauseType; clause: Omit<Clause, "id">; resolutionId: string }) => {
+				await handleCreateClause(io, socket, event);
+			});
+
+			socket.on("clause:update", async (event: ClauseUpdateEvent) => {
+				await handleUpdateClause(io, socket, event);
+			});
+
+			///////////////////////////////////
 
 			socket.on("update:committee-roll-call", async ({ dayId, rollCallId, userId, type, action }) => {
 				handleSocketRollCall(socket, { dayId, rollCallId, userId, type, action });
@@ -82,6 +99,7 @@ export const initializeSocket = (server: any): Server => {
 					where: { id: selectedCommitteeId },
 					include: { session: { select: { Day: true } } },
 				});
+
 				const selectedDay = selectedCommittee.session.Day.find((day) => day.id === selectedDayId);
 				if (!selectedDay) {
 					socket.emit("error", "Day not found");

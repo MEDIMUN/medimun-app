@@ -195,7 +195,9 @@ export const Button = forwardRef(function Button(
 
 	return "href" in props ? (
 		<FastLink {...props} ref={ref as React.ForwardedRef<FastLink>}>
-			<SButton className={classes}>{loading ? <Spinner size="sm" /> : children}</SButton>
+			<SButton variant={plain ? "ghost" : undefined} className={classes}>
+				{loading ? <Spinner size="sm" /> : children}
+			</SButton>
 		</FastLink>
 	) : (
 		<SButton variant={plain ? "ghost" : undefined} {...props} className={clsx(classes, "cursor-default")} ref={ref}>

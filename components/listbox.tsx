@@ -39,7 +39,7 @@ export function Listbox<T>({
 					"after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:ring-inset after:ring-transparent after:data-[focus]:ring-2 after:data-[focus]:ring-blue-500",
 					// Disabled state
 					"data-[disabled]:opacity-50 before:data-[disabled]:bg-zinc-950/5 before:data-[disabled]:shadow-none",
-					"z-[52]"
+					"z-[52]",
 				])}>
 				<Headless.ListboxSelectedOption
 					as="span"
@@ -137,6 +137,7 @@ export function ListboxOption<T>({
 							"forced-color-adjust-none forced-colors:data-[focus]:bg-[Highlight] forced-colors:data-[focus]:text-[HighlightText]",
 							// Disabled
 							"data-[disabled]:opacity-50",
+							// Selected
 							"z-[51]"
 						)}>
 						<svg

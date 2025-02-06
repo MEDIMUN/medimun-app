@@ -13,6 +13,7 @@ import { romanize } from "@/lib/romanize";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { Link } from "@/components/link";
 import { Ellipsis } from "lucide-react";
+import { MainWrapper } from "@/components/main-wrapper";
 
 export async function generateMetadata({ params }) {
 	const { sessionNumber } = await params;
@@ -120,129 +121,131 @@ export default async function Page(props) {
 				defaultSort="officialNameasc"
 				searchText="Search students..."
 			/>
-			{!!totalItems && (
-				<Table className="showscrollbar">
-					<TableHead>
-						<TableRow>
-							<TableHeader>
-								<span key="actions" className="sr-only">
-									Actions
-								</span>
-							</TableHeader>
-							<TableHeader>
-								<span key="avatar" className="sr-only">
-									Profile Picture
-								</span>
-							</TableHeader>
-							{isMaangementChairMemberSchoolDirector ? (
-								<>
+			<MainWrapper>
+				{!!totalItems && (
+					<Table className="showscrollbar">
+						<TableHead>
+							<TableRow>
+								<TableHeader>
+									<span key="actions" className="sr-only">
+										Actions
+									</span>
+								</TableHeader>
+								<TableHeader>
+									<span key="avatar" className="sr-only">
+										Profile Picture
+									</span>
+								</TableHeader>
+								{isMaangementChairMemberSchoolDirector ? (
+									<>
+										<TableHeader>Full Name</TableHeader>
+										<TableHeader>Name</TableHeader>
+										<TableHeader>Surname</TableHeader>
+										<TableHeader>Display Name</TableHeader>
+									</>
+								) : (
 									<TableHeader>Full Name</TableHeader>
-									<TableHeader>Name</TableHeader>
-									<TableHeader>Surname</TableHeader>
-									<TableHeader>Display Name</TableHeader>
-								</>
-							) : (
-								<TableHeader>Full Name</TableHeader>
-							)}
-							{isMaangementChairMemberSchoolDirector && <TableHeader>Email</TableHeader>}
-							<TableHeader>School</TableHeader>
-							<TableHeader>Username</TableHeader>
-							<TableHeader>Current Roles</TableHeader>
-							<TableHeader>Other Roles</TableHeader>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{usersWithData.map((user) => {
-							let publicUsername = user.displayName;
+								)}
+								{isMaangementChairMemberSchoolDirector && <TableHeader>Email</TableHeader>}
+								<TableHeader>School</TableHeader>
+								<TableHeader>Username</TableHeader>
+								<TableHeader>Current Roles</TableHeader>
+								<TableHeader>Other Roles</TableHeader>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{usersWithData.map((user) => {
+								let publicUsername = user.displayName;
 
-							if (user.displayName && user.displayName.includes(" ")) {
-								const split = publicUsername.split(" ");
-								publicUsername = `${split[0]} ${split[1][0]}.`;
-							}
+								if (user.displayName && user.displayName.includes(" ")) {
+									const split = publicUsername.split(" ");
+									publicUsername = `${split[0]} ${split[1][0]}.`;
+								}
 
-							const fullName = user.displayName || `${user.officialName} ${user.officialSurname}`;
-							const preferredPublicName = user.isProfilePrivate ? publicUsername || `${user.officialName} ${user.officialSurname[0]}.` : fullName;
+								const fullName = user.displayName || `${user.officialName} ${user.officialSurname}`;
+								const preferredPublicName = user.isProfilePrivate ? publicUsername || `${user.officialName} ${user.officialSurname[0]}.` : fullName;
 
-							const isChairOfUser = authorizeChairDelegate(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
-							const isManagerOfUser = authorizeManagerMember(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
-							const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
-							const isAbove = authSession.user.highestRoleRank < user.highestRoleRank;
+								const isChairOfUser = authorizeChairDelegate(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
+								const isManagerOfUser = authorizeManagerMember(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
+								const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
+								const isAbove = authSession.user.highestRoleRank < user.highestRoleRank;
 
-							const isAuthorizedToEdit = isAbove && (isChairOfUser || isManagerOfUser || isDirectorOfStudent || isManagement);
-							const isIsIsIs = isChairOfUser || isManagerOfUser || isDirectorOfStudent || isManagement;
-							const isHigherAndManagement = isAbove && isManagement;
+								const isAuthorizedToEdit = isAbove && (isChairOfUser || isManagerOfUser || isDirectorOfStudent || isManagement);
+								const isIsIsIs = isChairOfUser || isManagerOfUser || isDirectorOfStudent || isManagement;
+								const isHigherAndManagement = isAbove && isManagement;
 
-							return (
-								<TableRow key={user.id}>
-									<TableCell>
-										<Dropdown>
-											<DropdownButton plain aria-label="More options">
-												<Ellipsis width={18} />
-											</DropdownButton>
-											<DropdownMenu anchor="bottom end">
-												<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
-												{isAuthorizedToEdit && (
-													<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit User</SearchParamsDropDropdownItem>
-												)}
-												{isHigherAndManagement && (
-													<>
-														<SearchParamsDropDropdownItem searchParams={{ "assign-roles": user.id }}>Assign Roles</SearchParamsDropDropdownItem>
-														<SearchParamsDropDropdownItem searchParams={{ "edit-roles": user.id }}>Edit Roles</SearchParamsDropDropdownItem>
-														<SearchParamsDropDropdownItem searchParams={{ "delete-user": user.id }}>Delete User</SearchParamsDropDropdownItem>
-													</>
-												)}
-											</DropdownMenu>
-										</Dropdown>
-									</TableCell>
-									<TableCell>
-										<UserTooltip userId={user.id}>
-											<Avatar showFallback radius="md" src={`/api/users/${user.id}/avatar`} alt={user.displayName} />
-										</UserTooltip>
-									</TableCell>
-									{isMaangementChairMemberSchoolDirector ? (
-										isIsIsIs ? (
-											<>
-												<TableCell>{"-"}</TableCell>
-												<TableCell>{user.officialName}</TableCell>
-												<TableCell>{user.officialSurname}</TableCell>
-												<TableCell>{user.displayName || "-"}</TableCell>
-											</>
+								return (
+									<TableRow key={user.id}>
+										<TableCell>
+											<Dropdown>
+												<DropdownButton plain aria-label="More options">
+													<Ellipsis width={18} />
+												</DropdownButton>
+												<DropdownMenu anchor="bottom end">
+													<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
+													{isAuthorizedToEdit && (
+														<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit User</SearchParamsDropDropdownItem>
+													)}
+													{isHigherAndManagement && (
+														<>
+															<SearchParamsDropDropdownItem searchParams={{ "assign-roles": user.id }}>Assign Roles</SearchParamsDropDropdownItem>
+															<SearchParamsDropDropdownItem searchParams={{ "edit-roles": user.id }}>Edit Roles</SearchParamsDropDropdownItem>
+															<SearchParamsDropDropdownItem searchParams={{ "delete-user": user.id }}>Delete User</SearchParamsDropDropdownItem>
+														</>
+													)}
+												</DropdownMenu>
+											</Dropdown>
+										</TableCell>
+										<TableCell>
+											<UserTooltip userId={user.id}>
+												<Avatar showFallback radius="md" src={`/api/users/${user.id}/avatar`} alt={user.displayName} />
+											</UserTooltip>
+										</TableCell>
+										{isMaangementChairMemberSchoolDirector ? (
+											isIsIsIs ? (
+												<>
+													<TableCell>{"-"}</TableCell>
+													<TableCell>{user.officialName}</TableCell>
+													<TableCell>{user.officialSurname}</TableCell>
+													<TableCell>{user.displayName || "-"}</TableCell>
+												</>
+											) : (
+												<>
+													<TableCell>{preferredPublicName}</TableCell>
+													<TableCell>{"-"}</TableCell>
+													<TableCell>{"-"}</TableCell>
+													<TableCell>{"-"}</TableCell>
+												</>
+											)
 										) : (
-											<>
-												<TableCell>{preferredPublicName}</TableCell>
-												<TableCell>{"-"}</TableCell>
-												<TableCell>{"-"}</TableCell>
-												<TableCell>{"-"}</TableCell>
-											</>
-										)
-									) : (
-										<TableCell>{preferredPublicName}</TableCell>
-									)}
-
-									{isMaangementChairMemberSchoolDirector ? isIsIsIs ? <TableCell>{user.email}</TableCell> : <TableCell>-</TableCell> : null}
-									<TableCell>
-										{user.schoolId ? (
-											<Link className="underline text-primary" href={`/medibook/schools/${user.schoolSlug || user.schoolId}`}>
-												{user.schoolName}
-											</Link>
-										) : (
-											"-"
+											<TableCell>{preferredPublicName}</TableCell>
 										)}
-									</TableCell>
-									<TableCell>{user.username ? `@${user.username}` : "-"}</TableCell>
-									<TableCell>
-										<DisplayCurrentRoles user={user} />
-									</TableCell>
-									<TableCell>
-										<DisplayPastRoles user={user} />
-									</TableCell>
-								</TableRow>
-							);
-						})}
-					</TableBody>
-				</Table>
-			)}
-			<Paginator itemsOnPage={users.length} itemsPerPage={itemsPerPage} totalItems={totalItems} />
+
+										{isMaangementChairMemberSchoolDirector ? isIsIsIs ? <TableCell>{user.email}</TableCell> : <TableCell>-</TableCell> : null}
+										<TableCell>
+											{user.schoolId ? (
+												<Link className="underline text-primary" href={`/medibook/schools/${user.schoolSlug || user.schoolId}`}>
+													{user.schoolName}
+												</Link>
+											) : (
+												"-"
+											)}
+										</TableCell>
+										<TableCell>{user.username ? `@${user.username}` : "-"}</TableCell>
+										<TableCell>
+											<DisplayCurrentRoles user={user} />
+										</TableCell>
+										<TableCell>
+											<DisplayPastRoles user={user} />
+										</TableCell>
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				)}
+				<Paginator itemsOnPage={users.length} itemsPerPage={itemsPerPage} totalItems={totalItems} />
+			</MainWrapper>
 		</>
 	);
 }

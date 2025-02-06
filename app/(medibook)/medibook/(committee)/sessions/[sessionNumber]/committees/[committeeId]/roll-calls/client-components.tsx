@@ -103,7 +103,7 @@ function RollCallSwitch({ value, onChange, isEditor }) {
 }
 
 export function RollCallTable({ delegates, rollCallsInit, selectedCommittee, selectedDayId, isEditor }) {
-	const socket = useSocket();
+	const { socket } = useSocket();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 

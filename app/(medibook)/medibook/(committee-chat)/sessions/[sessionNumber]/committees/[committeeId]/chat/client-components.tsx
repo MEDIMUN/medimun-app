@@ -27,7 +27,7 @@ export function ChatLayout({ selectedGroup, authSession }: { selectedGroup: Sele
 	const [isMounted, setIsMounted] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const observerRef = useRef(null);
-	const socket = useSocket();
+	const { socket } = useSocket();
 	const router = useRouter();
 	const pathname = usePathname();
 	const [inputValue, setInputValue] = useState("");

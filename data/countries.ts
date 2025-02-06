@@ -153,7 +153,7 @@ export const countries = [
 		flag: "🇧🇹",
 	},
 	{
-		countryNameEn: "Bolivia (Plurinational State of)",
+		countryNameEn: "Bolivia",
 		countryCode: "BO",
 		countryCallingCode: "591",
 		flag: "🇧🇴",
@@ -351,7 +351,7 @@ export const countries = [
 		flag: "🇨🇿",
 	},
 	{
-		countryNameEn: "Democratic Republic of the Congo",
+		countryNameEn: "D. Republic of the Congo",
 		countryCode: "CD",
 		countryCallingCode: "243",
 		flag: "🇨🇩",
@@ -621,7 +621,7 @@ export const countries = [
 		flag: "🇮🇩",
 	},
 	{
-		countryNameEn: "Iran (Islamic Republic of)",
+		countryNameEn: "Iran",
 		countryCode: "IR",
 		countryCallingCode: "98",
 		flag: "🇮🇷",
@@ -837,7 +837,7 @@ export const countries = [
 		flag: "🇲🇽",
 	},
 	{
-		countryNameEn: "Micronesia (Federated States of)",
+		countryNameEn: "Micronesia",
 		countryCode: "FM",
 		countryCallingCode: "691",
 		flag: "🇫🇲",
@@ -1137,7 +1137,7 @@ export const countries = [
 		flag: "🇱🇨",
 	},
 	{
-		countryNameEn: "Saint Martin (French part)",
+		countryNameEn: "Saint Martin",
 		countryCode: "MF",
 		countryCallingCode: "590",
 		flag: "🇲🇫",
@@ -1449,7 +1449,7 @@ export const countries = [
 		flag: "🇻🇺",
 	},
 	{
-		countryNameEn: "Venezuela (Bolivarian Republic of)",
+		countryNameEn: "Venezuela",
 		countryCode: "VE",
 		countryCallingCode: "58",
 		flag: "🇻🇪",

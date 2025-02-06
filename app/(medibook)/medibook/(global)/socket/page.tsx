@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSocket } from "@/contexts/socket";
 
 const InputUpdater = () => {
-	const socket = useSocket();
+	const { socket } = useSocket();
 	const [input, setInput] = useState("");
 
 	useEffect(() => {

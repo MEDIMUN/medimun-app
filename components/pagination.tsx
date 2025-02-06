@@ -10,12 +10,14 @@ export function Paginator({
 	totalItems,
 	itemsPerPage = 10,
 	itemsOnPage,
+	customText,
 	control,
 	...props
 }: {
 	totalItems: number;
 	itemsPerPage?: number;
 	itemsOnPage?: number;
+	customText?: string;
 	control?;
 }) {
 	const searchParams = useSearchParams();
@@ -44,7 +46,7 @@ export function Paginator({
 							<Info size={18} aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 						</div>
 						<div className="ml-3 flex-1 md:flex md:justify-between">
-							<p className="text-sm text-zinc-700">No items {searchParams.get("search") ? "found" : "yet"}.</p>
+							{customText ? customText : <p className="text-sm text-zinc-700">No items {searchParams.get("search") ? "found" : "yet"}.</p>}
 						</div>
 					</div>
 				</div>
@@ -58,7 +60,7 @@ export function Paginator({
 							<Info size={18} aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 						</div>
 						<div className="ml-3 flex-1 md:flex md:justify-between">
-							<p className="text-sm text-zinc-700">No items {searchParams.get("search") ? "found" : "yet"}.</p>
+							{customText ? customText : <p className="text-sm text-zinc-700">No items {searchParams.get("search") ? "found" : "yet"}.</p>}
 						</div>
 					</div>
 				</div>

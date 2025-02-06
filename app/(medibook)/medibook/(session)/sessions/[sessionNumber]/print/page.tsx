@@ -38,16 +38,16 @@ export async function PrintCentre(props) {
 			description: "Print certificates for the session",
 			href: `/medibook/sessions/${selectedSession.number}/print/certificates`,
 		},
+		{
+			title: "Print Placards",
+			description: "Print placards for the session",
+			href: `/medibook/sessions/${selectedSession.number}/print/placards`,
+		},
 	];
 
 	return (
 		<>
-			<TopBar
-				buttonText={`Session ${romanize(selectedSession.numberInteger)}`}
-				buttonHref={`/medibook/sessions/${selectedSession.number}`}
-				hideSearchBar
-				title="Print Centre"
-			/>
+			<TopBar buttonText={`Session ${romanize(selectedSession.numberInteger)}`} buttonHref={`/medibook/sessions/${selectedSession.number}`} hideSearchBar title="Print Centre" />
 			<MainWrapper>
 				<ActionList actions={actions} />
 			</MainWrapper>

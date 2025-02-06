@@ -10,9 +10,9 @@ import { Suspense } from "react";
 
 async function ChairsTable(props) {
 	await connection();
-	const { params } = await props.params;
-	const committeeId = params?.committeeId;
-	const sessionNumber = params?.sessionNumber;
+	const params = await props.params;
+	const committeeId = await params?.committeeId;
+	const sessionNumber = await params?.sessionNumber;
 
 	if (!committeeId || !sessionNumber) {
 		return notFound();

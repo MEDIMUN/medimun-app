@@ -9,7 +9,7 @@ import { z } from "zod";
 const dayEventSchema = z
 	.object({
 		id: z.string().optional().nullable(),
-		name: z.string().trim().max(50, "Name must be at most 50 characters long").transform(entityCase),
+		name: z.string().trim().max(50, "Name must be at most 50 characters long").toUpperCase(),
 		description: z.string().trim().max(250, "Description must be at most 250 characters long").optional().nullable(),
 		startTime: z.string().transform((value) => {
 			const [hours, minutes] = value.split(":").map(Number);

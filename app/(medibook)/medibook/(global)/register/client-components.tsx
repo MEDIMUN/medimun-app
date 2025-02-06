@@ -55,7 +55,7 @@ export function RegisterQRCodeBox({ code }) {
 }
 
 export function QRReader({ delegates }) {
-	const socket = useSocket();
+	const { socket } = useSocket();
 	const router = useRouter();
 
 	const [error, setError] = useState("");
