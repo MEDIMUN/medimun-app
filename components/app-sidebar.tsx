@@ -214,6 +214,14 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
 	].filter((item) => item.isVisible);
 
 	const sessionBasePath = `/medibook/sessions/${selectedSession}`;
+	const allRoles = (authSession?.user?.pastRoles || []).concat(authSession?.user?.currentRoles || []).filter((role) => role.session == selectedSession);
+	const allManagerRoles = allRoles.filter((role) => role?.roleIdentifier == "manager");
+	const allMemberRoles = allRoles.filter((role) => role?.roleIdentifier == "member");
+
+	const isManagerOfApprovalPanel = allManagerRoles.some((role) => role?.departmentTypes.includes("APPROVAL"));
+	const isMemberOfApprovalPanel = allMemberRoles.some((role) => role?.departmentTypes.includes("APPROVAL"));
+
+	const isManagerOrMemberOfApprovalPanel = isManagerOfApprovalPanel || isMemberOfApprovalPanel;
 
 	const sessionItems = [
 		{
@@ -299,7 +307,7 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
 			title: "Approval Panel",
 			url: `${sessionBasePath}/approval-panel`,
 			icon: CalendarRange,
-			isVisible: true,
+			isVisible: isManagement || isManagerOrMemberOfApprovalPanel,
 		},
 		{
 			title: "Roll Calls",

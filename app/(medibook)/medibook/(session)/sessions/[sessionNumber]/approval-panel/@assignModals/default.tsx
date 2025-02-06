@@ -21,10 +21,7 @@ export default async function Modals(props) {
 		const allowedMemberDepartmentTypes = ["APPROVAL"];
 
 		const isManagerOfAp: boolean =
-			isManager &&
-			authSession?.user?.currentRoles
-				.filter((role) => role?.roleIdentifier == "manager")
-				.filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
+			isManager && authSession?.user?.currentRoles.filter((role) => role?.roleIdentifier == "manager").filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
 
 		if (!isManagerOfAp && !ismanagement) return null;
 
@@ -75,7 +72,7 @@ export default async function Modals(props) {
 
 	if (searchParams["remove-from-editor"]) {
 		const ismanagement = authorize(authSession, [s.management]);
-		const isManagerOfAp = authorizeManagerDepartmentType(authSession.currentRoles, ["APPROVAL"]);
+		const isManagerOfAp = authorizeManagerDepartmentType(authSession.user.currentRoles, ["APPROVAL"]);
 
 		if (!isManagerOfAp && !ismanagement) return null;
 
@@ -99,7 +96,7 @@ export default async function Modals(props) {
 
 	if (searchParams["approve-resolution"]) {
 		const ismanagement = authorize(authSession, [s.management]);
-		const isManagerOfAp = authorizeManagerDepartmentType(authSession.currentRoles, ["APPROVAL"]);
+		const isManagerOfAp = authorizeManagerDepartmentType(authSession.user.currentRoles, ["APPROVAL"]);
 
 		if (!isManagerOfAp && !ismanagement) return null;
 
@@ -129,7 +126,7 @@ export default async function Modals(props) {
 
 	if (searchParams["send-resolution-back-to-committee"]) {
 		const ismanagement = authorize(authSession, [s.management]);
-		const isManagerOfAp = authorizeManagerDepartmentType(authSession.currentRoles, ["APPROVAL"]);
+		const isManagerOfAp = authorizeManagerDepartmentType(authSession.user.currentRoles, ["APPROVAL"]);
 
 		if (!isManagerOfAp && !ismanagement) return null;
 

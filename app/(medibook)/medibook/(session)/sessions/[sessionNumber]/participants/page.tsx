@@ -165,9 +165,9 @@ export default async function Page(props) {
 								const fullName = user.displayName || `${user.officialName} ${user.officialSurname}`;
 								const preferredPublicName = user.isProfilePrivate ? publicUsername || `${user.officialName} ${user.officialSurname[0]}.` : fullName;
 
-								const isChairOfUser = authorizeChairDelegate(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
-								const isManagerOfUser = authorizeManagerMember(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
-								const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession?.currentRoles, [...user.currentRoles, ...user.pastRoles]);
+								const isChairOfUser = authorizeChairDelegate(authSession?.user.currentRoles, [...user.currentRoles, ...user.pastRoles]);
+								const isManagerOfUser = authorizeManagerMember(authSession?.user.currentRoles, [...user.currentRoles, ...user.pastRoles]);
+								const isDirectorOfStudent = authorizeSchoolDirectorStudent(authSession?.user.currentRoles, [...user.currentRoles, ...user.pastRoles]);
 								const isAbove = authSession.user.highestRoleRank < user.highestRoleRank;
 
 								const isAuthorizedToEdit = isAbove && (isChairOfUser || isManagerOfUser || isDirectorOfStudent || isManagement);
@@ -183,9 +183,7 @@ export default async function Page(props) {
 												</DropdownButton>
 												<DropdownMenu anchor="bottom end">
 													<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
-													{isAuthorizedToEdit && (
-														<SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit User</SearchParamsDropDropdownItem>
-													)}
+													{isAuthorizedToEdit && <SearchParamsDropDropdownItem searchParams={{ "edit-user": user.id }}>Edit User</SearchParamsDropDropdownItem>}
 													{isHigherAndManagement && (
 														<>
 															<SearchParamsDropDropdownItem searchParams={{ "assign-roles": user.id }}>Assign Roles</SearchParamsDropDropdownItem>

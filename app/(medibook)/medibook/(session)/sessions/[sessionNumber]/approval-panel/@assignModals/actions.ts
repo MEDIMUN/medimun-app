@@ -8,7 +8,7 @@ export async function assignResolutionToEditor({ resolutionId, memberId }) {
 	try {
 		const authSession = await auth();
 		const isManagement = authorize(authSession, [s.management]);
-		const isManagerOfAp = authorizeManagerDepartmentType(authSession?.currentRoles, ["APPROVAL"]);
+		const isManagerOfAp = authorizeManagerDepartmentType(authSession?.user.currentRoles, ["APPROVAL"]);
 
 		if (!isManagement && !isManagerOfAp) {
 			return { ok: false, message: ["You are not authorized to perform this action"] };
@@ -58,7 +58,7 @@ export async function removeResolutionFromEditor({ resolutionId }) {
 	try {
 		const authSession = await auth();
 		const isManagement = authorize(authSession, [s.management]);
-		const isManagerOfAp = authorizeManagerDepartmentType(authSession?.currentRoles, ["APPROVAL"]);
+		const isManagerOfAp = authorizeManagerDepartmentType(authSession?.user.currentRoles, ["APPROVAL"]);
 
 		if (!isManagement && !isManagerOfAp) {
 			return { ok: false, message: ["You are not authorized to perform this action"] };
@@ -99,7 +99,7 @@ export async function approveResolution({ resolutionId }) {
 		const authSession = await auth();
 		const isManagement = authorize(authSession, [s.management]);
 		const isMemberOfAp = authorize(authSession, [s.member]);
-		const isManagerOfAp = authorizeManagerDepartmentType(authSession?.currentRoles, ["APPROVAL"]);
+		const isManagerOfAp = authorizeManagerDepartmentType(authSession?.user.currentRoles, ["APPROVAL"]);
 
 		if (!authSession) {
 			return { ok: false, message: ["You are not authorized to perform this action"] };
@@ -145,7 +145,7 @@ export async function sendResolutionBackToCommittee({ resolutionId }) {
 	try {
 		const authSession = await auth();
 		const isManagement = authorize(authSession, [s.management]);
-		const isManagerOfAp = authorizeManagerDepartmentType(authSession?.currentRoles, ["APPROVAL"]);
+		const isManagerOfAp = authorizeManagerDepartmentType(authSession?.user.currentRoles, ["APPROVAL"]);
 
 		if (!authSession) {
 			return { ok: false, message: ["You are not authorized to perform this action"] };

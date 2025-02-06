@@ -38,16 +38,14 @@ export async function SpecificTopic(props) {
 		})
 		.catch(() => redirect(`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/topics`));
 
-	const isChairOfCommittee = authorizeChairCommittee(authSession.currentRoles, selectedTopic.committee.id);
+	const isChairOfCommittee = authorizeChairCommittee(authSession.user.currentRoles, selectedTopic.committee.id);
 
 	return (
 		<>
 			<TopBar
 				hideBackdrop
 				buttonText={`${selectedTopic.committee.name} Topics`}
-				buttonHref={`/medibook/sessions/${selectedTopic.committee.session.number}/committees/${
-					selectedTopic.committee.slug || selectedTopic.committee.id
-				}/topics`}
+				buttonHref={`/medibook/sessions/${selectedTopic.committee.session.number}/committees/${selectedTopic.committee.slug || selectedTopic.committee.id}/topics`}
 				hideSearchBar
 				title={selectedTopic.title}>
 				{isManagement && <SearchParamsButton searchParams={{ "delete-topic": selectedTopic.id }}>Delete</SearchParamsButton>}

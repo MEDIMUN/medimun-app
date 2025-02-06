@@ -259,8 +259,8 @@ export async function addRole(formData, users) {
 					usersToBeAssignedRoles.map((userId) => {
 						return prisma.delegate.upsert({
 							where: { userId_committeeId: { userId, committeeId } },
-							update: { userId, country, committeeId },
-							create: { userId, country, committeeId },
+							update: { userId, committeeId },
+							create: { userId, committeeId },
 						});
 					})
 				);
@@ -546,9 +546,7 @@ export async function editUser(formData: FormData) {
 	];
 
 	//Generate a custom zod schema object based on the fields that can be updated declared in allUpdatableFields
-	const dynamicSchemaObject = Object.fromEntries(
-		allUpdatableFields.map((field) => [field, fullSchemaObject[field]]).filter(([key, value]) => value !== undefined)
-	);
+	const dynamicSchemaObject = Object.fromEntries(allUpdatableFields.map((field) => [field, fullSchemaObject[field]]).filter(([key, value]) => value !== undefined));
 
 	const schema = z.object(dynamicSchemaObject);
 	const parsedFormData = parseFormData(formData);
@@ -556,8 +554,7 @@ export async function editUser(formData: FormData) {
 
 	if (error) return { ok: false, message: "Invalid data." };
 
-	if (authSession.user.highestRoleRank >= userData.highestRoleRank)
-		return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
+	if (authSession.user.highestRoleRank >= userData.highestRoleRank) return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
 
 	if (data.username) {
 		const usernameExists = await prisma.user.findFirst({ where: { AND: [{ username: data.username }, { NOT: { id: data.id } }] } });
@@ -570,9 +567,7 @@ export async function editUser(formData: FormData) {
 		//Generate a prisma data object for the STudent column
 		const updateData = {
 			...otherData,
-			...(allUpdatableFields.includes("schoolId") && schoolId !== undefined
-				? { Student: schoolId ? { connect: { id: schoolId } } : { disconnect: true } }
-				: {}),
+			...(allUpdatableFields.includes("schoolId") && schoolId !== undefined ? { Student: schoolId ? { connect: { id: schoolId } } : { disconnect: true } } : {}),
 		};
 
 		await prisma.user.update({
@@ -604,8 +599,7 @@ export async function updateProfilePictureForUser(targetUserId: string, formData
 	if (!file) return { ok: false, message: "No file selected" };
 	if (file.size > 5000000) return { ok: false, message: "File can't be larger than 5MB." };
 	if (!file.type.includes("image")) return { ok: false, message: "File is not an image" };
-	if (file.type !== "image/jpeg" && file.type !== "image/png" && file.type !== "image/gif")
-		return { ok: false, message: "File is not a supported image type" };
+	if (file.type !== "image/jpeg" && file.type !== "image/png" && file.type !== "image/gif") return { ok: false, message: "File is not a supported image type" };
 
 	const minioClient = minio();
 	const randomName = nanoid();
@@ -722,8 +716,7 @@ export async function unafilliateStudent(studentId: string) {
 	const authSchoolDirectorRoles = authSession?.user.currentRoles.filter((role) => role.roleIdentifier === "schoolDirector");
 	const studentSchoolId = userData?.schoolId;
 	const isDirectorOfStudent = authSchoolDirectorRoles?.some((role) => role.schoolId === studentSchoolId);
-	if (authSession.user.highestRoleRank > userData.highestRoleRank)
-		return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
+	if (authSession.user.highestRoleRank > userData.highestRoleRank) return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
 
 	if (!isDirectorOfStudent) return { ok: false, message: "Not authorized." };
 	try {
@@ -752,8 +745,7 @@ export async function deleteUser(userId: string) {
 	const userData = generateUserData(prismaUser);
 
 	if (!authSession || !authorize(authSession, [s.management])) return { ok: false, message: "Not authorized." };
-	if (authSession.user.highestRoleRank > userData.highestRoleRank)
-		return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
+	if (authSession.user.highestRoleRank > userData.highestRoleRank) return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
 
 	try {
 		await prisma.$transaction(async (tx) => {

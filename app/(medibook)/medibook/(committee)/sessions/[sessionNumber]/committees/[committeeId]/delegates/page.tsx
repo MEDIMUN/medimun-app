@@ -140,14 +140,8 @@ export async function Delegates(props: { searchParams: any; params: Promise<{ se
 
 	const selectedCommittee = selectedSession.committee[0];
 
-	const isChairOfCommittee = authorizeChairCommittee(
-		(authSession?.user?.currentRoles || []).concat(authSession?.user?.pastRoles || []),
-		selectedCommittee.id
-	);
-	const isDelegateOfCommittee = authorizeDelegateCommittee(
-		(authSession?.user?.currentRoles || []).concat(authSession?.user?.pastRoles || []),
-		selectedCommittee.id
-	);
+	const isChairOfCommittee = authorizeChairCommittee((authSession?.user?.currentRoles || []).concat(authSession?.user?.pastRoles || []), selectedCommittee.id);
+	const isDelegateOfCommittee = authorizeDelegateCommittee((authSession?.user?.currentRoles || []).concat(authSession?.user?.pastRoles || []), selectedCommittee.id);
 
 	const isPartOfCommittee = isChairOfCommittee || isDelegateOfCommittee;
 	const isManagerOrMember = authorize(authSession, [s.manager, s.member]);
@@ -156,6 +150,22 @@ export async function Delegates(props: { searchParams: any; params: Promise<{ se
 
 	const delegates = selectedCommittee?.delegate || [];
 	const allCountries = (countries || []).concat(selectedCommittee?.ExtraCountry || []);
+
+	let canAssignCountry = false;
+
+	if (selectedCommittee.type === "GENERALASSEMBLY") {
+		if (isManagement) canAssignCountry = true;
+	}
+
+	if (selectedCommittee.type === "SPECIALCOMMITTEE") {
+		const isChairOfCommittee = authorizeChairCommittee(authSession?.user.currentRoles, selectedCommittee.id);
+		if (isManagement || isChairOfCommittee) canAssignCountry = true;
+	}
+
+	if (selectedCommittee.type === "SECURITYCOUNCIL") {
+		const isChairOfCommittee = authorizeChairCommittee(authSession?.user.currentRoles, selectedCommittee.id);
+		if (isManagement || isChairOfCommittee) canAssignCountry = true;
+	}
 
 	return (
 		<>
@@ -195,6 +205,7 @@ export async function Delegates(props: { searchParams: any; params: Promise<{ se
 													<Ellipsis width={18} />
 												</DropdownButton>
 												<DropdownMenu>
+													{canAssignCountry && <SearchParamsDropDropdownItem searchParams={{ "edit-delegate-assignment": delegate.id }}>Edit Assignment</SearchParamsDropDropdownItem>}
 													<DropdownItem href={`/medibook/users/${user.username || user.id}`}>View Profile</DropdownItem>
 													<DropdownItem href={`/medibook/users/${user.username || user.id}?new=true`}>Message</DropdownItem>
 													{(isChairOfDelegate || isManagement) && (

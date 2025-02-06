@@ -124,12 +124,7 @@ export function EditUserModal({ edit, schools, studentSchoolId }) {
 		generalEdit && "isProfilePrivate",
 	];
 
-	const isOpen =
-		(edit?.id &&
-			!!searchParams.get("edit-user") &&
-			status === "authenticated" &&
-			(isManagement || isChairOfDelegate || isManagerOfMember || isDirectorOfStudent)) ||
-		false;
+	const isOpen = (edit?.id && !!searchParams.get("edit-user") && status === "authenticated" && (isManagement || isChairOfDelegate || isManagerOfMember || isDirectorOfStudent)) || false;
 
 	return (
 		<Dialog open={isOpen} onClose={onClose}>
@@ -436,19 +431,6 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 						</Field>
 					)}
 
-					{selectedRole == "delegate" && (
-						<Field>
-							<Label>Country or Entity</Label>
-							<Listbox name="country">
-								{countries.map((c) => (
-									<ListboxOption value={c.countryCode} key={c.countryCode}>
-										<ListboxLabel>{c.countryNameEn}</ListboxLabel>
-									</ListboxOption>
-								))}
-							</Listbox>
-						</Field>
-					)}
-
 					{selectedRole == "schoolDirector" && (
 						<Field>
 							<Label>School</Label>
@@ -496,9 +478,7 @@ export function EditRolesModal({ selectedUser, highestRoleRank }) {
 	return (
 		<Dialog open={isOpen} onClose={handleOnClose}>
 			<DialogTitle>Edit Roles</DialogTitle>
-			<DialogDescription>
-				Roles define what a user can do, have access to and what they can&apos;t do. Some changes may take a few minutes to take effect.
-			</DialogDescription>
+			<DialogDescription>Roles define what a user can do, have access to and what they can&apos;t do. Some changes may take a few minutes to take effect.</DialogDescription>
 			<DialogBody>
 				{!allRoles?.length && (
 					<div className="rounded-md bg-red-50 p-4">
@@ -521,8 +501,7 @@ export function EditRolesModal({ selectedUser, highestRoleRank }) {
 									<div className="flex">
 										<div className="">
 											<p className="text-sm font-medium text-zinc-800">
-												<b>{role.name}</b> {(role.department || role.committee || role.school) && "of"}{" "}
-												{role.department || role.committee || role.school}
+												<b>{role.name}</b> {(role.department || role.committee || role.school) && "of"} {role.department || role.committee || role.school}
 												{rank <= 3 && (
 													<Badge color="red" className="ml-1">
 														Highly Priviliged Role
@@ -553,7 +532,9 @@ export function EditRolesModal({ selectedUser, highestRoleRank }) {
 				</ul>
 			</DialogBody>
 			<DialogActions>
-				<Button onClick={handleOnClose}>Cancel</Button>
+				<Button plain onClick={handleOnClose}>
+					Close
+				</Button>
 			</DialogActions>
 		</Dialog>
 	);
