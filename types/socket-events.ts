@@ -173,7 +173,7 @@ export type ClauseType = "preambulatory" | "operative";
 export interface ClauseBase {
 	id: string;
 	index: number;
-	startingPhrase: PreambulatoryPhrases | OperativePhrases;
+	startingPhrase: string;
 	body: string;
 	resolutionId: string;
 }
