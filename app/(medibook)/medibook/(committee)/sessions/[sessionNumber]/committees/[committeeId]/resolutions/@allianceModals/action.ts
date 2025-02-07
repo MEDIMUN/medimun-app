@@ -361,3 +361,49 @@ export async function rejectAllianceInvitation({ allianceId }) {
 
 	return { ok: true, message: ["Rejected alliance invitation."] };
 }
+
+export async function removeDelegateFromAlliance({ allianceId, delegateId }) {
+	const authSession = await auth();
+	if (!authSession) return { ok: false, message: ["Unauthorized"] };
+	try {
+		await prisma.allianceMember.deleteMany({
+			where: {
+				allianceId,
+				delegateId,
+				alliance: {
+					mainSubmitter: { userId: authSession.user.id },
+				},
+			},
+		});
+	} catch (e) {
+		return {
+			ok: false,
+			message: ["Error removing delegate from alliance."],
+		};
+	}
+
+	return { ok: true, message: ["Removed delegate from alliance."] };
+}
+
+export async function removeAllianceMemberInvitation({ allianceId, delegateId }) {
+	const authSession = await auth();
+	if (!authSession) return { ok: false, message: ["Unauthorized"] };
+	try {
+		await prisma.allianceMemberInvitation.deleteMany({
+			where: {
+				allianceId,
+				delegateId,
+				alliance: {
+					mainSubmitter: { userId: authSession.user.id },
+				},
+			},
+		});
+	} catch (e) {
+		return {
+			ok: false,
+			message: ["Error removing alliance member invitation."],
+		};
+	}
+
+	return { ok: true, message: ["Removed alliance member invitation."] };
+}

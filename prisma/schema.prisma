@@ -797,17 +797,17 @@ model AllianceMemberInvitation {
 model PreambulatoryClause {
   id              String                    @id @default(nanoid())
   index           Int                       @default(autoincrement())
-  startingPhrase  PreambulatoryPhrases
+  startingPhrase  String?
   status          PreambulatoryClauseStatus @default(DRAFT)
   body            String
   subClauses      String?
-  resolution      Resolution                @relation(fields: [resolutionId], references: [id])
-  resolutionId    String
+  resolution      Resolution?               @relation(fields: [resolutionId], references: [id])
+  resolutionId    String?
   scCommittee     Committee?                @relation(fields: [scCommitteeId], references: [id])
   scCommitteeId   String?
   alliance        Alliance?                 @relation(fields: [allianceId], references: [id])
   allianceId      String?
-  mainSUbmitter   Delegate?                 @relation(fields: [mainSubmitterId], references: [id])
+  mainSubmitter   Delegate?                 @relation(fields: [mainSubmitterId], references: [id])
   mainSubmitterId String?
 }
 
@@ -822,12 +822,12 @@ enum PreambulatoryClauseStatus {
 model OperativeClause {
   id              String                @id @default(nanoid())
   index           Int                   @default(autoincrement())
-  startingPhrase  OperativePhrases
+  startingPhrase  String?
   status          OperativeClauseStatus @default(DRAFT)
   body            String
   subClauses      String?
-  resolution      Resolution            @relation(fields: [resolutionId], references: [id])
-  resolutionId    String
+  resolution      Resolution?           @relation(fields: [resolutionId], references: [id])
+  resolutionId    String?
   scCommittee     Committee?            @relation(fields: [scCommitteeId], references: [id])
   scCommitteeId   String?
   alliance        Alliance?             @relation(fields: [allianceId], references: [id])

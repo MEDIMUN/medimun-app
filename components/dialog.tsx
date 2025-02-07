@@ -15,12 +15,7 @@ const sizes = {
 	"5xl": "sm:max-w-5xl",
 };
 
-export function Dialog({
-	size = "lg",
-	className,
-	children,
-	...props
-}: { size?: keyof typeof sizes; className?: string; children: React.ReactNode } & Omit<Headless.DialogProps, "className">) {
+export function Dialog({ size = "lg", className, children, ...props }: { size?: keyof typeof sizes; className?: string; children: React.ReactNode } & Omit<Headless.DialogProps, "className">) {
 	return (
 		<Headless.Dialog {...props}>
 			<Headless.DialogBackdrop
@@ -47,12 +42,7 @@ export function Dialog({
 }
 
 export function DialogTitle({ className, ...props }: { className?: string } & Omit<Headless.DialogTitleProps, "className">) {
-	return (
-		<Headless.DialogTitle
-			{...props}
-			className={clsx(className, "text-balance text-lg/6 font-semibold text-zinc-950 dark:text-white sm:text-base/6")}
-		/>
-	);
+	return <Headless.DialogTitle {...props} className={clsx(className, "text-balance text-lg/6 font-semibold text-zinc-950 dark:text-white sm:text-base/6")} />;
 }
 
 export function DialogDescription({ className, ...props }: { className?: string } & Omit<Headless.DescriptionProps<typeof Text>, "className">) {
@@ -70,11 +60,5 @@ export function DialogBody<T extends React.ElementType = "div">({ as, className,
 }
 
 export function DialogActions({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
-	return (
-		<div
-			suppressHydrationWarning
-			{...props}
-			className={clsx(className, "mt-8 flex flex-col-reverse items-center justify-end gap-3 *:w-full sm:flex-row sm:*:w-auto")}
-		/>
-	);
+	return <div suppressHydrationWarning {...props} className={clsx(className, "mt-8 flex flex-col-reverse items-center justify-end gap-3 *:w-full sm:flex-row sm:*:w-auto")} />;
 }

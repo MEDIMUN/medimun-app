@@ -2,13 +2,14 @@
 
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { Ellipsis } from "lucide-react";
-import { removeCoSubmitter, removeCoSubmitterInvitation } from "../actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { SearchParamsDropDropdownItem } from "@/app/(medibook)/medibook/client-components";
+import { removeAllianceMemberInvitation, removeDelegateFromAlliance } from "../../../@allianceModals/action";
 
-export function EditCoSubmitter({ selectedResolution, coSubmitter }) {
+export function EditAllianceMember({ selectedAlliance, allianceMember }) {
 	const router = useRouter();
+	if (!allianceMember) return null;
 	return (
 		<Dropdown>
 			<DropdownButton plain>
@@ -17,37 +18,41 @@ export function EditCoSubmitter({ selectedResolution, coSubmitter }) {
 			<DropdownMenu>
 				<DropdownItem
 					onClick={async () => {
-						if (coSubmitter?.type === "CO_SUBMITTER") {
-							const res = await removeCoSubmitter(selectedResolution.id, coSubmitter.delegateId);
+						if (allianceMember?.type === "CO_SUBMITTER") {
+							const res = await removeDelegateFromAlliance({
+								allianceId: selectedAlliance.id,
+								delegateId: allianceMember.delegateId,
+							});
 							if (res?.ok) {
 								toast.success(res?.message, {
-									id: "delete-resource",
+									id: "main",
 								});
 								router.refresh();
 							} else {
 								toast.error(res?.message, {
-									id: "delete-resource",
+									id: "main",
 								});
 							}
 						} else {
-							const res = await removeCoSubmitterInvitation(selectedResolution.id, coSubmitter.delegateId);
+							const res = await removeAllianceMemberInvitation({
+								allianceId: selectedAlliance.id,
+								delegateId: allianceMember.delegateId,
+							});
 							if (res?.ok) {
 								toast.success(res?.message, {
-									id: "delete-resource",
+									id: "main",
 								});
 								router.refresh();
 							} else {
 								toast.error(res?.message, {
-									id: "delete-resource",
+									id: "main",
 								});
 							}
 						}
 					}}>
-					Delete
+					Remove
 				</DropdownItem>
-				<SearchParamsDropDropdownItem searchParams={{ "transfer-main-submitter": selectedResolution.id, "co-submitter-id": coSubmitter.delegate.id }}>
-					Make Main Submitter
-				</SearchParamsDropDropdownItem>
+				<SearchParamsDropDropdownItem searchParams={{ "transfer-alliance-owner": selectedAlliance.id, "delegate-id": allianceMember.delegate.id }}>Make Alliance Owner</SearchParamsDropDropdownItem>
 			</DropdownMenu>
 		</Dropdown>
 	);

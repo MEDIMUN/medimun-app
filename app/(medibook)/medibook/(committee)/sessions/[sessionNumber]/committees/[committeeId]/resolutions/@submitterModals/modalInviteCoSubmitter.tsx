@@ -46,13 +46,7 @@ type ResolutionType = Prisma.ResolutionGetPayload<{
 	};
 }>;
 
-export function ModalInviteCoSubmitter({
-	selectedResolution,
-	applicableCommitteeDelegates,
-}: {
-	selectedResolution: ResolutionType;
-	applicableCommitteeDelegates: ApplicableDelegateType[];
-}) {
+export function ModalInviteCoSubmitter({ selectedResolution, applicableCommitteeDelegates }: { selectedResolution: ResolutionType; applicableCommitteeDelegates: ApplicableDelegateType[] }) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -82,10 +76,7 @@ export function ModalInviteCoSubmitter({
 	return (
 		<Dialog open={isOpen} onClose={onClose}>
 			<DialogTitle>Invite a Co-Submitter</DialogTitle>
-			<DialogDescription>
-				Co-Submitters will be able to view and edit this resolution until submitted, their delegation names will appear on the resolution. You can
-				invite up to 15 co-submitters.
-			</DialogDescription>
+			<DialogDescription>Co-Submitters will be able to view and edit this resolution until submitted, their delegation names will appear on the resolution. You can invite up to 15 co-submitters.</DialogDescription>
 			<DialogBody onSubmit={handleSubmit} id="invite-cosubmitter" className="flex flex-col gap-6" as="form">
 				<Field>
 					<Label required>Delegation</Label>
@@ -102,14 +93,7 @@ export function ModalInviteCoSubmitter({
 								const selectedCountry = allCountries?.find((country) => country?.countryCode === delegate?.country)?.countryNameEn;
 								return (
 									<ListboxOption key={delegate.id} value={delegate.id}>
-										<Avatar
-											slot="icon"
-											isBordered
-											className="w-5 h-5"
-											size="sm"
-											src={`https://flagcdn.com/h40/${delegate.country?.toLocaleLowerCase()}.png`}
-											alt={selectedCountry + " flag"}
-										/>
+										<Avatar slot="icon" isBordered className="w-5 h-5" size="sm" src={`https://flagcdn.com/h40/${delegate?.country?.toLocaleLowerCase()}.png`} alt={selectedCountry + " flag"} />
 										<ListboxLabel>{selectedCountry}</ListboxLabel>
 										<ListboxDescription>({fullName})</ListboxDescription>
 									</ListboxOption>

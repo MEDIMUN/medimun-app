@@ -40,13 +40,11 @@ export function RegisterQRCodeBox({ code }) {
 	}, [progress, router]);
 
 	return (
-		<div className="border shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 flex flex-col gap-1 text-center">
+		<div className="border shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[48] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 flex flex-col gap-1 text-center">
 			<div className="flex gap-4 flex-col my-4">
-				<div className="mx-auto bg-white p-2 rounded-lg">
+				<div className="mx-auto bg-white !dark:bg-white p-2 rounded-lg">
 					<QRCode size={undefined} value={code} className="mx-auto min-w-full rounded-md" />
-					<div className="mt-2 bg-zinc-300 rounded-full h-3">
-						{!!progress && <Progress aria-label="Code expiry time" size="md" maxValue={100} minValue={0} value={progress} />}
-					</div>
+					<div className="mt-2 bg-zinc-300 rounded-full h-3">{!!progress && <Progress aria-label="Code expiry time" size="md" maxValue={100} minValue={0} value={progress} />}</div>
 				</div>
 			</div>
 			<i className="text-white mb-2">Do not share this code with other delegates.</i>
@@ -82,7 +80,7 @@ export function QRReader({ delegates }) {
 
 	return (
 		<>
-			<div className="border shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] md:p-4 rounded-xl bg-content1/60 flex flex-col gap-1 text-center">
+			<div className="border shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[47] animate-shimmer bg-[length:200%_100%] md:p-4 rounded-xl bg-content1/60 flex flex-col gap-1 text-center">
 				{error ? (
 					<div className="w-full  md:w-64 flex flex-col gap-2 p-4 mx-auto rounded-lg overflow-hidden">
 						<Text className="!text-white !text-lg">We couldn&apos;t access your camera. Please make sure you have granted camera permissions.</Text>
@@ -95,13 +93,7 @@ export function QRReader({ delegates }) {
 					</div>
 				) : (
 					<div className="w-full md:w-64 mx-auto rounded-lg overflow-hidden">
-						<Scanner
-							onError={(error) => setError(error)}
-							components={{ audio: false, zoom: false, finder: false }}
-							scanDelay={0}
-							formats={["qr_code"]}
-							onScan={(data) => handleScan(data)}
-						/>
+						<Scanner onError={(error) => setError(error)} components={{ audio: false, zoom: false, finder: false }} scanDelay={0} formats={["qr_code"]} onScan={(data) => handleScan(data)} />
 					</div>
 				)}
 			</div>

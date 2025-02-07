@@ -209,6 +209,7 @@ const ClauseComponent = React.memo(
 		index,
 		hideSubClauses = false,
 		hideSubSubClauses = false,
+		className = "",
 	}: {
 		clause: Clause;
 		updateClause: (updatedClause: Clause, updateType: "edit" | "reorder") => void;
@@ -221,6 +222,7 @@ const ClauseComponent = React.memo(
 		index: number;
 		hideSubClauses?: boolean;
 		hideSubSubClauses?: boolean;
+		className?: string;
 	}) => {
 		const debouncedUpdateClause = useMemo(() => debounce((updatedClause: Clause) => updateClause(updatedClause, "edit"), 1000), [updateClause]);
 
@@ -344,7 +346,7 @@ const ClauseComponent = React.memo(
 
 		return (
 			<motion.div layout initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -50 }} transition={{ duration: 0.3 }} className="mb-6">
-				<div className={`p-4 bg-sidebar-primary-foreground dark:bg-black shadow-sm rounded-md ${type === "preambulatory" ? "" : "border-green-300"} ${type === "preambulatory" ? "italic" : ""}`}>
+				<div className={`p-4 bg-sidebar-primary-foreground dark:bg-black shadow-sm rounded-md ${type === "preambulatory" ? "" : "border-green-300"} ${type === "preambulatory" ? "italic" : ""} ${className}`}>
 					<div className="flex flex-row sm:space-y-0 mb-2">
 						<div className="font-extralight min-w-[1.5rem] mt-[8px]">{`${index + 1}.`}</div>
 						<div className="flex-col flex w-full gap-2">
@@ -408,7 +410,7 @@ const ClauseComponent = React.memo(
 
 ClauseComponent.displayName = "ClauseComponent";
 
-export function ClauseEditor({ clauses, onUpdate, onDelete, phrases, type, hideSubClauses = false, hideSubSubClauses = false }: ClauseEditorProps) {
+export function ClauseEditor({ clauses, onUpdate, onDelete, phrases, type, hideSubClauses = false, hideSubSubClauses = false, className = "" }: ClauseEditorProps) {
 	const moveClause = useCallback(
 		(clauseId: string, direction: "up" | "down") => {
 			const updatedClauses = [...clauses];
@@ -448,6 +450,7 @@ export function ClauseEditor({ clauses, onUpdate, onDelete, phrases, type, hideS
 					phrases={phrases}
 					isFirst={index === 0}
 					isLast={index === clauses.length - 1}
+					className={className}
 				/>
 			))}
 		</div>

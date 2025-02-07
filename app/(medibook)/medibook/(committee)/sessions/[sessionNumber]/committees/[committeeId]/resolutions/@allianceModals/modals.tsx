@@ -4,7 +4,7 @@ import { Button } from "@/components/button";
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from "@/components/dialog";
 import { useFlushState } from "@/hooks/use-flush-state";
 import { removeSearchParams } from "@/lib/search-params";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Prisma } from "@prisma/client";
 import { toast } from "sonner";
 import { createAlliance, deleteAlliance, inviteAllianceMember, leaveAsAllianceMember, transferAllianceOwner } from "./action";
@@ -69,7 +69,7 @@ export function ModalCreateAlliance({ selectedCommittee }: { selectedCommittee: 
 					</Select>
 				</DialogBody>
 				<DialogActions>
-					<Button disabled={isLoading} plain onClick={onClose}>
+					<Button disabled={isLoading} type="button" plain onClick={onClose}>
 						Cancel
 					</Button>
 					<Button color={"green"} disabled={isLoading} type="submit">
@@ -193,7 +193,7 @@ export function ModalInviteAllianceMember({
 					</Listbox>
 				</DialogBody>
 				<DialogActions>
-					<Button disabled={isLoading} plain onClick={onClose}>
+					<Button disabled={isLoading} plain type="button" onClick={onClose}>
 						Cancel
 					</Button>
 					<Button color={"green"} disabled={isLoading} type="submit">
@@ -209,6 +209,7 @@ export function ModalInviteAllianceMember({
 export function ModalLeaveAlliance({ selectedAlliance }: { selectedAlliance: AllianceType }) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const params = useParams();
 
 	const [isLoading, setIsLoading] = useFlushState(false);
 
@@ -216,7 +217,7 @@ export function ModalLeaveAlliance({ selectedAlliance }: { selectedAlliance: All
 		const res = await leaveAsAllianceMember({ allianceId: selectedAlliance.id });
 		if (res?.ok) {
 			toast.success(res?.message);
-			router.refresh();
+			router.push(`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/resolutions`);
 		} else {
 			toast.error(res?.message);
 		}

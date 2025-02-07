@@ -292,7 +292,7 @@ async function ScResolutionPage({ params, searchParams, authSession, selectedSes
 							<TabsTrigger value="JOINED_ALLIANCES">Joined Alliances</TabsTrigger>
 							{isDelegateOfCommittee && <TabsTrigger value="ALLIANCE_INVITATIONS">Alliance Invitations</TabsTrigger>}
 							{(isChairOfCommittee || isManagement) && <TabsTrigger value="ALL_ALLIANCES">All Alliances</TabsTrigger>}
-							<TabsTrigger value="PREAMBS">All Preambulotary Clauses</TabsTrigger>
+							<TabsTrigger value="PREAMBS">All Preambulatory Clauses</TabsTrigger>
 							<TabsTrigger value="OPERATIVES">All Operative Clauses</TabsTrigger>
 							<TabsTrigger value="DRAFT">Draft Resolutions</TabsTrigger>
 							<TabsTrigger className="!text-red-500" value="FAILED">

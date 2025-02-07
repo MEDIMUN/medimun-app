@@ -2,14 +2,7 @@ import { auth } from "@/auth";
 import { MainWrapper } from "@/components/main-wrapper";
 import { TopBar } from "@/components/top-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-	authorize,
-	authorizeChairCommittee,
-	authorizeDelegateCommittee,
-	authorizeManagerDepartmentType,
-	authorizeMemberDepartmentType,
-	s,
-} from "@/lib/authorize";
+import { authorize, authorizeChairCommittee, authorizeDelegateCommittee, authorizeManagerDepartmentType, authorizeMemberDepartmentType, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { Prisma } from "@prisma/client";
 import { notFound } from "next/navigation";
@@ -75,50 +68,21 @@ export default async function ResolutionPageGA(props) {
 	const isManagement = authorize(authSession, [s.management]);
 	const params = await props.params;
 
-	const selectedResolution = await prisma.resolution.findUnique({
-		where: { id: params["resolutionId"] },
-		include: {
-			committee: {
-				include: { session: true },
+	const selectedResolution = await prisma.resolution
+		.findUnique({
+			where: { id: params["resolutionId"] },
+			include: {
+				committee: { include: { session: true } },
+				PreambulatoryClause: { orderBy: { index: "asc" } },
+				OperativeClause: { orderBy: { index: "asc" } },
+				CoSubmitterInvitation: { include: { delegate: { include: { user: true } } } },
+				mainSubmitter: { include: { user: true } },
+				editor: { include: { user: true } },
+				CoSubmitters: { include: { delegate: { include: { user: true } } } },
+				topic: true,
 			},
-			PreambulatoryClause: {
-				orderBy: { index: "asc" },
-			},
-			OperativeClause: {
-				orderBy: { index: "asc" },
-			},
-			CoSubmitterInvitation: {
-				include: {
-					delegate: {
-						include: {
-							user: true,
-						},
-					},
-				},
-			},
-			mainSubmitter: {
-				include: {
-					user: true,
-				},
-			},
-			editor: {
-				include: {
-					user: true,
-				},
-			},
-			CoSubmitters: {
-				include: {
-					delegate: {
-						include: {
-							user: true,
-						},
-					},
-				},
-			},
-
-			topic: true,
-		},
-	});
+		})
+		.catch((e) => console.error(e.stack));
 
 	if (!selectedResolution) return notFound();
 
@@ -128,7 +92,7 @@ export default async function ResolutionPageGA(props) {
 	const isAPManager = authorizeManagerDepartmentType(authSession.user.currentRoles, ["APPROVAL"]);
 	const isAPMember = authorizeMemberDepartmentType(authSession.user.currentRoles, ["APPROVAL"]);
 
-	if (isAPManager && ["ASSIGNED_TO_EDITOR", "SENT_TO_APPROVAL_PANEL"].includes(selectedResolution.status)) {
+	if (isAPManager && ["ASSIGNED_TO_EDITOR", "SENT_TO_APPROVAL_PANEL"].includes(selectedResolution?.status)) {
 		allowedToApprove = true;
 	}
 
@@ -222,18 +186,13 @@ export default async function ResolutionPageGA(props) {
 							<TabsTrigger value="submitters">Submitters</TabsTrigger>
 							{allowedToApprove && <TabsTrigger value="approve">Approve Resolution</TabsTrigger>}
 							{isAllowedToSendBackToCommittee && <TabsTrigger value="send-back">Send Back to Committee</TabsTrigger>}
-							{isMainSubmitter && selectedResolution.status === "DRAFT" && <TabsTrigger value="submit">Submit Resolution</TabsTrigger>}
+							{isMainSubmitter && selectedResolution?.status === "DRAFT" && <TabsTrigger value="submit">Submit Resolution</TabsTrigger>}
 						</TabsList>
 					</div>
 					<TabsContent value="resolution">
 						<div className=" mx-auto font-serif">
 							<Suspense fallback="Loading...">
-								<ResolutionEditor
-									initialPreambutoryClauses={preambutoryClauses}
-									initialOperativeClauses={operativeClauses}
-									resolutionId={selectedResolution.id}
-									title={selectedResolution.title}
-								/>
+								<ResolutionEditor initialPreambutoryClauses={preambutoryClauses} initialOperativeClauses={operativeClauses} resolutionId={selectedResolution.id} title={selectedResolution.title} />
 							</Suspense>
 						</div>
 					</TabsContent>
@@ -254,7 +213,7 @@ export default async function ResolutionPageGA(props) {
 										const allCountries = countries;
 										const selectedCountry = allCountries?.find((country) => country?.countryCode === delegate?.country)?.countryNameEn;
 										const fullName = user.displayName || `${user.officialName} ${user.officialSurname}`;
-										const flagUrl = `https://flagcdn.com/h40/${delegate.country?.toLocaleLowerCase()}.png`;
+										const flagUrl = `https://flagcdn.com/h40/${delegate?.country?.toLocaleLowerCase()}.png`;
 										return (
 											<TableRow key={coSubmitter.id}>
 												<TableCell>
@@ -317,7 +276,7 @@ export default async function ResolutionPageGA(props) {
 											const allCountries = countries;
 											const selectedCountry = allCountries?.find((country) => country?.countryCode === delegate?.country)?.countryNameEn;
 											const fullName = user.displayName || `${user.officialName} ${user.officialSurname}`;
-											const flagUrl = `https://flagcdn.com/h40/${delegate.country?.toLocaleLowerCase()}.png`;
+											const flagUrl = `https://flagcdn.com/h40/${delegate?.country?.toLocaleLowerCase()}.png`;
 											return (
 												<TableRow key={coSubmitter.id}>
 													{isMainSubmitter && selectedResolution.status === "DRAFT" && (
@@ -377,8 +336,7 @@ export default async function ResolutionPageGA(props) {
 							<div className="flex flex-col gap-2 p-4 mb-6 bg-sidebar-accent rounded-lg">
 								<Heading className="font-[Calsans]">Send Back to Committee</Heading>
 								<Subheading>
-									Are you sure you want to send this resolution back to the committee? This action cannot be undone. You will still have access to the
-									resolution but may not be able to edit it depending on your role.
+									Are you sure you want to send this resolution back to the committee? This action cannot be undone. You will still have access to the resolution but may not be able to edit it depending on your role.
 								</Subheading>
 								<SendBackToCommitteeButton resolutionId={selectedResolution.id} />
 							</div>
