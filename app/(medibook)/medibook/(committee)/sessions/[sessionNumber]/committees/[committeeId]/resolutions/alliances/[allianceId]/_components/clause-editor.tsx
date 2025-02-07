@@ -14,9 +14,7 @@ export function ScClauseEditor() {
 					Preambulatory Clauses <Badge className="!text-2xl"> {[].length} </Badge>
 				</h2>
 				<ClauseEditor hideSubClauses clauses={[]} onUpdate={() => {}} onDelete={() => {}} phrases={Object.values(PreambulatoryPhrases)} type="preambulatory" />
-				<SearchParamsButton searchParams={{ "add-preambulatory-clause":  }} >
-					Add Preambulatory Clause
-				</SearchParamsButton>
+				<SearchParamsButton searchParams={{ "add-preambulatory-clause": "" }}>Add Preambulatory Clause</SearchParamsButton>
 			</div>
 			<div className="mt-8 pt-8 border-t border-gray-300">
 				<h2 className="text-2xl font-[montserrat] font-bold mb-4">
