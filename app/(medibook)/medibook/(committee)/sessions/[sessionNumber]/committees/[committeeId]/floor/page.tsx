@@ -1,3 +1,4 @@
+import { AutoRefresh } from "@/components/auto-refresh";
 import { MainWrapper } from "@/components/main-wrapper";
 import { TopBar } from "@/components/top-bar";
 import ResolutionPageGA from "@/global-pages/resolutionViewer/page";
@@ -38,5 +39,9 @@ export async function CommitteePage(props) {
 		);
 	}
 
-	return <ResolutionPageGA resoId={selectedResolution?.id} {...props} />;
+	return (
+		<>
+			<AutoRefresh /> <ResolutionPageGA resoId={selectedResolution?.id} {...props} />
+		</>
+	);
 }
