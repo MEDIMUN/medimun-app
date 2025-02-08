@@ -991,57 +991,56 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 						)}
 						<Paginator itemsPerPage={perPage} totalItems={SENT_TO_APPROVAL_PANELLENGTH} itemsOnPage={SENT_TO_APPROVAL_PANEL.length} />
 					</TabsContent>
-					{isChairOfCommittee ||
-						(isManagement && (
-							<TabsContent value="SENT_BACK_TO_COMMITTEE">
-								{!!SENT_BACK_TO_COMMITTEE.length && (
-									<Table>
-										<TableHead>
-											<TableRow>
-												<TableHeader>
-													<span className="sr-only">Actions</span>
-												</TableHeader>
-												<TableHeader>Title</TableHeader>
-												<TableHeader>Status</TableHeader>
-												<TableHeader>Topic</TableHeader>
+					{(isChairOfCommittee || isManagement) && (
+						<TabsContent value="SENT_BACK_TO_COMMITTEE">
+							{!!SENT_BACK_TO_COMMITTEE.length && (
+								<Table>
+									<TableHead>
+										<TableRow>
+											<TableHeader>
+												<span className="sr-only">Actions</span>
+											</TableHeader>
+											<TableHeader>Title</TableHeader>
+											<TableHeader>Status</TableHeader>
+											<TableHeader>Topic</TableHeader>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{SENT_BACK_TO_COMMITTEE.map((resolution: Resolution) => (
+											<TableRow key={resolution.id}>
+												<TableCell>
+													<Dropdown>
+														<DropdownButton plain>
+															<Ellipsis />
+														</DropdownButton>
+														<DropdownMenu>
+															<DropdownItem href={`/medibook/sessions/${selectedSession.number}/committees/${selectedSession.committee[0].slug || selectedSession.committee[0].id}/resolutions/${resolution.id}`}>
+																View
+															</DropdownItem>
+															{((resolution.status === "DRAFT" && resolution.mainSubmitter.userId === authSession.user.id) ||
+																isManagement ||
+																(isChairOfCommittee && ["DRAFT", "SENT_BACK_TO_COMMITTEE", "SENT_TO_CHAIRS", "IN_DEBATE", "VOTING"].includes(resolution.status))) && (
+																<SearchParamsDropDropdownItem searchParams={{ "delete-committee-resolution": resolution.id }}>Delete</SearchParamsDropDropdownItem>
+															)}
+															{(isChairOfCommittee || isManagement) && <SetAsAdopted resolutionId={resolution.id} />}
+															{(isChairOfCommittee || isManagement) && <SetAsFailed resolutionId={resolution.id} />}
+															{(isChairOfCommittee || isManagement) && <PutUnderDebate resolutionId={resolution.id} />}
+														</DropdownMenu>
+													</Dropdown>
+												</TableCell>
+												<TableCell>{getResolutionName(resolution)}</TableCell>
+												<TableCell>
+													<Badge>{resolution.status.replaceAll("_", " ")}</Badge>
+												</TableCell>
+												<TableCell>{resolution.topic.title}</TableCell>
 											</TableRow>
-										</TableHead>
-										<TableBody>
-											{SENT_BACK_TO_COMMITTEE.map((resolution: Resolution) => (
-												<TableRow key={resolution.id}>
-													<TableCell>
-														<Dropdown>
-															<DropdownButton plain>
-																<Ellipsis />
-															</DropdownButton>
-															<DropdownMenu>
-																<DropdownItem href={`/medibook/sessions/${selectedSession.number}/committees/${selectedSession.committee[0].slug || selectedSession.committee[0].id}/resolutions/${resolution.id}`}>
-																	View
-																</DropdownItem>
-																{((resolution.status === "DRAFT" && resolution.mainSubmitter.userId === authSession.user.id) ||
-																	isManagement ||
-																	(isChairOfCommittee && ["DRAFT", "SENT_BACK_TO_COMMITTEE", "SENT_TO_CHAIRS", "IN_DEBATE", "VOTING"].includes(resolution.status))) && (
-																	<SearchParamsDropDropdownItem searchParams={{ "delete-committee-resolution": resolution.id }}>Delete</SearchParamsDropDropdownItem>
-																)}
-																{(isChairOfCommittee || isManagement) && <SetAsAdopted resolutionId={resolution.id} />}
-																{(isChairOfCommittee || isManagement) && <SetAsFailed resolutionId={resolution.id} />}
-																{(isChairOfCommittee || isManagement) && <PutUnderDebate resolutionId={resolution.id} />}
-															</DropdownMenu>
-														</Dropdown>
-													</TableCell>
-													<TableCell>{getResolutionName(resolution)}</TableCell>
-													<TableCell>
-														<Badge>{resolution.status.replaceAll("_", " ")}</Badge>
-													</TableCell>
-													<TableCell>{resolution.topic.title}</TableCell>
-												</TableRow>
-											))}
-										</TableBody>
-									</Table>
-								)}
-								<Paginator itemsPerPage={perPage} totalItems={SENT_BACK_TO_COMMITTEELENGTH} itemsOnPage={SENT_BACK_TO_COMMITTEE.length} />
-							</TabsContent>
-						))}
+										))}
+									</TableBody>
+								</Table>
+							)}
+							<Paginator itemsPerPage={perPage} totalItems={SENT_BACK_TO_COMMITTEELENGTH} itemsOnPage={SENT_BACK_TO_COMMITTEE.length} />
+						</TabsContent>
+					)}
 					<TabsContent value="FAILED">
 						{!!FAILED.length && (
 							<Table>
