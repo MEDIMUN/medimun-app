@@ -67,6 +67,7 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
 			url: `/medibook/sessions/${selectedSession}/committees/${committeeSlug || committeeId}`,
 			items: [
 				{ title: "Overview", url: basePath, isVisible: true },
+				{ title: "Floor", url: `${basePath}/floor`, isVisible: true },
 				{ title: "Topics", url: `${basePath}/topics`, isVisible: true },
 				{ title: "Chairs", url: `${basePath}/chairs`, isVisible: true },
 				{ title: "Delegates", url: `${basePath}/delegates`, isVisible: isManagementOrChairOrDelegate },

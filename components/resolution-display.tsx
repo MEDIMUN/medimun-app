@@ -2,6 +2,8 @@ import type React from "react";
 import type { Clause, SubClause, SubSubClause } from "@/types/socket-events";
 import { Divider } from "./divider";
 import { romanize } from "@/lib/romanize";
+import { Prisma } from "@prisma/client";
+import { countries } from "@/data/countries";
 
 interface ResolutionDisplayProps {
 	preambutoryClauses: Clause[];
@@ -76,8 +78,7 @@ const sampleResolution = {
 			index: 1,
 			subClauses: JSON.stringify([
 				{
-					content:
-						"By setting more ambitious national targets for emission reductions, aiming for at least a 50% reduction in greenhouse gas emissions by 2030 compared to 2005 levels",
+					content: "By setting more ambitious national targets for emission reductions, aiming for at least a 50% reduction in greenhouse gas emissions by 2030 compared to 2005 levels",
 					subSubClauses: [],
 				},
 				{
@@ -102,8 +103,7 @@ const sampleResolution = {
 			index: 2,
 			subClauses: JSON.stringify([
 				{
-					content:
-						"Mobilizing at least $100 billion annually in climate finance for developing countries, as agreed upon in previous climate negotiations",
+					content: "Mobilizing at least $100 billion annually in climate finance for developing countries, as agreed upon in previous climate negotiations",
 					subSubClauses: [],
 				},
 				{
@@ -112,11 +112,7 @@ const sampleResolution = {
 				},
 				{
 					content: "Facilitating the transfer of clean and efficient technologies to developing countries through:",
-					subSubClauses: [
-						{ content: "Joint research and development programs" },
-						{ content: "Capacity-building initiatives" },
-						{ content: "Reduction of intellectual property barriers for essential climate technologies" },
-					],
+					subSubClauses: [{ content: "Joint research and development programs" }, { content: "Capacity-building initiatives" }, { content: "Reduction of intellectual property barriers for essential climate technologies" }],
 				},
 			]),
 			resolutionId: "sample",
@@ -136,8 +132,7 @@ const sampleResolution = {
 					],
 				},
 				{
-					content:
-						"Requesting the Task Force to report annually to the General Assembly and the Security Council on its findings and recommendations",
+					content: "Requesting the Task Force to report annually to the General Assembly and the Security Council on its findings and recommendations",
 					subSubClauses: [],
 				},
 			]),
@@ -158,8 +153,7 @@ const sampleResolution = {
 					subSubClauses: [],
 				},
 				{
-					content:
-						"Promoting regional cooperation on transboundary climate-related challenges, such as water resource management and disaster response",
+					content: "Promoting regional cooperation on transboundary climate-related challenges, such as water resource management and disaster response",
 					subSubClauses: [],
 				},
 			]),
@@ -252,8 +246,7 @@ const sampleResolution = {
 			index: 9,
 			subClauses: JSON.stringify([
 				{
-					content:
-						"Inviting heads of state, leaders of international organizations, civil society representatives, and private sector stakeholders to participate",
+					content: "Inviting heads of state, leaders of international organizations, civil society representatives, and private sector stakeholders to participate",
 					subSubClauses: [],
 				},
 				{
@@ -304,13 +297,7 @@ const SubClauseDisplay: React.FC<{ subClause: SubClause; index: number }> = ({ s
 	</li>
 );
 
-function ClauseDisplay({
-	clause,
-	index,
-	isPreambulatory,
-	operativeClauses = [],
-	preambutoryClauses = [],
-}): React.FC<{ clause: Clause; index: number; isPreambulatory: boolean }> {
+function ClauseDisplay({ clause, index, isPreambulatory, operativeClauses = [], preambutoryClauses = [] }): React.FC<{ clause: Clause; index: number; isPreambulatory: boolean }> {
 	return (
 		<div className={`mb-4 ${!isPreambulatory && "pl-10"} ${isPreambulatory ? "italic" : ""}`}>
 			<div className="mb-2 flex gap-2">
@@ -331,12 +318,44 @@ function ClauseDisplay({
 	);
 }
 
-const ResolutionDisplay: React.FC<ResolutionDisplayProps> = ({
-	preambutoryClauses = sampleResolution.preambutoryClauses,
-	operativeClauses = sampleResolution.operativeClauses,
+const ResolutionDisplay = ({
+	preambutoryClauses,
+	operativeClauses,
+	selectedResolution,
+}: {
+	preambutoryClauses: any;
+	operativeClauses: any;
+	selectedResolution: Prisma.ResolutionGetPayload<{
+		include: {
+			topic: true;
+			committee: { include: { Topic: true; ExtraCountry: true } };
+			CoSubmitters: { include: { delegate: { include: { user: true } } } };
+		};
+	}>;
 }) => {
+	const allCountries = countries.concat(selectedResolution.committee.ExtraCountry);
+
+	const mainSUbmitterName = allCountries.find((country) => country.countryCode === selectedResolution.mainSubmitter.country)?.countryNameEn;
+
+	const cosubmitters = selectedResolution.CoSubmitters.map((cosubmitter) => allCountries.find((country) => country.countryCode === cosubmitter.delegate.country)?.countryNameEn);
+	const displayCosubmitters = cosubmitters.join(", ");
+
 	return (
 		<div className="font-serif text-left !text-sm max-w-4xl mx-auto p-8 bg-white dark:bg-black dark:text-white">
+			<div className="mb-8">
+				<div>
+					Forum: <span className="font-bold">{selectedResolution.committee.name}</span>
+				</div>
+				<div>
+					Topic: <span className="font-bold">{selectedResolution.topic.title}</span>
+				</div>
+				<div>
+					Main Submitter: <span className="font-bold">{selectedResolution.mainSubmitterId ? mainSUbmitterName : "N/A"}</span>
+				</div>
+				<div>
+					Co-Submitters: <span className="font-bold">{!!selectedResolution.CoSubmitters.length ? displayCosubmitters : "N/A"}</span>
+				</div>
+			</div>
 			<div className="mb-8">
 				<p className="italic mb-4 inset-10 ml-10">The General Assembly,</p>
 				{preambutoryClauses.map((clause, index) => (
@@ -346,14 +365,7 @@ const ResolutionDisplay: React.FC<ResolutionDisplayProps> = ({
 			<Divider className="my-10" />
 			<div>
 				{operativeClauses.map((clause, index) => (
-					<ClauseDisplay
-						preambutoryClauses={preambutoryClauses}
-						operativeClauses={operativeClauses}
-						key={clause.id}
-						clause={clause}
-						index={index}
-						isPreambulatory={false}
-					/>
+					<ClauseDisplay preambutoryClauses={preambutoryClauses} operativeClauses={operativeClauses} key={clause.id} clause={clause} index={index} isPreambulatory={false} />
 				))}
 			</div>
 		</div>

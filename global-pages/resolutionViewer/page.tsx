@@ -71,9 +71,9 @@ export default async function ResolutionPageGA(props) {
 
 	const selectedResolution = await prisma.resolution
 		.findUnique({
-			where: { id: params["resolutionId"] },
+			where: { id: props?.resoId || params["resolutionId"] },
 			include: {
-				committee: { include: { session: true } },
+				committee: { include: { session: true, Topic: true, ExtraCountry: true } },
 				PreambulatoryClause: { orderBy: { index: "asc" } },
 				OperativeClause: { orderBy: { index: "asc" } },
 				CoSubmitterInvitation: { include: { delegate: { include: { user: true } } } },
@@ -135,7 +135,7 @@ export default async function ResolutionPageGA(props) {
 					buttonText={`${selectedResolution.committee.name} Resolutions`}
 					title={getResolutionName(selectedResolution)}
 					subheading={selectedResolution.topic.title}></ResoPageTopbar>
-				<ResolutionDisplay preambutoryClauses={selectedResolution.PreambulatoryClause} operativeClauses={selectedResolution.OperativeClause} />
+				<ResolutionDisplay selectedResolution={selectedResolution} preambutoryClauses={selectedResolution.PreambulatoryClause} operativeClauses={selectedResolution.OperativeClause} />
 			</>
 		);
 	} else {
@@ -345,7 +345,7 @@ export default async function ResolutionPageGA(props) {
 					)}
 					<TabsContent value="view">
 						<AutoRefresh />
-						<ResolutionDisplay preambutoryClauses={selectedResolution.PreambulatoryClause} operativeClauses={selectedResolution.OperativeClause} />
+						<ResolutionDisplay selectedResolution={selectedResolution} preambutoryClauses={selectedResolution.PreambulatoryClause} operativeClauses={selectedResolution.OperativeClause} />
 					</TabsContent>
 				</MainWrapper>
 			</RefreshTabList>

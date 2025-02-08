@@ -542,7 +542,7 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 			prisma.resolution.findMany({
 				where: {
 					committeeId: selectedSession.committee[0].id,
-					status: { in: ["SENT_TO_APPROVAL_PANEL", "ASSIGNED_TO_EDITOR"] },
+					status: { in: ["SENT_TO_APPROVAL_PANEL", "ASSIGNED_TO_EDITOR", "SENT_BACK_TO_MANAGER"] },
 				},
 				include: {
 					topic: true,
@@ -554,7 +554,7 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 			prisma.resolution.count({
 				where: {
 					committeeId: selectedSession.committee[0].id,
-					status: { in: ["SENT_TO_APPROVAL_PANEL", "ASSIGNED_TO_EDITOR"] },
+					status: { in: ["SENT_TO_APPROVAL_PANEL", "ASSIGNED_TO_EDITOR", "SENT_BACK_TO_MANAGER"] },
 				},
 			}),
 			prisma.resolution.findMany({
@@ -579,6 +579,65 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 		]);
 	}
 
+	if (isChairOfCommittee || isManagement) {
+		[DRAFT, DRAFTLENGTH, SENT_TO_CHAIRS, SENT_TO_CHAIRSLENGTH, SENT_TO_APPROVAL_PANEL, SENT_TO_APPROVAL_PANELLENGTH] = await prisma.$transaction([
+			prisma.resolution.findMany({
+				where: {
+					committeeId: selectedSession.committee[0].id,
+					status: "DRAFT",
+				},
+				include: {
+					topic: true,
+					mainSubmitter: true,
+				},
+				skip: (currentPage - 1) * perPage,
+				take: perPage,
+			}),
+			prisma.resolution.count({
+				where: {
+					committeeId: selectedSession.committee[0].id,
+					status: "DRAFT",
+				},
+			}),
+			prisma.resolution.findMany({
+				where: {
+					committeeId: selectedSession.committee[0].id,
+					status: "SENT_TO_CHAIRS",
+				},
+				include: {
+					topic: true,
+					mainSubmitter: true,
+				},
+				skip: (currentPage - 1) * perPage,
+				take: perPage,
+			}),
+			prisma.resolution.count({
+				where: {
+					committeeId: selectedSession.committee[0].id,
+					status: "SENT_TO_CHAIRS",
+				},
+			}),
+			prisma.resolution.findMany({
+				where: {
+					committeeId: selectedSession.committee[0].id,
+					status: { in: ["SENT_TO_APPROVAL_PANEL", "ASSIGNED_TO_EDITOR"] },
+				},
+				include: {
+					topic: true,
+					mainSubmitter: true,
+				},
+				skip: (currentPage - 1) * perPage,
+				take: perPage,
+			}),
+			prisma.resolution.count({
+				where: {
+					committeeId: selectedSession.committee[0].id,
+					status: { in: ["SENT_TO_APPROVAL_PANEL", "ASSIGNED_TO_EDITOR"] },
+				},
+			}),
+		]);
+	}
+
 	[SENT_BACK_TO_COMMITTEE, SENT_BACK_TO_COMMITTEELENGTH] = await prisma.$transaction([
 		prisma.resolution.findMany({
 			where: {
@@ -597,6 +656,48 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 			where: {
 				committeeId: selectedSession.committee[0].id,
 				status: { in: ["SENT_BACK_TO_COMMITTEE", "IN_DEBATE", "VOTING"] },
+			},
+		}),
+	]);
+
+	const [FAILED, FAILEDLENGTH] = await prisma.$transaction([
+		prisma.resolution.findMany({
+			where: {
+				committeeId: selectedSession.committee[0].id,
+				status: "FAILED",
+			},
+			include: {
+				topic: true,
+				mainSubmitter: true,
+			},
+			skip: (currentPage - 1) * perPage,
+			take: perPage,
+		}),
+		prisma.resolution.count({
+			where: {
+				committeeId: selectedSession.committee[0].id,
+				status: "FAILED",
+			},
+		}),
+	]);
+
+	const [PASSED, PASSEDLENGTH] = await prisma.$transaction([
+		prisma.resolution.findMany({
+			where: {
+				committeeId: selectedSession.committee[0].id,
+				status: "ADOPTED",
+			},
+			include: {
+				topic: true,
+				mainSubmitter: true,
+			},
+			skip: (currentPage - 1) * perPage,
+			take: perPage,
+		}),
+		prisma.resolution.count({
+			where: {
+				committeeId: selectedSession.committee[0].id,
+				status: "ADOPTED",
 			},
 		}),
 	]);
@@ -633,7 +734,7 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 									<Badge className="ml-1 !rounded-full"> Stage 3 </Badge>
 								</TabsTrigger>
 							)}
-							{(isChairOfCommittee || isManagement || isDelegateOfCommittee) && <TabsTrigger value="SENT_BACK_TO_COMMITTEE">To Be Debated</TabsTrigger>}
+							{(isChairOfCommittee || isManagement) && <TabsTrigger value="SENT_BACK_TO_COMMITTEE">To Be Debated</TabsTrigger>}
 							<TabsTrigger className="!text-red-500" value="FAILED">
 								Failed Resolutions
 							</TabsTrigger>
@@ -890,8 +991,59 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 						)}
 						<Paginator itemsPerPage={perPage} totalItems={SENT_TO_APPROVAL_PANELLENGTH} itemsOnPage={SENT_TO_APPROVAL_PANEL.length} />
 					</TabsContent>
-					<TabsContent value="SENT_BACK_TO_COMMITTEE">
-						{!!SENT_BACK_TO_COMMITTEE.length && (
+					{isChairOfCommittee ||
+						(isManagement && (
+							<TabsContent value="SENT_BACK_TO_COMMITTEE">
+								{!!SENT_BACK_TO_COMMITTEE.length && (
+									<Table>
+										<TableHead>
+											<TableRow>
+												<TableHeader>
+													<span className="sr-only">Actions</span>
+												</TableHeader>
+												<TableHeader>Title</TableHeader>
+												<TableHeader>Status</TableHeader>
+												<TableHeader>Topic</TableHeader>
+											</TableRow>
+										</TableHead>
+										<TableBody>
+											{SENT_BACK_TO_COMMITTEE.map((resolution: Resolution) => (
+												<TableRow key={resolution.id}>
+													<TableCell>
+														<Dropdown>
+															<DropdownButton plain>
+																<Ellipsis />
+															</DropdownButton>
+															<DropdownMenu>
+																<DropdownItem href={`/medibook/sessions/${selectedSession.number}/committees/${selectedSession.committee[0].slug || selectedSession.committee[0].id}/resolutions/${resolution.id}`}>
+																	View
+																</DropdownItem>
+																{((resolution.status === "DRAFT" && resolution.mainSubmitter.userId === authSession.user.id) ||
+																	isManagement ||
+																	(isChairOfCommittee && ["DRAFT", "SENT_BACK_TO_COMMITTEE", "SENT_TO_CHAIRS", "IN_DEBATE", "VOTING"].includes(resolution.status))) && (
+																	<SearchParamsDropDropdownItem searchParams={{ "delete-committee-resolution": resolution.id }}>Delete</SearchParamsDropDropdownItem>
+																)}
+																{(isChairOfCommittee || isManagement) && <SetAsAdopted resolutionId={resolution.id} />}
+																{(isChairOfCommittee || isManagement) && <SetAsFailed resolutionId={resolution.id} />}
+																{(isChairOfCommittee || isManagement) && <PutUnderDebate resolutionId={resolution.id} />}
+															</DropdownMenu>
+														</Dropdown>
+													</TableCell>
+													<TableCell>{getResolutionName(resolution)}</TableCell>
+													<TableCell>
+														<Badge>{resolution.status.replaceAll("_", " ")}</Badge>
+													</TableCell>
+													<TableCell>{resolution.topic.title}</TableCell>
+												</TableRow>
+											))}
+										</TableBody>
+									</Table>
+								)}
+								<Paginator itemsPerPage={perPage} totalItems={SENT_BACK_TO_COMMITTEELENGTH} itemsOnPage={SENT_BACK_TO_COMMITTEE.length} />
+							</TabsContent>
+						))}
+					<TabsContent value="FAILED">
+						{!!FAILED.length && (
 							<Table>
 								<TableHead>
 									<TableRow>
@@ -904,7 +1056,7 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{SENT_BACK_TO_COMMITTEE.map((resolution: Resolution) => (
+									{FAILED.map((resolution) => (
 										<TableRow key={resolution.id}>
 											<TableCell>
 												<Dropdown>
@@ -915,18 +1067,11 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 														<DropdownItem href={`/medibook/sessions/${selectedSession.number}/committees/${selectedSession.committee[0].slug || selectedSession.committee[0].id}/resolutions/${resolution.id}`}>
 															View
 														</DropdownItem>
-														{((resolution.status === "DRAFT" && resolution.mainSubmitter.userId === authSession.user.id) ||
-															isManagement ||
-															(isChairOfCommittee && ["DRAFT", "SENT_BACK_TO_COMMITTEE", "SENT_TO_CHAIRS", "IN_DEBATE", "VOTING"].includes(resolution.status))) && (
-															<SearchParamsDropDropdownItem searchParams={{ "delete-committee-resolution": resolution.id }}>Delete</SearchParamsDropDropdownItem>
-														)}
-														{(isChairOfCommittee || isManagement) && <SetAsAdopted resolutionId={resolution.id} />}
-														{(isChairOfCommittee || isManagement) && <SetAsFailed resolutionId={resolution.id} />}
-														{(isChairOfCommittee || isManagement) && <PutUnderDebate resolutionId={resolution.id} />}
+														{(isChairOfCommittee || isManagement) && <SearchParamsDropDropdownItem searchParams={{ "delete-committee-resolution": resolution.id }}>Delete</SearchParamsDropDropdownItem>}
 													</DropdownMenu>
 												</Dropdown>
 											</TableCell>
-											<TableCell>{getResolutionName(resolution)}</TableCell>
+											<TableCell>{resolution.title}</TableCell>
 											<TableCell>
 												<Badge>{resolution.status.replaceAll("_", " ")}</Badge>
 											</TableCell>
@@ -936,7 +1081,48 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 								</TableBody>
 							</Table>
 						)}
-						<Paginator itemsPerPage={perPage} totalItems={SENT_BACK_TO_COMMITTEELENGTH} itemsOnPage={SENT_BACK_TO_COMMITTEE.length} />
+						<Paginator itemsPerPage={perPage} totalItems={FAILEDLENGTH} itemsOnPage={FAILED.length} />
+					</TabsContent>
+					<TabsContent value="PASSED">
+						{!!PASSED.length && (
+							<Table>
+								<TableHead>
+									<TableRow>
+										<TableHeader>
+											<span className="sr-only">Actions</span>
+										</TableHeader>
+										<TableHeader>Title</TableHeader>
+										<TableHeader>Status</TableHeader>
+										<TableHeader>Topic</TableHeader>
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{PASSED.map((resolution) => (
+										<TableRow key={resolution.id}>
+											<TableCell>
+												<Dropdown>
+													<DropdownButton plain>
+														<Ellipsis />
+													</DropdownButton>
+													<DropdownMenu>
+														<DropdownItem href={`/medibook/sessions/${selectedSession.number}/committees/${selectedSession.committee[0].slug || selectedSession.committee[0].id}/resolutions/${resolution.id}`}>
+															View
+														</DropdownItem>
+														{(isChairOfCommittee || isManagement) && <SearchParamsDropDropdownItem searchParams={{ "delete-committee-resolution": resolution.id }}>Delete</SearchParamsDropDropdownItem>}
+													</DropdownMenu>
+												</Dropdown>
+											</TableCell>
+											<TableCell>{resolution.title}</TableCell>
+											<TableCell>
+												<Badge>{resolution.status.replaceAll("_", " ")}</Badge>
+											</TableCell>
+											<TableCell>{resolution.topic.title}</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						)}
+						<Paginator itemsPerPage={perPage} totalItems={PASSEDLENGTH} itemsOnPage={PASSED.length} />
 					</TabsContent>
 				</Tabs>
 			</MainWrapper>
