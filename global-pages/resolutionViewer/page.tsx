@@ -25,6 +25,7 @@ import { AutoRefresh } from "@/components/auto-refresh";
 import { ResoPageTopbar } from "./_components/topbar";
 import { SubmitApproveResolutionToManagerAP } from "./_components/approve-resolution-button";
 import { SendBackToCommitteeButton } from "./_components/send-back-to-committee-button";
+import { RefreshTabList } from "./_components/tablist-client";
 
 type selectedResolution = Prisma.ResolutionGetPayload<{
 	include: {
@@ -171,7 +172,7 @@ export default async function ResolutionPageGA(props) {
 		const operativeClauses = selectedResolution.OperativeClause.map(convertToClause);
 
 		return (
-			<Tabs defaultValue="view" className="w-full">
+			<RefreshTabList>
 				<ResoPageTopbar
 					hideSearchBar
 					buttonHref={`/medibook/sessions/${selectedResolution.committee.session.number}/committees/${selectedResolution.committee.slug || selectedResolution.committee.id}/resolutions`}
@@ -347,7 +348,7 @@ export default async function ResolutionPageGA(props) {
 						<ResolutionDisplay preambutoryClauses={selectedResolution.PreambulatoryClause} operativeClauses={selectedResolution.OperativeClause} />
 					</TabsContent>
 				</MainWrapper>
-			</Tabs>
+			</RefreshTabList>
 		);
 	}
 }

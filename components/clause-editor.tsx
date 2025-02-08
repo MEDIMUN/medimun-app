@@ -216,7 +216,7 @@ const ClauseComponent = React.memo(
 		deleteClause: (clauseId: string) => void;
 		moveClause: (clauseId: string, direction: "up" | "down") => void;
 		type: "preambulatory" | "operative";
-		phrases: PreambulatoryPhrases[] | OperativePhrases[];
+		phrases: string;
 		isFirst: boolean;
 		isLast: boolean;
 		index: number;
@@ -224,7 +224,7 @@ const ClauseComponent = React.memo(
 		hideSubSubClauses?: boolean;
 		className?: string;
 	}) => {
-		const debouncedUpdateClause = useMemo(() => debounce((updatedClause: Clause) => updateClause(updatedClause, "edit"), 1000), [updateClause]);
+		const debouncedUpdateClause = () => (updatedClause: Clause) => updateClause(updatedClause, "edit");
 
 		const updateClauseField = useCallback(
 			(field: keyof Clause, value: any) => {
@@ -243,54 +243,42 @@ const ClauseComponent = React.memo(
 			updateClause(updatedClause, "edit");
 		}, [clause, updateClause]);
 
-		const updateSubClause = useCallback(
-			(index: number, content: string) => {
-				const updatedSubClauses = Array.isArray(clause.subClauses) ? [...clause.subClauses] : [];
-				updatedSubClauses[index] = { ...updatedSubClauses[index], content };
-				const updatedClause = { ...clause, subClauses: updatedSubClauses };
-				debouncedUpdateClause(updatedClause);
-			},
-			[clause, debouncedUpdateClause]
-		);
+		const updateSubClause = (index: number, content: string) => {
+			const updatedSubClauses = Array.isArray(clause.subClauses) ? [...clause.subClauses] : [];
+			updatedSubClauses[index] = { ...updatedSubClauses[index], content };
+			const updatedClause = { ...clause, subClauses: updatedSubClauses };
+			debouncedUpdateClause(updatedClause);
+		};
 
-		const deleteSubClause = useCallback(
-			(index: number) => {
-				const updatedSubClauses = Array.isArray(clause.subClauses) ? clause.subClauses.filter((_, i) => i !== index) : [];
-				const updatedClause = { ...clause, subClauses: updatedSubClauses };
-				updateClause(updatedClause, "edit");
-			},
-			[clause, updateClause]
-		);
+		const deleteSubClause = (index: number) => {
+			const updatedSubClauses = Array.isArray(clause.subClauses) ? clause.subClauses.filter((_, i) => i !== index) : [];
+			const updatedClause = { ...clause, subClauses: updatedSubClauses };
+			updateClause(updatedClause, "edit");
+		};
 
-		const moveSubClause = useCallback(
-			(index: number, direction: "up" | "down") => {
-				const updatedSubClauses = Array.isArray(clause.subClauses) ? [...clause.subClauses] : [];
-				if ((direction === "up" && index > 0) || (direction === "down" && index < updatedSubClauses.length - 1)) {
-					const newIndex = direction === "up" ? index - 1 : index + 1;
-					const [movedSubClause] = updatedSubClauses.splice(index, 1);
-					updatedSubClauses.splice(newIndex, 0, movedSubClause);
-					const updatedClause = { ...clause, subClauses: updatedSubClauses };
-					updateClause(updatedClause, "edit");
-				}
-			},
-			[clause, updateClause]
-		);
-
-		const addSubSubClause = useCallback(
-			(subClauseIndex: number) => {
-				const updatedSubClauses = Array.isArray(clause.subClauses) ? [...clause.subClauses] : [];
-				const newSubSubClause: SubSubClause = { content: "" };
-				if (updatedSubClauses[subClauseIndex]) {
-					updatedSubClauses[subClauseIndex] = {
-						...updatedSubClauses[subClauseIndex],
-						subSubClauses: Array.isArray(updatedSubClauses[subClauseIndex].subSubClauses) ? [...updatedSubClauses[subClauseIndex].subSubClauses, newSubSubClause] : [newSubSubClause],
-					};
-				}
+		const moveSubClause = (index: number, direction: "up" | "down") => {
+			const updatedSubClauses = Array.isArray(clause.subClauses) ? [...clause.subClauses] : [];
+			if ((direction === "up" && index > 0) || (direction === "down" && index < updatedSubClauses.length - 1)) {
+				const newIndex = direction === "up" ? index - 1 : index + 1;
+				const [movedSubClause] = updatedSubClauses.splice(index, 1);
+				updatedSubClauses.splice(newIndex, 0, movedSubClause);
 				const updatedClause = { ...clause, subClauses: updatedSubClauses };
 				updateClause(updatedClause, "edit");
-			},
-			[clause, updateClause]
-		);
+			}
+		};
+
+		const addSubSubClause = (subClauseIndex: number) => {
+			const updatedSubClauses = Array.isArray(clause.subClauses) ? [...clause.subClauses] : [];
+			const newSubSubClause: SubSubClause = { content: "" };
+			if (updatedSubClauses[subClauseIndex]) {
+				updatedSubClauses[subClauseIndex] = {
+					...updatedSubClauses[subClauseIndex],
+					subSubClauses: Array.isArray(updatedSubClauses[subClauseIndex].subSubClauses) ? [...updatedSubClauses[subClauseIndex].subSubClauses, newSubSubClause] : [newSubSubClause],
+				};
+			}
+			const updatedClause = { ...clause, subClauses: updatedSubClauses };
+			updateClause(updatedClause, "edit");
+		};
 
 		const updateSubSubClause = useCallback(
 			(subClauseIndex: number, subSubClauseIndex: number, content: string) => {

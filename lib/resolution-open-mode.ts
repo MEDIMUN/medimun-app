@@ -38,27 +38,16 @@ export function canEditResolution(authSession: Session, resolution: resolutionTy
 
 	const allowedMemberDepartmentTypes = ["APPROVAL"];
 	const isMemberOfAp: boolean =
-		isMember &&
-		authSession?.user?.currentRoles
-			.filter((role) => role.roleIdentifier == "member")
-			.filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
+		isMember && authSession?.user?.currentRoles.filter((role) => role.roleIdentifier == "member").filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
 
 	const isManagerOfAp: boolean =
-		isManager &&
-		authSession?.user?.currentRoles
-			.filter((role) => role?.roleIdentifier == "manager")
-			.filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
+		isManager && authSession?.user?.currentRoles.filter((role) => role?.roleIdentifier == "manager").filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
 
 	const isEditorOfResolution = resolution?.editor?.userId == authSession?.user?.id;
 
-	const isChairOfCommittee =
-		isChair &&
-		authorizeChairCommittee([...(authSession?.user?.pastRoles || []), ...(authSession?.user?.currentRoles || [])], resolution?.committeeId);
+	const isChairOfCommittee = authorizeChairCommittee([...(authSession?.user?.pastRoles || []), ...(authSession?.user?.currentRoles || [])], resolution?.committeeId);
 
-	const isDelegateOfCommittee = authorizeDelegateCommittee(
-		[...(authSession?.user?.pastRoles || []), ...(authSession?.user?.currentRoles || [])],
-		resolution?.committeeId
-	);
+	const isDelegateOfCommittee = authorizeDelegateCommittee([...(authSession?.user?.pastRoles || []), ...(authSession?.user?.currentRoles || [])], resolution?.committeeId);
 
 	const isSubmitterOfResolution = resolution?.mainSubmitter?.userId == authSession?.user?.id;
 	const isCoSubmitterOfResolution = resolution?.CoSubmitters?.some((coSubmitter) => coSubmitter.delegate.userId == authSession?.user?.id);

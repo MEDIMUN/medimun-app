@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { ClauseEditor } from "./clause-editor";
 import { useSocket } from "@/contexts/socket";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { PreambulatoryPhrases, OperativePhrases } from "@/types/socket-events";
 import NotConnectedState from "@/components/NotConnectedState";
 import { Badge } from "@/components/badge";
 import { AutoRefresh } from "./auto-refresh";
+import { ClauseEditor } from "./not-debounced-clause-editor";
 
 interface ResolutionEditorProps {
 	initialPreambutoryClauses: Clause[];
@@ -74,19 +74,43 @@ export function ResolutionEditor({ initialPreambutoryClauses, initialOperativeCl
 		}
 	}, [socket, isConnected, resolutionId]);
 
-	const handleClauseUpdate = useCallback(
-		(type: ClauseType, updatedClause: Clause, updateType: "edit" | "reorder" | "delete") => {
-			// Emit the update to the server
-			if (socket && isConnected) {
-				socket.emit("clause:update", {
-					type,
-					clause: updatedClause,
-					updateType,
-				});
+	const handleClauseUpdate = (type: ClauseType, updatedClause: Clause, updateType: "edit" | "reorder" | "delete") => {
+		// Emit the update to the server
+
+		//update local state
+		const setClausesFunction = type === "preambulatory" ? setPreambutoryClauses : setOperativeClauses;
+		setClausesFunction((prevClauses) => {
+			let updatedClauses: Clause[];
+
+			switch (updateType) {
+				case "edit":
+					updatedClauses = prevClauses.map((clause) => (clause.id === updatedClause.id ? { ...clause, ...updatedClause } : clause));
+					break;
+				case "reorder":
+					updatedClauses = prevClauses.map((clause) => (clause.id === updatedClause.id ? { ...clause, ...updatedClause } : clause));
+					updatedClauses.sort((a, b) => a.index - b.index);
+					break;
+				case "delete":
+					updatedClauses = prevClauses.filter((clause) => clause.id !== updatedClause.id);
+					updatedClauses.forEach((clause, index) => {
+						clause.index = index + 1;
+					});
+					break;
+				default:
+					updatedClauses = prevClauses;
 			}
-		},
-		[socket, isConnected]
-	);
+
+			return updatedClauses;
+		});
+
+		if (socket && isConnected) {
+			socket.emit("clause:update", {
+				type,
+				clause: updatedClause,
+				updateType,
+			});
+		}
+	};
 
 	const handleClauseDelete = useCallback(
 		(type: ClauseType, clauseId: string) => {
@@ -127,7 +151,7 @@ export function ResolutionEditor({ initialPreambutoryClauses, initialOperativeCl
 	if (isConnected)
 		return (
 			<>
-				<AutoRefresh interval={32768} />
+				<AutoRefresh interval={10000} />
 				<div className="font-serif text-base">
 					<div className="mb-8 p-4 bg-sidebar-accent rounded-md">
 						<h2 className="text-lg font-[montserrat] mb-4">Preambulatory Clauses ({preambutoryClauses.length})</h2>
@@ -139,7 +163,7 @@ export function ResolutionEditor({ initialPreambutoryClauses, initialOperativeCl
 							phrases={Object.values(PreambulatoryPhrases)}
 							type="preambulatory"
 						/>
-						<Button onClick={() => addClause("preambulatory")} className="mt-4 text-sm" size="sm">
+						<Button onClick={() => addClause("preambulatory")} className="rounded-full" variant={"outline"}>
 							Add Preambulatory Clause
 						</Button>
 					</div>
@@ -152,7 +176,7 @@ export function ResolutionEditor({ initialPreambutoryClauses, initialOperativeCl
 							phrases={Object.values(OperativePhrases)}
 							type="operative"
 						/>
-						<Button onClick={() => addClause("operative")} className="mt-4 text-sm" size="sm">
+						<Button onClick={() => addClause("operative")} className="rounded-full" variant={"outline"}>
 							Add Operative Clause
 						</Button>
 					</div>

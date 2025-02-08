@@ -21,6 +21,11 @@ import { getResolutionName } from "@/lib/get-resolution-name";
 import BlackLogo from "@/public/assets/branding/logos/logo-black.svg";
 import Image from "next/image";
 import { ReplyAllianceButtons } from "./_components/reply-alliance-buttons";
+import { MakeDraftAgainButton } from "./_components/set-reso-as-draft-buttons";
+import { ForceSendToChairs } from "./_components/force-send-to-chairs";
+import { SetAsAdopted } from "./_components/set-as-adopted-button";
+import { SetAsFailed } from "./_components/set-as-failed-button";
+import { PutUnderDebate } from "./_components/put-under-debate-buttons";
 
 export default function Page(props) {
 	return (
@@ -496,7 +501,7 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 		SENT_BACK_TO_COMMITTEE = [],
 		SENT_BACK_TO_COMMITTEELENGTH = 0;
 
-	if (isChairOfCommittee) {
+	if (isChairOfCommittee || isManagement) {
 		[DRAFT, DRAFTLENGTH, SENT_TO_CHAIRS, SENT_TO_CHAIRSLENGTH, SENT_TO_APPROVAL_PANEL, SENT_TO_APPROVAL_PANELLENGTH, SENT_BACK_TO_COMMITTEE, SENT_BACK_TO_COMMITTEELENGTH] = await prisma.$transaction([
 			prisma.resolution.findMany({
 				where: {
@@ -611,7 +616,7 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 						<TabsList className="w-full flex px-3 gap-2 h-12 min-w-min max-w-max">
 							{isDelegateOfCommittee && <TabsTrigger value="main_resolutions">Main Submitting Resolutions</TabsTrigger>}
 							{isDelegateOfCommittee && <TabsTrigger value="co_resolutions">Co-Submitting Resolutions</TabsTrigger>}
-							{isChairOfCommittee && (
+							{(isChairOfCommittee || isManagement) && (
 								<TabsTrigger value="DRAFT">
 									Draft <Badge className="ml-1 !rounded-full"> Stage 1 </Badge>
 								</TabsTrigger>
@@ -769,8 +774,9 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 														<DropdownItem href={`/medibook/sessions/${selectedSession.number}/committees/${selectedSession.committee[0].slug || selectedSession.committee[0].id}/resolutions/${resolution.id}`}>
 															View
 														</DropdownItem>
-														{((resolution.status === "DRAFT" && resolution.mainSubmitter.userId === authSession.user.id) || isManagement) && (
-															<SearchParamsDropDropdownItem searchParams={{ "delete-committee-resolution": resolution.id }}>Delete</SearchParamsDropDropdownItem>
+														{(isChairOfCommittee || isManagement) && <ForceSendToChairs resolutionId={resolution?.id} />}
+														{(resolution?.mainSubmitter?.userId === authSession.user.id || isManagement) && (
+															<SearchParamsDropDropdownItem searchParams={{ "delete-committee-resolution": resolution?.id }}>Delete</SearchParamsDropDropdownItem>
 														)}
 													</DropdownMenu>
 												</Dropdown>
@@ -820,6 +826,7 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 														{(isChairOfCommittee || isManagement) && resolution.status === "SENT_TO_CHAIRS" && (
 															<SearchParamsDropDropdownItem searchParams={{ "send-resolution-to-approval": resolution.id }}>Send for Approval</SearchParamsDropDropdownItem>
 														)}
+														{(isChairOfCommittee || isManagement) && resolution.status === "SENT_TO_CHAIRS" && <MakeDraftAgainButton resolutionId={resolution.id} />}
 													</DropdownMenu>
 												</Dropdown>
 											</TableCell>
@@ -913,9 +920,9 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 															(isChairOfCommittee && ["DRAFT", "SENT_BACK_TO_COMMITTEE", "SENT_TO_CHAIRS", "IN_DEBATE", "VOTING"].includes(resolution.status))) && (
 															<SearchParamsDropDropdownItem searchParams={{ "delete-committee-resolution": resolution.id }}>Delete</SearchParamsDropDropdownItem>
 														)}
-														{(isChairOfCommittee || isManagement) && resolution.status === "SENT_BACK_TO_COMMITTEE" && (
-															<SearchParamsDropDropdownItem searchParams={{ "send-resolution-to-approval": resolution.id }}>Send for Approval</SearchParamsDropDropdownItem>
-														)}
+														{(isChairOfCommittee || isManagement) && <SetAsAdopted resolutionId={resolution.id} />}
+														{(isChairOfCommittee || isManagement) && <SetAsFailed resolutionId={resolution.id} />}
+														{(isChairOfCommittee || isManagement) && <PutUnderDebate resolutionId={resolution.id} />}
 													</DropdownMenu>
 												</Dropdown>
 											</TableCell>

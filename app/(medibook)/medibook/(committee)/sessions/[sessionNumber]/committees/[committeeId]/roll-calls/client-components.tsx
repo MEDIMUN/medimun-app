@@ -53,19 +53,11 @@ function MorningRegSwitch({ value, onChange, isEditor }) {
 	}
 
 	return (
-		<div
-			className={cn(
-				"flex select-none rounded-md bg-zinc-100 cursor-pointer max-w-max overflow-hidden font-[montserrat]",
-				isEditor && "cursor-pointer"
-			)}>
-			<div
-				onClick={() => onChange("ABSENT")}
-				className={`h-8 w-8 border-r flex text-center ${value == "ABSENT" ? "bg-red-600 hover:bg-red-700" : "hover:bg-zinc-200"}`}>
+		<div className={cn("flex select-none rounded-md bg-zinc-100 cursor-pointer max-w-max overflow-hidden font-[montserrat]", isEditor && "cursor-pointer")}>
+			<div onClick={() => onChange("ABSENT")} className={`h-8 w-8 border-r flex text-center ${value == "ABSENT" ? "bg-red-600 hover:bg-red-700" : "hover:bg-zinc-200"}`}>
 				<div className="m-auto">A</div>
 			</div>
-			<div
-				onClick={() => onChange("PRESENT")}
-				className={`h-8 w-8 flex text-center ${value == "PRESENT" ? "bg-green-600 hover:bg-green-700" : "hover:bg-zinc-200"}`}>
+			<div onClick={() => onChange("PRESENT")} className={`h-8 w-8 flex text-center ${value == "PRESENT" ? "bg-green-600 hover:bg-green-700" : "hover:bg-zinc-200"}`}>
 				<div className="m-auto">P</div>
 			</div>
 		</div>
@@ -83,19 +75,13 @@ function RollCallSwitch({ value, onChange, isEditor }) {
 
 	return (
 		<div className={cn("flex select-none rounded-md bg-zinc-100 max-w-max overflow-hidden font-[montserrat]", isEditor && "cursor-pointer")}>
-			<div
-				onClick={() => onChange("ABSENT")}
-				className={`h-8 w-8 border-r flex text-center ${value == "ABSENT" ? "bg-red-600 hover:bg-red-700" : "hover:bg-zinc-200"}`}>
+			<div onClick={() => onChange("ABSENT")} className={`h-8 w-8 border-r flex text-center ${value == "ABSENT" ? "bg-red-600 hover:bg-red-700" : "hover:bg-zinc-200"}`}>
 				<div className="m-auto">A</div>
 			</div>
-			<div
-				onClick={() => onChange("PRESENT")}
-				className={`h-8 w-8 border-r flex text-center ${value == "PRESENT" ? "bg-yellow-600 hover:bg-yellow-700" : "hover:bg-zinc-200"}`}>
+			<div onClick={() => onChange("PRESENT")} className={`h-8 w-8 border-r flex text-center ${value == "PRESENT" ? "bg-yellow-600 hover:bg-yellow-700" : "hover:bg-zinc-200"}`}>
 				<div className="m-auto">P</div>
 			</div>
-			<div
-				onClick={() => onChange("PRESENTANDVOTING")}
-				className={`h-8 w-8 flex text-center ${value == "PRESENTANDVOTING" ? "bg-green-600 Hover:bg-yellow-700" : "hover:bg-zinc-200"}`}>
+			<div onClick={() => onChange("PRESENTANDVOTING")} className={`h-8 w-8 flex text-center ${value == "PRESENTANDVOTING" ? "bg-green-600 Hover:bg-yellow-700" : "hover:bg-zinc-200"}`}>
 				<div className="m-auto">PV</div>
 			</div>
 		</div>
@@ -110,6 +96,7 @@ export function RollCallTable({ delegates, rollCallsInit, selectedCommittee, sel
 	const [isLoading, setIsLoading] = useState(true);
 	const [rollCalls, setRollCalls] = useState(delegates);
 	const [isMounted, setIsMounted] = useState(false);
+	const [isConnected, setIsConnected] = useState(false);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -120,51 +107,61 @@ export function RollCallTable({ delegates, rollCallsInit, selectedCommittee, sel
 	}, [socket, router]);
 
 	const handleJoinRoom = async () => {
-		await new Promise((resolve) => setTimeout(resolve, 250));
+		await new Promise((resolve) => setTimeout(resolve, 500));
 		try {
-			socket.emit(`join:committee-roll-calls`, selectedCommittee.id, selectedDayId);
-		} catch {}
+			if (socket) socket.emit(`join:committee-roll-calls`, selectedCommittee.id, selectedDayId);
+		} catch {
+		} finally {
+			setIsConnected(true);
+		}
 	};
+
+	useEffect(() => {
+		if (!socket) return;
+		socket.on(`disconnect`, () => {
+			setIsConnected(false);
+		});
+	}, [socket]);
 
 	async function handleOnChangeRollCall({ dayId, rollCallId, userId, type = "ROLLCALL", action }) {
 		if (!isEditor) return;
-		setRollCalls((prev) => {
-			const selectedUser = prev?.find((user) => user.userId === userId);
-			const selectedCommitteeRollCall = selectedUser?.CommitteeRollCall?.find((rc) => rc.rollCallId === rollCallId);
+		try {
+			setRollCalls((prev) => {
+				const selectedUser = prev?.find((user) => user.userId === userId);
+				const selectedCommitteeRollCall = selectedUser?.CommitteeRollCall?.find((rc) => rc.rollCallId === rollCallId);
 
-			const indexOfUser = prev.findIndex((user) => user.userId === userId);
-			const newRollCalls = [...prev];
+				const indexOfUser = prev.findIndex((user) => user.userId === userId);
+				const newRollCalls = [...prev];
 
-			if (!selectedCommitteeRollCall && action === "ABSENT") {
-				newRollCalls[indexOfUser].user.CommitteeRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall.filter(
-					(rc) => rc.rollCallId !== rollCallId
-				);
-			}
-
-			if (!selectedCommitteeRollCall && action !== "ABSENT") {
-				const rollCallsIncludeTheRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall?.filter((rc) => rc.rollCallId === rollCallId);
-				if (!rollCallsIncludeTheRollCall.length) {
-					newRollCalls[indexOfUser].user.CommitteeRollCall.push({ rollCallId, type: action });
+				if (!selectedCommitteeRollCall && action === "ABSENT") {
+					newRollCalls[indexOfUser].user.CommitteeRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall.filter((rc) => rc.rollCallId !== rollCallId);
 				}
 
-				if (!!rollCallsIncludeTheRollCall) {
-					newRollCalls[indexOfUser].user.CommitteeRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall.map((rc) => {
-						if (rc.rollCallId === rollCallId) {
-							rc.type = action;
-						}
-						return rc;
-					});
+				if (!selectedCommitteeRollCall && action !== "ABSENT") {
+					const rollCallsIncludeTheRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall?.filter((rc) => rc.rollCallId === rollCallId);
+					if (!rollCallsIncludeTheRollCall.length) {
+						newRollCalls[indexOfUser].user.CommitteeRollCall.push({ rollCallId, type: action });
+					}
+
+					if (!!rollCallsIncludeTheRollCall) {
+						newRollCalls[indexOfUser].user.CommitteeRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall.map((rc) => {
+							if (rc.rollCallId === rollCallId) {
+								rc.type = action;
+							}
+							return rc;
+						});
+					}
 				}
-			}
-			return newRollCalls;
-		});
+				return newRollCalls;
+			});
+		} catch {}
 		if (socket) {
 			socket.emit(`update:committee-roll-call`, { rollCallId, action: action, type: type, userId });
 		}
 	}
 
 	async function handleMorningRegChange({ userId, type }) {
-		if (!isEditor) return;
+		if (!isEditor || !socket) return;
 		setRollCalls((prev) => {
 			const selectedUser = prev.find((user) => user.userId === userId);
 			const selectedMorningReg = !!selectedUser?.user?.MorningPresent.length;
@@ -187,61 +184,63 @@ export function RollCallTable({ delegates, rollCallsInit, selectedCommittee, sel
 	useEffect(() => {
 		if (!isEditor) return;
 		if (!socket) return;
-		socket.on(`update:committee-roll-call`, ({ dayId, rollCallId, userId, type, action }) => {
-			setRollCalls((prev) => {
-				const selectedUser = prev.find((user) => user.userId === userId);
-				const selectedCommitteeRollCall = selectedUser?.CommitteeRollCall?.find((rc) => rc.rollCallId === rollCallId);
+		try {
+			socket.on(`update:committee-roll-call`, ({ dayId, rollCallId, userId, type, action }) => {
+				setRollCalls((prev) => {
+					const selectedUser = prev.find((user) => user.userId === userId);
+					const selectedCommitteeRollCall = selectedUser?.CommitteeRollCall?.find((rc) => rc.rollCallId === rollCallId);
 
-				const indexOfUser = prev.findIndex((user) => user.userId === userId);
-				const newRollCalls = [...prev];
+					const indexOfUser = prev.findIndex((user) => user.userId === userId);
+					const newRollCalls = [...prev];
 
-				if (!selectedCommitteeRollCall && action === "ABSENT") {
-					newRollCalls[indexOfUser].user.CommitteeRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall.filter(
-						(rc) => rc.rollCallId !== rollCallId
-					);
-				}
-
-				if (!selectedCommitteeRollCall && action !== "ABSENT") {
-					const rollCallsIncludeTheRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall?.filter((rc) => rc.rollCallId === rollCallId);
-					if (!rollCallsIncludeTheRollCall.length) {
-						newRollCalls[indexOfUser].user.CommitteeRollCall.push({ rollCallId, type: action });
+					if (!selectedCommitteeRollCall && action === "ABSENT") {
+						newRollCalls[indexOfUser].user.CommitteeRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall.filter((rc) => rc.rollCallId !== rollCallId);
 					}
 
-					if (!!rollCallsIncludeTheRollCall) {
-						newRollCalls[indexOfUser].user.CommitteeRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall.map((rc) => {
-							if (rc.rollCallId === rollCallId) {
-								rc.type = action;
-							}
-							return rc;
-						});
+					if (!selectedCommitteeRollCall && action !== "ABSENT") {
+						const rollCallsIncludeTheRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall?.filter((rc) => rc.rollCallId === rollCallId);
+						if (!rollCallsIncludeTheRollCall.length) {
+							newRollCalls[indexOfUser].user.CommitteeRollCall.push({ rollCallId, type: action });
+						}
+
+						if (!!rollCallsIncludeTheRollCall) {
+							newRollCalls[indexOfUser].user.CommitteeRollCall = newRollCalls[indexOfUser].user.CommitteeRollCall.map((rc) => {
+								if (rc.rollCallId === rollCallId) {
+									rc.type = action;
+								}
+								return rc;
+							});
+						}
 					}
-				}
-				return newRollCalls;
+					return newRollCalls;
+				});
 			});
-		});
+		} catch {}
 	}, [socket, delegates, rollCalls]);
 
 	useEffect(() => {
 		if (!isEditor) return;
 		if (!socket) return;
-		socket.on(`update:morning-register`, ({ dayId, userId, type, action }) => {
-			setRollCalls((prev) => {
-				const selectedUser = prev.find((user) => user.userId === userId);
-				const selectedMorningReg = !!selectedUser?.user?.MorningPresent.length;
+		try {
+			socket.on(`update:morning-register`, ({ dayId, userId, type, action }) => {
+				setRollCalls((prev) => {
+					const selectedUser = prev.find((user) => user.userId === userId);
+					const selectedMorningReg = !!selectedUser?.user?.MorningPresent.length;
 
-				const indexOfUser = prev.findIndex((user) => user.userId === userId);
-				const newRollCalls = [...prev];
+					const indexOfUser = prev.findIndex((user) => user.userId === userId);
+					const newRollCalls = [...prev];
 
-				if (selectedMorningReg && action === "ABSENT") {
-					newRollCalls[indexOfUser].user.MorningPresent = [];
-				}
+					if (selectedMorningReg && action === "ABSENT") {
+						newRollCalls[indexOfUser].user.MorningPresent = [];
+					}
 
-				if (!selectedMorningReg && action === "PRESENT") {
-					newRollCalls[indexOfUser].user.MorningPresent.push({ dayId });
-				}
-				return newRollCalls;
+					if (!selectedMorningReg && action === "PRESENT") {
+						newRollCalls[indexOfUser].user.MorningPresent.push({ dayId });
+					}
+					return newRollCalls;
+				});
 			});
-		});
+		} catch {}
 	}, [socket, delegates, rollCalls]);
 
 	useEffect(() => {
@@ -262,7 +261,7 @@ export function RollCallTable({ delegates, rollCallsInit, selectedCommittee, sel
 		setIsLoading(false);
 	}, []);
 
-	if (!isLoading && isMounted)
+	if (!isLoading && isMounted && isConnected)
 		return (
 			<Table>
 				<TableHead>

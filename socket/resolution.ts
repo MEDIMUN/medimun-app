@@ -149,16 +149,14 @@ export async function handleUpdateClause(io: Server, socket: Socket, event: Clau
 			return;
 		}
 
-		// Immediately broadcast the update to all clients including the sender
-		io.to(event.clause.resolutionId).emit("clause:updated", {
-			type: event.type,
-			clause: event.clause,
-			updateType: event.updateType,
-		});
-
 		// Then update the database
 		switch (event.updateType) {
 			case "edit":
+				socket.to(event.clause.resolutionId).emit("clause:updated", {
+					type: event.type,
+					clause: event.clause,
+					updateType: event.updateType,
+				});
 				await prismaModel.update({
 					where: { id: event.clause.id },
 					data: {
@@ -167,6 +165,7 @@ export async function handleUpdateClause(io: Server, socket: Socket, event: Clau
 						subClauses: JSON.stringify(event.clause.subClauses),
 					},
 				});
+
 				break;
 
 			case "reorder":
@@ -182,6 +181,11 @@ export async function handleUpdateClause(io: Server, socket: Socket, event: Clau
 							data: { index: i + 1 },
 						});
 					}
+				});
+				io.to(event.clause.resolutionId).emit("clause:updated", {
+					type: event.type,
+					clause: event.clause,
+					updateType: event.updateType,
 				});
 				break;
 
@@ -201,6 +205,11 @@ export async function handleUpdateClause(io: Server, socket: Socket, event: Clau
 							data: { index: i + 1 },
 						});
 					}
+				});
+				io.to(event.clause.resolutionId).emit("clause:updated", {
+					type: event.type,
+					clause: event.clause,
+					updateType: event.updateType,
 				});
 				break;
 		}

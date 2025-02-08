@@ -43,9 +43,7 @@ export function DirectionDropdown({ defaultValue, items, ...props }) {
 		}
 	}
 
-	const currentValue =
-		items.find((item) => item.value + item.order === searchParams.get("order") + searchParams.get("direction")) ||
-		items.find((item) => item.value + item.order === defaultValue);
+	const currentValue = items.find((item) => item.value + item.order === searchParams.get("order") + searchParams.get("direction")) || items.find((item) => item.value + item.order === defaultValue);
 
 	return (
 		<Select onValueChange={handleOnChange} value={currentValue ? currentValue.value + currentValue.order : undefined} defaultValue={defaultValue}>
@@ -252,7 +250,8 @@ export function TopBar({
 										<BreadcrumbItem>
 											<BreadcrumbLink href="/medibook" className="flex gap-2 items-center">
 												<Image alt="Mini MediBook Logo" src={MiniLogo} />
-												<BreadcrumbPage className={cn("md:block", !hideBreadcrums && "hidden")}>MediBook</BreadcrumbPage>
+												{/* 												<BreadcrumbPage className={cn("md:block", !hideBreadcrums && "hidden")}>MediBook</BreadcrumbPage>
+												 */}
 											</BreadcrumbLink>
 										</BreadcrumbItem>
 										{!hideBreadcrums && (
@@ -273,11 +272,7 @@ export function TopBar({
 							<div className="h-full md:hidden aspect-square flex align-middle justify-center items-center border-l border-sidebar-border ml-auto min-w-[65px]">
 								<SidebarTrigger />
 							</div>
-							<div
-								className={cn(
-									"min-h-[65px] flex items-center bg-sidebar-primary-foreground",
-									isSearchActive ? "translate-y-[0px] duration-300" : "translate-y-[65px] duration-300"
-								)}>
+							<div className={cn("min-h-[65px] flex items-center bg-sidebar-primary-foreground", isSearchActive ? "translate-y-[0px] duration-300" : "translate-y-[65px] duration-300")}>
 								<SInput
 									ref={searchInputRef}
 									onChange={(e) => updateSearchParams({ search: e.target.value })}
@@ -317,10 +312,7 @@ export function TopBar({
 			<div
 				ref={spacerRef}
 				id="clientTopbar"
-				className={cn(
-					"flex bg-sidebar-accent w-full dark:bg-sidebar-accent md:w-full right-0 top-0 p-7 border-b border-sidebar-border flex-wrap items-end z-[10] justify-between gap-4",
-					className
-				)}>
+				className={cn("flex bg-sidebar-accent w-full dark:bg-sidebar-accent md:w-full right-0 top-0 p-7 border-b border-sidebar-border flex-wrap items-end z-[10] justify-between gap-4", className)}>
 				<div className="w-full sm:flex-1">
 					{buttonText && buttonHref && (
 						<FastLink href={buttonHref}>
@@ -369,17 +361,7 @@ export function TopBar({
 	);
 }
 
-export function SearchParamsButton({
-	searchParams,
-	deleteSearchParams,
-	useRouter = true,
-	...params
-}: {
-	searchParams?: Object;
-	deleteSearchParams?: Object;
-	useRouter?: boolean;
-	children: React.ReactNode;
-}) {
+export function SearchParamsButton({ searchParams, deleteSearchParams, useRouter = true, ...params }: { searchParams?: Object; deleteSearchParams?: Object; useRouter?: boolean; children: React.ReactNode }) {
 	const router = useNextRouter();
 
 	function handleOnClick() {
@@ -463,13 +445,9 @@ export function SocketHandler() {
 		return (
 			<div className="w-full h-screen fixed z-[100] text-left bg-zinc-900/50 backdrop-blur-sm">
 				<div className="mx-auto  flex w-full max-w-7xl flex-auto flex-col justify-center px-6 py-24 sm:py-64 lg:px-8">
-					<h1 className="mt-5 text-pretty text-5xl font-semibold tracking-tight text-white sm:text-6xl max-w-max p-2 -ml-2 rounded-md bg-primary">
-						No Internet Connection
-					</h1>
+					<h1 className="mt-5 text-pretty text-5xl font-semibold tracking-tight text-white sm:text-6xl max-w-max p-2 -ml-2 rounded-md bg-primary">No Internet Connection</h1>
 					<p className="mt-6 text-pretty text-lg font-medium text-white sm:text-xl/8">MediBook requires an active internet connection.</p>
-					<p className="mt-6 text-pretty text-lg font-medium text-white sm:text-xl/8">
-						This also happens after app updates, please refresh the page to reconnect if you are sure you have an active internet connection.
-					</p>
+					<p className="mt-6 text-pretty text-lg font-medium text-white sm:text-xl/8">This also happens after app updates, please refresh the page to reconnect if you are sure you have an active internet connection.</p>
 					<div className="fixed p-4 w-full left-0 top-0 bg-white gap-4 flex">
 						<Spinner size="sm" />
 						Trying to reconnect...
@@ -518,11 +496,7 @@ export function UserTooltip({ userId, children }) {
 		return (
 			<div className="min-w-[380px] max-w-[500px] flex flex-col p-1 py-2 gap-1">
 				<div className="flex p-1 gap-5">
-					<User
-						name={fullName}
-						description={user?.currentRoleNames[0] || "No role"}
-						avatarProps={{ src: `/api/users/${userId}/avatar`, showFallback: true, isBordered: true, size: "sm", radius: "md" }}
-					/>
+					<User name={fullName} description={user?.currentRoleNames[0] || "No role"} avatarProps={{ src: `/api/users/${userId}/avatar`, showFallback: true, isBordered: true, size: "sm", radius: "md" }} />
 					<div className="gap-2 flex ml-auto">
 						<FastLink href={`/medibook/messenger/@${user?.username || user?.id}?new=true`}>
 							<Button color="primary" className="h-8 my-auto">
@@ -632,9 +606,7 @@ const FileDownloader = ({ resourceId, fileName }) => {
 export function SessionResourceDropdown({ selectedResource }) {
 	const router = useRouter();
 	const { data: authSession, status } = useSession();
-	const resourceUrl = selectedResource.driveUrl
-		? `https://${selectedResource.id.driveUrl}`
-		: `https://www.medimun.org/resources/${selectedResource.id}`;
+	const resourceUrl = selectedResource.driveUrl ? `https://${selectedResource.id.driveUrl}` : `https://www.medimun.org/resources/${selectedResource.id}`;
 
 	const authorizedToEdit = status === "authenticated" && authorizedToEditResource(authSession, selectedResource);
 
@@ -675,17 +647,7 @@ export function SessionResourceDropdown({ selectedResource }) {
 	);
 }
 
-export function SearchParamsDropDropdownItem({
-	searchParams,
-	url,
-	useRouter = true,
-	...params
-}: {
-	searchParams: Object;
-	url?: string;
-	useRouter?: boolean;
-	children: React.ReactNode;
-}) {
+export function SearchParamsDropDropdownItem({ searchParams, url, useRouter = true, ...params }: { searchParams: Object; url?: string; useRouter?: boolean; children: React.ReactNode }) {
 	const router = useNextRouter();
 
 	//if dev http://localhost, if prod https://www.medimun.org
@@ -756,13 +718,7 @@ export function ResourceViewer({ frameUrl }) {
 						<i>Loading... (Attempt {reloadAttempts + 1} out of 5)</i>
 					</Text>
 				)}
-				<iframe
-					sandbox="allow-scripts allow-same-origin"
-					ref={iframeRef}
-					className="w-full min-h-screen"
-					onLoad={() => setIsLoaded(true)}
-					src={frameUrl}
-				/>
+				<iframe sandbox="allow-scripts allow-same-origin" ref={iframeRef} className="w-full min-h-screen" onLoad={() => setIsLoaded(true)} src={frameUrl} />
 			</div>
 			<Text>
 				<i>

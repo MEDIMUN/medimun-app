@@ -1,7 +1,7 @@
 "use client";
 
-import type React from "react";
-import { useEffect, useRef } from "react";
+import React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import type { Clause, PreambulatoryPhrases, OperativePhrases, SubClause, SubSubClause } from "@/types/socket-events";
 import { cn } from "@/lib/utils";
 import { romanize } from "@/lib/romanize";
+import { debounce } from "@/utils/debounce";
 
 interface ClauseEditorProps {
 	clauses: Clause[];
@@ -28,6 +29,60 @@ interface TextareaProps {
 	placeholder: string;
 	className?: string;
 }
+
+const DebouncedTextarea = React.memo(({ value, onChange, placeholder, className = "" }: any) => {
+	const [localValue, setLocalValue] = useState(value);
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+	const debouncedOnChange = useMemo(() => debounce((value: string) => onChange(value), 1200), [onChange]);
+
+	const debouncedAdjustHeight = useMemo(
+		() =>
+			debounce(() => {
+				const textarea = textareaRef.current;
+				if (textarea) {
+					textarea.style.height = "auto";
+					textarea.style.height = `${textarea.scrollHeight}px`;
+				}
+			}, 50),
+		[]
+	);
+
+	const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const newValue = e.target.value;
+		setLocalValue(newValue);
+		debouncedOnChange(newValue);
+		debouncedAdjustHeight();
+	};
+
+	useEffect(() => {
+		setLocalValue(value);
+		debouncedAdjustHeight();
+	}, [value, debouncedAdjustHeight]);
+
+	// Adjust height on component mount and window resize
+	useEffect(() => {
+		debouncedAdjustHeight();
+		window.addEventListener("resize", debouncedAdjustHeight);
+		return () => window.removeEventListener("resize", debouncedAdjustHeight);
+	}, [debouncedAdjustHeight]);
+
+	return (
+		<Textarea
+			ref={textareaRef}
+			value={localValue}
+			onChange={handleChange}
+			className={cn(
+				"!focus-visible:ring-0 dark:bg-gray-800/90 focus:bg-zinc-200/80 dark:focus:bg-zinc-800/80 !focus:outline-[0px] !focus:ring-[0px] min-h-[20px] !right-0 !border-none !outline-none !focus-visible:outline-none shadow-none w-full resize-none overflow-hidden focus:outline-none focus:ring-0 p-0 text-sm ml-1 transition-[height] duration-100 ease-in-out",
+				className
+			)}
+			placeholder={placeholder}
+			rows={1}
+		/>
+	);
+});
+
+DebouncedTextarea.displayName = "DebouncedTextarea";
 
 const NonDebouncedTextarea: React.FC<TextareaProps> = ({ value, onChange, placeholder, className = "" }) => {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -84,20 +139,15 @@ const SubClauseComponent: React.FC<{
 		<div className="ml-8 mt-2 ring-1 ring-sidebar-border p-2 rounded-md">
 			<div className="flex align-top">
 				<div className="font-bold -mt-1 !h-full align-top flex flex-col min-w-[1.5rem]">{`${String.fromCharCode(97 + subIndex)})`}</div>
-				<NonDebouncedTextarea className="mr-2" value={subClause.content} onChange={(value) => updateSubClause(subIndex, value)} placeholder="Enter sub-clause" />
+				<DebouncedTextarea className="mr-2" value={subClause.content} onChange={(value) => updateSubClause(subIndex, value)} placeholder="Enter sub-clause" />
 				<ButtonWrapper>
-					<Button className="p-1 aspect-square w-full md:w-5" variant="ghost" size="xs" onClick={() => deleteSubClause(subIndex)}>
+					<Button className="p-1 aspect-square w-full md:w-6" variant="ghost" size="md" onClick={() => deleteSubClause(subIndex)}>
 						<MinusIcon className="h-3 w-3" />
 					</Button>
-					{!hideSubSubClause && (
-						<Button className="p-1 aspect-square w-full md:w-5" variant="ghost" size="xs" onClick={() => addSubSubClause(subIndex)}>
-							<PlusIcon className="h-3 w-3" />
-						</Button>
-					)}
-					<Button className="p-1 aspect-square w-full md:w-5" variant="ghost" size="xs" onClick={() => moveSubClause(subIndex, "up")} disabled={isFirst}>
+					<Button className="p-1 aspect-square w-full md:w-6" variant="ghost" size="md" onClick={() => moveSubClause(subIndex, "up")} disabled={isFirst}>
 						<ChevronUpIcon className="h-3 w-3" />
 					</Button>
-					<Button className="p-1 aspect-square w-full md:w-5" variant="ghost" size="xs" onClick={() => moveSubClause(subIndex, "down")} disabled={isLast}>
+					<Button className="p-1 aspect-square w-full md:w-6" variant="ghost" size="md" onClick={() => moveSubClause(subIndex, "down")} disabled={isLast}>
 						<ChevronDownIcon className="h-3 w-3" />
 					</Button>
 				</ButtonWrapper>
@@ -116,6 +166,12 @@ const SubClauseComponent: React.FC<{
 					isLast={subSubIndex === subClause.subSubClauses.length - 1}
 				/>
 			))}
+			{!hideSubSubClause && (
+				<Button className="ml-6 mt-2 rounded-full" variant={"outline"} onClick={() => addSubSubClause(subIndex)}>
+					Add Sub-Sub-Clause
+					<PlusIcon className="h-3 w-3" />
+				</Button>
+			)}
 		</div>
 	);
 };
@@ -133,7 +189,7 @@ const SubSubClauseComponent: React.FC<{
 	return (
 		<div className="ml-6 mt-2 flex align-top ring-1 p-2 rounded-md ring-sidebar-border">
 			<span className="font-bold min-w-[1.5rem] text-right">{`${romanize(subSubClauseIndex + 1).toLowerCase()}.`}</span>
-			<NonDebouncedTextarea value={subSubClause.content} onChange={updateSubSubClause} placeholder="Enter sub-sub-clause" className="mr-2" />
+			<DebouncedTextarea value={subSubClause.content} onChange={updateSubSubClause} placeholder="Enter sub-sub-clause" className="mr-2" />
 			<ButtonWrapper>
 				<Button className="p-1 aspect-square w-full md:w-5" variant="ghost" size="xs" onClick={deleteSubSubClause}>
 					<MinusIcon className="h-3 w-3" />
@@ -280,11 +336,7 @@ const ClauseComponent: React.FC<{
 								<Button className="p-1 aspect-square w-full md:w-5" variant="ghost" size="xs" onClick={() => deleteClause(clause.id!)}>
 									<MinusIcon className="h-3 w-3" />
 								</Button>
-								{!hideSubClauses && (
-									<Button className="p-1 aspect-square md:w-5 w-full" variant="ghost" size="xs" onClick={addSubClause}>
-										<PlusIcon className="h-3 w-3" />
-									</Button>
-								)}
+
 								<Button className="p-1 aspect-square md:w-5 w-full" variant="ghost" size="xs" onClick={() => moveClause(clause.id!, "up")} disabled={isFirst}>
 									<ChevronUpIcon className="h-3 w-3" />
 								</Button>
@@ -293,7 +345,7 @@ const ClauseComponent: React.FC<{
 								</Button>
 							</ButtonWrapper>
 						</div>
-						<NonDebouncedTextarea className="p-2 bg-zinc-100 m-0" value={clause.body} onChange={(value) => updateClauseField("body", value)} placeholder="Enter clause body" />
+						<DebouncedTextarea className="p-2 bg-zinc-100 m-0" value={clause.body} onChange={(value) => updateClauseField("body", value)} placeholder="Enter clause body" />
 					</div>
 				</div>
 				{!hideSubClauses &&
@@ -315,6 +367,11 @@ const ClauseComponent: React.FC<{
 							hideSubSubClause={hideSubSubClauses}
 						/>
 					))}
+				{!hideSubClauses && (
+					<Button className="ml-[30px] mt-2 rounded-full" variant={"outline"} onClick={addSubClause}>
+						Add Sub-Clause <PlusIcon className="h-3 w-3" />
+					</Button>
+				)}
 			</div>
 		</motion.div>
 	);
