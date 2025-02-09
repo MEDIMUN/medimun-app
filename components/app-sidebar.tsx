@@ -34,6 +34,7 @@ import {
 	CircleDashed,
 	SquareDashed,
 	Printer,
+	Bookmark,
 } from "lucide-react";
 
 import { NavCollapsible } from "@/components/nav-collapsible";
@@ -275,6 +276,12 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
 			title: "Participants",
 			url: `${sessionBasePath}/participants`,
 			icon: UsersRound,
+			isVisible: true,
+		},
+		{
+			title: "Plenary Floor",
+			url: `${sessionBasePath}/floor`,
+			icon: Bookmark,
 			isVisible: true,
 		},
 		{
