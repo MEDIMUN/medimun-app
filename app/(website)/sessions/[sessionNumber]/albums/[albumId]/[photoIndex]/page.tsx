@@ -15,7 +15,9 @@ export async function generateMetadata(props) {
 	if (!selectedAlbum || !selectedAlbum.driveFolderId) notFound();
 	const allImageFiles = await getAllImageFiles(selectedAlbum.driveFolderId);
 	const currentPhoto = allImageFiles[Number(photoIndex - 1)];
-	const currentPhotoUrl = `https://drive.google.com/uc?id=${currentPhoto.id}&export=view`;
+	const thumbnailUrl = `https://drive.google.com/thumbnail?id=${currentPhoto.id}&sz=w1200-h630`;
+	const encodedThumbnailUrl = encodeURIComponent(thumbnailUrl);
+	const currentPhotoUrl = `https://www.medimun.org/api/get-file/${encodedThumbnailUrl}?noLogo=true`;
 	if (isShare)
 		return {
 			title: `Photo ${photoIndex} from Album "Conference Photos" | Session ${romanize(sessionNumber)} | MEDIMUN`,

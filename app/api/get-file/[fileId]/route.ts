@@ -8,6 +8,10 @@ export async function GET(request: Request, { params }: { params: { fileId: stri
 	const fileId = (await params).fileId;
 	let url = decodeURIComponent(fileId);
 
+	// Parse the request URL to get search params
+	const { searchParams } = new URL(request.url);
+	const noLogo = searchParams.get("noLogo") === "true";
+
 	try {
 		let statusCode: number;
 		let headers: Record<string, string | string[]>;
@@ -33,7 +37,7 @@ export async function GET(request: Request, { params }: { params: { fileId: stri
 				if (typeof newLocation === "string") {
 					url = new URL(newLocation, url).toString();
 					redirectCount++;
-					console.log(`Redirecting to: ${url}`); // Log redirect for debugging
+					console.log(`Redirecting to: ${url}`);
 				} else {
 					throw new Error("Invalid redirect location");
 				}
@@ -48,8 +52,8 @@ export async function GET(request: Request, { params }: { params: { fileId: stri
 
 		const contentType = headers["content-type"] || "application/octet-stream";
 
-		// Check if the content is an image
-		if (contentType.startsWith("image/")) {
+		// Check if the content is an image and logo is not disabled
+		if (contentType.startsWith("image/") && !noLogo) {
 			// Convert the body to a buffer
 			const chunks = [];
 			for await (const chunk of body) {
@@ -58,7 +62,7 @@ export async function GET(request: Request, { params }: { params: { fileId: stri
 			const buffer = Buffer.concat(chunks);
 
 			// Process the image with sharp
-			const logoPath = "./public/assets/branding/logos/image-watermark.png"; // Adjust this path to your logo
+			const logoPath = "./public/assets/branding/logos/image-watermark.png";
 			const processedImage = await sharp(buffer)
 				.composite([
 					{
@@ -77,7 +81,7 @@ export async function GET(request: Request, { params }: { params: { fileId: stri
 				},
 			});
 		} else {
-			// If it's not an image, return the original response
+			// If it's not an image or logo is disabled, return the original response
 			return new Response(body, {
 				status: 200,
 				headers: {
@@ -87,6 +91,7 @@ export async function GET(request: Request, { params }: { params: { fileId: stri
 			});
 		}
 	} catch (error) {
+		console.error("Error processing file:", error);
 		return NextResponse.json({ error: "Failed to process file" }, { status: 500 });
 	}
 }
