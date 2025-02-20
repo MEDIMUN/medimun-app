@@ -81,7 +81,7 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 											try {
 												await navigator.share({
 													title: `Photo ${index + 1} from Album "Conference Photos" | Session ${romanize(sessionNumber)} | MEDIMUN`,
-													url: `https://www.medimun.org/sessions/${sessionNumber}/albums/${albumId}/${index + 1}?share`,
+													url: `https://www.medimun.org/sessions/${sessionNumber}/albums/${albumId}/${index + 1}?share=${currentImage.id}`,
 												});
 											} catch (e) {}
 										}}

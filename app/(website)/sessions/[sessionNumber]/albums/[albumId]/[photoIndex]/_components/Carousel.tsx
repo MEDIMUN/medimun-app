@@ -29,14 +29,9 @@ export default function Carousel({ images, index, currentPhoto, sessionNumber, a
 		closeModal();
 	});
 
-	const currentPhotoUrl = `https://drive.google.com/uc?id=${images[curIndex].id}&export=view`;
-
 	return (
 		<div className="fixed z-[1000] inset-0 flex items-center justify-center">
-			<FastLink href={`/sessions/${sessionNumber}/photos#${curIndex}`} className="absolute inset-0 z-30 cursor-default bg-black backdrop-blur-2xl">
-				{/* 				<Image src={currentPhotoUrl} className="pointer-events-none h-full w-full" alt="blurred background" fill priority={true} />
-				 */}
-			</FastLink>
+			<FastLink href={`/sessions/${sessionNumber}/albums/${albumId}#${curIndex}`} className="absolute inset-0 z-30 cursor-default bg-black backdrop-blur-2xl"></FastLink>
 			<SharedModal albumId={albumId} sessionNumber={sessionNumber} direction={direction} images={images} index={curIndex} changePhotoId={changePhotoId} currentPhoto={currentPhoto} navigation={false} />
 		</div>
 	);

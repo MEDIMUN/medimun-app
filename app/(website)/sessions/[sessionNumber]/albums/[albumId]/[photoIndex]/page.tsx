@@ -48,8 +48,6 @@ export default async function Home(props) {
 	//getIndex and handle
 	const currentPhoto = allImageFiles[index];
 
-	const currentPhotoUrl = `https://drive.google.com/uc?id=${currentPhoto.id}&export=view`;
-
 	return (
 		<main className="mx-auto max-w-[1960px] p-4">
 			<Carousel sessionNumber={sessionNumber} albumId={albumId} images={allImageFiles} currentPhoto={currentPhoto} index={index} />
