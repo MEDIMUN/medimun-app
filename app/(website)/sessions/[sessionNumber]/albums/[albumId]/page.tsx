@@ -27,9 +27,6 @@ export async function generateMetadata(props) {
 }
 
 async function Gallery(props) {
-	"use cache";
-	cacheLife("minutes");
-
 	const albumId = (await props.params).albumId;
 
 	const selectedAlbum = await getSelectedAlbum(props);
