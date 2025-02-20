@@ -294,6 +294,7 @@ model Session {
   ApplicationDelegationPreferences               ApplicationDelegationPreferences[]
   ApplicationGrantedDelegationCountries          ApplicationGrantedDelegationCountries[]
   Blacklist                                      Blacklist[]
+  Album                                          Album[]
 }
 
 model Invoice {
@@ -971,6 +972,8 @@ model Resource {
   committeeMessageId String?
   PositionPaper      PositionPaper[]
   Resolution         Resolution[]
+  Album              Album?                 @relation(fields: [albumId], references: [id])
+  albumId            String?
 }
 
 // ANNOUNCEMENT ///////////////////////////////////////////////////////////
@@ -1159,4 +1162,18 @@ model ApplicationSchoolDirector {
   date       DateTime @default(now())
 
   @@unique([userId, schoolId, sessionId])
+}
+
+model Album {
+  id            String     @id @default(nanoid())
+  name          String
+  description   String?
+  slug          String?
+  driveFolderId String?
+  cover         String?
+  time          DateTime   @default(now())
+  session       Session    @relation(fields: [sessionId], references: [id])
+  sessionId     String
+  //
+  Resource      Resource[]
 }

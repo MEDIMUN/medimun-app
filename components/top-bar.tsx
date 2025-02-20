@@ -29,9 +29,7 @@ export function DirectionDropdown({ defaultValue, items, ...props }) {
 		}
 	}
 
-	const currentValue =
-		items.find((item) => item.value + item.order === searchParams.get("order") + searchParams.get("direction")) ||
-		items.find((item) => item.value + item.order === defaultValue);
+	const currentValue = items.find((item) => item.value + item.order === searchParams.get("order") + searchParams.get("direction")) || items.find((item) => item.value + item.order === defaultValue);
 
 	return (
 		<Select onValueChange={handleOnChange} value={currentValue ? currentValue.value + currentValue.order : undefined} defaultValue={defaultValue}>
@@ -100,6 +98,8 @@ export function TopBar({
 		router.refresh();
 	}, [debouncedSearch]);
 	/* 	if (isMounted)
+
+	
 	 */ return (
 		<>
 			<Dialog open={configShown} onClose={() => setConfigShown(false)} title="Options" className="w-full max-w-[500px]">
@@ -112,39 +112,37 @@ export function TopBar({
 			<header className="flex z-[50] flex-col bg-sidebar-primary-foreground dark:bg-sidebar right-0 fixed top-0 w-full md:w-[calc(100%-288px)] border-b border-sidebar-border h-[65px] shrink-0 items-center -transition-[width,height] -ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
 				<div className="flex items-center h-[65px] w-full">
 					<div className="flex items-center w-full">
-						<div className="w-full flex flex-col h-[65px] duration-200 border-b border-sidebar-border overflow-y-hidden">
-							<div className={cn("min-h-[65px] fixed top-0 flex items-center px-2")}>
-								<Breadcrumb className="px-2 md:px-4 ">
-									<BreadcrumbList>
-										<BreadcrumbItem>
+						<div className="w-full flex flex-row h-[65px] duration-200 border-b border-sidebar-border -overflow-y-hidden">
+							<div className={cn("min-h-[65px] flex flex-row items-center px-2")}>
+								<Breadcrumb className="px-2 md:px-4 flex flex-row">
+									<BreadcrumbList className="flex gap-2 items-center flex-row wra-">
+										<BreadcrumbItem className="">
 											<BreadcrumbLink href="/medibook" className="flex gap-2 items-center">
 												<Image alt="Mini MediBook Logo" src={MiniLogo} />
 												<BreadcrumbPage className={cn("md:block", !hideBreadcrums && "hidden")}>MediBook</BreadcrumbPage>
 											</BreadcrumbLink>
 										</BreadcrumbItem>
 										{!hideBreadcrums && (
-											<>
+											<div className="flex gap-2 items-center overflow-hidden max-w-[calc(auto-100px)]">
 												<BreadcrumbSeparator />
 												<BreadcrumbItem>
-													<BreadcrumbLink href={buttonHref}>{buttonText}</BreadcrumbLink>
+													<BreadcrumbLink className="truncate max-w-[150px] md:max-w-[300px]" href={buttonHref}>
+														{buttonText}
+													</BreadcrumbLink>
 												</BreadcrumbItem>
 												<BreadcrumbSeparator />
 												<BreadcrumbItem>
 													<BreadcrumbPage>{title}</BreadcrumbPage>
 												</BreadcrumbItem>
-											</>
+											</div>
 										)}
 									</BreadcrumbList>
 								</Breadcrumb>
 							</div>
-							<div className="h-full md:hidden aspect-square flex align-middle justify-center items-center border-l border-sidebar-border ml-auto min-w-[65px]">
-								<SidebarTrigger />
+							<div className="md:hidden z-[52] h-[65px] w-[65px] aspect-square flex align-middle justify-center items-center border-l border-sidebar-border ml-auto min-w-[65px]">
+								<SidebarTrigger className="fixed" />
 							</div>
-							<div
-								className={cn(
-									"min-h-[65px] flex items-center bg-sidebar-primary-foreground",
-									isSearchActive ? "translate-y-[0px] duration-300" : "translate-y-[65px] duration-300"
-								)}>
+							{/* <div className={cn("min-h-[65px] flex items-center bg-sidebar-primary-foreground", isSearchActive ? "translate-y-[0px] duration-300" : "translate-y-[65px] duration-300")}>
 								<SInput
 									ref={searchInputRef}
 									onChange={(e) => updateSearchParams({ search: e.target.value })}
@@ -153,9 +151,9 @@ export function TopBar({
 									type="search"
 									className="h-full mx-2 border-0 shadow-none rounded-none focus-visible:ring-0"
 								/>
-							</div>
+							</div> */}
 						</div>
-						{isSearchActive && (
+						{/* {isSearchActive && (
 							<div className="h-full flex items-center border-b justify-center aspect-square border-l border-sidebar-border min-w-[65px]">
 								<Button
 									onClick={() => {
@@ -177,17 +175,14 @@ export function TopBar({
 									<span className="sr-only">Search</span>
 								</Button>
 							</div>
-						)}
+						)} */}
 					</div>
 				</div>
 			</header>
 			<div
 				ref={spacerRef}
 				id="clientTopbar"
-				className={cn(
-					"flex bg-sidebar-accent w-full dark:bg-sidebar-accent md:w-full right-0 top-0 p-7 border-b border-sidebar-border flex-wrap items-end z-[10] justify-between gap-4",
-					className
-				)}>
+				className={cn("flex bg-sidebar-accent w-full dark:bg-sidebar-accent md:w-full right-0 top-0 p-7 border-b border-sidebar-border flex-wrap items-end z-[10] justify-between gap-4", className)}>
 				<div className="w-full sm:flex-1">
 					{buttonText && buttonHref && (
 						<FastLink href={buttonHref}>

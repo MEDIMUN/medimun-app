@@ -23,10 +23,7 @@ export default async function Page(props) {
 							</Link>
 							<br />
 							<br />
-							<Link
-								href={`/announcements/XgsyO7enc0QZzp5ZwAn5x/session-20-delegation-application-deadline`}
-								target="_blank"
-								className="text-primary-500 underline">
+							<Link href={`/announcements/XgsyO7enc0QZzp5ZwAn5x/session-20-delegation-application-deadline`} target="_blank" className="text-primary-500 underline">
 								Application Deadlines & Details
 							</Link>
 						</p>

@@ -31,6 +31,11 @@ import { Heading, Subheading } from "@/components/heading";
 import { Divider } from "@/components/divider";
 import { FastLink as Link } from "@/components/fast-link";
 import { Dialog, DialogActions, DialogBody, DialogTitle } from "@/components/dialog";
+import { TopBar as ToooopBar } from "@/components/top-bar";
+
+export function TopBar(props) {
+	return <ToooopBar {...props} />;
+}
 
 export function DirectionDropdown({ defaultValue, items, ...props }) {
 	const router = useRouter();
@@ -84,7 +89,7 @@ export function SearchBar({ placeholder = "Search...", debounceDelay = 500, defa
 	);
 }
 
-export function TopBar2({
+export function TopBar3({
 	className = "",
 	title = "" as any,
 	sortOptions,
@@ -181,7 +186,7 @@ export function TopBar2({
 	);
 }
 
-export function TopBar({
+export function TopBar2({
 	className = "",
 	title = "" as any,
 	sortOptions,
@@ -250,8 +255,7 @@ export function TopBar({
 										<BreadcrumbItem>
 											<BreadcrumbLink href="/medibook" className="flex gap-2 items-center">
 												<Image alt="Mini MediBook Logo" src={MiniLogo} />
-												{/* 												<BreadcrumbPage className={cn("md:block", !hideBreadcrums && "hidden")}>MediBook</BreadcrumbPage>
-												 */}
+												<BreadcrumbPage className={cn("md:block", !hideBreadcrums && "hidden")}>MediBook</BreadcrumbPage>
 											</BreadcrumbLink>
 										</BreadcrumbItem>
 										{!hideBreadcrums && (
