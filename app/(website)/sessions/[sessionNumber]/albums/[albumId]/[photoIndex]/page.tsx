@@ -20,10 +20,9 @@ export async function generateMetadata(props) {
 	const currentPhotoUrl = `https://www.medimun.org/api/get-file/${encodedThumbnailUrl}?noLogo=true`;
 	if (isShare)
 		return {
-			title: `Photo ${photoIndex} from Album "Conference Photos" | Session ${romanize(sessionNumber)} | MEDIMUN`,
-			description: "Photos from the MEDIMUN session",
+			title: `Photo ${photoIndex} | ${selectedAlbum.name} | Session ${romanize(sessionNumber)} Albums | MEDIMUN`,
 			openGraph: {
-				title: `Photo ${photoIndex} from Session ${romanize(sessionNumber)}`,
+				title: `Photo ${photoIndex} | ${selectedAlbum.name} | Session ${romanize(sessionNumber)} Albums | MEDIMUN`,
 				images: [
 					{
 						url: currentPhotoUrl,
