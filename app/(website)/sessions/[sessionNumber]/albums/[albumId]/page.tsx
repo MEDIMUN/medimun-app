@@ -1,13 +1,13 @@
 import { cache, Suspense } from "react";
 import { Topbar } from "@/app/(website)/server-components";
 import Image from "next/image";
-import Link from "next/link";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { romanize } from "@/lib/romanize";
 import { unstable_cacheLife as cacheLife } from "next/cache";
 import { getAllImageFiles } from "../utils/get-all-image-files";
 import { getSelectedAlbum } from "../utils/get-selected-album";
+import { FastLink } from "@/components/fast-link";
 
 export default function Page(props) {
 	return (
@@ -48,7 +48,7 @@ async function Gallery(props) {
 					{allImageFiles.map((file: any, index) => {
 						const customThumbnailLink = `https://drive.google.com/thumbnail?id=${file.id}&sz=w480-h480`;
 						return (
-							<Link
+							<FastLink
 								id={(index + 1).toString()}
 								key={file.id}
 								href={`./${albumId}/${index + 1}`}
@@ -65,7 +65,7 @@ async function Gallery(props) {
                   (max-width: 1536px) 33vw,
                   25vw"
 								/>
-							</Link>
+							</FastLink>
 						);
 					})}
 				</div>

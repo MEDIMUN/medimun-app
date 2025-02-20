@@ -93,12 +93,12 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 										<ShareIcon className="h-5 w-5" />
 									</button>
 								)}
-								{/* <button
-									onClick={() => downloadPhoto(`https://drive.google.com/thumbnail?id=${currentImage.id}`, currentImage.name)}
+								<button
+									onClick={() => downloadPhoto(`https://drive.google.com/uc?id=${currentImage.id}&export=download`, `MEDIMUN Photo ${index + 1}`)}
 									className="rounded-full bg-black/50 p-2 text-white/75 backdrop-blur-lg transition hover:bg-black/75 hover:text-white"
 									title="Download fullsize version">
 									<DownloadIcon className="h-5 w-5" />
-								</button> */}
+								</button>
 							</div>
 							<div className="absolute top-0 left-0 flex items-center gap-2 p-3 text-white">
 								<FastLink href={`/sessions/${sessionNumber}/albums/${albumId}#${index + 1}`} className="rounded-full bg-black/50 p-2 text-white/75 backdrop-blur-lg transition hover:bg-black/75 hover:text-white">
