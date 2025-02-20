@@ -3,7 +3,7 @@ import Head from "next/head";
 import Carousel from "./_components/Carousel";
 import { romanize } from "@/lib/romanize";
 import { unstable_cacheLife as cacheLife } from "next/cache";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getAllImageFiles } from "../../utils/get-all-image-files";
 import { getSelectedAlbum } from "../../utils/get-selected-album";
 
@@ -21,6 +21,7 @@ export async function generateMetadata(props) {
 	if (isShare)
 		return {
 			title: `Photo ${photoIndex} | ${selectedAlbum.name} | Session ${romanize(sessionNumber)} Albums | MEDIMUN`,
+			description: `Check out www.medimun.org for more photos from the conference.`,
 			openGraph: {
 				title: `Photo ${photoIndex} | ${selectedAlbum.name} | Session ${romanize(sessionNumber)} Albums | MEDIMUN`,
 				images: [
@@ -39,11 +40,25 @@ export async function generateMetadata(props) {
 
 export default async function Home(props) {
 	const { photoIndex, sessionNumber, albumId } = await props.params;
+	const searchParams = await props.searchParams;
+	const isShare = typeof searchParams.share === "string";
+	const shareId = searchParams.share;
+
 	let index = Number(photoIndex - 1);
 	const selectedAlbum = await getSelectedAlbum(props);
 	if (!selectedAlbum || !selectedAlbum.driveFolderId) notFound();
 	const folderId = selectedAlbum.driveFolderId;
 	let allImageFiles = await getAllImageFiles(folderId);
+
+	if (isShare) {
+		const selectedImage = allImageFiles.find((image) => image.id === shareId);
+		if (selectedImage) {
+			let shareIndex = allImageFiles.indexOf(selectedImage) + 1;
+			if (shareIndex !== index) {
+				redirect(`/sessions/${sessionNumber}/albums/${albumId}/${shareIndex}`);
+			}
+		}
+	}
 
 	//getIndex and handle
 	const currentPhoto = allImageFiles[index];
