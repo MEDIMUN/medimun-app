@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import prisma from "@/prisma/client";
 import { Footer } from "@/app/(website)/main-footer";
 import { notFound } from "next/navigation";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 export const metadata = {
 	metadataBase: new URL("https://www.medimun.org"),
@@ -43,9 +44,7 @@ export default async function RootLayout({ children }) {
 							<DynamicNavbar />
 						</Suspense>
 						<main className="min-h-svh bg-black">
-							<div
-								className="absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu overflow-hidden blur-3xl lg:ml-24 xl:ml-48"
-								aria-hidden="true">
+							<div className="absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu overflow-hidden blur-3xl lg:ml-24 xl:ml-48" aria-hidden="true">
 								<div
 									className="aspect-[801/1036] w-[50.0625rem] bg-gradient-to-tr from-[#ff80b5] to-primary opacity-30"
 									style={{
@@ -55,6 +54,7 @@ export default async function RootLayout({ children }) {
 								/>
 							</div>
 							{children}
+							<ScrollToTop />
 						</main>
 						<Footer />
 						<Toaster />

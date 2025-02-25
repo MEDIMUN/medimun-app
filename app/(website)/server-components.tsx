@@ -225,9 +225,9 @@ export function Topbar({ title, description, buttonText, buttonHref }: { title: 
 					<div className="mx-auto max-w-7xl text-left">
 						{buttonText && buttonHref && (
 							<FastLink href={buttonHref}>
-								<div className="text-sm hover:bg-primary -translate-y-[10px] opacity-50 hover:opacity-100 -ml-[11px] -mt-1 mb-2 pl-[6px] rounded-full pt-[2px] duration-200 leading-none flex max-w-min">
-									<ChevronLeft className="size-4 mt-[2.75px] m-auto" />
-									<Text className="mr-[11px] min-w-max text-sm">{buttonText}</Text>
+								<div className="text-sm min-w-max flex hover:bg-primary h-8 -translate-y-[10px] opacity-50 hover:opacity-100 -ml-[9px] -mt-1 mb-2 pl-[6px] rounded-full duration-200 leading-none max-w-min">
+									<ChevronLeft className="size-4 my-auto  min-w-4 m-auto" />
+									<Text className="mr-[11px] my-auto max-h-[16px] md:-translate-y-[3px] min-w-max text-sm">{buttonText}</Text>
 								</div>
 							</FastLink>
 						)}
