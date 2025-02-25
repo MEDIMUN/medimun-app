@@ -33,7 +33,19 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 	});
 
 	useKeypress("Escape", () => {
-		router.push(`/sessions/${sessionNumber}/albums/${albumId}`);
+		router.push(`/sessions/${sessionNumber}/albums/${albumId}#${index + 1}`);
+	});
+
+	useKeypress("ArrowRight", () => {
+		if (index < images?.length - 1) {
+			changePhotoId(index + 1, 1);
+		}
+	});
+
+	useKeypress("ArrowLeft", () => {
+		if (index > 0) {
+			changePhotoId(index - 1, -1);
+		}
 	});
 
 	let currentImage = images ? images[index] : currentPhoto;
@@ -46,14 +58,7 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 					<div className="relative flex aspect-[3/2] items-center justify-center">
 						<AnimatePresence initial={false} custom={direction}>
 							<motion.div key={currentImage.id} custom={direction} variants={variants} initial="enter" animate="center" exit="exit" className="absolute">
-								<Image
-									src={`https://drive.google.com/thumbnail?id=${currentImage.id}&sz=w1920-h1280`}
-									width={navigation ? 1280 : 1920}
-									height={navigation ? 853 : 1280}
-									priority
-									alt="MEDIMUN Image"
-									onLoadingComplete={() => setLoaded(true)}
-								/>
+								<Image src={`https://drive.google.com/thumbnail?id=${currentImage.id}&sz=w1920-h1280`} width={1920} height={1280} priority alt="MEDIMUN Image" onLoadingComplete={() => setLoaded(true)} />
 							</motion.div>
 						</AnimatePresence>
 					</div>
@@ -133,8 +138,8 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 											} relative inline-block w-full shrink-0 transform-gpu overflow-hidden focus:outline-none`}>
 											<Image
 												alt="small photos on the bottom"
-												width={180}
-												height={120}
+												width={1920}
+												height={1280}
 												className={`${isSelected ? "brightness-110 hover:brightness-110" : "brightness-50 contrast-125 hover:brightness-75"} h-full transform object-cover transition`}
 												src={`https://drive.google.com/thumbnail?id=${id}&sz=w1920-h1280`}
 											/>
