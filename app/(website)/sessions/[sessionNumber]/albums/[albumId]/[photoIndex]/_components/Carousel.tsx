@@ -1,20 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import useKeypress from "react-use-keypress";
 import SharedModal from "./SharedModal";
 import { useState } from "react";
 import { FastLink } from "@/components/fast-link";
 
 export default function Carousel({ images, index, currentPhoto, sessionNumber, albumId }: { index: number; currentPhoto: any; images: any[]; sessionNumber: string; albumId: string }) {
-	const router = useRouter();
 	const [direction, setDirection] = useState(0);
 	const [curIndex, setCurIndex] = useState(index);
-
-	function handleClose() {
-		router.push("/");
-		onClose();
-	}
 
 	function changePhotoId(newVal: number, direction: number) {
 		setDirection(direction);
@@ -24,10 +16,6 @@ export default function Carousel({ images, index, currentPhoto, sessionNumber, a
 
 		window.history.pushState(null, "", `./${newVal + 1}`);
 	}
-
-	useKeypress("Escape", () => {
-		closeModal();
-	});
 
 	return (
 		<div className="fixed z-[1000] inset-0 flex items-center justify-center">

@@ -54,7 +54,7 @@ export default async function Page(props) {
 				}
 			/>
 			{!!sessions.length && (
-				<ul className="mx-auto max-w-7xl px-5">
+				<ul className="mx-auto font-[montserrat] max-w-7xl px-5">
 					{sessions.map((session, index) => {
 						const firstDay = session?.Day[0]?.date;
 						const firstDayDate = firstDay?.toLocaleString("en-GB").slice(0, 10);
@@ -65,34 +65,20 @@ export default async function Page(props) {
 							<Fragment key={session.id}>
 								<li
 									className={cn("bg-cover", session?.isMainShown && "mb-6 overflow-hidden rounded-lg text-zinc-800 shadow-md duration-300")}
-									style={
-										session.isMainShown
-											? session.cover
-												? { backgroundImage: `url(/api/sessions/${session.id}/cover)` }
-												: { backgroundImage: `url(/assets/gradients/${2}.jpg)` }
-											: null
-									}>
+									style={session.isMainShown ? (session.cover ? { backgroundImage: `url(/api/sessions/${session.id}/cover)` } : { backgroundImage: `url(/assets/gradients/${2}.jpg)` }) : null}>
 									{!!index && !session?.isMainShown && <Divider soft={index > 0} />}
 									<div className={cn("flex items-center justify-between", session?.isMainShown && "bg-white bg-opacity-60 pl-6 pr-4")}>
 										<div key={session.id} className="flex gap-6 py-6">
 											{!session.isMainShown && (
 												<div className="w-[85.33px] shrink-0">
-													<Link href={`/medibook/sessions/${session?.number}`} aria-hidden="true">
+													<Link href={`/sessions/${session?.number}`} aria-hidden="true">
 														{session?.cover ? (
-															<div
-																style={{ backgroundImage: `url(/api/sessions/${session.id}/cover)` }}
-																className={`flex aspect-square justify-center rounded-lg bg-cover align-middle shadow`}>
-																<p className="my-auto translate-y-1 font-[GilroyLight] text-5xl font-light text-white drop-shadow">
-																	{session.number}
-																</p>
+															<div style={{ backgroundImage: `url(/api/sessions/${session.id}/cover)` }} className={`flex aspect-square justify-center rounded-lg bg-cover align-middle shadow`}>
+																<p className="my-auto translate-y-1 font-[GilroyLight] text-5xl font-light text-white drop-shadow">{session.number}</p>
 															</div>
 														) : (
-															<div
-																style={{ backgroundImage: `url(/assets/gradients/${index + 1}.jpg)` }}
-																className={`flex aspect-square justify-center rounded-lg bg-cover align-middle opacity-70 shadow`}>
-																<p className="my-auto translate-y-1 font-[GilroyLight] text-5xl font-light text-white drop-shadow">
-																	{session.number}
-																</p>
+															<div style={{ backgroundImage: `url(/assets/gradients/${index + 1}.jpg)` }} className={`flex aspect-square justify-center rounded-lg bg-cover align-middle opacity-70 shadow`}>
+																<p className="my-auto translate-y-1 font-[GilroyLight] text-5xl font-light text-white drop-shadow">{session.number}</p>
 															</div>
 														)}
 													</Link>
@@ -100,7 +86,7 @@ export default async function Page(props) {
 											)}
 											<div className="space-y-1.5">
 												<div className="text-base/6 font-semibold">
-													<Link href={`/medibook/sessions/${session?.number}`}>
+													<Link href={`/sessions/${session?.number}`}>
 														{session.theme ? (
 															<>
 																{session.theme} <Badge className="font-light">Session {romanized}</Badge>
@@ -121,8 +107,8 @@ export default async function Page(props) {
 												<DropdownButton plain aria-label="More options">
 													<Ellipsis width={18} />
 												</DropdownButton>
-												<DropdownMenu anchor="bottom end">
-													<DropdownItem href={`/medibook/sessions/${session?.number}`}>View</DropdownItem>
+												<DropdownMenu anchor="bottom end " className="font-[montserrat]">
+													<DropdownItem href={`/medibook/sessions/${session?.number}`}>View on MediBook</DropdownItem>
 												</DropdownMenu>
 											</Dropdown>
 										</div>

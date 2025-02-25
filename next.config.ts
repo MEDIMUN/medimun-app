@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
 		return process.env.GIT_HASH || Math.random().toString(36).slice(2);
 	},
 	images: {
+		minimumCacheTTL: 60,
 		remotePatterns: [
 			{ protocol: "https", hostname: "assets.aceternity.com", port: "" },
 			{ protocol: "https", hostname: "images.unsplash.com", port: "" },

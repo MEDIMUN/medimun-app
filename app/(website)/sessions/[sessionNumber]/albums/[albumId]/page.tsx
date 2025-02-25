@@ -38,10 +38,15 @@ async function Gallery(props) {
 
 	return (
 		<>
-			<Topbar title={selectedAlbum.name} description={`${allImageFiles.length} Photos ${selectedAlbum?.description ? " • " : ""}${selectedAlbum?.description ? selectedAlbum?.description : ""}`} />
+			<Topbar
+				buttonText={`Session ${romanize(selectedAlbum.session.numberInteger)} Albums`}
+				buttonHref={`/sessions/${selectedAlbum.session.number}/albums`}
+				title={selectedAlbum.name}
+				description={`${allImageFiles.length} Photos ${selectedAlbum?.description ? " • " : ""}${selectedAlbum?.description ? selectedAlbum?.description : ""}`}
+			/>
 			{allImageFiles.length === 0 && <p className="p-4">No images found in folder.</p>}
 			<main className="mx-auto max-w-[1960px] p-4">
-				<div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
+				<div className="columns-2 gap-4 sm:columns-3 xl:columns-4 2xl:columns-5 3xl:columns-6">
 					{allImageFiles.map((file: any, index) => {
 						const customThumbnailLink = `https://drive.google.com/thumbnail?id=${file.id}&sz=w480-h480`;
 						return (

@@ -1,38 +1,42 @@
 import Paginator from "@/components/pagination";
 import { getOrdinal } from "@/lib/get-ordinal";
-import Link from "next/link";
 import { Suspense } from "react";
+import { Topbar } from "../../server-components";
+import { FastLink } from "@/components/fast-link";
 
 export default async function Page(props) {
 	const params = await props.params;
+	const className = "px-4 rounded-md py-1 max-w-max after:content after:content-['_↗'] text-black bg-white";
 	return (
-		<div className="py-24 sm:py-32">
-			<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-				<div className="mb-4 lg:px-8">
-					<div className="mx-auto max-w-2xl text-left md:text-center">
-						<h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-							The {params.sessionNumber}
-							{getOrdinal(parseInt(params.sessionNumber))} Annual Session
-						</h2>
-						<p className="mt-2 text-lg leading-6 text-gray-600 md:mt-3">
-							Check out our prospectus for more information until this page is updated.
-							<br />
-							<br />
-							<Link href={`/sessions/${params.sessionNumber}/prospectus`} target="_blank" className="text-primary-500 underline">
-								Prospectus
-							</Link>
-							<br />
-							<br />
-							<Link href={`/announcements/XgsyO7enc0QZzp5ZwAn5x/session-20-delegation-application-deadline`} target="_blank" className="text-primary-500 underline">
-								Application Deadlines & Details
-							</Link>
-						</p>
-					</div>
+		<>
+			<Topbar
+				buttonText="All Sessions"
+				buttonHref="/sessions"
+				description="This page is temporary and will be updated in the future."
+				title={
+					<>
+						The {params.sessionNumber}
+						<sup>{getOrdinal(parseInt(params.sessionNumber))}</sup> Annual Session
+					</>
+				}
+			/>
+			<div className="mx-auto max-w-7xl p-4 md:p-8 text-left md:text-center">
+				<div className="text-lg font-[montserrat] leading-6 text-left text-white ">
+					<FastLink href={`/sessions/${params.sessionNumber}/prospectus`} target="_blank">
+						<div className={className}>Prospectus</div>
+					</FastLink>
+					<br />
+					<br />
+					<FastLink href={`/sessions/${params.sessionNumber}/albums`}>
+						<div className={className}>Photo Albums</div>
+					</FastLink>
+					<br />
+					<br />
+					<FastLink href={`/medibook/sessions/${params.sessionNumber}`}>
+						<div className={className}>View Session on MediBook</div>
+					</FastLink>
 				</div>
-				<Suspense fallback={<div>Loading...</div>}>
-					<Paginator totalItems={0} itemsOnPage={0} />
-				</Suspense>
 			</div>
-		</div>
+		</>
 	);
 }

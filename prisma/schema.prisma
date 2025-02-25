@@ -1165,15 +1165,23 @@ model ApplicationSchoolDirector {
 }
 
 model Album {
-  id            String     @id @default(nanoid())
+  id            String       @id @default(nanoid())
   name          String
   description   String?
   slug          String?
   driveFolderId String?
   cover         String?
-  time          DateTime   @default(now())
-  session       Session    @relation(fields: [sessionId], references: [id])
+  time          DateTime     @default(now())
+  session       Session      @relation(fields: [sessionId], references: [id])
   sessionId     String
+  privacy       AlbumPrivacy @default(NORMAL)
   //
   Resource      Resource[]
+}
+
+enum AlbumPrivacy {
+  NORMAL
+  MANAGEMENT
+  ORGANIZERS
+  SCHOOLDIRECTORS
 }

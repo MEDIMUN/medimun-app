@@ -14,6 +14,8 @@ import { Suspense } from "react";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 import { Subheading } from "@/components/heading";
 import { announcementWebsitecomponents } from "../(medibook)/medibook/@announcement/default";
+import { FastLink } from "@/components/fast-link";
+import { ChevronLeft } from "lucide-react";
 
 const columns = ["Name", "Uploader", "Date Uploaded", "Tags"];
 
@@ -36,10 +38,7 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 							<TableRow key={resource.id}>
 								{tableColumns.includes("Name") && (
 									<TableCell>
-										<Link
-											target="_blank"
-											className="hover:underline"
-											href={resource.driveUrl ? `https://${resource.driveUrl}` : `/medibook/resources/${resource.id}`}>
+										<Link target="_blank" className="hover:underline" href={resource.driveUrl ? `https://${resource.driveUrl}` : `/medibook/resources/${resource.id}`}>
 											{resource.isPinned && "📌 "}
 											{resource.name}
 										</Link>
@@ -59,17 +58,14 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 												if (scope.includes("COMMITTEE")) {
 													return (
 														<Badge key={index} color="purple" className="max-w-min">
-															{capitaliseEachWord(scope.replace("COMMITTEE", ""))} viewing{" "}
-															{resource?.committee?.shortName || resource?.committee?.name} in Session {romanize(resource?.committee?.session.number)}
+															{capitaliseEachWord(scope.replace("COMMITTEE", ""))} viewing {resource?.committee?.shortName || resource?.committee?.name} in Session {romanize(resource?.committee?.session.number)}
 														</Badge>
 													);
 												}
 												if (scope.includes("DEPARTMENT")) {
 													return (
 														<Badge key={index} color="purple" className="max-w-min">
-															{capitaliseEachWord(scope.replace("DEPARTMENT", ""))} viewing{" "}
-															{resource?.department?.shortName || resource?.department?.name} in Session{" "}
-															{romanize(resource?.department?.session.number)}
+															{capitaliseEachWord(scope.replace("DEPARTMENT", ""))} viewing {resource?.department?.shortName || resource?.department?.name} in Session {romanize(resource?.department?.session.number)}
 														</Badge>
 													);
 												}
@@ -89,9 +85,7 @@ export async function ResourcesTable({ resources, isManagement, tableColumns = c
 										</div>
 									</TableCell>
 								)}
-								{tableColumns.includes("Uploader") && (
-									<TableCell>{resource.isAnonymous ? (isManagement ? `${fullName} (Anonymous)` : "-") : fullName}</TableCell>
-								)}
+								{tableColumns.includes("Uploader") && <TableCell>{resource.isAnonymous ? (isManagement ? `${fullName} (Anonymous)` : "-") : fullName}</TableCell>}
 								{tableColumns.includes("Date Uploaded") && <TableCell>{resource.time.toLocaleString("uk-en").replace(",", " at")}</TableCell>}
 								{tableColumns.includes("Tags") && (
 									<TableCell>
@@ -214,7 +208,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 	);
 }
 
-export function Topbar({ title, description }) {
+export function Topbar({ title, description, buttonText, buttonHref }: { title: string; description?: string; buttonText?: string; buttonHref?: string }) {
 	return (
 		<div className="relative bg-black font-[Gilroy] isolate pt-14">
 			<div aria-hidden="true" className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
@@ -229,6 +223,14 @@ export function Topbar({ title, description }) {
 			<div className={`py-24 ${description ? "sm:py-32" : "sm:py-24"}`}>
 				<div className="mx-auto max-w-7xl px-6 lg:px-8">
 					<div className="mx-auto max-w-7xl text-left">
+						{buttonText && buttonHref && (
+							<FastLink href={buttonHref}>
+								<div className="text-sm hover:bg-primary -translate-y-[10px] opacity-50 hover:opacity-100 -ml-[11px] -mt-1 mb-2 pl-[6px] rounded-full pt-[2px] duration-200 leading-none flex max-w-min">
+									<ChevronLeft className="size-4 mt-[2.75px] m-auto" />
+									<Text className="mr-[11px] min-w-max text-sm">{buttonText}</Text>
+								</div>
+							</FastLink>
+						)}
 						<h1 className="text-balance text-5xl font-semibold max-w-3xl tracking-tight text-white sm:text-7xl font-canela">{title}</h1>
 						{description && <p className="mt-8 text-pretty text-lg max-w-3xl font-medium text-gray-400 sm:text-xl/8">{description}</p>}
 						{/* <div className="mt-10 flex items-center justify-center gap-x-6">

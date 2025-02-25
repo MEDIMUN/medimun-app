@@ -9,10 +9,12 @@ import downloadPhoto from "../../../utils/downloadPhoto";
 import { variants } from "../../../utils/animationVariants";
 import { range } from "../../../utils/range";
 import { FastLink } from "@/components/fast-link";
-import { romanize } from "@/lib/romanize";
+import { useRouter } from "next/navigation";
+import useKeypress from "react-use-keypress";
 
 export default function SharedModal({ index, images, changePhotoId, navigation, currentPhoto, direction, sessionNumber, albumId }) {
 	const [loaded, setLoaded] = useState(false);
+	const router = useRouter();
 
 	let filteredImages = images?.filter((img) => range(index - 15, index + 15).includes(images.indexOf(img)));
 
@@ -28,6 +30,10 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 			}
 		},
 		trackMouse: true,
+	});
+
+	useKeypress("Escape", () => {
+		router.push(`/sessions/${sessionNumber}/albums/${albumId}`);
 	});
 
 	let currentImage = images ? images[index] : currentPhoto;
@@ -85,9 +91,7 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 												});
 											} catch (e) {}
 										}}
-										href={`https://drive.google.com/uc?id=${currentImage.id}&export=view`}
 										className="rounded-full bg-black/50 p-2 text-white/75 backdrop-blur-lg transition hover:bg-black/75 hover:text-white"
-										target="_blank"
 										title="Open fullsize version"
 										rel="noreferrer">
 										<ShareIcon className="h-5 w-5" />
@@ -113,13 +117,16 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 						<motion.div initial={false} className="mx-auto mt-6 mb-6 flex aspect-[3/2] h-14">
 							<AnimatePresence initial={false}>
 								{filteredImages.map(({ id }, i) => {
-									const isSelected = i === 15;
+									const internalIndex = filteredImages.indexOf(filteredImages.find((img) => img.id === currentImage.id));
+									const isSelected = i === internalIndex;
+									const changeIndexNumber = index + i - internalIndex;
 									return (
 										<motion.button
+											title={changeIndexNumber}
 											initial={{ width: "0%", x: `${Math.max((index - 1) * -100, 15 * -100)}%` }}
 											animate={{ scale: isSelected ? 1.25 : 1, width: "100%", x: `${Math.max(index * -100, 15 * -100)}%` }}
 											exit={{ width: "0%" }}
-											onClick={() => changePhotoId(index + (i - 15), i - 15 > 0 ? 1 : -1)}
+											onClick={() => changePhotoId(changeIndexNumber, i - 15 > 0 ? 1 : -1)}
 											key={id}
 											className={`${isSelected ? "z-20 rounded-md shadow shadow-black/50" : "z-10"} ${isSelected ? "rounded-l-md" : ""} ${
 												id === images.length - 1 ? "rounded-r-md" : ""
@@ -129,7 +136,7 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 												width={180}
 												height={120}
 												className={`${isSelected ? "brightness-110 hover:brightness-110" : "brightness-50 contrast-125 hover:brightness-75"} h-full transform object-cover transition`}
-												src={`https://drive.google.com/thumbnail?id=${id}&sz=w480-h480`}
+												src={`https://drive.google.com/thumbnail?id=${currentImage.id}&sz=w1920-h1280`}
 											/>
 										</motion.button>
 									);
