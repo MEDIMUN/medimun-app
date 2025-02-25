@@ -17,6 +17,14 @@ export default function Page(props) {
 	);
 }
 
+export async function generateMetadata(props) {
+	const params = await props.params;
+	return {
+		title: `Session ${romanize(Number(params.sessionNumber))} Albums`,
+		description: "View all photo albums from this session.",
+	};
+}
+
 export async function AlbumsPage(props) {
 	await connection();
 	const params = await props.params;
