@@ -136,7 +136,7 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 												width={180}
 												height={120}
 												className={`${isSelected ? "brightness-110 hover:brightness-110" : "brightness-50 contrast-125 hover:brightness-75"} h-full transform object-cover transition`}
-												src={`https://drive.google.com/thumbnail?id=${currentImage.id}&sz=w1920-h1280`}
+												src={`https://drive.google.com/thumbnail?id=${id}&sz=w1920-h1280`}
 											/>
 										</motion.button>
 									);
