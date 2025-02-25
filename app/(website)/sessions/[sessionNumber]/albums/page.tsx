@@ -74,7 +74,7 @@ export async function AlbumsPage(props) {
 		<>
 			<Topbar
 				title="Session Albums"
-				description={`${numberOfVisibleAlbums} Albums. Some albums may be hidden if you are not logged in.`}
+				description={`${numberOfVisibleAlbums} Albums.${!authSession && " Some albums may be hidden as you are not logged in."}`}
 				buttonText={`Session ${romanize(Number(sessionNumber))}`}
 				buttonHref={`/sessions/${sessionNumber}`}
 			/>
