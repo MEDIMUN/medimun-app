@@ -53,13 +53,11 @@ export function ModalEditDepartment({ selectedDepartment }) {
 		setType(selectedDepartment?.type);
 	}, [selectedDepartment]);
 
-	const isOpen = searchParams.has("edit-department") && authorize(authSession, [s.management]);
+	const isOpen = searchParams && searchParams.has("edit-department") && authorize(authSession, [s.management]);
 
 	return (
 		<Dialog open={isOpen} onClose={onClose}>
-			<DialogTitle>
-				{searchParams.has("create-department") ? `Add Department to Session ${params.sessionNumber}` : `Edit ${selectedDepartment.name}`}
-			</DialogTitle>
+			<DialogTitle>{searchParams && searchParams.has("create-department") ? `Add Department to Session ${params?.sessionNumber}` : `Edit ${selectedDepartment.name}`}</DialogTitle>
 
 			<DialogBody>
 				<form id="edit-department" action={editDepartmentHandler} className="flex flex-col gap-5">

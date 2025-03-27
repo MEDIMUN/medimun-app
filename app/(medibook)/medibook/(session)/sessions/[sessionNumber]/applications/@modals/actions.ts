@@ -2,13 +2,7 @@
 
 import { auth } from "@/auth";
 import { countries } from "@/data/countries";
-import {
-	sendEmailAcceptSchoolDirectorApplication,
-	sendEmailAssignDelegateToCommittee,
-	sendEmailRejectSchoolDirectorApplication,
-	sendEmailSchoolInvoice,
-	sendEmailYourDelegatesHaveBeenAssigned,
-} from "@/email/send";
+import { sendEmailAcceptSchoolDirectorApplication, sendEmailAssignDelegateToCommittee, sendEmailRejectSchoolDirectorApplication, sendEmailSchoolInvoice, sendEmailYourDelegatesHaveBeenAssigned } from "@/email/send";
 import { authorize, s } from "@/lib/authorize";
 import prisma from "@/prisma/client";
 import { getSocketInstance } from "@/socket/server";
@@ -148,6 +142,7 @@ export async function approveSchoolDelegateAssignmentProposal(proposalId: string
 	const allUserIds = parsedSelectedAssignment.map((a) => a.studentId).filter((x) => x);
 	const selectedUsers = await prisma.user.findMany({
 		where: { id: { in: allUserIds } },
+		omit: { signature: true },
 	});
 
 	for (const user of selectedUsers) {
@@ -266,9 +261,7 @@ export async function approveSchoolDelegateAssignmentProposal(proposalId: string
 
 			await Promise.all(emailPromises);
 
-			io
-				?.to(`private-user-${authSession?.user.id}`)
-				.emit("toast.info", `Delegates of ${selectedAssignmentProposal?.school.name} have been notified of their assignments via email.`);
+			io?.to(`private-user-${authSession?.user.id}`).emit("toast.info", `Delegates of ${selectedAssignmentProposal?.school.name} have been notified of their assignments via email.`);
 		});
 	}
 
@@ -293,12 +286,7 @@ export async function approveSchoolDelegateAssignmentProposal(proposalId: string
 
 			await Promise.all(emailPromises);
 
-			io
-				?.to(`private-user-${authSession?.user.id}`)
-				.emit(
-					"toast.info",
-					`School Directors of ${selectedAssignmentProposal?.school.name} have been notified of their student assignments and school invoice via email.`
-				);
+			io?.to(`private-user-${authSession?.user.id}`).emit("toast.info", `School Directors of ${selectedAssignmentProposal?.school.name} have been notified of their student assignments and school invoice via email.`);
 		});
 	}
 

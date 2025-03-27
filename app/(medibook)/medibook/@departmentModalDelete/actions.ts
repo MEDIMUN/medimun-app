@@ -17,7 +17,7 @@ export async function deleteDepartment(formData: FormData, departmentId) {
 
 	if (!selectedDepartment.session.isCurrent && !authorize(authSession, [s.admins, s.sd])) return { ok: false, message: "Error" };
 
-	const selectedUser = await prisma.user.findUnique({ where: { id: authSession.user.id }, include: { Account: true } });
+	const selectedUser = await prisma.user.findUnique({ where: { id: authSession.user.id }, include: { Account: true }, omit: { signature: true } });
 
 	const isPasswordCorrect = await verifyPassword(password, selectedUser.Account[0].password);
 

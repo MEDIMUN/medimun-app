@@ -48,13 +48,7 @@ const TableRowContext = createContext<{ href?: string; target?: string; title?: 
 	title: undefined,
 });
 
-export function TableRow({
-	href,
-	target,
-	title,
-	className,
-	...props
-}: { href?: string; target?: string; title?: string } & React.ComponentPropsWithoutRef<"tr">) {
+export function TableRow({ href, target, title, className, ...props }: { href?: string; target?: string; title?: string } & React.ComponentPropsWithoutRef<"tr">) {
 	let { striped } = useContext(TableContext);
 
 	return (
@@ -100,23 +94,14 @@ export function TableCell({ className, children, ...props }: React.ComponentProp
 			ref={href ? setCellRef : undefined}
 			{...props}
 			className={clsx(
-				className,
 				"relative px-4 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
 				!striped && "border-b border-zinc-950/5 dark:border-white/5",
 				grid && "border-l border-l-zinc-950/5 first:border-l-0 dark:border-l-white/5",
 				dense ? "py-2.5" : "py-4",
-				!bleed && "sm:first:pl-1 sm:last:pr-1"
+				!bleed && "sm:first:pl-1 sm:last:pr-1",
+				className
 			)}>
-			{href && (
-				<Link
-					data-row-link
-					href={href}
-					target={target}
-					aria-label={title}
-					tabIndex={cellRef?.previousElementSibling === null ? 0 : -1}
-					className="absolute inset-0 focus:outline-none"
-				/>
-			)}
+			{href && <Link data-row-link href={href} target={target} aria-label={title} tabIndex={cellRef?.previousElementSibling === null ? 0 : -1} className="absolute inset-0 focus:outline-none" />}
 			{children}
 		</td>
 	);

@@ -33,11 +33,10 @@ export async function delegationAssignmentChanges(proposalId, newAssignment) {
 	const schoolId = selectedSchool.id;
 
 	const studentIds = newAssignment.map((a) => a.studentId);
-	const students = await prisma.user.findMany({ where: { id: { in: studentIds } } });
+	const students = await prisma.user.findMany({ where: { id: { in: studentIds } }, omit: { signature: true } });
 	const studentSchoolIds = students.map((s) => s.schoolId);
 
-	if (studentSchoolIds.some((id) => id !== schoolId))
-		return { ok: false, message: ["Some students are not students of the school you are trying to assign them to."] };
+	if (studentSchoolIds.some((id) => id !== schoolId)) return { ok: false, message: ["Some students are not students of the school you are trying to assign them to."] };
 
 	if (students.length !== studentIds.length) return { ok: false, message: ["Some students do not exist."] };
 
@@ -166,6 +165,7 @@ export async function getStudentsOfSchool(schoolId, search, excludeList) {
 				id: { notIn: excludeList },
 				schoolId: schoolId,
 			},
+			omit: { signature: true },
 			orderBy: { officialName: "asc" },
 			take: 10,
 		});
@@ -208,7 +208,7 @@ export async function handleFinalAssignDelegates(filteredAssignments, selectedSe
 	const allUniqueCommitteeIds = [...new Set(allCommitteeIds)];
 	const allCountryCodes = filteredAssignments.map((a) => a.countryCode);
 
-	const allUsers = await prisma.user.findMany({ where: { id: { in: allStudentIds } } });
+	const allUsers = await prisma.user.findMany({ where: { id: { in: allStudentIds } }, omit: { signature: true } });
 	const allCommittees = await prisma.committee.findMany({ where: { id: { in: allCommitteeIds } } });
 	const allCountries = selectedSession.countriesOfSession;
 

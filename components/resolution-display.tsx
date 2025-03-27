@@ -303,7 +303,7 @@ function ClauseDisplay({ clause, index, isPreambulatory, operativeClauses = [], 
 			<div className="mb-2 flex gap-2">
 				{!isPreambulatory && <p className="min-l-[1.5rem] text-right">{index + 1}.</p>}
 				<div>
-					<span className={!isPreambulatory && "underline"}>{clause.startingPhrase}</span> {clause.body}
+					<span className={!isPreambulatory ? "underline" : ""}>{clause.startingPhrase}</span> {clause.body}
 					{isPreambulatory ? "," : !!clause.subClauses[index] ? ":" : "."}
 				</div>
 			</div>

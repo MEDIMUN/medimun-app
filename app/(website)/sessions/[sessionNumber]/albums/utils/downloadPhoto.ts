@@ -11,6 +11,19 @@ function forceDownload(blob: Blob, filename: string) {
 	window.URL.revokeObjectURL(blobUrl);
 }
 
+export async function forceDownloadFile(href: URL, filename: string) {
+	toast.loading("Downloading", { description: filename, id: "download" });
+	const response = await fetch(href);
+	if (!response.ok) {
+		toast.error("Download failed", { id: "download" });
+		return;
+	}
+	const blob = await response.blob();
+
+	forceDownload(blob, filename);
+	toast.success("Download complete!", { id: "download" });
+}
+
 export default async function downloadPhoto(url: string, filename: string) {
 	if (!filename) {
 		filename = url.split("\\").pop()?.split("/").pop() || "download";

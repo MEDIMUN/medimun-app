@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
 	},
 	transpilePackages: ["next-auth", "prettier"],
 	experimental: {
+		viewTransition: true,
 		dynamicIO: true,
 		ppr: true,
 		reactCompiler: true,

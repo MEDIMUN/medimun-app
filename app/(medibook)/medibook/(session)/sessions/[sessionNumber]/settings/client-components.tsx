@@ -10,6 +10,8 @@ import { countries } from "@/data/countries";
 import { entityCase } from "@/lib/text";
 import { useEffect, useState } from "react";
 import {
+	releaseCertificates,
+	revokeCertificates,
 	sessionCountriesChange,
 	sessionNumbersChange,
 	setCurrentSession,
@@ -144,6 +146,45 @@ export function SettingsForm({ selectedSession }) {
 		setIsLoading(false);
 	}
 
+	async function handleReleaseCertificates() {
+		if (isLoading) return;
+		setIsLoading(true);
+		const res = await releaseCertificates({ sessionId: selectedSession.id, notify: false });
+		if (res?.ok) {
+			router.refresh();
+			toast.success(res?.message);
+		} else {
+			toast.error(res?.message);
+		}
+		setIsLoading(false);
+	}
+
+	async function handleReleaseCertificatesAndNotify() {
+		if (isLoading) return;
+		setIsLoading(true);
+		const res = await releaseCertificates({ sessionId: selectedSession.id, notify: true });
+		if (res?.ok) {
+			router.refresh();
+			toast.success(res?.message);
+		} else {
+			toast.error(res?.message);
+		}
+		setIsLoading(false);
+	}
+
+	async function handleRevokeCertificates() {
+		if (isLoading) return;
+		setIsLoading(true);
+		const res = await revokeCertificates({ sessionId: selectedSession.id });
+		if (res?.ok) {
+			router.refresh();
+			toast.success(res?.message);
+		} else {
+			toast.error(res?.message);
+		}
+		setIsLoading(false);
+	}
+
 	async function handleSubmitPricesForm(formData) {
 		if (isLoading) return;
 		setIsLoading(true);
@@ -265,14 +306,11 @@ export function SettingsForm({ selectedSession }) {
 					<div className="space-y-1">
 						<Subheading>Theme</Subheading>
 						<Text>
-							The theme will appear everywhere including the website and certificates. A theme is required for a session to be made current and
-							can&apos;t be removed after a theme is made current.
+							The theme will appear everywhere including the website and certificates. A theme is required for a session to be made current and can&apos;t be removed after a theme is made current.
 							<br />
 							{theme !== selectedSession.theme && (
 								<>
-									<span className="animate-appearance-in text-red-500">
-										Changing the theme will automatically update all certificates, the website and all other places where it apears.
-									</span>
+									<span className="animate-appearance-in text-red-500">Changing the theme will automatically update all certificates, the website and all other places where it apears.</span>
 									<br />
 								</>
 							)}
@@ -280,14 +318,7 @@ export function SettingsForm({ selectedSession }) {
 						</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1 gap-6">
-						<Input
-							value={theme}
-							onChange={(e) => handleThemeChange(e.target.value)}
-							maxLength={50}
-							minLength={10}
-							placeholder="Adapting to Today's Tomorrow..."
-							name="theme"
-						/>
+						<Input value={theme} onChange={(e) => handleThemeChange(e.target.value)} maxLength={50} minLength={10} placeholder="Adapting to Today's Tomorrow..." name="theme" />
 					</div>
 				</section>
 				<Divider className="my-10" soft />
@@ -299,9 +330,7 @@ export function SettingsForm({ selectedSession }) {
 							<br />
 							{subTheme !== selectedSession.subTheme && (
 								<>
-									<span className="animate-appearance-in text-red-500">
-										Changing the sub-theme will automatically update all certificates, the website and all other places where it apears.
-									</span>
+									<span className="animate-appearance-in text-red-500">Changing the sub-theme will automatically update all certificates, the website and all other places where it apears.</span>
 									<br />
 								</>
 							)}
@@ -309,14 +338,7 @@ export function SettingsForm({ selectedSession }) {
 						</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1">
-						<Input
-							value={subTheme}
-							onChange={(e) => handleSubThemeChange(e.target.value)}
-							minLength={10}
-							maxLength={50}
-							placeholder={"Diplomacy in a Divided World..."}
-							name="subTheme"
-						/>
+						<Input value={subTheme} onChange={(e) => handleSubThemeChange(e.target.value)} minLength={10} maxLength={50} placeholder={"Diplomacy in a Divided World..."} name="subTheme" />
 					</div>
 				</section>
 			</form>
@@ -342,13 +364,7 @@ export function SettingsForm({ selectedSession }) {
 						</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1">
-						<Textarea
-							defaultValue={selectedSession?.welcomeText}
-							maxLength={500}
-							name="welcomeText"
-							required={selectedSession.isCurrent || selectedSession.isPublished}
-							className="min-h-36"
-						/>
+						<Textarea defaultValue={selectedSession?.welcomeText} maxLength={500} name="welcomeText" required={selectedSession.isCurrent || selectedSession.isPublished} className="min-h-36" />
 					</div>
 				</section>
 				<Divider className="my-10" soft />
@@ -356,8 +372,7 @@ export function SettingsForm({ selectedSession }) {
 					<div className="space-y-1">
 						<Subheading>Description</Subheading>
 						<Text>
-							The theme will appear everywhere including the website and certificates. A theme is required for a session to be made current and
-							can&apos;t be removed after a theme is made current.
+							The theme will appear everywhere including the website and certificates. A theme is required for a session to be made current and can&apos;t be removed after a theme is made current.
 							<br />
 							<em>Max 500 characters</em>
 						</Text>
@@ -399,21 +414,14 @@ export function SettingsForm({ selectedSession }) {
 							<div className="space-y-1">
 								<Subheading>School Director Price</Subheading>
 								<Text>
-									The price each school director has to pay to participate in the session. This price will be used to calculate the total price for
-									the school. Can&apos;t be changed after the session is made current or is made fully visible.
+									The price each school director has to pay to participate in the session. This price will be used to calculate the total price for the school. Can&apos;t be changed after the session is made current or is
+									made fully visible.
 									<br />
 									<em>Min 1€, Max 9999€</em>
 								</Text>
 							</div>
 							<div className="my-auto grid grid-cols-1">
-								<Input
-									defaultValue={selectedSession?.directorPrice}
-									min={1}
-									max={9999}
-									type="number"
-									name="directorPrice"
-									disabled={!authorize(authSession, [s.admins, s.sd, s.director])}
-								/>
+								<Input defaultValue={selectedSession?.directorPrice} min={1} max={9999} type="number" name="directorPrice" disabled={!authorize(authSession, [s.admins, s.sd, s.director])} />
 							</div>
 						</section>
 						<Divider className="my-10" soft />
@@ -421,21 +429,14 @@ export function SettingsForm({ selectedSession }) {
 							<div className="space-y-1">
 								<Subheading>Delegate Price</Subheading>
 								<Text>
-									The price each delegate has to pay to participate in the session. This price will be used to calculate the total price for the
-									school. Can&apos;t be changed after the session is made current or is made fully visible.
+									The price each delegate has to pay to participate in the session. This price will be used to calculate the total price for the school. Can&apos;t be changed after the session is made current or is made fully
+									visible.
 									<br />
 									<em>Min 1€, Max 9999€</em>
 								</Text>
 							</div>
 							<div className="my-auto grid grid-cols-1 gap-6">
-								<Input
-									defaultValue={selectedSession?.delegatePrice}
-									min={1}
-									max={9999}
-									type="number"
-									name="delegatePrice"
-									disabled={!authorize(authSession, [s.admins, s.sd, s.director])}
-								/>
+								<Input defaultValue={selectedSession?.delegatePrice} min={1} max={9999} type="number" name="delegatePrice" disabled={!authorize(authSession, [s.admins, s.sd, s.director])} />
 							</div>
 						</section>
 					</form>
@@ -463,13 +464,7 @@ export function SettingsForm({ selectedSession }) {
 						</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1">
-						<Input
-							defaultValue={selectedSession?.minimumDelegateAgeOnFirstConferenceDay}
-							min={1}
-							max={99}
-							type="number"
-							name="minimumDelegateAgeOnFirstConferenceDay"
-						/>
+						<Input defaultValue={selectedSession?.minimumDelegateAgeOnFirstConferenceDay} min={1} max={99} type="number" name="minimumDelegateAgeOnFirstConferenceDay" />
 					</div>
 				</section>
 				<Divider className="my-10" soft />
@@ -483,13 +478,7 @@ export function SettingsForm({ selectedSession }) {
 						</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1">
-						<Input
-							defaultValue={selectedSession?.maximumDelegateAgeOnFirstConferenceDay}
-							min={1}
-							max={99}
-							type="number"
-							name="maximumDelegateAgeOnFirstConferenceDay"
-						/>
+						<Input defaultValue={selectedSession?.maximumDelegateAgeOnFirstConferenceDay} min={1} max={99} type="number" name="maximumDelegateAgeOnFirstConferenceDay" />
 					</div>
 				</section>
 				<Divider className="my-10" soft />
@@ -497,21 +486,14 @@ export function SettingsForm({ selectedSession }) {
 					<div className="space-y-1">
 						<Subheading>Maximum number of General Assembly Delegations</Subheading>
 						<Text>
-							The maximum number of General Assembly delegations a school can bring to the session. Depending on the number of General Assembly
-							committees in the sessions this number corresponds to a different number of delegates calculated by multiplying the number of General
-							Assembly committees in the session by the number delegations in the session.
+							The maximum number of General Assembly delegations a school can bring to the session. Depending on the number of General Assembly committees in the sessions this number corresponds to a different number of
+							delegates calculated by multiplying the number of General Assembly committees in the session by the number delegations in the session.
 							<br />
 							<em>Min 1, Max 500</em>
 						</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1 gap-6">
-						<Input
-							defaultValue={selectedSession?.maxNumberOfGeneralAssemblyDelegationsPerSchool}
-							min={1}
-							max={500}
-							type="number"
-							name="maxNumberOfGeneralAssemblyDelegationsPerSchool"
-						/>
+						<Input defaultValue={selectedSession?.maxNumberOfGeneralAssemblyDelegationsPerSchool} min={1} max={500} type="number" name="maxNumberOfGeneralAssemblyDelegationsPerSchool" />
 					</div>
 				</section>
 				<Divider className="my-10" soft />
@@ -535,34 +517,25 @@ export function SettingsForm({ selectedSession }) {
 							</Badge>
 						</Subheading>
 						<Text>
-							The countries that will be available for General Assembly Delegations in the session. If you change this <u>and remove countries</u>{" "}
-							after the applications are opened it will cause some applicatons using the old list to be invalid. You can select countries from the
-							list or input the two-digit country codes as a comma or new-line separated list.
+							The countries that will be available for General Assembly Delegations in the session. If you change this <u>and remove countries</u> after the applications are opened it will cause some applicatons using the old
+							list to be invalid. You can select countries from the list or input the two-digit country codes as a comma or new-line separated list.
 							<br />
 							<em>Min 1, Max 500</em>
 						</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1 gap-6">
 						<Textarea value={selectedGACountries} onChange={(e) => handleSessionCountriesChangeListbox(e.target.value)} />
-						<Listbox
-							placeholder="Country"
-							multiple
-							value={selectedGACountries?.split(/[\n,]+/)?.map((e) => e?.trim()?.slice(0, 2))}
-							onChange={(e) => setSelectedGACountries(e.join(","))}>
+						<Listbox placeholder="Country" multiple value={selectedGACountries?.split(/[\n,]+/)?.map((e) => e?.trim()?.slice(0, 2))} onChange={(e) => setSelectedGACountries(e.join(","))}>
 							{countries.map((country) => (
 								<ListboxOption key={country.countryCode} value={country.countryCode}>
 									<p>{country.flag}</p>
 									<ListboxLabel>{country.countryNameEn}</ListboxLabel>
-									{selectedSession.securityCouncilCountriesOfYear.includes(country.countryCode) && (
-										<ListboxDescription>UNSC Member</ListboxDescription>
-									)}
+									{selectedSession.securityCouncilCountriesOfYear.includes(country.countryCode) && <ListboxDescription>UNSC Member</ListboxDescription>}
 								</ListboxOption>
 							))}
 						</Listbox>
 						<Text>
-							{selectedGACountries
-								?.split(/[\n,]+/)
-								?.filter((e) => countries?.map((country) => country?.countryCode)?.includes(e?.trim()?.slice(0, 2))).length || "None"}
+							{selectedGACountries?.split(/[\n,]+/)?.filter((e) => countries?.map((country) => country?.countryCode)?.includes(e?.trim()?.slice(0, 2))).length || "None"}
 							{" Selected"}
 						</Text>
 					</div>
@@ -572,20 +545,15 @@ export function SettingsForm({ selectedSession }) {
 					<div className="space-y-1">
 						<Subheading>Security Council Countries of Year</Subheading>
 						<Text>
-							The countries that will be available for Security Council Delegations in the session. If you need to add options such as the USSR to the
-							Security Council or to the Special Committees you can do so in the respective Committees&apos; settings. You can select countries from
-							the list or input the two-digit country codes as a comma or new-line separated list.
+							The countries that will be available for Security Council Delegations in the session. If you need to add options such as the USSR to the Security Council or to the Special Committees you can do so in the
+							respective Committees&apos; settings. You can select countries from the list or input the two-digit country codes as a comma or new-line separated list.
 							<br />
 							<em>Select 20 Values</em>
 						</Text>
 					</div>
 					<div className="my-auto grid grid-cols-1 gap-6">
 						<Textarea value={selectedSCCountries} onChange={(e) => handleSessionSCCountriesChangeListbox(e.target.value)} />
-						<Listbox
-							placeholder="Country"
-							multiple
-							value={selectedSCCountries?.split(/[\n,]+/)?.map((e) => e?.trim()?.slice(0, 2))}
-							onChange={(e) => setSelectedSCCountries(e.splice(0, 20).join(","))}>
+						<Listbox placeholder="Country" multiple value={selectedSCCountries?.split(/[\n,]+/)?.map((e) => e?.trim()?.slice(0, 2))} onChange={(e) => setSelectedSCCountries(e.splice(0, 20).join(","))}>
 							{countries
 								.sort((a, b) => permamentSCMembers?.includes(b?.countryCode) - permamentSCMembers?.includes(a?.countryCode))
 								.map((country) => (
@@ -596,9 +564,7 @@ export function SettingsForm({ selectedSession }) {
 								))}
 						</Listbox>
 						<Text>
-							{selectedSCCountries
-								?.split(/[\n,]+/)
-								?.filter((e) => countries?.map((country) => country?.countryCode)?.includes(e?.trim()?.slice(0, 2))).length || "None"}
+							{selectedSCCountries?.split(/[\n,]+/)?.filter((e) => countries?.map((country) => country?.countryCode)?.includes(e?.trim()?.slice(0, 2))).length || "None"}
 							{" Selected"}
 						</Text>
 					</div>
@@ -682,10 +648,7 @@ export function SettingsForm({ selectedSession }) {
 											•<Text className="ml-2"> Delegate and School Director prices will be locked.</Text>
 										</li>
 										<li className="flex">
-											•
-											<Text className="ml-2">
-												It is advisable to add session relevant days to the days section before setting the session as partially visible.
-											</Text>
+											•<Text className="ml-2">It is advisable to add session relevant days to the days section before setting the session as partially visible.</Text>
 										</li>
 									</ul>
 								</div>
@@ -723,6 +686,63 @@ export function SettingsForm({ selectedSession }) {
 							<div className="my-auto grid grid-cols-1 gap-6">
 								<Button color="red" type="button" onClick={handleSetFullyVisible} className="md:ml-auto md:max-w-max">
 									Set Fully Visible
+								</Button>
+							</div>
+						</section>
+					)}
+					{!selectedSession.publishCertificates ? (
+						<section id="certificates" className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+							<div className="space-y-1">
+								<Subheading>
+									Release Certificates
+									<Badge color="orange" className="ml-1">
+										Level 2 Danger Zone
+									</Badge>
+								</Subheading>
+								<Text>This action will have the following effects:</Text>
+								<ul>
+									<li className="flex">
+										•<Text className="ml-2"> All generated certificates will be published</Text>
+									</li>
+									<li className="flex">
+										•<Text className="ml-2"> Individuals who receive certificates will be notified via email.</Text>
+									</li>
+									<li className="flex">
+										•<Text className="ml-2"> Certificates generated after this has been activated will be sent out automatically.</Text>
+									</li>
+								</ul>
+							</div>
+							<div className="my-auto grid grid-cols-1 gap-6">
+								<Button color="yellow" type="button" onClick={handleReleaseCertificates} className="md:ml-auto md:max-w-max">
+									Release Certificates
+								</Button>
+								<Button color="red" type="button" onClick={handleReleaseCertificatesAndNotify} className="md:ml-auto md:max-w-max">
+									Release Certificates & Notify Users
+								</Button>
+							</div>
+						</section>
+					) : (
+						<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+							<div className="space-y-1">
+								<Subheading>
+									Revoke Certificates
+									<Badge color="orange" className="ml-1">
+										Level 2 Danger Zone
+									</Badge>
+								</Subheading>
+								<Text>This action will have the following effects:</Text>
+								<ul>
+									<li className="flex">
+										•<Text className="ml-2"> All generated certificates will be not available for view.</Text>
+									</li>
+									<li className="flex">
+										•<Text className="ml-2"> Certificates will not be verifiable through the QR code on them.</Text>
+									</li>
+								</ul>
+							</div>
+							<div className="my-auto grid grid-cols-1 gap-6">
+								<Button color="red" type="button" onClick={handleRevokeCertificates} className="md:ml-auto md:max-w-max">
+									Revoke Certificates
 								</Button>
 							</div>
 						</section>

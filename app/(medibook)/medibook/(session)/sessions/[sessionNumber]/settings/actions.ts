@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { permamentSCMembers } from "@/data/constants";
 import { countries } from "@/data/countries";
+import { sendEmailReceivedNewCertificateOfParticipation } from "@/email/send";
 import { authorize, s } from "@/lib/authorize";
 import { parseFormData } from "@/lib/parse-form-data";
 import { entityCase } from "@/lib/text";
@@ -11,22 +12,8 @@ import prisma from "@/prisma/client";
 import { z } from "zod";
 
 const sessionSchema = z.object({
-	theme: z
-		.string()
-		.trim()
-		.min(2, "Theme must be at least 2 characters long")
-		.max(50, "Theme must be at most 50 characters long")
-		.transform(entityCase)
-		.optional()
-		.nullable(),
-	subTheme: z
-		.string()
-		.trim()
-		.min(2, "Phrase must be at least 2 characters long")
-		.max(50, "Phrase must be at most 50 characters long")
-		.transform(entityCase)
-		.optional()
-		.nullable(),
+	theme: z.string().trim().min(2, "Theme must be at least 2 characters long").max(50, "Theme must be at most 50 characters long").transform(entityCase).optional().nullable(),
+	subTheme: z.string().trim().min(2, "Phrase must be at least 2 characters long").max(50, "Phrase must be at most 50 characters long").transform(entityCase).optional().nullable(),
 });
 
 /* description                          String?
@@ -39,6 +26,7 @@ export async function updateSession(formData: FormData, selectedSessionNumber) {
 	const prismaUser = await prisma.user.findFirst({
 		where: { id: authSession.user.id },
 		include: { ...generateUserDataObject() },
+		omit: { signature: true },
 	});
 	const selectedSession = await prisma.session.findFirst({
 		where: {
@@ -77,6 +65,7 @@ export async function updateSessionTexts(formData: FormData, selectedSessionNumb
 	const prismaUser = await prisma.user.findFirst({
 		where: { id: authSession.user.id },
 		include: { ...generateUserDataObject() },
+		omit: { signature: true },
 	});
 	const selectedSession = await prisma.session.findFirst({
 		where: {
@@ -205,10 +194,8 @@ export async function setPartiallyVisibleSession(session) {
 	if (!selectedSession.isCurrent) return { ok: false, message: "Session is not current." };
 	if (selectedSession.isPartlyVisible) return { ok: false, message: "Session is already partly visible." };
 	if (selectedSession.isVisible) return { ok: false, message: "Session is already fully visible." };
-	if (selectedSession.isVisible && !selectedSession.isPartlyVisible)
-		return { ok: false, message: `Contact Berzan something is wrong with session ${session}` };
-	if ((selectedSession.isVisible || selectedSession.isPartlyVisible) && !selectedSession.isCurrent)
-		return { ok: false, message: `Contact Berzan something is wrong with session ${session}` };
+	if (selectedSession.isVisible && !selectedSession.isPartlyVisible) return { ok: false, message: `Contact Berzan something is wrong with session ${session}` };
+	if ((selectedSession.isVisible || selectedSession.isPartlyVisible) && !selectedSession.isCurrent) return { ok: false, message: `Contact Berzan something is wrong with session ${session}` };
 
 	try {
 		if (numberOfSessions === 1) {
@@ -328,8 +315,7 @@ export async function sessionNumbersChange(formData: FormData, selectedSessionNu
 
 	if (error) return { ok: false, message: "Invalid Data" };
 
-	if (data.minimumDelegateAgeOnFirstConferenceDay >= data.maximumDelegateAgeOnFirstConferenceDay)
-		return { ok: false, message: "Minimum age should be less than maximum age." };
+	if (data.minimumDelegateAgeOnFirstConferenceDay >= data.maximumDelegateAgeOnFirstConferenceDay) return { ok: false, message: "Minimum age should be less than maximum age." };
 
 	if (!isManagement) return { ok: false, message: "Not Authorized" };
 
@@ -383,4 +369,80 @@ export async function sessionCountriesChange(formData: FormData, selectedSession
 		return { ok: false, message: "Could not update session." };
 	}
 	return { ok: true, message: "Session updated." };
+}
+
+export async function releaseCertificates({ sessionId, notify }) {
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
+	if (!isManagement) return { ok: false, message: "Not Authorized" };
+
+	const session = await prisma.session.findFirst({
+		where: {
+			id: sessionId,
+		},
+	});
+	if (!session) return { ok: false, message: "Session not found" };
+
+	let selectedSession;
+
+	try {
+		selectedSession = await prisma.session.update({
+			where: { id: session.id },
+			data: {
+				publishCertificates: true,
+			},
+		});
+	} catch (e) {
+		return { ok: false, message: "Could not update session." };
+	}
+
+	if (notify) {
+		const certificates = await prisma.participationCertificate.findMany({
+			where: {
+				sessionId: selectedSession.id,
+				isVoid: false,
+				voidMessage: null,
+			},
+			include: {
+				user: {
+					select: {
+						email: true,
+						officialName: true,
+						officialSurname: true,
+					},
+				},
+			},
+		});
+
+		const emailPromises = certificates.map(async (certificate) => {
+			sendEmailReceivedNewCertificateOfParticipation({
+				email: certificate.user.email,
+				officialName: certificate.user.officialName,
+			});
+		});
+		await Promise.all(emailPromises);
+	}
+
+	return { ok: true, message: "Certificates released." };
+}
+
+export async function revokeCertificates({ sessionId }) {
+	const authSession = await auth();
+	const isManagement = authorize(authSession, [s.management]);
+	if (!isManagement) return { ok: false, message: "Not Authorized" };
+
+	const session = await prisma.session.findFirst({
+		where: { id: sessionId },
+	});
+	if (!session) return { ok: false, message: "Session not found" };
+
+	try {
+		await prisma.session.update({
+			where: { id: session.id },
+			data: { publishCertificates: false },
+		});
+	} catch (e) {
+		return { ok: false, message: "Could not update session." };
+	}
+	return { ok: true, message: "Certificates revoked." };
 }

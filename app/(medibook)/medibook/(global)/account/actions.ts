@@ -14,6 +14,7 @@ export async function checkUsername(username: string) {
 			response: null,
 		};
 	const user = await prisma.user.findFirst({
+		omit: { signature: true },
 		where: {
 			AND: [
 				{ username: username },
@@ -77,8 +78,7 @@ export async function updatePrivateProfilePicture(formData: FormData) {
 	if (!file) return { ok: false, message: "No file selected" };
 	if (file.size > 5000000) return { ok: false, message: "File can't be larger than 5MB." };
 	if (!file.type.includes("image")) return { ok: false, message: "File is not an image" };
-	if (file.type !== "image/jpeg" && file.type !== "image/png" && file.type !== "image/gif")
-		return { ok: false, message: "File is not a supported image type" };
+	if (file.type !== "image/jpeg" && file.type !== "image/png" && file.type !== "image/gif") return { ok: false, message: "File is not a supported image type" };
 	const minioClient = minio();
 	const randomName = nanoid();
 	const data = await file.arrayBuffer();

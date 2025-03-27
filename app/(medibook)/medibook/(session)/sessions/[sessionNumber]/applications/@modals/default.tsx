@@ -45,6 +45,7 @@ export default async function Default(props) {
 				.filter((x) => x);
 			selectedUsers = await prisma.user.findMany({
 				where: { id: { in: allUserIds } },
+				omit: { signature: true },
 			});
 			selectedAssignmentProposal.assignment = originalAssignment;
 			selectedAssignmentProposal.changes = modifiedAssignment;
@@ -60,9 +61,7 @@ export default async function Default(props) {
 		<>
 			{selectedApplication && <ApproveApplicationModal selectedApplication={selectedApplication} />}
 			{selectedApplication && <DeleteApplicationModal selectedApplication={selectedApplication} />}
-			{selectedAssignmentProposal && (
-				<ApproveSchoolDelegateAssignmentProposalModal selectedUsers={selectedUsers} selectedAssignmentProposal={selectedAssignmentProposal} />
-			)}
+			{selectedAssignmentProposal && <ApproveSchoolDelegateAssignmentProposalModal selectedUsers={selectedUsers} selectedAssignmentProposal={selectedAssignmentProposal} />}
 		</>
 	);
 }

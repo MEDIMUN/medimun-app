@@ -22,6 +22,7 @@ import { CircleCheck, X } from "lucide-react";
 import { MainWrapper } from "@/components/main-wrapper";
 import { Suspense } from "react";
 import { connection } from "next/server";
+import SignatureInput from "@/components/ui/signature-input";
 
 export const metadata: Metadata = {
 	title: "User Settings",
@@ -82,6 +83,7 @@ export async function Settings(props) {
 			bio: z.string().max(500).trim().optional().nullable(),
 			bestTimeToReach: z.string().max(50).trim().optional().nullable(),
 			gender: z.enum(genders.map((x) => x.value)),
+			signature: z.string().optional().nullable(),
 		});
 		const { data, error } = schema.safeParse(parseFormData(formData));
 		if (error) redirect(`?error=${error.errors[0].message}#notice`);
@@ -120,8 +122,7 @@ export async function Settings(props) {
 							Profile Picture <RecommendedTag />
 						</Subheading>
 						<Text>
-							Inappropriate photos that don&apos;t show your face will be removed. Your profile picture will be visible to everyone. You{" "}
-							<b>don&apos;t</b> need to click save.
+							Inappropriate photos that don&apos;t show your face will be removed. Your profile picture will be visible to everyone. You <b>don&apos;t</b> need to click save.
 						</Text>
 					</div>
 					<div className="my-auto grid gap-6">
@@ -148,10 +149,7 @@ export async function Settings(props) {
 							<Subheading>
 								Preferred Name & Surname <OptionalTag />
 							</Subheading>
-							<Text>
-								Your preferred name to be used on your name tag, profile and all public places. Leave empty for your official name to be used. This
-								must also include a surname.
-							</Text>
+							<Text>Your preferred name to be used on your name tag, profile and all public places. Leave empty for your official name to be used. This must also include a surname.</Text>
 						</div>
 						<div className="my-auto grid grid-cols-1">
 							<Input maxLength={50} placeholder="Preferred Name" pattern="(^$|.*\s+.*)" name="displayName" defaultValue={selectedUser?.displayName} />
@@ -172,13 +170,7 @@ export async function Settings(props) {
 							</Text>
 						</div>
 						<div className="my-auto">
-							<Input
-								pattern="^\+?[0-9\s]{0,15}$"
-								maxLength={50}
-								placeholder="Phone Number"
-								name="phoneNumber"
-								defaultValue={selectedUser?.phoneNumber}
-							/>
+							<Input pattern="^\+?[0-9\s]{0,15}$" maxLength={50} placeholder="Phone Number" name="phoneNumber" defaultValue={selectedUser?.phoneNumber} />
 						</div>
 					</section>
 					<Divider className="my-10" soft />
@@ -199,9 +191,7 @@ export async function Settings(props) {
 							<Subheading>
 								School <RequiredTag />
 							</Subheading>
-							<Text>
-								This will be displayed on your public profile. You need to be currently affiliated with one of the schools to be able to attend.
-							</Text>
+							<Text>This will be displayed on your public profile. You need to be currently affiliated with one of the schools to be able to attend.</Text>
 						</div>
 						<div className="my-auto">
 							<Listbox defaultValue={selectedUser?.schoolId} name="schoolId" className="col-span-2">
@@ -225,11 +215,7 @@ export async function Settings(props) {
 							<Text>Will be visile to your chair or manager and management members. It is required to verify your eligibility to attend.</Text>
 						</div>
 						<div className="my-auto">
-							<Input
-								name="dateOfBirth"
-								type="date"
-								defaultValue={selectedUser?.dateOfBirth ? new Date(selectedUser?.dateOfBirth).toISOString().split("T")[0] : undefined}
-							/>
+							<Input name="dateOfBirth" type="date" defaultValue={selectedUser?.dateOfBirth ? new Date(selectedUser?.dateOfBirth).toISOString().split("T")[0] : undefined} />
 						</div>
 					</section>
 					<Divider className="my-10" soft />
@@ -302,9 +288,7 @@ export async function Settings(props) {
 							<Text>
 								This will be displayed on your public profile. Maximum 500 characters.
 								{!isAllowedToEditBio && !selectedUser?.bio && <span className="text-red-500"> Your role does not allow you to add a biography.</span>}
-								{!isAllowedToEditBio && selectedUser?.bio && (
-									<span className="text-red-500"> You are no longer allowed to modify your biography, you can only remove the current one.</span>
-								)}
+								{!isAllowedToEditBio && selectedUser?.bio && <span className="text-red-500"> You are no longer allowed to modify your biography, you can only remove the current one.</span>}
 							</Text>
 						</div>
 						<div className="grid grid-cols-1 space-y-2">
@@ -312,6 +296,20 @@ export async function Settings(props) {
 							{!isAllowedToEditBio && selectedUser?.bio && <ClearBioButton />}
 						</div>
 					</section>
+					<Divider className="my-10" soft />
+					{authorize(authSession, [s.sd, s.admins, s.sg]) && (
+						<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+							<div className="space-y-1">
+								<Subheading>
+									Signature <RequiredTag />
+								</Subheading>
+								<Text>Your signature will be used on certificates.</Text>
+							</div>
+							<div className="grid grid-cols-1 space-y-2">
+								<SignatureInput name="signature" defaultValue={selectedUser?.signature ? JSON.parse(selectedUser?.signature) : ""} />
+							</div>
+						</section>
+					)}
 					<Divider className="my-10" soft />
 					{searchParams.error && !searchParams.success && (
 						<div id="notice" className="mb-10 rounded-md bg-red-50 p-4">
@@ -325,9 +323,7 @@ export async function Settings(props) {
 								<div className="ml-auto pl-3">
 									<div className="-mx-1.5 -my-1.5">
 										<Link href="/medibook/account#notice">
-											<button
-												type="button"
-												className="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50">
+											<button type="button" className="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50">
 												<span className="sr-only">Dismiss</span>
 												<X aria-hidden="true" className="h-5 w-5" />
 											</button>

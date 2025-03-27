@@ -65,6 +65,7 @@ export default async function Page(props) {
 		orderBy: [{ officialName: "asc" }, { officialSurname: "asc" }, { displayName: "asc" }],
 		take: 10,
 		skip: ((currentPage || 1) - 1) * 10,
+		omit: { signature: true },
 	});
 
 	const numberOfStudents = await prisma.user.count({
@@ -87,7 +88,7 @@ export default async function Page(props) {
 
 	const allStudentIds = [...(userIds || []), ...(finalStudentIds || [])];
 
-	const users = parsedAssignment || parsedFinal ? await prisma.user.findMany({ where: { id: { in: allStudentIds } } }) : [];
+	const users = parsedAssignment || parsedFinal ? await prisma.user.findMany({ where: { id: { in: allStudentIds } }, omit: { signature: true } }) : [];
 
 	const assignedDelegatesOfSchoolAndSession = await prisma.delegate.findMany({
 		where: {
@@ -197,13 +198,7 @@ export default async function Page(props) {
 	if (delegationAssignmentProposal) {
 		return (
 			<>
-				<TopBar
-					hideBackdrop
-					buttonText={selectedSchool.name}
-					buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`}
-					hideSearchBar
-					title="Delegation Assignment"
-				/>
+				<TopBar hideBackdrop buttonText={selectedSchool.name} buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`} hideSearchBar title="Delegation Assignment" />
 				<DescriptionList>
 					<DescriptionTerm>Application ID</DescriptionTerm>
 					<DescriptionDetails>{delegationAssignmentProposal.id}</DescriptionDetails>
@@ -223,13 +218,7 @@ export default async function Page(props) {
 	if (!applicationsOpen && !selectedSchoolHasApplication) {
 		return (
 			<>
-				<TopBar
-					hideBackdrop
-					buttonText={selectedSchool.name}
-					buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`}
-					hideSearchBar
-					title="Delegation Application"
-				/>
+				<TopBar hideBackdrop buttonText={selectedSchool.name} buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`} hideSearchBar title="Delegation Application" />
 				<div className="mt-4 rounded-md bg-red-50 p-4">
 					<div className="flex">
 						<div className="flex-shrink-0">
@@ -246,13 +235,7 @@ export default async function Page(props) {
 
 	return (
 		<>
-			<TopBar
-				hideBackdrop
-				buttonText={selectedSchool.name}
-				buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`}
-				hideSearchBar
-				title="Delegation Application"
-			/>
+			<TopBar hideBackdrop buttonText={selectedSchool.name} buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`} hideSearchBar title="Delegation Application" />
 			<div className="flex flex-col gap-4">
 				{!applicationsOpen && !selectedSchoolHasApplication && (
 					<div className="rounded-md bg-red-50 p-4">
@@ -302,27 +285,20 @@ export default async function Page(props) {
 								<div className="mt-2 text-sm text-zinc-700">
 									<ul role="list" className="list-disc space-y-1 pl-5">
 										<li>
-											The application fee for this session is {selectedSession.directorPrice}€ per school director and {selectedSession.delegatePrice}
-											€ per delegate.
+											The application fee for this session is {selectedSession.directorPrice}€ per school director and {selectedSession.delegatePrice}€ per delegate.
 										</li>
 										<li>
-											If you have any questions or need assistance with your application, please contact us at{" "}
-											<Link href="mailto:medimun.cyprus@gmail.com">medimun.cyprus@gmail.com</Link>.
+											If you have any questions or need assistance with your application, please contact us at <Link href="mailto:medimun.cyprus@gmail.com">medimun.cyprus@gmail.com</Link>.
+										</li>
+										<li>Select all students you will assign to GAs, Security Councils, and other committees below; you will assign the selected students in the next stage.</li>
+										<li>
+											To appear in the list below, students must have a MediBook account, select {selectedSchool.name} as their school in their account settings, provide a valid birthday, and be aged between{" "}
+											{selectedSession.minimumDelegateAgeOnFirstConferenceDay} and {selectedSession.maximumDelegateAgeOnFirstConferenceDay} years old on the first day of the conference. For questions about our age policy or
+											if a student who should be listed does not appear, please contact us at <Link href="mailto:medimun.cyprus@gmail.com">medimun.cyprus@gmail.com</Link>.
 										</li>
 										<li>
-											Select all students you will assign to GAs, Security Councils, and other committees below; you will assign the selected students
-											in the next stage.
-										</li>
-										<li>
-											To appear in the list below, students must have a MediBook account, select {selectedSchool.name} as their school in their
-											account settings, provide a valid birthday, and be aged between {selectedSession.minimumDelegateAgeOnFirstConferenceDay} and{" "}
-											{selectedSession.maximumDelegateAgeOnFirstConferenceDay} years old on the first day of the conference. For questions about our
-											age policy or if a student who should be listed does not appear, please contact us at{" "}
-											<Link href="mailto:medimun.cyprus@gmail.com">medimun.cyprus@gmail.com</Link>.
-										</li>
-										<li>
-											Once you complete this stage of the application, our team will review and confirm your choices. Your delegates will receive
-											their roles, and you will receive an invoice in the payments section under the School Management tab in the sidebar.
+											Once you complete this stage of the application, our team will review and confirm your choices. Your delegates will receive their roles, and you will receive an invoice in the payments section under the
+											School Management tab in the sidebar.
 										</li>
 									</ul>
 								</div>
@@ -351,14 +327,7 @@ export default async function Page(props) {
 						</DescriptionList>
 					</div>
 				)}
-				{selectedSchoolHasApplication && grantedDelegation && (
-					<SelectStudents
-						numberOfStudents={numberOfStudents}
-						grantedDelegation={grantedDelegation}
-						students={schoolStudents}
-						selectedSession={selectedSession}
-					/>
-				)}
+				{selectedSchoolHasApplication && grantedDelegation && <SelectStudents numberOfStudents={numberOfStudents} grantedDelegation={grantedDelegation} students={schoolStudents} selectedSession={selectedSession} />}
 				{!selectedSchoolHasApplication && (
 					<div className="rounded-md bg-zinc-50 p-4">
 						<div className="flex">
@@ -370,22 +339,14 @@ export default async function Page(props) {
 								<div className="mt-2 text-sm text-zinc-700">
 									<ul role="list" className="list-disc space-y-1 pl-5">
 										<li>Please fill out the form below to apply for a delegation. You can only apply once per session per school.</li>
+										<li>You can&apos;t change your application once it has been submitted, so please make sure all the information is correct before you submit.</li>
 										<li>
-											You can&apos;t change your application once it has been submitted, so please make sure all the information is correct before you
-											submit.
+											The application fee for this session is {selectedSession.directorPrice}€ per school director and {selectedSession.delegatePrice}€ per delegate.
 										</li>
 										<li>
-											The application fee for this session is {selectedSession.directorPrice}€ per school director and {selectedSession.delegatePrice}
-											€ per delegate.
+											If you have any questions or need help with your application, please contact us at <Link href="mailto:medimun.cyprus@gmail.com">medimun.cyprus@gmail.com</Link>.
 										</li>
-										<li>
-											If you have any questions or need help with your application, please contact us at{" "}
-											<Link href="mailto:medimun.cyprus@gmail.com">medimun.cyprus@gmail.com</Link>.
-										</li>
-										<li>
-											You can check the status of your application here, and you will also receive an email once your application has been reviewed
-											and you will have access to the next step.
-										</li>
+										<li>You can check the status of your application here, and you will also receive an email once your application has been reviewed and you will have access to the next step.</li>
 									</ul>
 								</div>
 							</div>
@@ -396,12 +357,7 @@ export default async function Page(props) {
 			{!selectedSchoolHasApplication && applicationsOpen && (
 				<>
 					<Divider className="my-10" soft />
-					<SelectCountriesSection
-						selectedSchool={selectedSchool}
-						filteredCountries={filteredCountries}
-						selectedSession={selectedSession}
-						numberOfGACommittees={numberOfGACommittees}
-					/>
+					<SelectCountriesSection selectedSchool={selectedSchool} filteredCountries={filteredCountries} selectedSession={selectedSession} numberOfGACommittees={numberOfGACommittees} />
 				</>
 			)}
 		</>

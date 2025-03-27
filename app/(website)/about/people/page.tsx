@@ -52,6 +52,7 @@ async function fetchSecretariatMembers() {
 			presidentOfTheGeneralAssembly: { where: { session: { isMainShown: true } } },
 			deputyPresidentOfTheGeneralAssembly: { where: { session: { isMainShown: true } } },
 		},
+		omit: { signature: true },
 		orderBy: { officialName: "asc" },
 	});
 }
@@ -119,6 +120,7 @@ async function fetchBoardMembers() {
 	return await prisma.user.findMany({
 		where: { OR: [{ seniorDirector: { some: {} } }, { Director: { some: {} } }] },
 		include: { seniorDirector: true, Director: true },
+		omit: { signature: true },
 		orderBy: { officialName: "asc" },
 	});
 }
@@ -149,8 +151,7 @@ async function SecretariatCards() {
 				(a.description === "Secretary-General" ? -1 : 1) - (b.description === "Secretary-General" ? -1 : 1) ||
 				(a.description === "President of the General Assembly" ? -1 : 1) - (b.description === "President of the General Assembly" ? -1 : 1) ||
 				(a.description === "Deputy Secretary-General" ? -1 : 1) - (b.description === "Deputy Secretary-General" ? -1 : 1) ||
-				(a.description === "Deputy President of the General Assembly" ? -1 : 1) -
-					(b.description === "Deputy President of the General Assembly" ? -1 : 1)
+				(a.description === "Deputy President of the General Assembly" ? -1 : 1) - (b.description === "Deputy President of the General Assembly" ? -1 : 1)
 		);
 
 	if (!!processedSecretariatMembers.length) return <ExpandableCards people={processedSecretariatMembers} />;
@@ -262,10 +263,7 @@ export default async function AboutPeople() {
 
 	return (
 		<section className="dark font-[Gilroy]">
-			<Topbar
-				title="The Minds Behind the Conference"
-				description="Get to know the dedicated individuals driving our mission. From visionaries to organizers, they bring ideas to life and ensure every detail is perfect."
-			/>
+			<Topbar title="The Minds Behind the Conference" description="Get to know the dedicated individuals driving our mission. From visionaries to organizers, they bring ideas to life and ensure every detail is perfect." />
 			<Suspense>
 				<DynamicTitle title="Secretariat" />
 			</Suspense>

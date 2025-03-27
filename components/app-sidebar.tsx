@@ -35,6 +35,7 @@ import {
 	SquareDashed,
 	Printer,
 	Bookmark,
+	FileSpreadsheet,
 } from "lucide-react";
 
 import { NavCollapsible } from "@/components/nav-collapsible";
@@ -327,6 +328,12 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
 			title: "Print Centre",
 			url: `${sessionBasePath}/print`,
 			icon: Printer,
+			isVisible: isManagement,
+		},
+		{
+			title: "Certificates",
+			url: `${sessionBasePath}/certificates`,
+			icon: FileSpreadsheet,
 			isVisible: isManagement,
 		},
 		{

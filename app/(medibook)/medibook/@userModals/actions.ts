@@ -25,6 +25,7 @@ export async function removeRole(role, userID) {
 		where: {
 			id: userID,
 		},
+		omit: { signature: true },
 	});
 	userToBeUpdated = generateUserData(userToBeUpdated);
 	if (userToBeUpdated.highestRoleRank <= highestRoleRank) return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
@@ -218,6 +219,7 @@ export async function addRole(formData, users) {
 	const userQuery = await prisma.user.findMany({
 		where: { id: { in: users } },
 		include: { ...generateUserDataObject() },
+		omit: { signature: true },
 	});
 
 	const usersWithData = userQuery.map((user) => generateUserData(user));
@@ -393,7 +395,7 @@ export async function toggleDisableOrEnableUsers(userIds, disable = true) {
 	if (!authSession || !authorize(authSession, [s.management])) return { ok: false, message: "Not authorized." };
 	const highestRoleRank = authSession?.user?.highestRoleRank;
 
-	let usersToBeDisabled = (await prisma.user.findMany({ where: { id: { in: userIds } }, include: { ...generateUserDataObject() } }).catch(() => {
+	let usersToBeDisabled = (await prisma.user.findMany({ where: { id: { in: userIds } }, include: { ...generateUserDataObject() }, omit: { signature: true } }).catch(() => {
 		return { ok: false, message: "Error while finding users." };
 	})) as unknown as Session[];
 
@@ -475,7 +477,7 @@ export async function createUser(formData: FormData) {
 	if (error) return { ok: false, message: ["Invalid data."] };
 
 	if (data.username) {
-		const usernameExists = await prisma.user.findFirst({ where: { username: data.username } });
+		const usernameExists = await prisma.user.findFirst({ where: { username: data.username }, omit: { signature: true } });
 		if (usernameExists) return { ok: false, message: ["Username already exists."] };
 	}
 
@@ -502,6 +504,7 @@ export async function editUser(formData: FormData) {
 	const prismaUser = await prisma.user.findFirstOrThrow({
 		where: { id: formData.get("id") },
 		include: { ...generateUserDataObject() },
+		omit: { signature: true },
 	});
 	const userData = generateUserData(prismaUser);
 
@@ -557,7 +560,7 @@ export async function editUser(formData: FormData) {
 	if (authSession.user.highestRoleRank >= userData.highestRoleRank) return { ok: false, message: "You can't edit a user with a higher or an equal rank." };
 
 	if (data.username) {
-		const usernameExists = await prisma.user.findFirst({ where: { AND: [{ username: data.username }, { NOT: { id: data.id } }] } });
+		const usernameExists = await prisma.user.findFirst({ where: { AND: [{ username: data.username }, { NOT: { id: data.id } }] }, omit: { signature: true } });
 		if (usernameExists) return { ok: false, message: "Username already exists." };
 	}
 
@@ -705,6 +708,7 @@ export async function unafilliateStudent(studentId: string) {
 		prismaUser = await prisma.user.findFirstOrThrow({
 			where: { id: studentId },
 			include: { ...generateUserDataObject() },
+			omit: { signature: true },
 		});
 	} catch (e) {
 		return { ok: false, message: "User not found." };
@@ -741,6 +745,7 @@ export async function deleteUser(userId: string) {
 	const prismaUser = await prisma.user.findFirstOrThrow({
 		where: { id: userId },
 		include: { ...generateUserDataObject() },
+		omit: { signature: true },
 	});
 	const userData = generateUserData(prismaUser);
 

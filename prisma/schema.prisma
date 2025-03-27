@@ -70,6 +70,7 @@ model User {
   officialSurname                     String
   displayName                         String?
   username                            String?                               @unique
+  signature                           String?
   esStudentId                         String?                               @unique
   //
   nationality                         String?
@@ -108,13 +109,40 @@ model User {
   ResetPassword                       ResetPassword[]
   MorningCode                         MorningCode[]
 
-  GroupMember              GroupMember[]
-  MorningPresent           MorningPresent[]
-  Message                  Message[]
-  MessageReaction          MessageReaction[]
-  CommitteeMessage         CommitteeMessage[]
-  CommitteeMessageReaction CommitteeMessageReaction[]
-  PositionPaper            PositionPaper[]
+  GroupMember                 GroupMember[]
+  MorningPresent              MorningPresent[]
+  Message                     Message[]
+  MessageReaction             MessageReaction[]
+  CommitteeMessage            CommitteeMessage[]
+  CommitteeMessageReaction    CommitteeMessageReaction[]
+  PositionPaper               PositionPaper[]
+  CertificateAwardedTo        ParticipationCertificate[] @relation("CertificateAwardedTo")
+  CertificateAwardedByStudent ParticipationCertificate[] @relation("CertificateAwardedByStudent")
+  CertificateAwardedByTeacher ParticipationCertificate[] @relation("CertificateAwardedByTeacher")
+}
+
+model ParticipationCertificate {
+  id                 String   @id @unique @default(nanoid())
+  user               User     @relation("CertificateAwardedTo", fields: [userId], references: [id])
+  userId             String
+  studentSignature   User?    @relation("CertificateAwardedByStudent", fields: [studentSignatureId], references: [id])
+  studentSignatureId String?
+  teacherSignature   User?    @relation("CertificateAwardedByTeacher", fields: [teacherSignatureId], references: [id])
+  teacherSignatureId String?
+  date               DateTime @default(now())
+  session            Session  @relation(fields: [sessionId], references: [id])
+  sessionId          String
+  //
+  isVoid             Boolean  @default(false)
+  voidMessage        String?
+  //
+  nameOverride       String?
+  //
+  specialMessage     String?
+  //
+  notes              String?
+
+  @@unique([userId, sessionId])
 }
 
 model Group {
@@ -261,7 +289,7 @@ model Session {
   welcomeText                                    String?
   about                                          String?
   //
-  cover                                          String?
+  publishCertificates                            Boolean                                 @default(false)
   //
   committee                                      Committee[]
   department                                     Department[]
@@ -295,6 +323,7 @@ model Session {
   ApplicationGrantedDelegationCountries          ApplicationGrantedDelegationCountries[]
   Blacklist                                      Blacklist[]
   Album                                          Album[]
+  ParticipationCertificate                       ParticipationCertificate[]
 }
 
 model Invoice {

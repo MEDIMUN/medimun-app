@@ -8,12 +8,12 @@ import { Checkbox } from "@/components/checkbox";
 const separator = ",";
 const selectKeyword = "select";
 
-export function UserSelector({ uid, officialName, displayName, ...props }) {
+export function UserSelector({ uid, officialName, displayName, maxNo = 25, ...props }) {
 	const { selected, setSelected } = useSelectedContext();
 
 	async function onSelectionChange(e) {
 		if (e) {
-			if (selected.length >= 25) return;
+			if (selected.length >= maxNo) return;
 			setSelected((prev) => [...prev, { id: uid, officialName, displayName }]);
 		} else {
 			if (selected.length == 1) {
@@ -34,5 +34,5 @@ export function UserSelector({ uid, officialName, displayName, ...props }) {
 
 	const isSelected = selected.some((item) => item.id === uid);
 
-	return <Checkbox disabled={selected.length >= 25 && !isSelected} {...props} checked={isSelected} onChange={onSelectionChange} />;
+	return <Checkbox innerClassName="min-h-6 min-w-6" disabled={selected.length >= maxNo && !isSelected} {...props} checked={isSelected} onChange={onSelectionChange} />;
 }

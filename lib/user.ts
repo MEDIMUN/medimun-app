@@ -223,20 +223,7 @@ export function generateUserData(userObject) {
 		};
 	});
 
-	let allRoles = [
-		...globalAdminRole,
-		...adminRole,
-		...seniorDirectorRole,
-		...sgRole,
-		...pgaRole,
-		...dsgRole,
-		...dpgaRole,
-		...schoolDirectorRole,
-		...teamManagerRole,
-		...chairRole,
-		...teamMemberRole,
-		...delegateRole,
-	];
+	let allRoles = [...globalAdminRole, ...adminRole, ...seniorDirectorRole, ...sgRole, ...pgaRole, ...dsgRole, ...dpgaRole, ...schoolDirectorRole, ...teamManagerRole, ...chairRole, ...teamMemberRole, ...delegateRole];
 
 	let allCurrentRoles = allRoles.filter((role) => role.isCurrent);
 	let allPastRoles = allRoles.filter((role) => !role.isCurrent);
@@ -334,6 +321,7 @@ export async function userData(user) {
 			deputySecretaryGeneral: { include: { session: { select: { isCurrent: true, number: true, id: true } } } },
 			deputyPresidentOfTheGeneralAssembly: { include: { session: { select: { isCurrent: true, number: true, id: true } } } },
 		},
+		omit: { signature: true },
 	});
 
 	const allCurrentRoleranks = [];
@@ -533,20 +521,7 @@ export async function userData(user) {
 		};
 	});
 
-	let allRoles = [
-		...globalAdminRole,
-		...adminRole,
-		...seniorDirectorRole,
-		...sgRole,
-		...pgaRole,
-		...dsgRole,
-		...dpgaRole,
-		...schoolDirectorRole,
-		...teamManagerRole,
-		...chairRole,
-		...teamMemberRole,
-		...delegateRole,
-	];
+	let allRoles = [...globalAdminRole, ...adminRole, ...seniorDirectorRole, ...sgRole, ...pgaRole, ...dsgRole, ...dpgaRole, ...schoolDirectorRole, ...teamManagerRole, ...chairRole, ...teamMemberRole, ...delegateRole];
 
 	let allCurrentRoles = allRoles.filter((role) => role.isCurrent);
 	let allPastRoles = allRoles.filter((role) => !role.isCurrent);

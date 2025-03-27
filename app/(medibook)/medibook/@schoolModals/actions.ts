@@ -40,13 +40,7 @@ const editSchema = z.object({
 		.regex(/^[a-z0-9-]+$/, "Slug must be alphanumeric")
 		.optional()
 		.nullable(),
-	joinYear: z.coerce
-		.number()
-		.int()
-		.min(1900, "Year must be between 1900 and 2100")
-		.max(2100, "Year must be between 1900 and 2100")
-		.optional()
-		.nullable(),
+	joinYear: z.coerce.number().int().min(1900, "Year must be between 1900 and 2100").max(2100, "Year must be between 1900 and 2100").optional().nullable(),
 	isPublic: z.boolean(),
 	cover: z.string().optional().nullable(),
 	phone: z.string().optional().nullable(),
@@ -106,7 +100,7 @@ export async function deleteSchool(formData: FormData) {
 	const res = await deleteCoverImage(id);
 	if (!res.ok) return { ok: false, message: "Something went wrong." };
 	const password = formData.get("password").toString();
-	const user = await prisma.user.findUnique({ where: { id: authSession.user.id }, include: { Account: true } });
+	const user = await prisma.user.findUnique({ where: { id: authSession.user.id }, include: { Account: true }, omit: { signature: true } });
 	if (!id || !password) return { ok: false, message: "Invalid data" };
 	if (!(await verifyPassword(password, user?.Account[0].password))) return { ok: false, message: "Invalid password" };
 	await prisma.school.delete({ where: { id: id } }).catch(() => {
@@ -123,8 +117,7 @@ export async function updateCoverImage(formData: FormData) {
 	if (!file) return { ok: false, message: "No file selected" };
 	if (file.size > 5000000) return { ok: false, message: "File can't be larger than 5MB." };
 	if (!file.type.includes("image")) return { ok: false, message: "File is not an image" };
-	if (file.type !== "image/jpeg" && file.type !== "image/png" && file.type !== "image/gif")
-		return { ok: false, message: "File is not a supported image type" };
+	if (file.type !== "image/jpeg" && file.type !== "image/png" && file.type !== "image/gif") return { ok: false, message: "File is not a supported image type" };
 	const minioClient = minio();
 	const randomName = nanoid();
 	const data = await file.arrayBuffer();

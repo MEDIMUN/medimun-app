@@ -119,19 +119,19 @@ export function TopBar({
 										<BreadcrumbItem className="">
 											<BreadcrumbLink href="/medibook" className="flex gap-2 items-center">
 												<Image alt="Mini MediBook Logo" src={MiniLogo} />
-												<BreadcrumbPage className={cn("md:block", !hideBreadcrums && "hidden")}>MediBook</BreadcrumbPage>
+												<BreadcrumbPage>MediBook</BreadcrumbPage>
 											</BreadcrumbLink>
 										</BreadcrumbItem>
 										{!hideBreadcrums && (
 											<div className="flex gap-2 items-center overflow-hidden max-w-[calc(auto-100px)]">
-												<BreadcrumbSeparator />
-												<BreadcrumbItem>
+												<BreadcrumbSeparator className="hidden md:block" />
+												<BreadcrumbItem className="hidden md:block">
 													<BreadcrumbLink className="truncate max-w-[150px] md:max-w-[300px]" href={buttonHref}>
 														{buttonText}
 													</BreadcrumbLink>
 												</BreadcrumbItem>
-												<BreadcrumbSeparator />
-												<BreadcrumbItem>
+												<BreadcrumbSeparator className="hidden md:block" />
+												<BreadcrumbItem className="hidden md:block">
 													<BreadcrumbPage>{title}</BreadcrumbPage>
 												</BreadcrumbItem>
 											</div>
@@ -208,7 +208,7 @@ export function TopBar({
 									ref={searchInputRef}
 									onChange={(e) => updateSearchParams({ search: e.target.value })}
 									value={searchParams ? (searchParams.get("search") ?? "") : ""}
-									placeholder="Search..."
+									placeholder={searchText || "Search..."}
 									type="search"
 								/>
 							</div>

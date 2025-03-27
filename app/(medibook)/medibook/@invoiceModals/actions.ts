@@ -153,6 +153,7 @@ export async function editInvoice(formData, invoiceId) {
 			try {
 				const userToNotify = await prisma.user.findUnique({
 					where: { id: originalInvoice.userId },
+					omit: { signature: true },
 				});
 
 				if (!userToNotify) {
@@ -248,7 +249,7 @@ export async function addInvoice(formData: FormData) {
 	}
 
 	if (data.userId) {
-		const selectedUser = await prisma.user.findUnique({ where: { id: data.userId } });
+		const selectedUser = await prisma.user.findUnique({ where: { id: data.userId }, omit: { signature: true } });
 
 		if (!selectedUser) return { ok: false, message: ["Invalid user"] };
 	}
@@ -362,11 +363,7 @@ export async function getSchools(query) {
 
 	const schools = await prisma.school.findMany({
 		where: {
-			OR: [
-				{ name: { contains: query, mode: "insensitive" } },
-				{ id: { contains: query, mode: "insensitive" } },
-				{ slug: { contains: query, mode: "insensitive" } },
-			],
+			OR: [{ name: { contains: query, mode: "insensitive" } }, { id: { contains: query, mode: "insensitive" } }, { slug: { contains: query, mode: "insensitive" } }],
 		},
 		take: 15,
 		select: {

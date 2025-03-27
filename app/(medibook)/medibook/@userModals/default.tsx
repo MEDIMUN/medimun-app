@@ -13,7 +13,7 @@ export default async function UserModals(props) {
 	let editSelectedUser = null;
 	if (searchParams["edit-user"]) {
 		schools = prisma.school.findMany({ orderBy: { name: "asc" }, include: { location: true } }).catch();
-		editSelectedUser = await prisma.user.findFirst({ where: { id: searchParams["edit-user"] }, include: { ...generateUserDataObject() } }).catch();
+		editSelectedUser = await prisma.user.findFirst({ where: { id: searchParams["edit-user"] }, include: { ...generateUserDataObject() }, omit: { signature: true } }).catch();
 		[schools, editSelectedUser] = await Promise.all([schools, editSelectedUser]);
 		editSelectedUser = { highestRoleRank: generateUserData(editSelectedUser)?.highestRoleRank, ...editSelectedUser };
 		editSelectedUser = editSelectedUser.highestRoleRank > highestRoleRank ? editSelectedUser : null;
@@ -134,11 +134,9 @@ export default async function UserModals(props) {
 
 	let unafilliateStudent = {};
 	if (searchParams?.["unafilliate-student"]) {
-		const prismaUser = await prisma.user
-			.findFirst({ where: { id: searchParams["unafilliate-student"] }, include: { ...generateUserDataObject() } })
-			.catch(() => {
-				return;
-			});
+		const prismaUser = await prisma.user.findFirst({ where: { id: searchParams["unafilliate-student"] }, include: { ...generateUserDataObject() }, omit: { signature: true } }).catch(() => {
+			return;
+		});
 		const userData = generateUserData(prismaUser);
 
 		if (userData.highestRoleRank <= highestRoleRank) return;
@@ -161,11 +159,9 @@ export default async function UserModals(props) {
 
 	if (searchParams?.["delete-user"]) {
 		if (!authorize(authSession, [s.management])) return;
-		const prismaUser = await prisma.user
-			.findFirst({ where: { id: searchParams["delete-user"] }, include: { ...generateUserDataObject() } })
-			.catch(() => {
-				return;
-			});
+		const prismaUser = await prisma.user.findFirst({ where: { id: searchParams["delete-user"] }, include: { ...generateUserDataObject() }, omit: { signature: true } }).catch(() => {
+			return;
+		});
 		const userData = generateUserData(prismaUser);
 
 		if (userData && !(userData.highestRoleRank > highestRoleRank)) return;

@@ -16,6 +16,7 @@ export default async function Page(props) {
 	const authSession = await auth();
 	const selectedUser = await prisma.user.findFirst({
 		where: { OR: [{ id: params.userId }, { username: params.userId }] },
+		omit: { signature: true },
 	});
 	if (!selectedUser) return notFound();
 	const userData = await userGetter(selectedUser.id);

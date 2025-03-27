@@ -8,6 +8,7 @@ export async function handleSocketRollCall(socket, { dayId, rollCallId, userId, 
 	const selectedUserPre = await prisma.user.findUnique({
 		where: { id: userId },
 		include: { ...generateUserDataObject() },
+		omit: { signature: true },
 	});
 	if (!selectedUserPre) {
 		socket.emit("error", "User not found");

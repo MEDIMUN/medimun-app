@@ -15,10 +15,7 @@ export async function changeRegMorning(userId) {
 	const isMember = authorizeDirect(authSession, [s.member]);
 	const allowedMemberDepartmentTypes = ["PI", "IT", "ADMIN"];
 	const isMemberOfPIorIT =
-		isMember &&
-		authSession?.user.currentRoles
-			.filter((role) => role.roleIdentifier == "member")
-			.filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
+		isMember && authSession?.user.currentRoles.filter((role) => role.roleIdentifier == "member").filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
 
 	if (!isManagement && !isManager && !isDelegate && !isMember) return { ok: false, message: ["Unauthorized"] };
 	const socket = getSocketInstance();
@@ -32,6 +29,7 @@ export async function changeRegMorning(userId) {
 
 	const selectedUser = await prisma.user.findFirst({
 		where: { id: userId },
+		omit: { signature: true },
 		include: {
 			MorningPresent: {
 				where: {

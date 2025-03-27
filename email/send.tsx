@@ -14,6 +14,7 @@ import { Announcement } from "./templates/announcement";
 import { SchoolReceiveReceipt } from "./templates/new-receipt-to-school";
 import { UserReceiveReceipt } from "./templates/new-receipt-to-user";
 import { UserReceiveInvoice } from "./templates/new-invoice-to-user";
+import { TemplateReceiveNewCertificate } from "./templates/new-certificate-received";
 
 export async function sendEmailVerificationEmail({ email, officialName, code }) {
 	return sendEmail({
@@ -25,17 +26,7 @@ export async function sendEmailVerificationEmail({ email, officialName, code }) 
 	});
 }
 
-export async function sendEmailRejectSchoolDirectorApplication({
-	email,
-	officialName,
-	officialSurname,
-	applicationId,
-}: {
-	email: string;
-	officialName: string;
-	officialSurname: string;
-	applicationId: string;
-}) {
+export async function sendEmailRejectSchoolDirectorApplication({ email, officialName, officialSurname, applicationId }: { email: string; officialName: string; officialSurname: string; applicationId: string }) {
 	return sendEmail({
 		to: email,
 		subject: "School Director Application Status - MEDIMUN",
@@ -45,17 +36,7 @@ export async function sendEmailRejectSchoolDirectorApplication({
 	});
 }
 
-export async function sendEmailAcceptSchoolDirectorApplication({
-	email,
-	officialName,
-	officialSurname,
-	applicationId,
-}: {
-	email: string;
-	officialName: string;
-	officialSurname: string;
-	applicationId: string;
-}) {
+export async function sendEmailAcceptSchoolDirectorApplication({ email, officialName, officialSurname, applicationId }: { email: string; officialName: string; officialSurname: string; applicationId: string }) {
 	return sendEmail({
 		to: email,
 		subject: "School Director Application Status - MEDIMUN",
@@ -82,26 +63,11 @@ export async function sendEmailReceivedSchoolDirectorApplication({
 		to: email,
 		subject: "School Director Application Received - MEDIMUN",
 		preview: `Dear ${officialName}, your application has been received.`,
-		html: (
-			<ReceivedSchoolDirectorApplicationTemplate
-				officialName={officialName}
-				officialSurname={officialSurname}
-				applicationId={applicationId}
-				schoolName={schoolName}
-			/>
-		),
+		html: <ReceivedSchoolDirectorApplicationTemplate officialName={officialName} officialSurname={officialSurname} applicationId={applicationId} schoolName={schoolName} />,
 	});
 }
 
-export async function sendEmailResetPassword({
-	officialName,
-	passwordResetLink,
-	email,
-}: {
-	officialName: string;
-	passwordResetLink: string;
-	email: string;
-}) {
+export async function sendEmailResetPassword({ officialName, passwordResetLink, email }: { officialName: string; passwordResetLink: string; email: string }) {
 	return sendEmail({
 		to: email,
 		hideFooter: true,
@@ -121,15 +87,7 @@ export async function sendEmailPasswordChangedNotification({ officialName, email
 	});
 }
 
-export async function sendEmailSchoolHasBeenAssignedCountries({
-	officialName,
-	email,
-	delegationLink,
-}: {
-	officialName: string;
-	email: string;
-	delegationLink: string;
-}) {
+export async function sendEmailSchoolHasBeenAssignedCountries({ officialName, email, delegationLink }: { officialName: string; email: string; delegationLink: string }) {
 	return await sendEmail({
 		to: email,
 		subject: "School Country Assignment - MEDIMUN",
@@ -138,17 +96,7 @@ export async function sendEmailSchoolHasBeenAssignedCountries({
 	});
 }
 
-export async function sendEmailAssignDelegateToCommittee({
-	officialName,
-	email,
-	committeeName,
-	country,
-}: {
-	officialName: string;
-	email: string;
-	committeeName: string;
-	country: string | null;
-}) {
+export async function sendEmailAssignDelegateToCommittee({ officialName, email, committeeName, country }: { officialName: string; email: string; committeeName: string; country: string | null }) {
 	return sendEmail({
 		to: email,
 		subject: `Welcome to ${committeeName} - MEDIMUN`,
@@ -197,15 +145,7 @@ export async function sendReceiptToUser({ officialName, email }: { officialName:
 	});
 }
 
-export async function sendEmailYourDelegatesHaveBeenAssigned({
-	officialName,
-	email,
-	schoolName,
-}: {
-	officialName: string;
-	email: string;
-	schoolName: string;
-}) {
+export async function sendEmailYourDelegatesHaveBeenAssigned({ officialName, email, schoolName }: { officialName: string; email: string; schoolName: string }) {
 	return sendEmail({
 		to: email,
 		hideFooter: true,
@@ -225,19 +165,7 @@ export async function sendEmailReturnPositionPaper({ officialName, details, emai
 	});
 }
 
-export async function sendEmailAnnouncement({
-	email,
-	announcementTitle,
-	name,
-	markdown,
-	title,
-}: {
-	email: string;
-	announcementTitle: string;
-	name: string;
-	markdown: string;
-	title?: string;
-}) {
+export async function sendEmailAnnouncement({ email, announcementTitle, name, markdown, title }: { email: string; announcementTitle: string; name: string; markdown: string; title?: string }) {
 	return sendEmail({
 		to: email,
 		title: announcementTitle,
@@ -245,5 +173,14 @@ export async function sendEmailAnnouncement({
 		subject: `New Announcement - MEDIMUN`,
 		preview: `Dear ${name}, check out the latest announcement.`,
 		html: <Announcement name={name} markdown={markdown} title={title} />,
+	});
+}
+
+export async function sendEmailReceivedNewCertificateOfParticipation({ officialName, email }: { officialName: string; email: string }) {
+	return await sendEmail({
+		to: email,
+		subject: "New Certificate of Participation - MEDIMUN",
+		preview: `Dear ${officialName}, your certificate of participation is ready.`,
+		html: <TemplateReceiveNewCertificate officialName={officialName} />,
 	});
 }

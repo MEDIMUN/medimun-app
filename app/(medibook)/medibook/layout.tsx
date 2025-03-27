@@ -30,16 +30,12 @@ export function NoScript() {
 				<Link href="/home">
 					<img src={`/assets/branding/logos/logo-medired.svg`} className="mx-auto mb-10 h-[60px] font-[Gilroy]" alt="MediBook" />
 				</Link>
-				<p>
-					Your browser does not support JavaScript or it&apos;s turned off. The MediBook App and the MEDIMUN Website require JavaScript to function
-					properly. Please enable JavaScript in your browser settings.
-				</p>
+				<p>Your browser does not support JavaScript or it&apos;s turned off. The MediBook App and the MEDIMUN Website require JavaScript to function properly. Please enable JavaScript in your browser settings.</p>
 				<br />
 				<p>If you believe this is an error, please contact us.</p>
 				<br />
 				<p className="text-xs">
-					If you need to access MediBook without JavaScript, please email us using the email address you registered with for the conference. We will
-					consider remotely enabling a limited version of the app for you.
+					If you need to access MediBook without JavaScript, please email us using the email address you registered with for the conference. We will consider remotely enabling a limited version of the app for you.
 				</p>
 			</div>
 		</noscript>
@@ -77,6 +73,7 @@ export default function RootLayout({
 	topicsModals,
 	privateMessageModals,
 	invoiceModals,
+	individualCertificateModals,
 }): JSX.Element {
 	return (
 		<html lang="en" className={cn("antialiased h-full", GeistSans.variable, GeistMono.variable)} suppressHydrationWarning>
@@ -107,6 +104,7 @@ export default function RootLayout({
 						{topicsModals}
 						{privateMessageModals}
 						{invoiceModals}
+						{individualCertificateModals}
 					</Suspense>
 					<SidebarProvider>
 						<Suspense fallback={null}>

@@ -77,20 +77,15 @@ export default async function Page(props) {
 		return acc.concat(studentIds);
 	}, []);
 
-	const allUsers = await prisma.user.findMany({ where: { id: { in: userIds } } });
+	const allUsers = await prisma.user.findMany({ where: { id: { in: userIds } }, omit: { signature: true } });
 
 	return (
 		<>
-			<TopBar
-				title="Delegate Assignment"
-				buttonText={`Session ${romanize(selectedSession.numberInteger)} Applications`}
-				buttonHref={`/medibook/sessions/${selectedSession.number}/applications`}>
+			<TopBar title="Delegate Assignment" buttonText={`Session ${romanize(selectedSession.numberInteger)} Applications`} buttonHref={`/medibook/sessions/${selectedSession.number}/applications`}>
 				<SearchParamsButton searchParams={{ "add-delegation-proposal": true }}>Add Proposal</SearchParamsButton>
 			</TopBar>
 			<MainWrapper>
-				{!!delegateProposals.length && (
-					<FinalAssignDelegates selectedSession={selectedSession} users={allUsers} delegateProposalsInitial={parsedDelegateProposals} />
-				)}
+				{!!delegateProposals.length && <FinalAssignDelegates selectedSession={selectedSession} users={allUsers} delegateProposalsInitial={parsedDelegateProposals} />}
 				<Paginator totalItems={totalItems} itemsPerPage={10} itemsOnPage={delegateProposals.length} />
 			</MainWrapper>
 		</>

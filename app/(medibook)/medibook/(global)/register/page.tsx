@@ -31,10 +31,7 @@ export async function Registration(props) {
 	const isMember = authorizeDirect(authSession, [s.member]);
 	const allowedMemberDepartmentTypes = ["PI", "IT", "ADMIN"];
 	const isMemberOfPIorIT =
-		isMember &&
-		authSession?.user.currentRoles
-			.filter((role) => role.roleIdentifier == "member")
-			.filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
+		isMember && authSession?.user.currentRoles.filter((role) => role.roleIdentifier == "member").filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
 
 	if (!isManagement && !isManager && !isDelegate && !isMember) notFound();
 
@@ -58,8 +55,8 @@ export async function Registration(props) {
 				/>
 				<MainWrapper>
 					<Text>
-						Keep this page open before arriving at the conference on any conference or workshop day. Delegates and members must show their QR code to
-						enter the conference venue. On conference days, a QR code will be displayed on this page.
+						Keep this page open before arriving at the conference on any conference or workshop day. Delegates and members must show their QR code to enter the conference venue. On conference days, a QR code will be displayed
+						on this page.
 					</Text>
 				</MainWrapper>
 			</>
@@ -68,9 +65,7 @@ export async function Registration(props) {
 	let code,
 		isPresent = null;
 	if (isDelegate || isMember) {
-		isPresent = await prisma.morningPresent
-			.findUnique({ where: { userId_dayId: { userId: authSession.user.id, dayId: selectedDay.id } } })
-			.catch(notFound);
+		isPresent = await prisma.morningPresent.findUnique({ where: { userId_dayId: { userId: authSession.user.id, dayId: selectedDay.id } } }).catch(notFound);
 
 		if (!isPresent) {
 			[, code] = await prisma
@@ -144,14 +139,7 @@ export async function Registration(props) {
 	if (!isManagement && !isManager && !!isPresent && !isMemberOfPIorIT)
 		return (
 			<>
-				<TopBar
-					hideBackdrop
-					title="Morning Registration"
-					hideSearchBar
-					buttonHref="/medibook"
-					buttonText="Home"
-					subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`}
-				/>
+				<TopBar hideBackdrop title="Morning Registration" hideSearchBar buttonHref="/medibook" buttonText="Home" subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`} />
 				<MainWrapper>
 					<div className="border flex gap-2 md:flex-row flex-col shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 text-center">
 						<div className="md:h-[40px] h-[60px] w-[60px] m-8 md:m-0 md:w-[40px] mx-auto md:mx-0">
@@ -179,14 +167,7 @@ export async function Registration(props) {
 	if ((isMember && !isPresent) || isDelegate)
 		return (
 			<>
-				<TopBar
-					hideBackdrop
-					title="Morning Registration"
-					hideSearchBar
-					buttonHref="/medibook"
-					buttonText="Home"
-					subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`}
-				/>
+				<TopBar hideBackdrop title="Morning Registration" hideSearchBar buttonHref="/medibook" buttonText="Home" subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`} />
 				<MainWrapper>
 					<RegisterQRCodeBox code={code.code} />
 					<Text>Show this code to a member of staff in the morning at the door when you arrive.</Text>
@@ -200,6 +181,7 @@ export async function Registration(props) {
 	if ((isManagement || isManager || isMemberOfPIorIT) && query) {
 		delegates = await prisma.user.findMany({
 			take: 10,
+			omit: { signature: true },
 			include: {
 				MorningPresent: {
 					where: {
@@ -245,14 +227,7 @@ export async function Registration(props) {
 	if (isManager || isManagement || (isMemberOfPIorIT && isPresent))
 		return (
 			<>
-				<TopBar
-					hideBackdrop
-					title="Registration Scanner"
-					hideSearchBar
-					buttonHref="/medibook"
-					buttonText="Home"
-					subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`}
-				/>
+				<TopBar hideBackdrop title="Registration Scanner" hideSearchBar buttonHref="/medibook" buttonText="Home" subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`} />
 				<MainWrapper>
 					{isPresent && (
 						<div className="border flex gap-2 md:flex-row flex-col shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 text-center">
@@ -263,10 +238,7 @@ export async function Registration(props) {
 						</div>
 					)}
 					<QRReader delegates={delegates} />
-					<Text>
-						Scan the QR code of a Delegate or Member to register them in the morning. Members can only register delegates while managers and
-						management members can register both delegates and members.
-					</Text>
+					<Text>Scan the QR code of a Delegate or Member to register them in the morning. Members can only register delegates while managers and management members can register both delegates and members.</Text>
 				</MainWrapper>
 			</>
 		);

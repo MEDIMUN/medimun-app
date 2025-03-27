@@ -8,6 +8,8 @@ import { MainWrapper } from "@/components/main-wrapper";
 import { unstable_cacheLife as cacheLife } from "next/cache";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { Subheading } from "@/components/heading";
+import { Info } from "lucide-react";
 
 export default function Page(props) {
 	return (
@@ -43,11 +45,7 @@ export async function RollCallsPage(props) {
 									{ country: { contains: query, mode: "insensitive" } },
 									{
 										user: {
-											OR: [
-												{ officialName: { contains: query, mode: "insensitive" } },
-												{ officialSurname: { contains: query, mode: "insensitive" } },
-												{ displayName: { contains: query, mode: "insensitive" } },
-											],
+											OR: [{ officialName: { contains: query, mode: "insensitive" } }, { officialSurname: { contains: query, mode: "insensitive" } }, { displayName: { contains: query, mode: "insensitive" } }],
 										},
 									},
 								],
@@ -113,20 +111,23 @@ export async function RollCallsPage(props) {
 
 	return (
 		<>
-			<TopBar
-				buttonText={selectedCommittee.name}
-				buttonHref={`/medibook/sessions/${selectedSession.number}/committees/${selectedCommittee.slug || selectedCommittee.id}`}
-				title="Committee Roll Calls">
+			<TopBar buttonText={selectedCommittee.name} buttonHref={`/medibook/sessions/${selectedSession.number}/committees/${selectedCommittee.slug || selectedCommittee.id}`} title="Committee Roll Calls">
 				<DateSelector conferenceDays={conferenceDays} workshopDays={workshopDays} />
 			</TopBar>
 			<MainWrapper>
-				<RollCallTable
-					isEditor={isEditor}
-					selectedDayId={searchParams.day || null}
-					selectedCommittee={selectedCommittee}
-					delegates={delegates}
-					rollCallsInit={rollCalls}
-				/>
+				<div className="rounded-md bg-neutral-100 p-4">
+					<div className="flex">
+						<div className="shrink-0">
+							<Info aria-hidden="true" className="size-5 text-neutral-400" />
+						</div>
+						<div className="ml-3 flex-1 md:flex md:justify-between">
+							<p className="text-sm text-neutral-700">
+								Delegates can <b>not</b> be marked as absent or request to be treated as absent during the debate if they are physically present in the committee room.
+							</p>
+						</div>
+					</div>
+				</div>
+				<RollCallTable isEditor={isEditor} selectedDayId={searchParams?.day || null} selectedCommittee={selectedCommittee} delegates={delegates} rollCallsInit={rollCalls} />
 			</MainWrapper>
 		</>
 	);

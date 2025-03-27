@@ -16,6 +16,7 @@ export async function checkEmail(email: string) {
 	const user = await prisma.user.findFirst({
 		where: { email: processedEmail },
 		include: { Account: true, Student: true, Blacklist: true },
+		omit: { signature: true },
 	});
 
 	const Blacklist = user?.Blacklist;
@@ -87,6 +88,7 @@ export async function createPendingUser(formData: FormData, email: string) {
 
 	const user = await prisma.user.findFirst({
 		where: { email: email },
+		omit: { signature: true },
 	});
 
 	if (user) return { ok: false, message: ["User already exists."] };

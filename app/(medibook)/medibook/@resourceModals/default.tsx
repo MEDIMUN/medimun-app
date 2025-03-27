@@ -3,7 +3,7 @@ import { ModalUploadResource } from "./modalCreateResource";
 import { ModalEditResource } from "./modalEditResource";
 import { Resource } from "@prisma/client";
 import { auth } from "@/auth";
-import { authorize, authorizeChairCommittee, authorizeManagerDepartment, s } from "@/lib/authorize";
+import { authorize, authorizeChairCommittee, authorizeManagerDepartment, authorizePerRole, s } from "@/lib/authorize";
 import { ModalDeleteResource } from "./modalDeleteResource";
 
 export const greaterScopeList = [
@@ -111,15 +111,7 @@ export const searchParamsGreaterScopeMap = {
 	uploadsystemresource: ["SYSTEM"],
 };
 
-export const useableSearchParams = [
-	"uploadsessionresource",
-	"uploadcommitteeresource",
-	"uploaddepartmentresource",
-	"uploadglobalresource",
-	"uploadresource",
-	"uploadsystemresource",
-	"uploadsessionprospectus",
-];
+export const useableSearchParams = ["uploadsessionresource", "uploadcommitteeresource", "uploaddepartmentresource", "uploadglobalresource", "uploadresource", "uploadsystemresource", "uploadsessionprospectus"];
 
 export function authorizedToEditResource(authSession, editResourceData) {
 	const isManagement = authorize(authSession, [s.management]);
@@ -143,34 +135,20 @@ export function authorizedToEditResource(authSession, editResourceData) {
 		SESSIONSCHOOLDIRECTORS: isManagement,
 		SESSIONDIRECTORS: isManagement,
 		SESSIONSENIORDIRECTORS: isManagement,
-		COMMITTEEWEBSITE:
-			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
-		COMMITTEECHAIR:
-			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
-		COMMITTEEMANAGER:
-			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
-		COMMITTEEDELEGATE:
-			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
-		COMMITTEEMEMBER:
-			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
-		COMMITTEESECRETARIAT:
-			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
-		COMMITTEEDIRECTORS:
-			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
-		COMMITTEESENIORDIRECTORS:
-			isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
-		DEPARTMENTWEBSITE:
-			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
-		DEPARTMENTMANAGER:
-			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
-		DEPARTMENTMEMBER:
-			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
-		DEPARTMENTSECRETARIAT:
-			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
-		DEPARTMENTDIRECTORS:
-			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
-		DEPARTMENTSENIORDIRECTORS:
-			isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
+		COMMITTEEWEBSITE: isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
+		COMMITTEECHAIR: isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
+		COMMITTEEMANAGER: isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
+		COMMITTEEDELEGATE: isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
+		COMMITTEEMEMBER: isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
+		COMMITTEESECRETARIAT: isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
+		COMMITTEEDIRECTORS: isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
+		COMMITTEESENIORDIRECTORS: isManagement || authorizeChairCommittee([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.committeeId),
+		DEPARTMENTWEBSITE: isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
+		DEPARTMENTMANAGER: isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
+		DEPARTMENTMEMBER: isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
+		DEPARTMENTSECRETARIAT: isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
+		DEPARTMENTDIRECTORS: isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
+		DEPARTMENTSENIORDIRECTORS: isManagement || authorizeManagerDepartment([...authSession.user.currentRoles, ...authSession.user.pastRoles], editResourceData.departmentId),
 		SYSTEM: authorize(authSession, [s.admins]),
 		PERSONAL: authSession?.user.id === editResourceData?.userId,
 	};
@@ -191,6 +169,7 @@ export function authorizedToEditResource(authSession, editResourceData) {
 export default async function Modals(props) {
 	const searchParams = await props.searchParams;
 	const authSession = await auth();
+	if (!authSession) return false;
 	let editResourceData: Resource | null = null;
 	let deleteResourceData: Resource | null = null;
 
@@ -214,6 +193,10 @@ export default async function Modals(props) {
 		if (!authorizedToEditResource(authSession, deleteResourceData)) {
 			deleteResourceData = null;
 		}
+	}
+
+	if (!authorizePerRole(authSession, [s.globalAdmin, s.admin, s.admins, s.sd, s.director, s.board, s.sg, s.dsg, s.pga, s.dpga, s.sec, s.highsec, s.management, s.chair, s.delegate, s.manager, s.member, s.schooldirector])) {
+		return null;
 	}
 
 	return (

@@ -74,21 +74,7 @@ export interface RoleObject {
 		| "seniorDirector"
 		| "admin"
 		| "globalAdmin";
-	shortRole:
-		| "delegate"
-		| "schoolDirector"
-		| "sd"
-		| "member"
-		| "chair"
-		| "manager"
-		| "dsg"
-		| "dpga"
-		| "pga"
-		| "sg"
-		| "director"
-		| "seniorDirector"
-		| "admin"
-		| "globalAdmin";
+	shortRole: "delegate" | "schoolDirector" | "sd" | "member" | "chair" | "manager" | "dsg" | "dpga" | "pga" | "sg" | "director" | "seniorDirector" | "admin" | "globalAdmin";
 	name: RoleName;
 	sessionId?: string;
 	session?: string;
@@ -168,6 +154,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 					prismaUser = await prisma.user.findFirstOrThrow({
 						where: { OR: [{ email: username }, { id: username }, { username: username }] },
 						include: { ...generateUserDataObject(), Account: true },
+						omit: { signature: true },
 					});
 				} catch (error) {
 					throw new UserNotFoundError();

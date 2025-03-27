@@ -55,7 +55,7 @@ export async function deleteCommittee(formData, committeeId) {
 
 	if (!selectedCommittee.session.isCurrent && !authorize(authSession, [s.admins, s.sd])) return { ok: false, message: "Error" };
 
-	const selectedUser = await prisma.user.findUnique({ where: { id: authSession.user.id }, include: { Account: true } });
+	const selectedUser = await prisma.user.findUnique({ where: { id: authSession.user.id }, include: { Account: true }, omit: { signature: true } });
 
 	const password = formData.get("password");
 
@@ -98,8 +98,7 @@ export async function addCommittee(formData: FormData, sessionNumber) {
 
 	if (!selectedSession) return { ok: false, message: "Invalid session" };
 
-	if (!authorize(authSession, [s.admins, s.sd]) && !selectedSession.isCurrent && selectedSession.numberInteger <= currentSession.numberInteger)
-		return { ok: false, message: "Session is not current or in the future." };
+	if (!authorize(authSession, [s.admins, s.sd]) && !selectedSession.isCurrent && selectedSession.numberInteger <= currentSession.numberInteger) return { ok: false, message: "Session is not current or in the future." };
 
 	let newCommittee;
 

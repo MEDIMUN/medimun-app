@@ -52,8 +52,7 @@ export async function submitDelegationDeclaration(selectedSchoolId: string, numb
 
 export async function delegationPeopleAssignment(assignment, schoolId, sessId) {
 	const authSession = await auth();
-	const isAuthorized =
-		(authSession && authorizeSchoolDirectorSchool(authSession.user.currentRoles, schoolId)) || authorize(authSession, [s.management]);
+	const isAuthorized = (authSession && authorizeSchoolDirectorSchool(authSession.user.currentRoles, schoolId)) || authorize(authSession, [s.management]);
 
 	const selectedSchool = await prisma.school.findFirst({ where: { id: schoolId } });
 	const selectedSession = await prisma.session.findFirst({ where: { id: sessId }, include: { committee: true } });
@@ -69,11 +68,10 @@ export async function delegationPeopleAssignment(assignment, schoolId, sessId) {
 	if (!delegationGrantedToSchool) return { ok: false, message: ["No delegation granted to the school."] };
 
 	const studentIds = assignment.map((a) => a.studentId);
-	const students = await prisma.user.findMany({ where: { id: { in: studentIds } } });
+	const students = await prisma.user.findMany({ where: { id: { in: studentIds } }, omit: { signature: true } });
 	const studentSchoolIds = students.map((s) => s.schoolId);
 
-	if (studentSchoolIds.some((id) => id !== schoolId))
-		return { ok: false, message: ["Some students are not students of the school you are trying to assign them to."] };
+	if (studentSchoolIds.some((id) => id !== schoolId)) return { ok: false, message: ["Some students are not students of the school you are trying to assign them to."] };
 
 	if (students.length !== studentIds.length) return { ok: false, message: ["Some students do not exist."] };
 

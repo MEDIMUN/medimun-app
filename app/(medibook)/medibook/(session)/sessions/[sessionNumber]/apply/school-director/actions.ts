@@ -30,6 +30,7 @@ export async function applyAsSchoolDirector(formData: FormData, selectedSessionI
 		where: {
 			id: authSession.user.id,
 		},
+		omit: { signature: true },
 	});
 
 	if (userHasApplicationInSession) return { ok: false, message: "You have already applied as school director for this session." };
