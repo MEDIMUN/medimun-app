@@ -14,8 +14,14 @@ import { Button } from "@/components/button";
 import { DownloadButton } from "@/components/ui/download-button";
 import { romanize } from "@/lib/romanize";
 import { Download, Eye } from "lucide-react";
+import { Metadata } from "next";
 
 const itemsPerPage = 10;
+
+export const metadata: Metadata = {
+	title: "Certificates & Awards",
+	description: "View and download your certificates and awards.",
+};
 
 export async function TableOfContents({ props }) {
 	await connection();
