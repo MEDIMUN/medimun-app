@@ -163,7 +163,7 @@ export default async function Page(props) {
 	const [users, totalItems] = await prisma
 		.$transaction([
 			prisma.user.findMany({
-				where: { ...(queryObjects[searchParams.tab] as any) },
+				where: { ...(queryObjects[searchParams.tab || "delegates"] as any) },
 				include: {
 					...generateUserDataObject(),
 					MorningPresent: { where: { day: { session: { number: params.sessionNumber } } } },
@@ -177,7 +177,7 @@ export default async function Page(props) {
 				skip: (currentPage - 1) * itemsPerPage,
 				take: itemsPerPage,
 			}),
-			prisma.user.count({ where: { CertificateAwardedTo: { none: { session: { number: params.sessionNumber } } }, ...(queryObjects[searchParams.tab] as any) } }),
+			prisma.user.count({ where: { CertificateAwardedTo: { none: { session: { number: params.sessionNumber } } }, ...(queryObjects[searchParams.tab || "delegates"] as any) } }),
 		])
 		.catch();
 
