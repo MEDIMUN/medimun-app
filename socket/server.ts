@@ -4,16 +4,7 @@ import { Redis } from "ioredis";
 import { socketAuth } from "@/socket/auth";
 import prisma from "@/prisma/client";
 import type { Clause, ClauseType } from "@/types/clause";
-import {
-	authorize,
-	authorizeChairCommittee,
-	authorizeChairDelegate,
-	authorizeDelegateCommittee,
-	authorizeDirect,
-	authorizeManagerDepartment,
-	authorizeMemberDepartment,
-	s,
-} from "@/lib/authorize";
+import { authorize, authorizeChairCommittee, authorizeChairDelegate, authorizeDelegateCommittee, authorizeDirect, authorizeManagerDepartment, authorizeMemberDepartment, s } from "@/lib/authorize";
 import { generateUserData, generateUserDataObject } from "@/lib/user";
 import { handleSocketRollCall } from "./roll-call";
 import { privateMessageHandler } from "./private-message";
@@ -45,7 +36,6 @@ export const initializeSocket = (server: any): Server => {
 
 		global.io.on("connection", async (socket) => {
 			const authSession = await socketAuth(socket);
-			socket.user = authSession.user;
 
 			if (!authSession) {
 				socket.disconnect();
@@ -109,14 +99,8 @@ export const initializeSocket = (server: any): Server => {
 					socket.emit("error", "Committee not found");
 					return;
 				}
-				const isChairOfCommittee = authorizeChairCommittee(
-					authSession?.user?.currentRoles?.concat(authSession?.user?.pastRoles),
-					selectedCommitteeId
-				);
-				const isDelegateOfCommittee = authorizeDelegateCommittee(
-					authSession?.user?.currentRoles?.concat(authSession?.user?.pastRoles),
-					selectedCommitteeId
-				);
+				const isChairOfCommittee = authorizeChairCommittee(authSession?.user?.currentRoles?.concat(authSession?.user?.pastRoles), selectedCommitteeId);
+				const isDelegateOfCommittee = authorizeDelegateCommittee(authSession?.user?.currentRoles?.concat(authSession?.user?.pastRoles), selectedCommitteeId);
 
 				if (!isManagement && !isChairOfCommittee && !isDelegateOfCommittee) {
 					socket.emit("error", "Unauthorized");
@@ -156,10 +140,7 @@ export const initializeSocket = (server: any): Server => {
 				const isManager = authorizeDirect(authSession, [s.manager]);
 				const allowedMemberDepartmentTypes = ["PI", "IT", "ADMIN"];
 				const isMemberOfPIorIT =
-					isMember &&
-					authSession?.user.currentRoles
-						.filter((role) => role.roleIdentifier == "member")
-						.filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
+					isMember && authSession?.user.currentRoles.filter((role) => role.roleIdentifier == "member").filter((role) => role?.departmentTypes?.some((type) => allowedMemberDepartmentTypes?.includes(type))).length > 0;
 
 				const userRegistered = await prisma.morningPresent.findUnique({
 					where: { userId_dayId: { dayId: selectedCode.day.id, userId: selectedCode.userId } },
@@ -219,10 +200,8 @@ export const initializeSocket = (server: any): Server => {
 					return;
 				}
 				const authSession = await socketAuth(socket);
-				const isChairOfCommittee =
-					authSession && authorizeChairCommittee([...authSession?.user.currentRoles, ...authSession?.user.pastRoles], selectedCommittee.id);
-				const isDelegateOfCommittee =
-					authSession && authorizeDelegateCommittee([...authSession?.user.currentRoles, ...authSession?.user.pastRoles], selectedCommittee.id);
+				const isChairOfCommittee = authSession && authorizeChairCommittee([...authSession?.user.currentRoles, ...authSession?.user.pastRoles], selectedCommittee.id);
+				const isDelegateOfCommittee = authSession && authorizeDelegateCommittee([...authSession?.user.currentRoles, ...authSession?.user.pastRoles], selectedCommittee.id);
 
 				if (!isChairOfCommittee && !isDelegateOfCommittee) {
 					socket.emit("error", "Unauthorized");
@@ -243,11 +222,9 @@ export const initializeSocket = (server: any): Server => {
 					return;
 				}
 				const authSession = await socketAuth(socket);
-				const isManagerOfDepartment =
-					authSession && authorizeManagerDepartment([...authSession?.user.currentRoles, ...authSession?.user.pastRoles], selectedDepartment.id);
+				const isManagerOfDepartment = authSession && authorizeManagerDepartment([...authSession?.user.currentRoles, ...authSession?.user.pastRoles], selectedDepartment.id);
 
-				const isMemberOfDepartment =
-					authSession && authorizeMemberDepartment([...authSession?.user.currentRoles, ...authSession?.user.pastRoles], selectedDepartment.id);
+				const isMemberOfDepartment = authSession && authorizeMemberDepartment([...authSession?.user.currentRoles, ...authSession?.user.pastRoles], selectedDepartment.id);
 
 				if (!isManagerOfDepartment && !isMemberOfDepartment) {
 					socket.emit("error", "Unauthorized");
@@ -330,19 +307,6 @@ export const initializeSocket = (server: any): Server => {
 			socket.on("join-voting-room", (committeeId) => {
 				socket.join(`vote-${committeeId}`);
 				socket.to(`vote-${committeeId}`).emit("voting-started", `Voting started for committee ${committeeId}`);
-			});
-
-			// Original 'input-change' event
-			socket.on("input-change", async (msg) => {
-				const session = await socketAuth(socket);
-				console.dir(session.user, {
-					deph: 100,
-				});
-				socket.broadcast.emit("update-input", msg);
-			});
-
-			socket.on("disconnect", () => {
-				console.log(`User ${socket.user.id} disconnected`);
 			});
 		});
 	}
