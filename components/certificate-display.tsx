@@ -13,17 +13,13 @@ import { MessageCircleWarningIcon } from "lucide-react";
 import { forceDownloadFile } from "@/app/(website)/sessions/[sessionNumber]/albums/utils/downloadPhoto";
 import { useWidth } from "@/hooks/use-width";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/legacy/build/pdf.worker.min.mjs", import.meta.url).toString();
 
 export function CertificateDisplay({ certificateId, isVoid = false, voidMessage = null }: { certificateId: string; isVoid?: boolean; voidMessage?: string | null }) {
 	const [isMounted, setIsMounted] = useState(false);
 
 	useEffect(() => {
 		setIsMounted(true);
-
-		return () => {
-			setIsMounted(false);
-		};
 	}, []);
 
 	if (isMounted) {
