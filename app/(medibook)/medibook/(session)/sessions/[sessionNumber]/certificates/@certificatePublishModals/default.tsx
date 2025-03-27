@@ -50,11 +50,11 @@ export default async function Modals(props) {
 
 		const totalSeniorDirectors = await prisma.seniorDirector.count();
 		const seniorDirectorUsers = seniorDirectors.map((seniorDirector) => seniorDirector.user);
-		const secretaryGeneralUser = selectedSession.secretaryGeneral[0].user;
+		const secretaryGeneralUser = selectedSession.secretaryGeneral[0]?.user;
 		const sessionWithOutSecretaryGeneral = { ...selectedSession };
 		delete (sessionWithOutSecretaryGeneral as { secretaryGeneral?: unknown }).secretaryGeneral;
 
-		if (!seniorDirectorUsers.length) {
+		if (!seniorDirectorUsers.length || !secretaryGeneralUser) {
 			return null;
 		}
 		return <ModalCreateCertificates totalSeniorDirectors={totalSeniorDirectors} selectedSession={sessionWithOutSecretaryGeneral} seniorDirectorUsers={seniorDirectorUsers} secretaryGeneralUser={secretaryGeneralUser} />;
