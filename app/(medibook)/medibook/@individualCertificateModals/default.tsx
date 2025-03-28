@@ -6,7 +6,7 @@ import { authorize, s } from "@/lib/authorize";
 
 export default async function Modals(props) {
 	const searchParams = await props.searchParams;
-	const page = Number(searchParams.page) || 1;
+	const page = Number(searchParams.directorspage) || 1;
 	const authSession = await auth();
 	const isManagement = authorize(authSession, [s.management]);
 	if (!isManagement) return;
@@ -34,7 +34,7 @@ export default async function Modals(props) {
 					},
 				},
 			})
-			.catch(console.error);
+			.catch(notFound);
 
 		if (!selectedCertificate) {
 			return null;

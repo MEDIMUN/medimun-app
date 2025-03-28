@@ -6,21 +6,36 @@ import { updateSearchParams } from "@/lib/search-params";
 import { useEffect } from "react";
 import { Info } from "lucide-react";
 
-export function Paginator({ totalItems, itemsPerPage = 10, itemsOnPage, customText, control, ...props }: { totalItems: number; itemsPerPage?: number; itemsOnPage?: number; customText?: string; control? }) {
+export function Paginator({
+	totalItems,
+	itemsPerPage = 10,
+	itemsOnPage,
+	customText,
+	control,
+	customSearchparam = "page",
+	...props
+}: {
+	totalItems: number;
+	itemsPerPage?: number;
+	itemsOnPage?: number;
+	customText?: string;
+	customSearchparam?: string;
+	control?;
+}) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
-	const currentPage = parseInt(searchParams.get("page")) || 1;
+	const currentPage = parseInt(searchParams.get(customSearchparam)) || 1;
 	const pathname = usePathname();
 
 	function onChangeHandler(page) {
-		updateSearchParams({ page: page }, router);
+		updateSearchParams({ [customSearchparam]: page }, router);
 	}
 
 	const total = Math.ceil(totalItems / itemsPerPage);
 
 	useEffect(() => {
 		if (itemsOnPage === 0 && currentPage !== 1) {
-			updateSearchParams({ page: total }, router);
+			updateSearchParams({ [customSearchparam]: total }, router);
 		}
 	}, [currentPage, itemsOnPage, router, total]);
 

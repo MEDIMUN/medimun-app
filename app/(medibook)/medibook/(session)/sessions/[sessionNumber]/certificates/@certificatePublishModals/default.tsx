@@ -5,7 +5,7 @@ import { ModalCreateCertificates } from "./modal-create-certificates";
 export default async function Modals(props) {
 	const { sessionNumber } = await props.params;
 	const searchParams = await props.searchParams;
-	const page = Number(searchParams.page) || 1;
+	const page = Number(searchParams.directorspage) || 1;
 
 	if (searchParams["create-participation-certificates"]) {
 		const selectedSession = await prisma.session

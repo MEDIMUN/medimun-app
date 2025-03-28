@@ -86,7 +86,7 @@ export function ModalCreateCertificates({
 						))}
 					</Listbox>
 				</Field>
-				<Paginator totalItems={totalSeniorDirectors} itemsPerPage={10} itemsOnPage={seniorDirectorUsers.length} />
+				<Paginator customSearchparam="directorspage" totalItems={totalSeniorDirectors} itemsPerPage={10} itemsOnPage={seniorDirectorUsers.length} />
 				<Field>
 					<Label>Secretary General Signee</Label>
 					<Listbox name="secretaryGeneral">

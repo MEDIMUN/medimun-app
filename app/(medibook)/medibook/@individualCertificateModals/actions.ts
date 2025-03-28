@@ -1,17 +1,13 @@
 "use server";
-
 import { auth } from "@/auth";
-import { sendEmailReceivedNewCertificateOfParticipation } from "@/email/send";
 import { authorize, s } from "@/lib/authorize";
 import { parseFormData } from "@/lib/parse-form-data";
 import prisma from "@/prisma/client";
-import { Session } from "@prisma/client";
 import { z } from "zod";
 
 export async function editIndividualCertificate({ certificateId, formData }) {
 	const authSession = await auth();
 	if (!authSession) return { ok: false, message: "Not authenticated" };
-	console.log(certificateId);
 
 	const isManagement = authorize(authSession, [s.management]);
 	if (!isManagement) return { ok: false, message: "Not authorized" };
