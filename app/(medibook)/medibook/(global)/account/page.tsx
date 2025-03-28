@@ -297,7 +297,7 @@ export async function Settings(props) {
 						</div>
 					</section>
 					<Divider className="my-10" soft />
-					{authorize(authSession, [s.sd, s.admins, s.sg]) && (
+					{(authorize(authSession, [s.management]) || searchParams.signature) && (
 						<section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
 							<div className="space-y-1">
 								<Subheading>

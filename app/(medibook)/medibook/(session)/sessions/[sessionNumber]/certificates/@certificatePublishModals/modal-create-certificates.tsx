@@ -41,16 +41,17 @@ export function ModalCreateCertificates({
 
 	async function handleSubmit(formData) {
 		if (isLoading) return;
-		setIsLoading(true);
+		flushSync(() => setIsLoading(true));
+		toast.loading("Creating certificates...", { id: "creating-certificates" });
 		const res = await createCertificates({ formData, selectedUsers: selected, selectedSession });
 		if (res?.ok) {
 			removeSearchParams({ select: null, "create-participation-certificates": null });
 			router.refresh();
 			flushSync(() => setSelected([]));
-			toast.success(...res?.message);
+			toast.success(...res?.message, { id: "creating-certificates" });
 			onClose();
 		} else {
-			toast.error(...res?.message);
+			toast.error(...res?.message, { id: "creating-certificates" });
 		}
 		setIsLoading(false);
 	}
