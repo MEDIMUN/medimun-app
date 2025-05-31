@@ -41,15 +41,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 			<div className="grid gap-6">
 				<div className="grid gap-2">
 					<Label htmlFor="username">Username</Label>
-					<Input
-						value={emailValue}
-						onChange={(e) => setEmailValue(e.target.value)}
-						name="username"
-						id="username"
-						type="username"
-						placeholder="Email, Username or UserID"
-						required
-					/>
+					<Input value={emailValue} onChange={(e) => setEmailValue(e.target.value)} name="username" id="username" type="username" placeholder="Email, Username or UserID" required />
 				</div>
 				<div className="grid gap-2">
 					<div className="flex items-center">
@@ -63,7 +55,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 				<Button type="submit" className="w-full bg-white">
 					Login
 				</Button>
-				<div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+				<div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
 					<span className="relative z-10 bg-background px-2 text-muted-foreground">Or continue with</span>
 				</div>
 				<Button disabled variant="outline" className="w-full">
