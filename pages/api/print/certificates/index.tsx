@@ -191,21 +191,21 @@ function MyDocument({
 						<View style={{ display: "flex", height: "100%", width: "100%", position: "relative" }}>
 							<Image alt="background" style={styles.pageBackground} src={`${cwd}/public/assets/pdf/placards/background.png`}></Image>
 						</View>
-						<View style={tw("flex absolute top-0 w-full rotate-[180deg] h-[50%] items-center justify-center")}>
-							<Text style={{ ...tw("font-[800] px-2 text-center  font-[Montserrat] translate-y-[-30px] text-[125px]"), lineHeight: delegate.countryName.toUpperCase().includes("(") ? "125px" : "100px" }}>
+						<View style={tw("flex absolute top-0 w-full rotate-180 h-[50%] items-center justify-center")}>
+							<Text style={{ ...tw("font-extrabold px-2 text-center  font-[Montserrat] translate-y-[-30px] text-[125px]"), lineHeight: delegate.countryName.toUpperCase().includes("(") ? "125px" : "100px" }}>
 								{delegate.countryName.toUpperCase()}
 							</Text>
 						</View>
 						<View style={tw("flex absolute bottom-0 w-full h-[50%] items-center align-middle justify-center")}>
-							<Text style={{ ...tw("font-[800] px-2 text-center font-[Montserrat] translate-y-[-30px] text-[125px]"), lineHeight: delegate.countryName.toUpperCase().includes("(") ? "125px" : "100px" }}>
+							<Text style={{ ...tw("font-extrabold px-2 text-center font-[Montserrat] translate-y-[-30px] text-[125px]"), lineHeight: delegate.countryName.toUpperCase().includes("(") ? "125px" : "100px" }}>
 								{delegate.countryName.toUpperCase()}
 							</Text>
 						</View>
-						<View style={tw("absolute flex-row flex bottom-0 font-[100] font-[Montserrat] text-sm right-0 p-8")}>
+						<View style={tw("absolute flex-row flex bottom-0 font-thin font-[Montserrat] text-sm right-0 p-8")}>
 							<Text>
 								{delegate.fullName} | {delegate.committeeName}
 							</Text>
-							<View style={tw("ml-2 bg-black font-[800] text-white px-2 rounded-md")}>
+							<View style={tw("ml-2 bg-black font-extrabold text-white px-2 rounded-md")}>
 								<Text>{delegate.index.toString().padStart(5, "0")}</Text>
 							</View>
 						</View>

@@ -65,7 +65,7 @@ const DebouncedTextarea = React.memo(({ value, onChange, placeholder, className 
 			value={localValue}
 			onChange={handleChange}
 			className={cn(
-				"!focus-visible:ring-0 dark:bg-gray-800/90 focus:bg-zinc-200/80 dark:focus:bg-zinc-800/80 !focus:outline-[0px] !focus:ring-[0px] min-h-[20px] !right-0 !border-none !outline-none !focus-visible:outline-none shadow-none w-full resize-none overflow-hidden focus:outline-none focus:ring-0 p-0 text-sm ml-1 transition-[height] duration-100 ease-in-out",
+				"!focus-visible:ring-0 dark:bg-gray-800/90 focus:bg-zinc-200/80 dark:focus:bg-zinc-800/80 !focus:outline-[0px] !focus:ring-[0px] min-h-[20px] right-0! border-none! outline-none! !focus-visible:outline-none shadow-none w-full resize-none overflow-hidden focus:outline-none focus:ring-0 p-0 text-sm ml-1 transition-[height] duration-100 ease-in-out",
 				className
 			)}
 			placeholder={placeholder}
@@ -114,7 +114,7 @@ const SubClauseComponent = React.memo(
 		return (
 			<div className="ml-8 mt-2 ring-1 ring-sidebar-border p-2 rounded-md">
 				<div className="flex align-top">
-					<div className="font-bold -mt-1 !h-full align-top flex flex-col min-w-[1.5rem]">{`${String.fromCharCode(97 + subIndex)})`}</div>
+					<div className="font-bold -mt-1 h-full! align-top flex flex-col min-w-6">{`${String.fromCharCode(97 + subIndex)})`}</div>
 					<DebouncedTextarea className="mr-2" value={subClause.content} onChange={(value) => updateSubClause(subIndex, value)} placeholder="Enter sub-clause" />
 					<ButtonWrapper>
 						<Button className="p-1 aspect-square w-full md:w-5" variant="ghost" size="xs" onClick={() => deleteSubClause(subIndex)}>
@@ -176,7 +176,7 @@ const SubSubClauseComponent = React.memo(
 	}) => {
 		return (
 			<div className="ml-6 mt-2 flex align-top ring-1 p-2 rounded-md ring-sidebar-border">
-				<span className="font-bold min-w-[1.5rem] text-right">{`${romanize(subSubClauseIndex + 1).toLowerCase()}.`}</span>
+				<span className="font-bold min-w-6 text-right">{`${romanize(subSubClauseIndex + 1).toLowerCase()}.`}</span>
 				<DebouncedTextarea value={subSubClause.content} onChange={updateSubSubClause} placeholder="Enter sub-sub-clause" className="mr-2" />
 				<ButtonWrapper>
 					<Button className="p-1 aspect-square w-full md:w-5" variant="ghost" size="xs" onClick={deleteSubSubClause}>
@@ -336,7 +336,7 @@ const ClauseComponent = React.memo(
 			<motion.div layout initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -50 }} transition={{ duration: 0.3 }} className="mb-6">
 				<div className={`p-4 bg-sidebar-primary-foreground dark:bg-black shadow-sm rounded-md ${type === "preambulatory" ? "" : "border-green-300"} ${type === "preambulatory" ? "italic" : ""} ${className}`}>
 					<div className="flex flex-row sm:space-y-0 mb-2">
-						<div className="font-extralight min-w-[1.5rem] mt-[8px]">{`${index + 1}.`}</div>
+						<div className="font-extralight min-w-6 mt-[8px]">{`${index + 1}.`}</div>
 						<div className="flex-col flex w-full gap-2">
 							<div className="md:flex-row flex-col flex gap-2">
 								<Select value={clause.startingPhrase} onValueChange={(value) => updateClauseField("startingPhrase", value as PreambulatoryPhrases | OperativePhrases)}>

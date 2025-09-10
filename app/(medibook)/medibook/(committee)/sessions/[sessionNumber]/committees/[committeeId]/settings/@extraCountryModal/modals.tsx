@@ -45,7 +45,7 @@ export function AddExtraCountryModal() {
 			<DialogBody className="flex flex-col gap-5">
 				<div className="rounded-md bg-zinc-50 p-4">
 					<div className="flex">
-						<div className="flex-shrink-0">
+						<div className="shrink-0">
 							<Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 						</div>
 						<div className="ml-3 flex-1 md:flex md:justify-between">

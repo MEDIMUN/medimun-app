@@ -280,7 +280,7 @@ export function ModalCreateInvoice() {
 							</Select>
 						</div>
 					</div>
-					{selectedSchool || selectedUser ? null : <Text className="!text-red-500">Select either a school or a user or both.</Text>}
+					{selectedSchool || selectedUser ? null : <Text className="text-red-500!">Select either a school or a user or both.</Text>}
 					<InvoiceItemsEditor onChange={setItems} initialItems={[]} />
 				</form>
 			</DialogBody>

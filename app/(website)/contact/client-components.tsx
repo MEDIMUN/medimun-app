@@ -60,7 +60,7 @@ export function ContactUsForm({ sitekey }) {
 				{searchParams && searchParams.get("success") == "true" && (
 					<div className="rounded-md bg-green-50 p-4">
 						<div className="flex">
-							<div className="flex-shrink-0">
+							<div className="shrink-0">
 								<Info aria-hidden="true" className="h-5 w-5 text-green-400" />
 							</div>
 							<div className="ml-3 flex-1 md:flex md:justify-between">
@@ -78,7 +78,7 @@ export function ContactUsForm({ sitekey }) {
 				{searchParams && searchParams.get("error") == "invalid-data" && (
 					<div className="mb-4 rounded-md bg-red-50 p-4">
 						<div className="flex">
-							<div className="flex-shrink-0">
+							<div className="shrink-0">
 								<Info aria-hidden="true" className="h-5 w-5 text-red-400" />
 							</div>
 							<div className="ml-3 flex-1 md:flex md:justify-between">
@@ -90,7 +90,7 @@ export function ContactUsForm({ sitekey }) {
 				{searchParams && searchParams.get("error") == "failed-to-send-email" && (
 					<div className="rounded-md bg-red-50 p-4">
 						<div className="flex">
-							<div className="flex-shrink-0">
+							<div className="shrink-0">
 								<Info aria-hidden="true" className="h-5 w-5 text-red-400" />
 							</div>
 							<div className="ml-3 flex-1 md:flex md:justify-between">

@@ -341,7 +341,7 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 						{selectedUsers?.length > 2 && (
 							<div className="rounded-md bg-zinc-50 p-2">
 								<div className="flex">
-									<div className="flex-shrink-0">
+									<div className="shrink-0">
 										<Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 									</div>
 									<div className="ml-3 flex-1 md:flex md:justify-between">
@@ -354,7 +354,7 @@ export function AddRolesModal({ schools, committees, departments, selectedUsers,
 						{selectedUsers?.length > 1 && (
 							<div className="rounded-md bg-zinc-50 p-2">
 								<div className="flex">
-									<div className="flex-shrink-0">
+									<div className="shrink-0">
 										<Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 									</div>
 									<div className="ml-3 flex-1 md:flex md:justify-between">
@@ -483,7 +483,7 @@ export function EditRolesModal({ selectedUser, highestRoleRank }) {
 				{!allRoles?.length && (
 					<div className="rounded-md bg-red-50 p-4">
 						<div className="flex">
-							<div className="flex-shrink-0">
+							<div className="shrink-0">
 								<X aria-hidden="true" className="h-5 w-5 text-red-400" />
 							</div>
 							<div className="ml-3">

@@ -23,7 +23,7 @@ export function MessageSidebar({ groupsOfUser, authSession }) {
 								<SidebarLabel>
 									{otherUser.officialName} {otherUser.officialSurname}
 								</SidebarLabel>
-								<Badge className="ml-auto !rounded-full">1</Badge>
+								<Badge className="ml-auto rounded-full!">1</Badge>
 							</SidebarItem>
 						);
 					}
@@ -47,7 +47,7 @@ export function MessageSidebar({ groupsOfUser, authSession }) {
 									))}
 								</AvatarGroup>
 								<SidebarLabel>{group.name || "Group"}</SidebarLabel>
-								{/* 								<Badge className="ml-auto !rounded-full">1</Badge>
+								{/* 								<Badge className="ml-auto rounded-full!">1</Badge>
 								 */}
 							</SidebarItem>
 						);

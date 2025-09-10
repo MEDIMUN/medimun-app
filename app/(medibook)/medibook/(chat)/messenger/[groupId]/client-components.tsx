@@ -358,11 +358,11 @@ export function ChatLayout({ group, authSession }) {
 					...(!isIos && isMobile ? { height: `${viewportHeight}px` } : {}),
 					transform: `translateY(-${-1 * scrollY}px)`,
 				}}>
-				<div className="flex gap-1 z-[99999] shadow-md md:shadow-none bg-white dark:bg-zinc-800 md:bg-zinc-100 p-2 !absolute top-0 left-0 right-0">
+				<div className="flex gap-1 z-99999 shadow-md md:shadow-none bg-white dark:bg-zinc-800 md:bg-zinc-100 p-2 absolute! top-0 left-0 right-0">
 					<div className="w-full">
 						<TopBar
 							hideBackdrop
-							className="max-w-5xl mx-auto z-[99999]"
+							className="max-w-5xl mx-auto z-99999"
 							title={groupName}
 							buttonText={isMobile && "Inboxes"}
 							buttonHref="/medibook/messenger"
@@ -372,7 +372,7 @@ export function ChatLayout({ group, authSession }) {
 				<div className="w-full overflow-y-auto max-w-5xl mx-auto dark:bg-zinc-900 flex-col-reverse flex">
 					{selectedMessageId && <div className="min-h-[50px]" />}
 
-					<div className="flex-grow flex w-full px-2 mx-auto flex-col-reverse overflow-y-auto">
+					<div className="grow flex w-full px-2 mx-auto flex-col-reverse overflow-y-auto">
 						<div className="min-h-32" />
 						{messages.map((message, index) => {
 							const isMyMessage = message?.userId === authSession.user.id;
@@ -396,7 +396,7 @@ export function ChatLayout({ group, authSession }) {
 								index === 0 || new Date(message.createdAt).toLocaleDateString() !== new Date(messages[index - 1]?.createdAt).toLocaleDateString();
 
 							const MessageDayDivider = () => (
-								<Badge className="text-center !rounded-full text-xs mx-auto opacity-80 text-gray-500 mt-2">
+								<Badge className="text-center rounded-full! text-xs mx-auto opacity-80 text-gray-500 mt-2">
 									{new Date(message.createdAt).toLocaleDateString("en-GB")}
 								</Badge>
 							);
@@ -421,7 +421,7 @@ export function ChatLayout({ group, authSession }) {
 											className={cn("flex flex-col justify-end gap-2 group", !isBeforeMyMessage && "mt-2")}>
 											{isReplyTo && (
 												<div className="ml-auto flex gap-1 flex-col">
-													<Text className="!text-[9px] text-right text-gray-500  mr-2 -mb-2">Replied to {name}</Text>
+													<Text className="text-[9px]! text-right text-gray-500  mr-2 -mb-2">Replied to {name}</Text>
 													<div className="text-xs px-2 py-3 pb-6 rounded-xl min-w-[80px] dark:text-black text-right ml-auto bg-gray-200/80 -mb-6 line-clamp-2 text-wrap truncate max-w-[300px]">
 														{message.replyTo.markdown}
 													</div>
@@ -482,11 +482,11 @@ export function ChatLayout({ group, authSession }) {
 												setReplyToId("");
 											}}
 											className={cn("flex flex-col justify-start gap-2 group")}>
-											{!isNextSamePersons && <Text className="!text-[9px] text-left text-gray-500 ml-11 -mb-2">{fullName}</Text>}
+											{!isNextSamePersons && <Text className="text-[9px]! text-left text-gray-500 ml-11 -mb-2">{fullName}</Text>}
 
 											{isReplyTo && (
 												<div className="mr-auto ml-9 flex gap-1 flex-col">
-													<Text className="!text-[9px] text-left text-gray-500 ml-2 -mb-2">
+													<Text className="text-[9px]! text-left text-gray-500 ml-2 -mb-2">
 														{fullName == name ? `${fullName} replied to themselves` : `${fullName} Replied to ${name}`}
 													</Text>
 													<div className="text-xs px-2 py-3 pb-6 rounded-xl min-w-[80px] text-left mr-auto bg-gray-200/80 dark:bg-gray-600/80 -mb-6 line-clamp-2 text-wrap truncate max-w-[300px]">
@@ -540,14 +540,14 @@ export function ChatLayout({ group, authSession }) {
 						})}
 
 						{!receivedFinalMessage && messages.length > 49 && (
-							<i onClick={handleLoadMoreMessages} className="z-[1000000] text-zinc-500 text-sm cursor-pointer text-center" ref={observerRef}>
+							<i onClick={handleLoadMoreMessages} className="z-1000000 text-zinc-500 text-sm cursor-pointer text-center" ref={observerRef}>
 								Click to load more messages...
 							</i>
 						)}
 						<div className="min-h-[72px]" />
 					</div>
 				</div>
-				<div className="flex flex-col gap-1 font-[montserrat] max-w-5xl mx-auto z-[9999999999] bg-white dark:bg-zinc-900 p-2 border-t !fixed bottom-0 left-0 right-0">
+				<div className="flex flex-col gap-1 font-[montserrat] max-w-5xl mx-auto z-9999999999 bg-white dark:bg-zinc-900 p-2 border-t fixed! bottom-0 left-0 right-0">
 					{replyToId && messages.find((message) => message.id === replyToId) && (
 						<div className="flex h-12 mb-1 w-full gap-1">
 							<MButton
@@ -665,7 +665,7 @@ export function ChatLayout({ group, authSession }) {
 								height="auto"
 								enterKeyHint="send"
 								classNames={{ input: "text-lg md:text-md", inputWrapper: "" }}
-								className="w-full  !text-xl h-full  rounded-none rounded-tl-md"
+								className="w-full  text-xl! h-full  rounded-none rounded-tl-md"
 							/>
 						</div>
 						<div className="w-[35px] md:w-[35px] h-[35px] md:h-[35px] mt-auto">

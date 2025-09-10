@@ -76,7 +76,7 @@ export async function Inboxes({ children, searchParams }) {
 			<div className="px-4 py-4 bg-zinc-100 dark:bg-zinc-900">
 				<TopBar2 hideBackdrop title="Messages" buttonHref="/medibook" hideSearchBar buttonText="Home"></TopBar2>
 				<div className="flex flex-col gap-2 mb mt-1 w-full">
-					<SearchBar className="!w-[500px] flex-1" />
+					<SearchBar className="w-[500px]! flex-1" />
 					<SearchParamsButton disabled>New Group</SearchParamsButton>
 				</div>
 			</div>

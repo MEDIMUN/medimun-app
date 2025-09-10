@@ -105,7 +105,7 @@ export function ModalCreatePreambulatoryClause({
 						})}
 					</Listbox>
 				</Field>
-				<ClauseEditor className="!shadow-md border mt-4" onUpdate={handleUpdate} onDelete={handleDelete} clauses={[clause]} phrases={Object.values(PreambulatoryPhrases)} type={"preambulatory"} hideSubClauses />{" "}
+				<ClauseEditor className="shadow-md! border mt-4" onUpdate={handleUpdate} onDelete={handleDelete} clauses={[clause]} phrases={Object.values(PreambulatoryPhrases)} type={"preambulatory"} hideSubClauses />{" "}
 				<DialogActions>
 					<Button plain onClick={onClose}>
 						Cancel
@@ -195,7 +195,7 @@ export function ModalCreateOperativeClause({
 						})}
 					</Listbox>
 				</Field>
-				<ClauseEditor className="!shadow-md border mt-4" onUpdate={handleUpdate} onDelete={handleDelete} clauses={[clause]} phrases={Object.values(PreambulatoryPhrases)} type={"operative"} />
+				<ClauseEditor className="shadow-md! border mt-4" onUpdate={handleUpdate} onDelete={handleDelete} clauses={[clause]} phrases={Object.values(PreambulatoryPhrases)} type={"operative"} />
 				<DialogActions>
 					<Button plain onClick={onClose}>
 						Cancel
@@ -253,7 +253,7 @@ export function ModalEditClause({ selectedClause }: { selectedClause: Clause }) 
 		<Dialog size="5xl" open={isOpen} onClose={() => {}}>
 			<DialogTitle>Edit Clause</DialogTitle>
 			<DialogBody>
-				<ClauseEditor className="!shadow-md border mt-4" onUpdate={handleUpdate} onDelete={handleDelete} clauses={[clause]} phrases={Object.values(PreambulatoryPhrases)} type={clause.type} />
+				<ClauseEditor className="shadow-md! border mt-4" onUpdate={handleUpdate} onDelete={handleDelete} clauses={[clause]} phrases={Object.values(PreambulatoryPhrases)} type={clause.type} />
 				<DialogActions>
 					<Button plain onClick={onClose}>
 						Cancel

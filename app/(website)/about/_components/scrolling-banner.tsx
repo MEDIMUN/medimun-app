@@ -77,7 +77,7 @@ const ScrollingBanner = React.forwardRef<HTMLDivElement, ScrollingBannerProps>(
 						"w-full": !isVertical,
 						"overflow-y-hidden": isVertical,
 						"overflow-x-hidden": !isVertical,
-						"max-h-[calc(100vh_-_200px)]": isVertical,
+						"max-h-[calc(100vh-200px)]": isVertical,
 					},
 					className
 				)}
@@ -88,13 +88,13 @@ const ScrollingBanner = React.forwardRef<HTMLDivElement, ScrollingBannerProps>(
 					...style,
 				}}>
 				<div
-					className={cn("flex w-max items-stretch gap-[--gap]", {
+					className={cn("flex w-max items-stretch gap-(--gap)", {
 						"flex-col": isVertical,
 						"h-full": isVertical,
 						"animate-scrolling-banner": !isVertical,
 						"animate-scrolling-banner-vertical": isVertical,
-						"[animation-direction:reverse]": isReverse,
-						"hover:[animation-play-state:paused]": shouldPauseOnHover,
+						"direction-reverse": isReverse,
+						"hover:paused": shouldPauseOnHover,
 					})}>
 					{React.Children.map(children, (child) => React.cloneElement(child as any))}
 				</div>

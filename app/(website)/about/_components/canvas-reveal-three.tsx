@@ -8,7 +8,7 @@ import { FastLink } from "@/components/fast-link";
 function Title({ title }) {
 	return (
 		<div className="flex gap-2 align-bottom text-white">
-			<p className="!text-4xl text-white">{title}</p>
+			<p className="text-4xl! text-white">{title}</p>
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mb-2 mt-auto">
 				<path strokeLinecap="round" strokeLinejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
 			</svg>
@@ -36,7 +36,7 @@ export function CanvasRevealEffectThree() {
 							]}
 							dotSize={2}
 						/>
-						<div className="absolute inset-0 [mask-image:radial-gradient(400px_at_center,white,transparent)] bg-black/90" />
+						<div className="absolute inset-0 mask-[radial-gradient(400px_at_center,white,transparent)] bg-black/90" />
 					</Card>
 				</FastLink>
 				<FastLink prefetch={true} href="/about/mission">
@@ -55,7 +55,7 @@ const Card = ({ description, icon, children }: { description: string; icon: Reac
 		<div
 			onMouseEnter={() => setHovered(true)}
 			onMouseLeave={() => setHovered(false)}
-			className="border  group/canvas-card flex items-center justify-center border-white/[0.2] w-auto p-8 relative h-[30rem]">
+			className="border  group/canvas-card flex items-center justify-center border-white/[0.2] w-auto p-8 relative h-120">
 			<Icon className="absolute h-6 w-6 -top-3 -left-3 text-white " />
 			<Icon className="absolute h-6 w-6 -bottom-3 -left-3 text-white " />
 			<Icon className="absolute h-6 w-6 -top-3 -right-3 text-white " />

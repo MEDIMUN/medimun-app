@@ -133,7 +133,7 @@ export function ResolutionEditor({ initialPreambutoryClauses, initialOperativeCl
 					</div>
 					<div className="mb-8">
 						<h2 className="text-2xl font-[montserrat] font-bold mb-4">
-							Preambulatory Clauses <Badge className="!text-2xl"> {preambutoryClauses.length} </Badge>
+							Preambulatory Clauses <Badge className="text-2xl!"> {preambutoryClauses.length} </Badge>
 						</h2>
 						<ClauseEditor
 							hideSubClauses
@@ -149,7 +149,7 @@ export function ResolutionEditor({ initialPreambutoryClauses, initialOperativeCl
 					</div>
 					<div className="mt-8 pt-8 border-t border-gray-300">
 						<h2 className="text-2xl font-[montserrat] font-bold mb-4">
-							Operative Clauses <Badge className="!text-2xl"> {operativeClauses.length} </Badge>
+							Operative Clauses <Badge className="text-2xl!"> {operativeClauses.length} </Badge>
 						</h2>
 						<ClauseEditor
 							clauses={operativeClauses}

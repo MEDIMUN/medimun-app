@@ -302,11 +302,11 @@ function CertificatePage({
 			<View style={tw("absolute left-[39px] top-[390px]")}>
 				<Text style={tw("font-[MADEMirage] text-white max-w-[470px] text-[14px] text-left")}>
 					has successfully participated in the{" "}
-					<Text style={tw("font-[900]")}>
+					<Text style={tw("font-black")}>
 						{sessionNumber.toString()}
 						{sessionOrdinal} Annual Session of MEDIMUN
 					</Text>{" "}
-					{roleNameMap[roleIdentifier].preposition} <Text style={tw("font-[900]")}>{roleNameMap[roleIdentifier].name}</Text> {roleNameMap[roleIdentifier].afterText}
+					{roleNameMap[roleIdentifier].preposition} <Text style={tw("font-black")}>{roleNameMap[roleIdentifier].name}</Text> {roleNameMap[roleIdentifier].afterText}
 					{specialMessage ? ` ${specialMessage}` : ""}
 				</Text>
 			</View>
@@ -317,8 +317,8 @@ function CertificatePage({
 							<SignaturePdfRenderer padding={0} strokeColor="#FFFFFF" height={50} signature={awardingStudentSignature ? JSON.parse(awardingStudentSignature) : null} fixedWidth={90} />
 						</View>
 						<View style={tw("mt-auto")}>
-							<Text style={tw("font-[MADEMirage] text-white text-[15.5px] font-[700]")}>{awardingStudentFullName}</Text>
-							<Text style={tw("font-[MADEMirage] text-[#E8AE58] text-[12px] font-[600]")}>Secretary-General</Text>
+							<Text style={tw("font-[MADEMirage] text-white text-[15.5px] font-bold")}>{awardingStudentFullName}</Text>
+							<Text style={tw("font-[MADEMirage] text-[#E8AE58] text-[12px] font-semibold")}>Secretary-General</Text>
 						</View>
 					</View>
 				)}
@@ -329,8 +329,8 @@ function CertificatePage({
 							<SignaturePdfRenderer padding={0} strokeColor="#FFFFFF" height={50} signature={awardingTeacherSignature ? JSON.parse(awardingTeacherSignature) : null} fixedWidth={90} />
 						</View>
 						<View style={tw("mt-auto")}>
-							<Text style={tw("font-[MADEMirage] text-white text-[15.5px] font-[700]")}>{awardingTeacherFullName}</Text>
-							<Text style={tw("font-[MADEMirage] text-[#E8AE58] text-[12px] font-[600]")}>Senior Director</Text>
+							<Text style={tw("font-[MADEMirage] text-white text-[15.5px] font-bold")}>{awardingTeacherFullName}</Text>
+							<Text style={tw("font-[MADEMirage] text-[#E8AE58] text-[12px] font-semibold")}>Senior Director</Text>
 						</View>
 					</View>
 				)}
@@ -342,8 +342,8 @@ function CertificatePage({
 								<SignaturePdfRenderer padding={0} strokeColor="#FFFFFF" height={50} signature={condeSign} fixedWidth={90} />
 							</View>
 							<View style={tw("mt-auto")}>
-								<Text style={tw("font-[MADEMirage] text-white text-[15.5px] font-[700]")}>Mohamed Kande</Text>
-								<Text style={tw("font-[MADEMirage] text-[#E8AE58] text-[12px] font-[600]")}>Global Chairman, PwC</Text>
+								<Text style={tw("font-[MADEMirage] text-white text-[15.5px] font-bold")}>Mohamed Kande</Text>
+								<Text style={tw("font-[MADEMirage] text-[#E8AE58] text-[12px] font-semibold")}>Global Chairman, PwC</Text>
 							</View>
 						</View>
 					</>

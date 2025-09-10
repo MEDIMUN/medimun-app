@@ -52,7 +52,7 @@ export default function AIProcessingAnimation() {
 			{/* Central AI icon */}
 			<div className="absolute inset-0 flex items-center justify-center">
 				<motion.div
-					className="w-16 h-16 rounded-full bg-gradient-to-br from-[#AE2D28] to-[#8A2521] flex items-center justify-center shadow-lg"
+					className="w-16 h-16 rounded-full bg-linear-to-br from-[#AE2D28] to-[#8A2521] flex items-center justify-center shadow-lg"
 					animate={{
 						boxShadow: ["0 0 0 0 rgba(174, 45, 40, 0.5)", "0 0 0 10px rgba(174, 45, 40, 0)"],
 					}}

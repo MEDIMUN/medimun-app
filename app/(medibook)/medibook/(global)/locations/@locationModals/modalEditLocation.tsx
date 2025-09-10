@@ -166,8 +166,8 @@ export function EditLocationModal({ edit }) {
 				<Description className="mt-6">Cover Image</Description>
 				<Divider className="mb-6 mt-2" />
 				<form ref={formRef} className="mt-6">
-					<div className="aspect-[3/2] w-full">
-						<img alt=" " className="aspect-[3/2] min-h-full w-full !overflow-hidden rounded-lg object-cover shadow" src={url} />
+					<div className="aspect-3/2 w-full">
+						<img alt=" " className="aspect-3/2 min-h-full w-full overflow-hidden! rounded-lg object-cover shadow" src={url} />
 					</div>
 					<input accept=".jpg,.jpeg,.gif,.png" name="file" ref={inputRef} type="file" className="hidden" onChange={onImageUpdate} />
 				</form>

@@ -141,17 +141,17 @@ export async function Registration(props) {
 			<>
 				<TopBar hideBackdrop title="Morning Registration" hideSearchBar buttonHref="/medibook" buttonText="Home" subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`} />
 				<MainWrapper>
-					<div className="border flex gap-2 md:flex-row flex-col shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 text-center">
+					<div className="border flex gap-2 md:flex-row flex-col shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-10000 animate-shimmer bg-size-[200%_100%] p-4 rounded-xl bg-content1/60 text-center">
 						<div className="md:h-[40px] h-[60px] w-[60px] m-8 md:m-0 md:w-[40px] mx-auto md:mx-0">
-							<Image alt="Tick" src={Confirm} unoptimized className="!select-none aspect-square h-[60px] md:h-[40px] object-scale-down !relative" />
+							<Image alt="Tick" src={Confirm} unoptimized className="select-none! aspect-square h-[60px] md:h-[40px] object-scale-down relative!" />
 						</div>
-						<Text className="!text-white m-auto font-[montserrat] !text-lg">You have been registered for today.</Text>
+						<Text className="text-white! m-auto font-[montserrat] text-lg!">You have been registered for today.</Text>
 						{isPresent?.id && (
 							<Text className="mb-1 md:hidden">
 								<i>{isPresent.id}</i>
 							</Text>
 						)}
-						<div className="rounded-md md:hidden bg-zinc-50 p-4 z-[100] mt-8">
+						<div className="rounded-md md:hidden bg-zinc-50 p-4 z-100 mt-8">
 							<div className="flex">
 								<div className="md:flex">
 									<p className="text-sm text-zinc-700">Have your QR code ready for each day of the conference.</p>
@@ -230,11 +230,11 @@ export async function Registration(props) {
 				<TopBar hideBackdrop title="Registration Scanner" hideSearchBar buttonHref="/medibook" buttonText="Home" subheading={`Your User ID is ${userId.slice(0, 4)}-${userId.slice(4, 8)}-${userId.slice(8, 12)}`} />
 				<MainWrapper>
 					{isPresent && (
-						<div className="border flex gap-2 md:flex-row flex-col shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[10000] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 text-center">
+						<div className="border flex gap-2 md:flex-row flex-col shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-10000 animate-shimmer bg-size-[200%_100%] p-4 rounded-xl bg-content1/60 text-center">
 							<div className="h-[40px] w-[40px] mx-auto md:mx-0">
-								<Image alt="Tick" src={Confirm} unoptimized className="select-none aspect-square h-[40px] object-scale-down !relative" />
+								<Image alt="Tick" src={Confirm} unoptimized className="select-none aspect-square h-[40px] object-scale-down relative!" />
 							</div>
-							<Text className="!text-white m-auto font-[montserrat] !text-lg">You have been registered for today.</Text>
+							<Text className="text-white! m-auto font-[montserrat] text-lg!">You have been registered for today.</Text>
 						</div>
 					)}
 					<QRReader delegates={delegates} />

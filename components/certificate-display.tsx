@@ -65,12 +65,12 @@ export function CertificateDisplayMain({ certificateId, isVoid = false, voidMess
 						{numPages !== 1 && (
 							<Carousel>
 								{
-									<div className="absolute top-[100%] flex translate-y-6 items-center justify-center">
-										<CarouselPrevious className="relative rounded-lg left-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90" />
+									<div className="absolute z-10 top-full flex translate-y-6 items-center justify-center">
+										<CarouselPrevious className="relative rounded-lg left-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90" /> {/* //FIXME */}
 									</div>
 								}
-								<div className="absolute top-[100%] left-10 translate-y-6 flex items-center justify-center">
-									<CarouselNext className="relative right-0 rounded-lg translate-x-0 hover:translate-x-0 hover:bg-primary/90" />
+								<div className="absolute top-full z-10 left-10 translate-y-6 flex items-center justify-center">
+									<CarouselNext className="relative right-0 rounded-lg translate-x-0 hover:translate-x-0 hover:bg-primary/90" /> {/* //FIXME */}
 								</div>
 							</Carousel>
 						)}

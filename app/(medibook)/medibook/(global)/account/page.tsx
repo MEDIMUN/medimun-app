@@ -314,7 +314,7 @@ export async function Settings(props) {
 					{searchParams.error && !searchParams.success && (
 						<div id="notice" className="mb-10 rounded-md bg-red-50 p-4">
 							<div className="flex">
-								<div className="flex-shrink-0">
+								<div className="shrink-0">
 									<CircleCheck aria-hidden="true" className="h-5 w-5 text-red-400" />
 								</div>
 								<div className="ml-3">
@@ -336,7 +336,7 @@ export async function Settings(props) {
 					{searchParams.success && !searchParams.error && (
 						<div id="notice" className="mb-10 rounded-md bg-green-50 p-4">
 							<div className="flex">
-								<div className="flex-shrink-0">
+								<div className="shrink-0">
 									<CircleCheck aria-hidden="true" className="h-5 w-5 text-green-400" />
 								</div>
 								<div className="ml-3">

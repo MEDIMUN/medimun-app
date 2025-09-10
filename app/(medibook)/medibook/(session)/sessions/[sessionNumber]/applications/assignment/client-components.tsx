@@ -141,7 +141,7 @@ export function FinalAssignDelegates({ users, delegateProposalsInitial, selected
 									{proposal.assignment.filter((a) => a.countryCode)?.length || "None"}{" "}
 									{!!proposal.changes.length &&
 										proposal.assignment.filter((a) => a.countryCode)?.length !== proposal.changes.filter((a) => a.countryCode)?.length && (
-											<Badge className="!rounded-full">Modified to {proposal.changes.filter((a) => a.countryCode)?.length || "None"}</Badge>
+											<Badge className="rounded-full!">Modified to {proposal.changes.filter((a) => a.countryCode)?.length || "None"}</Badge>
 										)}
 								</TableCell>
 								<TableCell>

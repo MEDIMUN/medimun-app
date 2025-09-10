@@ -99,7 +99,7 @@ export default async function Component(props) {
 												<div className="w-12 shrink-0">
 													<Link href={`/medibook/sessions/${params.sessionNumber}/committees/${committee.slug || committee.id}`} aria-hidden="true">
 														<div className="aspect-square flex items-center text-center justify-center font-[Calsans] bg-primary text-white rounded-lg shadow">
-															<span className="-mt-[1px]">{committee.shortName}</span>
+															<span className="-mt-px">{committee.shortName}</span>
 														</div>
 													</Link>
 												</div>

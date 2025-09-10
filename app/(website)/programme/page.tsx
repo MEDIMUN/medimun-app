@@ -10,7 +10,7 @@ export default async function Page() {
 	return (
 		<div className="bg-gray-100">
 			<div className="mx-auto h-auto max-w-[1248px] p-5 pt-24 font-[montserrat] text-white">
-				<h1 className="select-non mb-4 rounded-3xl font-[Montserrat] text-[35px] font-[700] text-black">Conference Programme</h1>
+				<h1 className="select-non mb-4 rounded-3xl font-[Montserrat] text-[35px] font-bold text-black">Conference Programme</h1>
 				<div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-3">
 					<Card>
 						<CardHeader className="ml-3 flex gap-3">

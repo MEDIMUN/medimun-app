@@ -109,7 +109,7 @@ export function TopBar({
 					<Button onClick={() => setConfigShown(false)}>Close</Button>
 				</DialogActions>
 			</Dialog>
-			<header className="flex z-[50] flex-col bg-sidebar-primary-foreground dark:bg-sidebar right-0 fixed top-0 w-full md:w-[calc(100%-288px)] border-b border-sidebar-border h-[65px] shrink-0 items-center -transition-[width,height] -ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+			<header className="flex z-50 flex-col bg-sidebar-primary-foreground dark:bg-sidebar right-0 fixed top-0 w-full md:w-[calc(100%-288px)] border-b border-sidebar-border h-[65px] shrink-0 items-center -transition-[width,height] -ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
 				<div className="flex items-center h-[65px] w-full">
 					<div className="flex items-center w-full">
 						<div className="w-full flex flex-row h-[65px] duration-200 border-b border-sidebar-border -overflow-y-hidden">
@@ -139,7 +139,7 @@ export function TopBar({
 									</BreadcrumbList>
 								</Breadcrumb>
 							</div>
-							<div className="md:hidden z-[52] h-[65px] w-[65px] aspect-square flex align-middle justify-center items-center border-l border-sidebar-border ml-auto min-w-[65px]">
+							<div className="md:hidden z-52 h-[65px] w-[65px] aspect-square flex align-middle justify-center items-center border-l border-sidebar-border ml-auto min-w-[65px]">
 								<SidebarTrigger className="fixed" />
 							</div>
 							{/* <div className={cn("min-h-[65px] flex items-center bg-sidebar-primary-foreground", isSearchActive ? "translate-y-[0px] duration-300" : "translate-y-[65px] duration-300")}>
@@ -171,7 +171,7 @@ export function TopBar({
 									variant="ghost"
 									size="icon"
 									className={cn("h-8 w-8", className)}>
-									{isSearchActive ? <X className="-ml-[1px]" /> : <Search className="-ml-[1px]" />}
+									{isSearchActive ? <X className="-ml-px" /> : <Search className="-ml-px" />}
 									<span className="sr-only">Search</span>
 								</Button>
 							</div>
@@ -182,7 +182,7 @@ export function TopBar({
 			<div
 				ref={spacerRef}
 				id="clientTopbar"
-				className={cn("flex bg-sidebar-accent w-full dark:bg-sidebar-accent md:w-full right-0 top-0 p-7 border-b border-sidebar-border flex-wrap items-end z-[10] justify-between gap-4", className)}>
+				className={cn("flex bg-sidebar-accent w-full dark:bg-sidebar-accent md:w-full right-0 top-0 p-7 border-b border-sidebar-border flex-wrap items-end z-10 justify-between gap-4", className)}>
 				<div className="w-full sm:flex-1">
 					{buttonText && buttonHref && (
 						<FastLink href={buttonHref}>

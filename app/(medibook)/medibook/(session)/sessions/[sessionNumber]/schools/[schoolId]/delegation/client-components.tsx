@@ -240,7 +240,7 @@ export function SelectStudents({ students, selectedSession, grantedDelegation, n
 											}}
 											className={cn(
 												assignedStudents.find((assignedStudent) => assignedStudent.studentId === student.id) &&
-													"cursor-pointer !bg-primary !text-white hover:line-through"
+													"cursor-pointer bg-primary! text-white! hover:line-through"
 											)}>
 											<Avatar showFallback className="h-4 w-4 bg-primary text-white" src={`/api/users/${student.id}/avatar`} />
 											{`${student.officialName} ${student.officialSurname}`}

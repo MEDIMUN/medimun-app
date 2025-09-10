@@ -182,7 +182,7 @@ export default async function Page(props) {
 				<div className="rounded-md bg-zinc-950/5 p-4">
 					<Text>{areSubmissionsOpen ? "Submissios are currently open." : "Submissions are currently closed."}</Text>
 					{selectedCommittee?.positionPaperSubmissionAutoCloseTime && selectedCommittee.isPositionPaperSubmissionAutoOpen && (
-						<Text className="!text-xs">
+						<Text className="text-xs!">
 							You can submit a position paper {selectedCommittee?.positionPaperSubmissionAutoOpenTime && ` starting from `}
 							{selectedCommittee?.positionPaperSubmissionAutoOpenTime?.toLocaleString("en-GB")?.replace(", ", " at ")} until{" "}
 							{selectedCommittee?.positionPaperSubmissionAutoCloseTime?.toLocaleString("en-GB")?.replace(", ", " at ")}.

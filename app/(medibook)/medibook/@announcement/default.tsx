@@ -219,7 +219,7 @@ export const announcementWebsitecomponents = {
 		}
 		return (
 			<Link {...props}>
-				<div className="my-1 max-w-max !cursor-pointer rounded-md bg-primary px-3 py-[2px] text-white shadow-sm duration-300 hover:shadow-md">
+				<div className="my-1 max-w-max cursor-pointer! rounded-md bg-primary px-3 py-[2px] text-white shadow-sm duration-300 hover:shadow-md">
 					{children} ↗
 				</div>
 			</Link>

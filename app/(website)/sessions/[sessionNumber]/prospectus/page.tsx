@@ -41,7 +41,7 @@ export default async function Page(props: { params: Promise<{ sessionNumber: str
 				<div className="flex w-full">
 					<div className="mx-auto max-w-7xl rounded-md bg-yellow-50 p-4">
 						<div className="flex">
-							<div className="flex-shrink-0">
+							<div className="shrink-0">
 								<TriangleAlert aria-hidden="true" className="h-5 w-5 text-yellow-400" />
 							</div>
 							<div className="ml-3">
@@ -75,7 +75,7 @@ export default async function Page(props: { params: Promise<{ sessionNumber: str
 				<iframe src={presignedFileUrlHttps} className="mx-auto min-h-screen w-full max-w-4xl overflow-hidden md:rounded-lg"></iframe>
 				<div className="w-4xl mx-auto mt-8 rounded-md bg-zinc-50 p-4">
 					<div className="flex">
-						<div className="flex-shrink-0">
+						<div className="shrink-0">
 							<CircleArrowDown aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 						</div>
 						<div className="ml-3 flex-1 md:flex md:justify-between">

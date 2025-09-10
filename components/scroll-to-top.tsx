@@ -42,7 +42,7 @@ export function ScrollToTop() {
 					animate={{ opacity: 1, y: 0 }}
 					exit={{ opacity: 0, y: 20 }}
 					transition={{ duration: 0.2 }}
-					className="fixed bottom-4 right-4 p-2 z-[55] bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+					className="fixed bottom-4 right-4 p-2 z-55 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
 					onClick={scrollToTop}>
 					<ArrowUp className="h-5 w-5" />
 					<span className="sr-only">Scroll to top</span>

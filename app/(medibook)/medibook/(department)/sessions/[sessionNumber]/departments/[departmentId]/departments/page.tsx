@@ -49,7 +49,7 @@ export default async function MeetTheChairsPage(props) {
 								<img
 									alt="Profile picture of the chair"
 									src={chair.user.profilePicture ? `/api/users/${chair.user.id}/avatar` : "/placeholders/pfp.jpg"}
-									className="aspect-[4/5] w-52 flex-none rounded-2xl object-cover"
+									className="aspect-4/5 w-52 flex-none rounded-2xl object-cover"
 								/>
 							</UserTooltip>
 							<div className="max-w-xl flex-auto">

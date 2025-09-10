@@ -50,7 +50,7 @@ export default function MainTemplate(props) {
 				{props.title && (
 					<>
 						<Section className="rounded-lg max-w-[600px] mx-auto bg-zinc-100 px-[40px]">
-							<Heading className="!font-extralight">{props.title}</Heading>
+							<Heading className="font-extralight!">{props.title}</Heading>
 						</Section>
 						<Hr className="my-[16px] max-w-[600px] mx-auto border-t-2 bg-zinc-100" />
 					</>

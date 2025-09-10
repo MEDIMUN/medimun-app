@@ -193,17 +193,17 @@ export async function ApprovalPanelPage(props) {
 				<TabsList className="w-full flex px-3 gap-2 h-12 min-w-min max-w-max">
 					{(isManagerOfAp || isManagement) && (
 						<TabsTrigger value="SENT_TO_APPROVAL_PANEL">
-							Waiting to be Assigned ({SENT_TO_APPROVAL_PANEL_LENGTH || "None"} Left) <Badge className="!rounded-full ml-1">Stage 1</Badge>{" "}
+							Waiting to be Assigned ({SENT_TO_APPROVAL_PANEL_LENGTH || "None"} Left) <Badge className="rounded-full! ml-1">Stage 1</Badge>{" "}
 						</TabsTrigger>
 					)}
 					{(isManagerOfAp || isManagement) && (
 						<TabsTrigger value="ASSIGNED_TO_EDITOR">
-							Assigned To Editor ({ASSIGNED_TO_EDITOR_LENGTH || "None"} In Progress) <Badge className="!rounded-full ml-1">Stage 2 </Badge>
+							Assigned To Editor ({ASSIGNED_TO_EDITOR_LENGTH || "None"} In Progress) <Badge className="rounded-full! ml-1">Stage 2 </Badge>
 						</TabsTrigger>
 					)}
 					{(isManagerOfAp || isManagement) && (
 						<TabsTrigger value="SENT_BACK_TO_MANAGER">
-							Approved and Waiting ({SENT_BACK_TO_MANAGER_LENGTH || "None"} Left) <Badge className="!rounded-full ml-1">Stage 3</Badge>
+							Approved and Waiting ({SENT_BACK_TO_MANAGER_LENGTH || "None"} Left) <Badge className="rounded-full! ml-1">Stage 3</Badge>
 						</TabsTrigger>
 					)}
 					<TabsTrigger value="ASSIGNED_TO_ME">Assigned to Me</TabsTrigger>

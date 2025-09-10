@@ -156,7 +156,7 @@ export function SignUpForm({ allowSignUp }) {
 					</Field>
 					<div className="mt-4 rounded-lg bg-zinc-300/50 p-2">
 						<CheckboxField>
-							<Label className="!text-[12px] !leading-[16px]">
+							<Label className="text-[12px]! leading-[16px]!">
 								I Accept the <TextLink href="/terms">Terms of Service</TextLink>, the <TextLink href="/privacy">Privacy Policy</TextLink> and the <TextLink href="/conduct">Code of Conduct</TextLink>
 							</Label>
 							<Checkbox onChange={(val) => setAcceptedTerms(val)} checked={acceptedTerms} className="animate-appearance-in delay-200" />
@@ -192,22 +192,22 @@ export function SignUpForm({ allowSignUp }) {
 					<Field className="mt-5">
 						<Label>Password</Label>
 						<ul className="mb-3 ml-4 mt-2 list-outside list-disc text-xs">
-							<Text className={cn("!text-xs !text-primary duration-150", isPasswordAtLeast8Characters && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", isPasswordAtLeast8Characters && "text-green-500!")} as="li">
 								At least 8 characters long.
 							</Text>
-							<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainUppercase && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainUppercase && "text-green-500!")} as="li">
 								Must contain at least one uppercase letter.
 							</Text>
-							<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainLowercase && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainLowercase && "text-green-500!")} as="li">
 								Must contain at least one lowercase letter.
 							</Text>
-							<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainNumber && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainNumber && "text-green-500!")} as="li">
 								Must contain at least one number.
 							</Text>
-							<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainSpecialCharacter && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainSpecialCharacter && "text-green-500!")} as="li">
 								Must contain at least one special character.
 							</Text>
-							<Text className={cn("!text-xs !text-primary duration-150", doPasswordsMatch && password && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", doPasswordsMatch && password && "text-green-500!")} as="li">
 								Passwords must match.
 							</Text>
 						</ul>
@@ -231,22 +231,22 @@ export function SignUpForm({ allowSignUp }) {
 					<Field className="mt-5">
 						<Label>Password</Label>
 						<ul className="mb-3 ml-4 mt-2 list-outside list-disc text-xs">
-							<Text className={cn("!text-xs !text-primary duration-150", isPasswordAtLeast8Characters && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", isPasswordAtLeast8Characters && "text-green-500!")} as="li">
 								At least 8 characters long.
 							</Text>
-							<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainUppercase && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainUppercase && "text-green-500!")} as="li">
 								Must contain at least one uppercase letter.
 							</Text>
-							<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainLowercase && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainLowercase && "text-green-500!")} as="li">
 								Must contain at least one lowercase letter.
 							</Text>
-							<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainNumber && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainNumber && "text-green-500!")} as="li">
 								Must contain at least one number.
 							</Text>
-							<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainSpecialCharacter && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainSpecialCharacter && "text-green-500!")} as="li">
 								Must contain at least one special character.
 							</Text>
-							<Text className={cn("!text-xs !text-primary duration-150", doPasswordsMatch && password && "!text-green-500")} as="li">
+							<Text className={cn("text-xs! text-primary! duration-150", doPasswordsMatch && password && "text-green-500!")} as="li">
 								Passwords must match.
 							</Text>
 						</ul>
@@ -276,7 +276,7 @@ export function SignUpForm({ allowSignUp }) {
 							maxLength={6}
 							onChange={(val) => setVerificationCode(val)}
 							value={verificationCode}
-							containerClassName="group mt-3 flex items-center has-[:disabled]:opacity-30"
+							containerClassName="group mt-3 flex items-center has-disabled:opacity-30"
 							render={({ slots }) => (
 								<>
 									<div className="flex">
@@ -362,7 +362,7 @@ export function SignUpForm({ allowSignUp }) {
 							maxLength={6}
 							onChange={(val) => setVerificationCode(val)}
 							value={verificationCode}
-							containerClassName="group mt-3 flex items-center has-[:disabled]:opacity-30"
+							containerClassName="group mt-3 flex items-center has-disabled:opacity-30"
 							render={({ slots }) => (
 								<>
 									<div className="flex">

@@ -18,7 +18,7 @@ export default function Carousel({ images, index, currentPhoto, sessionNumber, a
 	}
 
 	return (
-		<div className="fixed z-[1000] inset-0 flex items-center justify-center">
+		<div className="fixed z-1000 inset-0 flex items-center justify-center">
 			<FastLink href={`/sessions/${sessionNumber}/albums/${albumId}#${curIndex}`} className="absolute inset-0 z-30 cursor-default bg-black backdrop-blur-2xl"></FastLink>
 			<SharedModal albumId={albumId} sessionNumber={sessionNumber} direction={direction} images={images} index={curIndex} changePhotoId={changePhotoId} currentPhoto={currentPhoto} navigation={false} />
 		</div>

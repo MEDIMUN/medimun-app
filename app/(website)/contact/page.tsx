@@ -11,7 +11,7 @@ export default async function Page(props) {
 					<div className="mx-auto mt-10 max-w-xl lg:mx-0 lg:mt-0 lg:max-w-lg">
 						<div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden bg-gray-800 ring-1 ring-gray-900/10 lg:w-1/2">
 							<svg
-								className="absolute inset-0 h-full w-full stroke-gray-800 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]"
+								className="absolute inset-0 h-full w-full stroke-gray-800 mask-[radial-gradient(100%_100%_at_top_right,white,transparent)]"
 								aria-hidden="true">
 								<defs>
 									<pattern id="83fd4e5a-9d52-42fc-97b6-718e5d7ee527" width={200} height={200} x="100%" y={-1} patternUnits="userSpaceOnUse">

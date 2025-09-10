@@ -112,7 +112,7 @@ export async function AlbumsPage(props) {
 										<h2 className="font-[montserrat] mt-auto text-2xl p-4 max-w-[256px] font-semibold relative">
 											<span className="bg-white text-black">{album.name}</span>
 										</h2>
-										{album.privacy !== "NORMAL" && <Badge className="absolute font-[montserrat] !bg-primary top-4 right-4">{album.privacy} ONLY</Badge>}
+										{album.privacy !== "NORMAL" && <Badge className="absolute font-[montserrat] bg-primary! top-4 right-4">{album.privacy} ONLY</Badge>}
 									</div>
 								</FastLink>
 							);

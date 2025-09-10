@@ -97,7 +97,7 @@ export async function Footer() {
 	const currentYear = new Date().getFullYear();
 
 	return (
-		<footer className="absolute z-[200] font-[montserrat] w-full bg-black font-thin" aria-labelledby="footer-heading">
+		<footer className="absolute z-200 font-[montserrat] w-full bg-black font-thin" aria-labelledby="footer-heading">
 			<h2 id="footer-heading" className="sr-only">
 				Footer
 			</h2>
@@ -113,7 +113,7 @@ export async function Footer() {
 								We are affiliated with the{" "}
 								<TextLink
 									href={"https://foundation.thimun.org/affiliation-programme/affiliated-conferences"}
-									className="!text-white !hover:underline">
+									className="text-white! !hover:underline">
 									THIMUN Foundation
 								</TextLink>
 								.

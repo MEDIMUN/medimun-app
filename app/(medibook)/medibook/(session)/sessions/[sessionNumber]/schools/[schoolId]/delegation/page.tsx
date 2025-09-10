@@ -130,7 +130,7 @@ export default async function Page(props) {
 			if (!student || !committee) return <Text key={Math.random()}>Error: Student or Committee not found</Text>;
 			return (
 				<Fragment key={Math.random()}>
-					<Badge color="" className="!px-0">
+					<Badge color="" className="px-0!">
 						{committee.name} {country && country.flag} {country && country.countryNameEn}
 					</Badge>
 					<Badge className="max-w-max">
@@ -221,7 +221,7 @@ export default async function Page(props) {
 				<TopBar hideBackdrop buttonText={selectedSchool.name} buttonHref={`/medibook/schools/${selectedSchool.slug || selectedSchool.id}`} hideSearchBar title="Delegation Application" />
 				<div className="mt-4 rounded-md bg-red-50 p-4">
 					<div className="flex">
-						<div className="flex-shrink-0">
+						<div className="shrink-0">
 							<CircleX aria-hidden="true" className="h-5 w-5 text-red-400" />
 						</div>
 						<div className="ml-3">
@@ -240,7 +240,7 @@ export default async function Page(props) {
 				{!applicationsOpen && !selectedSchoolHasApplication && (
 					<div className="rounded-md bg-red-50 p-4">
 						<div className="flex">
-							<div className="flex-shrink-0">
+							<div className="shrink-0">
 								<CircleX aria-hidden="true" className="h-5 w-5 text-red-400" />
 							</div>
 							<div className="ml-3">
@@ -277,7 +277,7 @@ export default async function Page(props) {
 				{grantedDelegation && (
 					<div className="rounded-md bg-zinc-50 p-4">
 						<div className="flex">
-							<div className="flex-shrink-0">
+							<div className="shrink-0">
 								<Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 							</div>
 							<div className="ml-3">
@@ -331,7 +331,7 @@ export default async function Page(props) {
 				{!selectedSchoolHasApplication && (
 					<div className="rounded-md bg-zinc-50 p-4">
 						<div className="flex">
-							<div className="flex-shrink-0">
+							<div className="shrink-0">
 								<Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 							</div>
 							<div className="ml-3">

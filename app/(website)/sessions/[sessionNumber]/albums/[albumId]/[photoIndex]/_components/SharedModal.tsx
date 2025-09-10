@@ -52,10 +52,10 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 
 	return (
 		<MotionConfig transition={{ x: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.2 } }}>
-			<div className="relative z-50 flex aspect-[3/2] w-full max-w-7xl items-center wide:h-full xl:taller-than-854:h-auto" {...handlers}>
+			<div className="relative z-50 flex aspect-3/2 w-full max-w-7xl items-center wide:h-full xl:taller-than-854:h-auto" {...handlers}>
 				{/* Main image */}
 				<div className="w-full overflow-hidden">
-					<div className="relative flex aspect-[3/2] items-center justify-center">
+					<div className="relative flex aspect-3/2 items-center justify-center">
 						<AnimatePresence initial={false} custom={direction}>
 							<motion.div key={currentImage.id} custom={direction} variants={variants} initial="enter" animate="center" exit="exit" className="absolute">
 								<Image src={`https://drive.google.com/thumbnail?id=${currentImage.id}&sz=w1920-h1280`} width={1920} height={1280} priority alt="MEDIMUN Image" onLoadingComplete={() => setLoaded(true)} />
@@ -68,7 +68,7 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 				<div className="absolute inset-0 mx-auto flex max-w-7xl items-center justify-center">
 					{/* Buttons */}
 					{loaded && (
-						<div className="relative aspect-[3/2] max-h-full w-full">
+						<div className="relative aspect-3/2 max-h-full w-full">
 							{index > 0 && (
 								<button
 									className="absolute left-3 top-[calc(50%-16px)] rounded-full bg-black/50 p-3 text-white/75 backdrop-blur-lg transition hover:bg-black/75 hover:text-white focus:outline-none"
@@ -118,8 +118,8 @@ export default function SharedModal({ index, images, changePhotoId, navigation, 
 					)}
 					{/* Bottom Nav bar */}
 
-					<div className="fixed inset-x-0 bottom-0 z-[100] overflow-hidden bg-gradient-to-b from-black/0 to-black/60">
-						<motion.div initial={false} className="mx-auto mt-6 mb-6 flex aspect-[3/2] h-14">
+					<div className="fixed inset-x-0 bottom-0 z-100 overflow-hidden bg-linear-to-b from-black/0 to-black/60">
+						<motion.div initial={false} className="mx-auto mt-6 mb-6 flex aspect-3/2 h-14">
 							<AnimatePresence initial={false}>
 								{filteredImages.map(({ id }, i) => {
 									const internalIndex = filteredImages.indexOf(filteredImages.find((img) => img.id === currentImage.id));

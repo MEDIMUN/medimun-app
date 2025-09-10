@@ -274,7 +274,7 @@ const sampleResolution = {
 
 const SubSubClauseDisplay: React.FC<{ subSubClause: SubSubClause; index: number }> = ({ subSubClause, index }) => (
 	<li className="mb-2 flex gap-4">
-		<div className="min-w-[1.5rem] text-right">{romanize(index + 1).toLowerCase()}.</div>
+		<div className="min-w-6 text-right">{romanize(index + 1).toLowerCase()}.</div>
 		<div>{subSubClause.content}</div>
 	</li>
 );
@@ -282,7 +282,7 @@ const SubSubClauseDisplay: React.FC<{ subSubClause: SubSubClause; index: number 
 const SubClauseDisplay: React.FC<{ subClause: SubClause; index: number }> = ({ subClause, index }) => (
 	<li className="mb-2 flex flex-col">
 		<div className="flex gap-4">
-			<div className="min-w-[1.5rem] text-right">{String.fromCharCode(97 + index)})</div>
+			<div className="min-w-6 text-right">{String.fromCharCode(97 + index)})</div>
 			<div>{subClause.content}</div>
 		</div>
 		<div>
@@ -341,7 +341,7 @@ const ResolutionDisplay = ({
 	const displayCosubmitters = cosubmitters.join(", ");
 
 	return (
-		<div className="font-serif text-left !text-sm max-w-4xl mx-auto p-8 bg-white dark:bg-black dark:text-white">
+		<div className="font-serif text-left text-sm! max-w-4xl mx-auto p-8 bg-white dark:bg-black dark:text-white">
 			<div className="mb-8">
 				<div>
 					Forum: <span className="font-bold">{selectedResolution.committee.name}</span>

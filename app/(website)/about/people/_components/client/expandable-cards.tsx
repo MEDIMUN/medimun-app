@@ -51,13 +51,13 @@ export function ExpandableCards({ people }) {
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
 							exit={{ opacity: 0 }}
-							className="fixed inset-0 bg-black/20 h-full w-full z-[10]"
+							className="fixed inset-0 bg-black/20 h-full w-full z-10"
 						/>
 					)}
 				</AnimatePresence>
 				<AnimatePresence>
 					{active && typeof active === "object" ? (
-						<div className="fixed inset-0 grid place-items-center z-[1000000]">
+						<div className="fixed inset-0 grid place-items-center z-1000000">
 							<motion.button
 								key={`button-${active?.title}-${id}-${active?.index}`}
 								layout

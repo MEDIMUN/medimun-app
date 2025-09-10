@@ -61,11 +61,11 @@ export async function HomePage() {
 							clipPath:
 								"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
 						}}
-						className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+						className="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-288.75"
 					/>
 				</div>
 				{/* <svg
-					className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+					className="absolute inset-x-0 top-0 -z-10 h-256 w-full stroke-gray-200 mask-[radial-gradient(32rem_32rem_at_center,white,transparent)]"
 					aria-hidden="true">
 					<defs>
 						<pattern id="1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84" width={200} height={200} x="50%" y={-1} patternUnits="userSpaceOnUse">
@@ -80,7 +80,7 @@ export async function HomePage() {
 				<HeroImage />
 				<div className="absolute mx-auto mt-[20svh] flex w-full flex-col md:mt-[35vh]">
 					<div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 text-left text-white md:gap-2 md:text-center">
-						{currentSession?.theme && <h1 className="font-[canela] text-5xl !leading-[50px] md:text-6xl">{currentSession.theme}</h1>}
+						{currentSession?.theme && <h1 className="font-[canela] text-5xl leading-[50px]! md:text-6xl">{currentSession.theme}</h1>}
 						{currentSession?.subTheme && <h2 className="font-[LondiniaMedium] text-4xl text-zinc-300">{currentSession.subTheme}</h2>}
 					</div>
 				</div>
@@ -101,7 +101,7 @@ export async function HomePage() {
 										backgroundImage: `url(/pages/index/dabbing.jpg)`,
 									}}
 									className="!relative flex h-96 w-full flex-none rounded-2xl bg-opacity-35 bg-cover object-cover shadow-xl lg:aspect-square lg:h-auto lg:max-w-sm">
-									<p className="-font-[canela] my-auto w-full translate-y-[15px] bg-[url(/assets/gradients/1.jpg)] bg-cover bg-clip-text text-center text-[12rem] !font-[900] text-transparent">
+									<p className="-font-[canela] my-auto w-full translate-y-[15px] bg-[url(/assets/gradients/1.jpg)] bg-cover bg-clip-text text-center text-[12rem] font-black! text-transparent">
 										20
 									</p>
 								</div>
@@ -134,7 +134,7 @@ export async function HomePage() {
 								clipPath:
 									"polygon(73.6% 51.7%, 91.7% 11.8%, 100% 46.4%, 97.4% 82.2%, 92.5% 84.9%, 75.7% 64%, 55.3% 47.5%, 46.5% 49.4%, 45% 62.9%, 50.3% 87.2%, 21.3% 64.1%, 0.1% 100%, 5.4% 51.1%, 21.4% 63.9%, 58.9% 0.2%, 73.6% 51.7%)",
 							}}
-							className="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-primary to-[#4f46e5] opacity-25"
+							className="aspect-1318/752 w-329.5 flex-none bg-linear-to-r from-primary to-[#4f46e5] opacity-25"
 						/>
 					</div>
 				</div>
@@ -160,10 +160,10 @@ export async function HomePage() {
 									quality={50}
 									alt="Delegates lined up"
 									src="/placeholders/delegates-2.jpg"
-									className="aspect-[7/5] w-[37rem] max-w-none rounded-2xl bg-gray-50 object-cover"
+									className="aspect-7/5 w-148 max-w-none rounded-2xl bg-gray-50 object-cover"
 								/>
 							</div>
-							<div className="contents lg:col-span-2 lg:col-end-2 lg:ml-auto lg:flex lg:w-[37rem] lg:items-start lg:justify-end lg:gap-x-8">
+							<div className="contents lg:col-span-2 lg:col-end-2 lg:ml-auto lg:flex lg:w-148 lg:items-start lg:justify-end lg:gap-x-8">
 								<div className="order-first flex w-64 flex-none justify-end self-end lg:w-auto">
 									<Image
 										width={1000}
@@ -171,7 +171,7 @@ export async function HomePage() {
 										quality={50}
 										alt="Delegates lined up for the plenary session"
 										src="/placeholders/delegates-3.jpg"
-										className="aspect-[4/3] w-[24rem] max-w-none flex-none rounded-2xl bg-gray-50 object-cover"
+										className="aspect-4/3 w-[24rem] max-w-none flex-none rounded-2xl bg-gray-50 object-cover"
 									/>
 								</div>
 								<div className="flex w-96 flex-auto justify-end lg:w-auto lg:flex-none">
@@ -181,7 +181,7 @@ export async function HomePage() {
 										quality={50}
 										alt="Delegates and the committee chairs in session"
 										src="/placeholders/delegates-and-chairs.JPG"
-										className="aspect-[7/5] w-[37rem] max-w-none flex-none rounded-2xl bg-gray-50 object-cover"
+										className="aspect-7/5 w-148 max-w-none flex-none rounded-2xl bg-gray-50 object-cover"
 									/>
 								</div>
 								<div className="hidden sm:block sm:w-0 sm:flex-auto lg:w-auto lg:flex-none">
@@ -191,7 +191,7 @@ export async function HomePage() {
 										quality={50}
 										alt="Delegates indoors lifting their placards"
 										src="/assets/delegates-indoors.jpg"
-										className="aspect-[4/3] w-[24rem] max-w-none rounded-2xl bg-gray-50 object-cover"
+										className="aspect-4/3 w-[24rem] max-w-none rounded-2xl bg-gray-50 object-cover"
 									/>
 								</div>
 							</div>
@@ -228,7 +228,7 @@ export async function HomePage() {
 							width={2432}
 							height={1442}
 							quality={60}
-							className="w-[48rem] max-w-none rounded-2xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
+							className="w-3xl max-w-none rounded-2xl shadow-xl ring-1 ring-gray-400/10 sm:w-228 md:-ml-4 lg:-ml-0"
 						/>
 					</div>
 				</div>

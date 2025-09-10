@@ -70,7 +70,7 @@ function RoleDisplay({ roles }) {
 						key={index}
 						className={`mx-auto flex w-full max-w-[700px] flex-col gap-2 rounded-xl border border-black/10 bg-content1/60 p-4 dark:border-white/20 md:flex-col`}>
 						<div className="flex flex-col gap-1">
-							<div className="mb-[-10px] line-clamp-4 flex flex-col gap-2 bg-gradient-to-br from-foreground-800 to-foreground-500 bg-clip-text text-xl font-semibold tracking-tight text-transparent dark:to-foreground-200">
+							<div className="mb-[-10px] line-clamp-4 flex flex-col gap-2 bg-linear-to-br from-foreground-800 to-foreground-500 bg-clip-text text-xl font-semibold tracking-tight text-transparent dark:to-foreground-200">
 								<p>{roleText}</p>
 							</div>
 							{role.session ? (

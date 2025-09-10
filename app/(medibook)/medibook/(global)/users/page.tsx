@@ -192,7 +192,7 @@ async function UsersContent({ props }) {
 								})}
 							</TableBody>
 						</Table>
-						<Table className="showscrollbar absolute z-[8] top-0 border-r-1 bg-white dark:bg-zinc-900">
+						<Table className="showscrollbar absolute z-8 top-0 border-r-1 bg-white dark:bg-zinc-900">
 							<TableHead>
 								<TableRow>
 									<TableHeader className="text-white dark:text-black select-none">S</TableHeader>
@@ -241,7 +241,7 @@ async function UsersContent({ props }) {
 												delay={0}
 												isDisabled={!user.profilePicture}
 												classNames={{ content: "p-0 select-none" }}
-												content={<Image alt="User avatar" src={`/api/users/${user.id}/avatar`} className="h-[13rem] w-[13rem] object-cover" />}>
+												content={<Image alt="User avatar" src={`/api/users/${user.id}/avatar`} className="h-52 w-52 object-cover" />}>
 												<Avatar radius="md" showFallback src={`/api/users/${user.id}/avatar`} />
 											</Tooltip>
 										</TableCell>

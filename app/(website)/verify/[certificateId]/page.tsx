@@ -36,7 +36,7 @@ export default async function Page(props) {
 	return (
 		<>
 			<Topbar buttonHref={`/verify`} buttonText={`Certificate Verification`} title={"Certificate of Participation"} />
-			<div className="max-w-7xl px-4 mx-auto mb-10 !font-[Montserrat]">
+			<div className="max-w-7xl px-4 mx-auto mb-10 font-[Montserrat]!">
 				<CertificateDisplay voidMessage={selectedCertificate.voidMessage} isVoid={selectedCertificate.isVoid} certificateId={certificateId} />
 			</div>
 		</>

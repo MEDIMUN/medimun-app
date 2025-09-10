@@ -41,7 +41,7 @@ export function VariantPicker({ selectedSession }: { selectedSession: SessionTyp
 	if (!mounted) return null;
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-200">
+		<div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-200">
 			<MainWrapper>
 				<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors duration-200">
 					<div className="flex justify-between items-center">
@@ -60,7 +60,7 @@ export function VariantPicker({ selectedSession }: { selectedSession: SessionTyp
 									id={variant.dbName}
 									className="h-5 w-5 text-primary dark:text-primary-dark transition duration-150 ease-in-out"
 								/>
-								<label htmlFor={variant.dbName} className="flex-grow text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer">
+								<label htmlFor={variant.dbName} className="grow text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer">
 									{variant.displayName}
 								</label>
 							</motion.div>

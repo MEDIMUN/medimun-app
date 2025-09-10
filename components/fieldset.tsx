@@ -6,7 +6,7 @@ import type React from "react";
 import { Badge } from "./badge";
 
 export function Fieldset({ className, ...props }: { className?: string } & Omit<Headless.FieldsetProps, "className">) {
-	return <Headless.Fieldset {...props} className={clsx(className, "[&>*+[data-slot=control]]:mt-6 [&>[data-slot=text]]:mt-1")} />;
+	return <Headless.Fieldset {...props} className={clsx(className, "[&>*+[data-slot=control]]:mt-6 *:data-[slot=text]:mt-1")} />;
 }
 
 export function Legend({ className, ...props }: { className?: string } & Omit<Headless.LegendProps, "className">) {
@@ -14,7 +14,7 @@ export function Legend({ className, ...props }: { className?: string } & Omit<He
 		<Headless.Legend
 			data-slot="legend"
 			{...props}
-			className={clsx(className, "text-base/6 font-semibold text-zinc-950 data-[disabled]:opacity-50 dark:text-white sm:text-sm/6")}
+			className={clsx(className, "text-base/6 font-semibold text-zinc-950 data-disabled:opacity-50 dark:text-white sm:text-sm/6")}
 		/>
 	);
 }
@@ -34,7 +34,7 @@ export function Field({ className, ...props }: { className?: string } & Omit<Hea
 				"[&>[data-slot=description]+[data-slot=control]]:mt-3",
 				"[&>[data-slot=control]+[data-slot=description]]:mt-3",
 				"[&>[data-slot=control]+[data-slot=error]]:mt-3",
-				"[&>[data-slot=label]]:font-medium"
+				"*:data-[slot=label]:font-medium"
 			)}
 		/>
 	);
@@ -54,7 +54,7 @@ export function Label({
 		<Headless.Label
 			data-slot="label"
 			{...rest}
-			className={clsx(className, "select-none text-base/6 text-zinc-950 data-[disabled]:opacity-50 dark:text-white sm:text-sm/6")}>
+			className={clsx(className, "select-none text-base/6 text-zinc-950 data-disabled:opacity-50 dark:text-white sm:text-sm/6")}>
 			{children}
 			{required && (
 				<>
@@ -77,7 +77,7 @@ export function Description({ className, ...props }: { className?: string } & Om
 		<Headless.Description
 			data-slot="description"
 			{...props}
-			className={clsx(className, "text-base/6 text-zinc-500 data-[disabled]:opacity-50 dark:text-zinc-400 sm:text-sm/6")}
+			className={clsx(className, "text-base/6 text-zinc-500 data-disabled:opacity-50 dark:text-zinc-400 sm:text-sm/6")}
 		/>
 	);
 }
@@ -87,7 +87,7 @@ export function ErrorMessage({ className, ...props }: { className?: string } & O
 		<Headless.Description
 			data-slot="error"
 			{...props}
-			className={clsx(className, "text-base/6 text-red-600 data-[disabled]:opacity-50 dark:text-red-500 sm:text-sm/6")}
+			className={clsx(className, "text-base/6 text-red-600 data-disabled:opacity-50 dark:text-red-500 sm:text-sm/6")}
 		/>
 	);
 }

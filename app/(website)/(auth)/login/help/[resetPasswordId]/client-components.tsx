@@ -53,22 +53,22 @@ export function ConfirmResetPasswordForm({ passwordResetCode }) {
 				<Field className="mt-5">
 					<Label>Password</Label>
 					<ul className="mb-3 ml-4 mt-2 list-outside list-disc text-xs">
-						<Text className={cn("!text-xs !text-primary duration-150", isPasswordAtLeast8Characters && "!text-green-500")} as="li">
+						<Text className={cn("text-xs! text-primary! duration-150", isPasswordAtLeast8Characters && "text-green-500!")} as="li">
 							At least 8 characters long.
 						</Text>
-						<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainUppercase && "!text-green-500")} as="li">
+						<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainUppercase && "text-green-500!")} as="li">
 							Must contain at least one uppercase letter.
 						</Text>
-						<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainLowercase && "!text-green-500")} as="li">
+						<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainLowercase && "text-green-500!")} as="li">
 							Must contain at least one lowercase letter.
 						</Text>
-						<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainNumber && "!text-green-500")} as="li">
+						<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainNumber && "text-green-500!")} as="li">
 							Must contain at least one number.
 						</Text>
-						<Text className={cn("!text-xs !text-primary duration-150", isPasswordContainSpecialCharacter && "!text-green-500")} as="li">
+						<Text className={cn("text-xs! text-primary! duration-150", isPasswordContainSpecialCharacter && "text-green-500!")} as="li">
 							Must contain at least one special character.
 						</Text>
-						<Text className={cn("!text-xs !text-primary duration-150", doPasswordsMatch && password && "!text-green-500")} as="li">
+						<Text className={cn("text-xs! text-primary! duration-150", doPasswordsMatch && password && "text-green-500!")} as="li">
 							Passwords must match.
 						</Text>
 					</ul>

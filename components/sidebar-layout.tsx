@@ -27,12 +27,12 @@ function MobileSidebar({ open, close, children }: React.PropsWithChildren<{ open
 		<Headless.Dialog open={open} onClose={close} className="lg:hidden overflow-x-hidden">
 			<Headless.DialogBackdrop
 				transition
-				className="fixed inset-0 bg-black/30 transition data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
+				className="fixed inset-0 bg-black/30 transition data-closed:opacity-0 data-enter:duration-300 data-leave:duration-200 data-enter:ease-out data-leave:ease-in"
 			/>
 			<Headless.DialogPanel
 				transition
-				className="fixed inset-y-0 w-full transition !overflow-x-hidden duration-300 ease-in-out data-[closed]:-translate-x-full">
-				<div className="flex h-full flex-col relative bg-white !overflow-x-hidden shadow-sm dark:bg-zinc-900 dark:ring-white/10">
+				className="fixed inset-y-0 w-full transition overflow-x-hidden! duration-300 ease-in-out data-closed:-translate-x-full">
+				<div className="flex h-full flex-col relative bg-white overflow-x-hidden! shadow-sm dark:bg-zinc-900 dark:ring-white/10">
 					<div className="-mb-3 px-4 pt-3">
 						<Headless.CloseButton as={NavbarItem} aria-label="Close navigation">
 							<CloseMenuIcon />
@@ -57,7 +57,7 @@ export function PathBasedNavbar({ setShowSidebar, navbar, scrollY }) {
 		return (
 			<>
 				<div className="min-h-[60px] lg:hidden"></div>
-				<div className={cn("-bg-red-500 fixed z-[1000] h-[60px] w-full border-b bg-white lg:hidden", !!scrollY && "shadow-md")}>
+				<div className={cn("-bg-red-500 fixed z-1000 h-[60px] w-full border-b bg-white lg:hidden", !!scrollY && "shadow-md")}>
 					{/* Navbar on mobile */}
 					<header className="-ring-1 mx-2 flex w-[calc(100%-16px)] items-center px-2 ring-zinc-950/5">
 						<div className="py-2.5">

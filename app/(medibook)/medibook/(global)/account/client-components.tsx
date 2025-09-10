@@ -148,7 +148,7 @@ export function PrivateProfilePictureUploader({ user }) {
 		<div className="flex min-w-full flex-col gap-5 md:flex-row">
 			<form ref={formRef} className="w-full">
 				<div className="aspect-square w-full md:w-32">
-					<img alt=" " className="aspect-square min-h-full w-full !overflow-hidden rounded-2xl object-cover shadow" src={url} />
+					<img alt=" " className="aspect-square min-h-full w-full overflow-hidden! rounded-2xl object-cover shadow" src={url} />
 				</div>
 				<input accept=".jpg,.jpeg,.gif,.png" name="file" ref={inputRef} type="file" className="hidden" onChange={onImageUpdate} />
 			</form>

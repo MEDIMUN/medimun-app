@@ -3,12 +3,8 @@ import { NextResponse, NextRequest } from "next/server";
 import { authorize, s } from "./lib/authorize";
 
 const { auth } = NextAuth({
-	session: {
-		strategy: "jwt",
-	},
-	pages: {
-		signIn: "/login",
-	},
+	session: { strategy: "jwt" },
+	pages: { signIn: "/login" },
 	callbacks: {
 		authorized({ auth }) {
 			const isAuthenticated = !!auth?.user;
@@ -58,14 +54,12 @@ export default auth((req) => {
 
 	if (pathname.includes("/medibook") && !isAuthenticated) return NextResponse.redirect(new URL(`/login?after-login=${pathname}`, nextUrl.origin));
 
-	if (managementDirectPaths.includes(pathname) && isAuthenticated && !isManagement)
-		return NextResponse.rewrite(new URL("/medibook/not-found", nextUrl.origin));
+	if (managementDirectPaths.includes(pathname) && isAuthenticated && !isManagement) return NextResponse.rewrite(new URL("/medibook/not-found", nextUrl.origin));
 
 	if (logggedInNotAllowedPaths.includes(pathname) && isAuthenticated) return NextResponse.redirect(new URL("/medibook", nextUrl.origin));
 
 	//if path matches /medibook/session/<anyNumber>/applications/* check with regex
-	if (pathname.includes("/medibook/session") && pathname.includes("/applications") && !isManagement)
-		return NextResponse.redirect(new URL(`/medibook/not-found`, nextUrl.origin));
+	if (pathname.includes("/medibook/session") && pathname.includes("/applications") && !isManagement) return NextResponse.redirect(new URL(`/medibook/not-found`, nextUrl.origin));
 });
 
 export const config = {

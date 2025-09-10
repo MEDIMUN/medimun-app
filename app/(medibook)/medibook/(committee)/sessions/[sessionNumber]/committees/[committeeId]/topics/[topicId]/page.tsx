@@ -56,7 +56,7 @@ export async function SpecificTopic(props) {
 					<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedTopic.description} />
 				</Suspense>
 				<Divider className="mt-[750px]" />
-				<Subheading className="!font-extralight">
+				<Subheading className="font-extralight!">
 					{"We are not responsible for the contents of topic descriptions. Please refer to our "}
 					<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
 						code of conduct

@@ -59,7 +59,7 @@ export function SelectedUsersWindow({ customEmptyText = "Select users to access 
 		<>
 			<div className="rounded-lg bg-zinc-100 p-4">
 				<div className="flex">
-					<div className="flex-shrink-0">
+					<div className="shrink-0">
 						<CircleCheck aria-hidden="true" className="h-5 w-5 text-zinc-400" />
 					</div>
 					<div className="ml-3 overflow-x-scroll">

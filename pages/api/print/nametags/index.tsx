@@ -233,7 +233,7 @@ function MyDocument({ sortedUsers, selectedSession, gapNumber }) {
 							))}
 						</View>
 					</View>
-					<View style={tw("absolute bottom-0 font-[100] font-[MADEMirage] text-sm right-0 p-4")}>
+					<View style={tw("absolute bottom-0 font-thin font-[MADEMirage] text-sm right-0 p-4")}>
 						<Text>
 							Mediterranean Model United Nations (MEDIMUN) | MediBook Nametag Maker | Page {i + 1} of {numberOfPages}
 						</Text>
@@ -338,13 +338,13 @@ function DelegateNametag({ user, selectedSession }) {
 			<Image alt="" src={`${cwd}/public/assets/pdf/nametags/${imageUrl}.png`}></Image>
 			<View style={tw("absolute w-full h-full")}>
 				<View style={tw("flex w-full mt-[77px] flex-col items-center justify-center")}>
-					<Text style={tw(`text-[${nameColor}] text-center font-[MADEMirage] font-[900] text-[17.49px]`)}>{fullName}</Text>
+					<Text style={tw(`text-[${nameColor}] text-center font-[MADEMirage] font-black text-[17.49px]`)}>{fullName}</Text>
 				</View>
 				<View style={tw("flex w-full flex-col items-center justify-center")}>
-					<View style={tw(`text-[${roleColor}] text-center gap-1 flex flex-row font-[MADEMirage] font-[700] text-[9.28px]`)}>
+					<View style={tw(`text-[${roleColor}] text-center gap-1 flex flex-row font-[MADEMirage] font-bold text-[9.28px]`)}>
 						<Text>{role}</Text>
 						{committeeName && (
-							<View style={tw("bg-[#AF2D29] pt-[1px] text-white px-2 -translate-y-[1px] rounded-full")}>
+							<View style={tw("bg-[#AF2D29] pt-px text-white px-2 -translate-y-px rounded-full")}>
 								<Text>{committeeName}</Text>
 							</View>
 						)}
@@ -352,7 +352,7 @@ function DelegateNametag({ user, selectedSession }) {
 				</View>
 				{user?.pronouns && (
 					<View style={tw("flex w-full flex-col items-center justify-center")}>
-						<Text style={tw(`text-[${roleColor}] text-center font-[MADEMirage] font-[700] text-[9.28px]`)}>{user?.pronouns}</Text>
+						<Text style={tw(`text-[${roleColor}] text-center font-[MADEMirage] font-bold text-[9.28px]`)}>{user?.pronouns}</Text>
 					</View>
 				)}
 			</View>

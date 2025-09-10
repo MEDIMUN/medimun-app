@@ -72,7 +72,7 @@ export async function TableOfContents({ props }) {
 					<TableBody>
 						{participationCertificates.map((certificate) => (
 							<TableRow key={certificate.id}>
-								<TableCell className="!max-w-max">
+								<TableCell className="max-w-max!">
 									<div className="flex space-x-2 max-w-max">
 										<Button href={`/medibook/certificates/${certificate.id}`} plain>
 											<Eye /> View

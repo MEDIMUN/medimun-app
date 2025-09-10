@@ -133,7 +133,7 @@ export async function AnnouncementsTable({ title, announcements, baseUrl, totalI
 							<li className="rounded-md bg-zinc-100 p-4" key={announcement.id}>
 								<div className="flex gap-2">
 									<div className="max-w-auto w-full">
-										<Link href={url} className="!cursor-pointer hover:underline">
+										<Link href={url} className="cursor-pointer! hover:underline">
 											<h3 className="text-base/6 font-semibold">{announcement.title}</h3>
 										</Link>
 										<Text className="mb-2 line-clamp-1">{announcement.description}</Text>
@@ -192,7 +192,7 @@ export async function AnnouncementViewPage({ params, searchParams }) {
 					<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedAnnouncement.markdown} />
 				</Suspense>
 				<Divider className="mt-[712px]" />
-				<Subheading className="my-10 !font-extralight">
+				<Subheading className="my-10 font-extralight!">
 					{"We are not responsible for the contents of announcements. Please refer to our "}
 					<Link className="underline hover:text-primary" href="/policies/conduct#announcements" target="_blank">
 						code of conduct
@@ -217,7 +217,7 @@ export function Topbar({ title, description, buttonText, buttonHref }: { title: 
 						clipPath:
 							"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
 					}}
-					className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+					className="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-288.75"
 				/>
 			</div>
 			<div className={`py-24 ${description ? "sm:py-32" : "sm:py-24"}`}>
@@ -252,7 +252,7 @@ export function Topbar({ title, description, buttonText, buttonHref }: { title: 
 	return (
 		<div className="pb-[58px] pt-24 text-left font-[Montserrat] sm:pb-[72px] sm:pt-32 lg:text-center">
 			<div className="mx-auto max-w-7xl  px-6 lg:px-8">
-				<div className="mx-auto max-w-2xl bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text lg:mx-auto">
+				<div className="mx-auto max-w-2xl bg-linear-to-r from-slate-900 to-slate-700 bg-clip-text lg:mx-auto">
 					<h2 className="mx-auto text-4xl font-semibold tracking-tight sm:text-5xl">{title}</h2>
 					{description && <p className="mt-4 text-lg leading-8 text-gray-300">{description}</p>}
 				</div>

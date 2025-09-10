@@ -33,7 +33,7 @@ export default async function Page(props) {
 
 	return (
 		<div className="grow h-full overflow-scroll lg:rounded-lg lg:bg-white lg:p-0 lg:shadow-sm lg:ring-1 lg:ring-zinc-950/5 dark:lg:bg-zinc-900 dark:lg:ring-white/10">
-			<TopBar hideBackdrop hideSearchBar buttonHref={isManagement ? "/medibook/users" : "/medibook"} className="absolute p-5 !text-white" buttonText={isManagement ? "All Users" : "Home"} />
+			<TopBar hideBackdrop hideSearchBar buttonHref={isManagement ? "/medibook/users" : "/medibook"} className="absolute p-5 text-white!" buttonText={isManagement ? "All Users" : "Home"} />
 			<div>
 				<div>
 					<img alt="" src={`/assets/gradients/${2}.jpg`} className="h-48 w-full object-cover lg:h-56" />

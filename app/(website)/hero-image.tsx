@@ -36,7 +36,7 @@ export default function HeroImage() {
 				transform: "translateY(" + scrollY + "px)",
 				opacity: opacity,
 			}}
-			className="fixed bottom-0 z-[5] flex w-full justify-center">
+			className="fixed bottom-0 z-5 flex w-full justify-center">
 			<div className=" mt-auto flex">
 				<Image
 					priority

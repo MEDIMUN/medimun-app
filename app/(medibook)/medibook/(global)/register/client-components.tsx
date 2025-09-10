@@ -40,7 +40,7 @@ export function RegisterQRCodeBox({ code }) {
 	}, [progress, router]);
 
 	return (
-		<div className="border shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[48] animate-shimmer bg-[length:200%_100%] p-4 rounded-xl bg-content1/60 flex flex-col gap-1 text-center">
+		<div className="border shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-48 animate-shimmer bg-size-[200%_100%] p-4 rounded-xl bg-content1/60 flex flex-col gap-1 text-center">
 			<div className="flex gap-4 flex-col my-4">
 				<div className="mx-auto bg-white !dark:bg-white p-2 rounded-lg">
 					<QRCode size={undefined} value={code} className="mx-auto min-w-full rounded-md" />
@@ -80,11 +80,11 @@ export function QRReader({ delegates }) {
 
 	return (
 		<>
-			<div className="border shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-[47] animate-shimmer bg-[length:200%_100%] md:p-4 rounded-xl bg-content1/60 flex flex-col gap-1 text-center">
+			<div className="border shadow-lg shadow-content1 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] relative z-47 animate-shimmer bg-size-[200%_100%] md:p-4 rounded-xl bg-content1/60 flex flex-col gap-1 text-center">
 				{error ? (
 					<div className="w-full  md:w-64 flex flex-col gap-2 p-4 mx-auto rounded-lg overflow-hidden">
-						<Text className="!text-white !text-lg">We couldn&apos;t access your camera. Please make sure you have granted camera permissions.</Text>
-						<Text className="text-zinc-200 !text-xs">
+						<Text className="text-white! text-lg!">We couldn&apos;t access your camera. Please make sure you have granted camera permissions.</Text>
+						<Text className="text-zinc-200 text-xs!">
 							<i>Check your settings and try again.</i>
 						</Text>
 						<Button onClick={() => window.location.reload()} className="mt-2" color="primary">
@@ -100,7 +100,7 @@ export function QRReader({ delegates }) {
 			<Field>
 				<Label>Manually Register</Label>
 				<Description>Search by Name, Surname, User ID or School.</Description>
-				<SearchBar className="!w-[500px] flex-1" />
+				<SearchBar className="w-[500px]! flex-1" />
 			</Field>
 			{!!delegates.length && (
 				<Table>

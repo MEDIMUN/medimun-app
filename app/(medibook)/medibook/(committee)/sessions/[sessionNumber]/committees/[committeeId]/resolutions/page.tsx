@@ -300,10 +300,10 @@ async function ScResolutionPage({ params, searchParams, authSession, selectedSes
 							<TabsTrigger value="PREAMBS">All Preambulatory Clauses</TabsTrigger>
 							<TabsTrigger value="OPERATIVES">All Operative Clauses</TabsTrigger>
 							<TabsTrigger value="DRAFT">Draft Resolutions</TabsTrigger>
-							<TabsTrigger className="!text-red-500" value="FAILED">
+							<TabsTrigger className="text-red-500!" value="FAILED">
 								Failed Resolutions
 							</TabsTrigger>
-							<TabsTrigger className="!text-green-500" value="PASSED">
+							<TabsTrigger className="text-green-500!" value="PASSED">
 								Adopted Resolutions
 							</TabsTrigger>
 						</TabsList>
@@ -719,26 +719,26 @@ async function GaReslutionPage({ params, searchParams, authSession, selectedSess
 							{isDelegateOfCommittee && <TabsTrigger value="co_resolutions">Co-Submitting Resolutions</TabsTrigger>}
 							{(isChairOfCommittee || isManagement) && (
 								<TabsTrigger value="DRAFT">
-									Draft <Badge className="ml-1 !rounded-full"> Stage 1 </Badge>
+									Draft <Badge className="ml-1 rounded-full!"> Stage 1 </Badge>
 								</TabsTrigger>
 							)}
 							{isDelegateOfCommittee && <TabsTrigger value="invitations">Co-Submitter Invitations</TabsTrigger>}
 							{(isChairOfCommittee || isManagement) && (
 								<TabsTrigger value="SENT_TO_CHAIRS">
-									Submitted to Chairs <Badge className="ml-1 !rounded-full"> Stage 2 </Badge>
+									Submitted to Chairs <Badge className="ml-1 rounded-full!"> Stage 2 </Badge>
 								</TabsTrigger>
 							)}
 							{(isChairOfCommittee || isManagement) && (
 								<TabsTrigger value="SENT_TO_APPROVAL_PANEL">
 									Sent to Approval Panel
-									<Badge className="ml-1 !rounded-full"> Stage 3 </Badge>
+									<Badge className="ml-1 rounded-full!"> Stage 3 </Badge>
 								</TabsTrigger>
 							)}
 							{(isChairOfCommittee || isManagement) && <TabsTrigger value="SENT_BACK_TO_COMMITTEE">To Be Debated</TabsTrigger>}
-							<TabsTrigger className="!text-red-500" value="FAILED">
+							<TabsTrigger className="text-red-500!" value="FAILED">
 								Failed Resolutions
 							</TabsTrigger>
-							<TabsTrigger className="!text-green-500" value="PASSED">
+							<TabsTrigger className="text-green-500!" value="PASSED">
 								Adopted Resolutions
 							</TabsTrigger>
 						</TabsList>

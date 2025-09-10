@@ -71,7 +71,7 @@ export async function SpecificDaySchedule(props) {
 						{sortedEvents.map((dayEvent) => {
 							const isCurrent = currentTimeString >= dayEvent.startTime && currentTimeString <= dayEvent.endTime;
 							return (
-								<TableRow className={cn(isCurrent ? "bg-zinc-200 !font-bold !text-black" : "")} key={dayEvent.id}>
+								<TableRow className={cn(isCurrent ? "bg-zinc-200 font-bold! text-black!" : "")} key={dayEvent.id}>
 									{isManagement && (
 										<TableCell>
 											<Dropdown>

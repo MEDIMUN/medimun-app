@@ -56,7 +56,7 @@ export default async function SchoolDirectorApplicationsPage(props: { params: Pr
 				{!applicationsOpen && !selectedUserHasApplication && (
 					<div className="rounded-md bg-zinc-100 p-4">
 						<div className="flex">
-							<div className="flex flex-shrink-0">
+							<div className="flex shrink-0">
 								<CircleX aria-hidden="true" className="my-auto h-5 w-5 text-zinc-400" />
 							</div>
 							<Text className="ml-3">Applications are currently closed.</Text>
@@ -66,7 +66,7 @@ export default async function SchoolDirectorApplicationsPage(props: { params: Pr
 				{!selectedUser.phoneNumber && !selectedUserHasApplication && (
 					<div className="rounded-md bg-zinc-100 p-4">
 						<div className="flex">
-							<div className="flex flex-shrink-0">
+							<div className="flex shrink-0">
 								<CircleX aria-hidden="true" className="my-auto h-5 w-5 text-zinc-400" />
 							</div>
 							<Text className="ml-3">
@@ -79,7 +79,7 @@ export default async function SchoolDirectorApplicationsPage(props: { params: Pr
 				{!selectedUser.bestTimeToReach && !selectedUserHasApplication && (
 					<div className="rounded-md bg-zinc-100 p-4">
 						<div className="flex">
-							<div className="flex flex-shrink-0">
+							<div className="flex shrink-0">
 								<CircleX aria-hidden="true" className="my-auto h-5 w-5 text-zinc-400" />
 							</div>
 							<Text className="ml-3">

@@ -22,7 +22,7 @@ export function LoadingTable({ columns = ["", "", "", "", ""], includeDropdown =
 						{includeDropdown && (
 							<TableCell key={index + "dropdown"}>
 								<Dropdown>
-									<DropdownButton className="!m-0" plain>
+									<DropdownButton className="m-0!" plain>
 										<Ellipsis width={18} />
 									</DropdownButton>
 								</Dropdown>
