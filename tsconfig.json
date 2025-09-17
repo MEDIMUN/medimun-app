@@ -31,15 +31,16 @@
     "strictNullChecks": true
   },
   "include": [
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/(plenary-floor)/plenary-floor",
     "atailwind.config.ts",
     "cache-handler.mjs",
-    "next.config.mjs",
     "get-countries.js",
-    "app/(plenary-floor)/plenary-floor"
+    "next-env.d.ts",
+    "next.config.mjs",
+    "**/*.mts"
   ],
   "exclude": [
     "node_modules"
