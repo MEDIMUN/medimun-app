@@ -82,7 +82,10 @@ export default async function SchoolDirectorApplicationsPage(props: {
         orderBy: undefined,
       }),
     ])
-    .catch(notFound);
+    .catch((e) => {
+      console.error(e);
+      notFound();
+    });
 
   const approvedCount = totalItems.find((item) => item.isApproved === true)?._count?.id || 0;
   const pendingCount = totalItems.find((item) => item.isApproved === false)?._count?.id || 0;
