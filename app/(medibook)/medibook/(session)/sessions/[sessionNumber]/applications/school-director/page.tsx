@@ -1,7 +1,14 @@
 import { SearchParamsDropDropdownItem, TopBar } from "@/app/(medibook)/medibook/client-components";
 import { auth } from "@/auth";
 import { Badge } from "@/components/badge";
-import { Dropdown, DropdownButton, DropdownDescription, DropdownItem, DropdownLabel, DropdownMenu } from "@/components/dropdown";
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownDescription,
+  DropdownItem,
+  DropdownLabel,
+  DropdownMenu,
+} from "@/components/dropdown";
 import { Link } from "@/components/link";
 import Paginator from "@/components/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
@@ -18,159 +25,187 @@ import { MainWrapper } from "@/components/main-wrapper";
 const itemsPerPage = 10;
 
 const sortOptions = [
-	{ value: "date", order: "asc", label: "Date Applied" },
-	{ value: "date", order: "desc", label: "Date Applied" },
-	{ value: "isApproved", order: "asc", label: "Status" },
-	{ value: "isApproved", order: "desc", label: "Status" },
-	{ value: "bestTimeToReach", order: "asc", label: "Best Time to Reach" },
-	{ value: "bestTimeToReach", order: "desc", label: "Best Time to Reach" },
+  { value: "date", order: "asc", label: "Date Applied" },
+  { value: "date", order: "desc", label: "Date Applied" },
+  { value: "isApproved", order: "asc", label: "Status" },
+  { value: "isApproved", order: "desc", label: "Status" },
+  { value: "bestTimeToReach", order: "asc", label: "Best Time to Reach" },
+  { value: "bestTimeToReach", order: "desc", label: "Best Time to Reach" },
 ];
 
 export function areSchoolDirectorApplicationsOpen(selectedSession) {
-	if (!selectedSession) return false;
-	//if not current session
-	if (!selectedSession.isCurrent) return false;
-	//if force open is on
-	if (selectedSession.isSchoolDirectorApplicationsForceOpen) return true;
-	//if auto closed or not auto open
-	if (!selectedSession.isSchoolDirectorApplicationsAutoOpen) return false;
-	const now = new Date();
-	return selectedSession.schoolDirectorApplicationsAutoOpenTime < now && selectedSession.schoolDirectorApplicationsAutoCloseTime > now;
+  if (!selectedSession) return false;
+  //if not current session
+  if (!selectedSession.isCurrent) return false;
+  //if force open is on
+  if (selectedSession.isSchoolDirectorApplicationsForceOpen) return true;
+  //if auto closed or not auto open
+  if (!selectedSession.isSchoolDirectorApplicationsAutoOpen) return false;
+  const now = new Date();
+  return (
+    selectedSession.schoolDirectorApplicationsAutoOpenTime < now &&
+    selectedSession.schoolDirectorApplicationsAutoCloseTime > now
+  );
 }
 
-export default async function SchoolDirectorApplicationsPage(props: { params: Promise<{ sessionNumber: string }>; searchParams: Promise<any> }) {
-	const searchParams = await props.searchParams;
-	const params = await props.params;
-	const authSession = await auth();
-	if (!authSession || !authorize(authSession, [s.sd])) return notFound();
+export default async function SchoolDirectorApplicationsPage(props: {
+  params: Promise<{ sessionNumber: string }>;
+  searchParams: Promise<any>;
+}) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+  const authSession = await auth();
+  if (!authSession || !authorize(authSession, [s.management])) return notFound();
 
-	const currentPage = Number(searchParams.page) || 1;
-	const query = searchParams.search || "";
-	const orderBy = searchParams.order || "date";
-	const orderDirection = parseOrderDirection(searchParams.direction, "desc");
+  const currentPage = Number(searchParams.page) || 1;
+  const query = searchParams.search || "";
+  const orderBy = searchParams.order || "date";
+  const orderDirection = parseOrderDirection(searchParams.direction, "desc");
 
-	const [selectedSession, applications, totalItems] = await prisma
-		.$transaction([
-			prisma.session.findFirst({ where: { number: params.sessionNumber } }),
-			prisma.applicationSchoolDirector.findMany({
-				where: {
-					session: { number: params.sessionNumber },
-					school: { name: { contains: query, mode: "insensitive" } },
-				},
-				orderBy: { [orderBy]: orderDirection },
-				include: { school: true, user: { include: { schoolDirector: { include: { school: true, session: true } } } } },
-				skip: (currentPage - 1) * itemsPerPage,
-				take: itemsPerPage,
-			}),
-			prisma.applicationSchoolDirector.groupBy({
-				by: ["isApproved"],
-				where: { session: { number: params.sessionNumber } },
-				_count: { id: true },
-			}),
-		])
-		.catch(notFound);
+  const [selectedSession, applications, totalItems] = await prisma
+    .$transaction([
+      prisma.session.findFirst({ where: { number: params.sessionNumber } }),
+      prisma.applicationSchoolDirector.findMany({
+        where: {
+          session: { number: params.sessionNumber },
+          school: { name: { contains: query, mode: "insensitive" } },
+        },
+        orderBy: { [orderBy]: orderDirection },
+        include: { school: true, user: { include: { schoolDirector: { include: { school: true, session: true } } } } },
+        skip: (currentPage - 1) * itemsPerPage,
+        take: itemsPerPage,
+      }),
+      prisma.applicationSchoolDirector.groupBy({
+        by: ["isApproved"],
+        where: { session: { number: params.sessionNumber } },
+        _count: { id: true },
+        orderBy: undefined,
+      }),
+    ])
+    .catch(notFound);
 
-	const approvedCount = totalItems.find((item) => item.isApproved === true)?._count?.id || 0;
-	const pendingCount = totalItems.find((item) => item.isApproved === false)?._count?.id || 0;
-	const areApplicationsOpen = areSchoolDirectorApplicationsOpen(selectedSession);
+  const approvedCount = totalItems.find((item) => item.isApproved === true)?._count?.id || 0;
+  const pendingCount = totalItems.find((item) => item.isApproved === false)?._count?.id || 0;
+  const areApplicationsOpen = areSchoolDirectorApplicationsOpen(selectedSession);
 
-	return (
-		<>
-			<TopBar
-				sortOptions={sortOptions}
-				defaultSort="datedesc"
-				buttonText={`Session ${romanize(parseInt(params.sessionNumber))} Applications`}
-				buttonHref={`/medibook/sessions/${params.sessionNumber}/applications`}
-				title="School Director Applications"
-				subheading={`${approvedCount || "None"} Approved, ${pendingCount || "None"} Pending`}
-			/>
-			<MainWrapper>
-				<div className="rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
-					<Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
-				</div>
-				<ApplicationOptions selectedSession={selectedSession} />
-				{!!applications.length && (
-					<Table className="showscrollbar">
-						<TableHead>
-							<TableRow>
-								<TableHeader>
-									<span className="sr-only">Actions</span>
-								</TableHeader>
-								<TableHeader>Status</TableHeader>
-								<TableHeader>Official Name</TableHeader>
-								<TableHeader>Official Surname</TableHeader>
-								<TableHeader>Email</TableHeader>
-								<TableHeader>School</TableHeader>
-								<TableHeader>Previous School Director Roles</TableHeader>
-								<TableHeader>Best Time to Reach</TableHeader>
-								<TableHeader>Date Applied</TableHeader>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{applications.map((application) => {
-								return (
-									<TableRow key={application.id}>
-										<TableCell>
-											<Dropdown>
-												<DropdownButton plain>
-													<Ellipsis width={18} />
-												</DropdownButton>
-												<DropdownMenu>
-													<DropdownItem href={`/medibook/schools/${application.school.slug || application.school.id}`}>View School</DropdownItem>
-													<DropdownItem href={`/medibook/users/${application.user.username || application.user.id}`}>View User</DropdownItem>
-													{!application.isApproved && (
-														<>
-															<SearchParamsDropDropdownItem searchParams={{ "approve-school-director-application": application.id }}>
-																Approve
-															</SearchParamsDropDropdownItem>
-															<SearchParamsDropDropdownItem searchParams={{ "delete-school-director-application": application.id }}>
-																Delete
-															</SearchParamsDropDropdownItem>
-														</>
-													)}
-												</DropdownMenu>
-											</Dropdown>
-										</TableCell>
-										<TableCell>{application.isApproved ? <Badge color="green">Approved</Badge> : <Badge color="yellow">Pending</Badge>}</TableCell>
-										<TableCell>{application.user.officialName}</TableCell>
-										<TableCell>{application.user.officialSurname}</TableCell>
-										<TableCell>{application.user.email}</TableCell>
-										<TableCell>
-											<Link href={`/medibook/schools/${application.school.slug || application.school.id}`}>{application.school.name}</Link>
-										</TableCell>
-										<TableCell>
-											{application.user.schoolDirector.length == 0 ? "None" : application.user.schoolDirector.length} Role
-											{application.user.schoolDirector.length == 1 ? "" : "s"}
-											{!!application.user.schoolDirector.length && (
-												<Dropdown>
-													<DropdownButton className="ml-2" plain>
-														View
-													</DropdownButton>
-													<DropdownMenu>
-														{application.user.schoolDirector.map((sd) => {
-															return (
-																<DropdownItem key={Math.random()} href={`/medibook/sessions/${sd.session.number}`}>
-																	<DropdownLabel>{sd.school.name}</DropdownLabel>
-																	<DropdownDescription>
-																		Session {romanize(sd.session.numberInteger)} ({sd.session.number})
-																	</DropdownDescription>
-																</DropdownItem>
-															);
-														})}
-													</DropdownMenu>
-												</Dropdown>
-											)}
-										</TableCell>
-										<TableCell>{application.user.bestTimeToReach || "-"}</TableCell>
-										<TableCell>{application.date.toLocaleString("en-GB").replace(",", " at ")}</TableCell>
-									</TableRow>
-								);
-							})}
-						</TableBody>
-					</Table>
-				)}
-				<Paginator itemsOnPage={applications.length} itemsPerPage={itemsPerPage} totalItems={pendingCount + approvedCount} />
-			</MainWrapper>
-		</>
-	);
+  return (
+    <>
+      <TopBar
+        sortOptions={sortOptions}
+        defaultSort="datedesc"
+        buttonText={`Session ${romanize(parseInt(params.sessionNumber))} Applications`}
+        buttonHref={`/medibook/sessions/${params.sessionNumber}/applications`}
+        title="School Director Applications"
+        subheading={`${approvedCount || "None"} Approved, ${pendingCount || "None"} Pending`}
+      />
+      <MainWrapper>
+        <div className="rounded-md bg-zinc-950/5 p-4 ring-1 ring-zinc-950/10">
+          <Text>{areApplicationsOpen ? "Applications are currently open." : "Applications are currently closed."}</Text>
+        </div>
+        <ApplicationOptions selectedSession={selectedSession} />
+        {!!applications.length && (
+          <Table className="showscrollbar">
+            <TableHead>
+              <TableRow>
+                <TableHeader>
+                  <span className="sr-only">Actions</span>
+                </TableHeader>
+                <TableHeader>Status</TableHeader>
+                <TableHeader>Official Name</TableHeader>
+                <TableHeader>Official Surname</TableHeader>
+                <TableHeader>Email</TableHeader>
+                <TableHeader>School</TableHeader>
+                <TableHeader>Previous School Director Roles</TableHeader>
+                <TableHeader>Best Time to Reach</TableHeader>
+                <TableHeader>Date Applied</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {applications.map((application) => {
+                return (
+                  <TableRow key={application.id}>
+                    <TableCell>
+                      <Dropdown>
+                        <DropdownButton plain>
+                          <Ellipsis width={18} />
+                        </DropdownButton>
+                        <DropdownMenu>
+                          <DropdownItem href={`/medibook/schools/${application.school.slug || application.school.id}`}>
+                            View School
+                          </DropdownItem>
+                          <DropdownItem href={`/medibook/users/${application.user.username || application.user.id}`}>
+                            View User
+                          </DropdownItem>
+                          {!application.isApproved && (
+                            <>
+                              <SearchParamsDropDropdownItem
+                                searchParams={{ "approve-school-director-application": application.id }}
+                              >
+                                Approve
+                              </SearchParamsDropDropdownItem>
+                              <SearchParamsDropDropdownItem
+                                searchParams={{ "delete-school-director-application": application.id }}
+                              >
+                                Delete
+                              </SearchParamsDropDropdownItem>
+                            </>
+                          )}
+                        </DropdownMenu>
+                      </Dropdown>
+                    </TableCell>
+                    <TableCell>
+                      {application.isApproved ? (
+                        <Badge color="green">Approved</Badge>
+                      ) : (
+                        <Badge color="yellow">Pending</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>{application.user.officialName}</TableCell>
+                    <TableCell>{application.user.officialSurname}</TableCell>
+                    <TableCell>{application.user.email}</TableCell>
+                    <TableCell>
+                      <Link href={`/medibook/schools/${application.school.slug || application.school.id}`}>
+                        {application.school.name}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      {application.user.schoolDirector.length == 0 ? "None" : application.user.schoolDirector.length}{" "}
+                      Role
+                      {application.user.schoolDirector.length == 1 ? "" : "s"}
+                      {!!application.user.schoolDirector.length && (
+                        <Dropdown>
+                          <DropdownButton className="ml-2" plain>
+                            View
+                          </DropdownButton>
+                          <DropdownMenu>
+                            {application.user.schoolDirector.map((sd) => {
+                              return (
+                                <DropdownItem key={Math.random()} href={`/medibook/sessions/${sd.session.number}`}>
+                                  <DropdownLabel>{sd.school.name}</DropdownLabel>
+                                  <DropdownDescription>
+                                    Session {romanize(sd.session.numberInteger)} ({sd.session.number})
+                                  </DropdownDescription>
+                                </DropdownItem>
+                              );
+                            })}
+                          </DropdownMenu>
+                        </Dropdown>
+                      )}
+                    </TableCell>
+                    <TableCell>{application.user.bestTimeToReach || "-"}</TableCell>
+                    <TableCell>{application.date.toLocaleString("en-GB").replace(",", " at ")}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        )}
+        <Paginator
+          itemsOnPage={applications.length}
+          itemsPerPage={itemsPerPage}
+          totalItems={pendingCount + approvedCount}
+        />
+      </MainWrapper>
+    </>
+  );
 }
