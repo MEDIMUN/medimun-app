@@ -28,7 +28,7 @@ export function ModalCreateSession() {
 	const searchParams = useSearchParams();
 	const params = useParams();
 
-	const pageInteger = parseInt(searchParams.get("page"));
+	const pageInteger = parseInt(searchParams?.get("page") || "0");
 
 	const [isLoading, setIsLoading] = useFlushState(false);
 

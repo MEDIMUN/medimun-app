@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
    */ generateBuildId: async () => {
     return process.env.GIT_HASH || Math.random().toString(36).slice(2);
   },
+
   images: {
     minimumCacheTTL: 60,
     remotePatterns: [
@@ -15,6 +16,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "res.cloudinary.com", port: "" },
     ],
   },
+
   async redirects() {
     return [
       { source: "/privacy", destination: "/policies/privacy", permanent: true },
@@ -27,26 +29,31 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
   typescript: { ignoreBuildErrors: true },
   compiler: { removeConsole: process.env.NODE_ENV === "production" },
+
   webpack: (config) => {
     config.resolve.alias.canvas = false;
     return config;
   },
+
   transpilePackages: ["next-auth", "prettier"],
+
   experimental: {
     viewTransition: true,
     cacheComponents: true,
     ppr: true,
     reactCompiler: true,
     staleTimes: { dynamic: 30, static: 3600 },
-    turbo: { resolveAlias: { canvas: "./empty-module.ts" } },
+
     optimizePackageImports: [
       "@react-email",
       "@react-pdf/renderer",
       "lucide-react",
       "@headlessui/react",
     ],
+
     serverActions: {
       bodySizeLimit: "50mb",
       allowedOrigins: [
@@ -58,6 +65,9 @@ const nextConfig: NextConfig = {
     },
   },
   reactStrictMode: true,
+  turbopack: {
+    resolveAlias: { canvas: "./empty-module.ts" },
+  },
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({ enabled: false });

@@ -10,10 +10,10 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 import { JSX, Suspense } from "react";
 import { SocketHandler } from "./client-components";
-/* import ThemedHTMLElement from "./html-element";
- */ import { GeistSans } from "geist/font/sans";
+import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { cn } from "@/lib/cn";
+import { authorize, s } from "@/lib/authorize";
 
 export const metadata: Metadata = {
   title: {
@@ -35,17 +35,15 @@ export function NoScript() {
           />
         </Link>
         <p>
-          Your browser does not support JavaScript or it&apos;s turned off. The
-          MediBook App and the MEDIMUN Website require JavaScript to function
-          properly. Please enable JavaScript in your browser settings.
+          Your browser does not support JavaScript or it&apos;s turned off. The MediBook App and the MEDIMUN Website
+          require JavaScript to function properly. Please enable JavaScript in your browser settings.
         </p>
         <br />
         <p>If you believe this is an error, please contact us.</p>
         <br />
         <p className="text-xs">
-          If you need to access MediBook without JavaScript, please email us
-          using the email address you registered with for the conference. We
-          will consider remotely enabling a limited version of the app for you.
+          If you need to access MediBook without JavaScript, please email us using the email address you registered with
+          for the conference. We will consider remotely enabling a limited version of the app for you.
         </p>
       </div>
     </noscript>
@@ -53,19 +51,16 @@ export function NoScript() {
 }
 
 async function SessionsSidebar() {
-  const sessionsPromise = await prisma.session
+  const authSession = await auth();
+  const isManagement = authorize(authSession, [s.management]);
+
+  const sessions = await prisma.session
     .findMany({
       take: 5,
-      orderBy: [{ isMainShown: "desc" }, { numberInteger: "desc" }],
+      ...(isManagement ? {} : { where: { isVisible: true } }),
+      orderBy: [{ numberInteger: "desc" }],
     })
     .catch();
-
-  const authSessionPromise = await auth();
-
-  const [sessions, authSession] = await Promise.all([
-    sessionsPromise,
-    authSessionPromise,
-  ]);
 
   return <AppSidebar authSession={authSession} sessions={sessions} />;
 }
@@ -91,19 +86,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(
-        "h-full antialiased",
-        GeistSans.variable,
-        GeistMono.variable,
-      )}
+      className={cn("h-full antialiased", GeistSans.variable, GeistMono.variable)}
       suppressHydrationWarning
     >
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <script
@@ -139,18 +127,15 @@ export default function RootLayout({
               <SessionsSidebar />
             </Suspense>
             <div className="relative max-h-dvh w-full overflow-x-hidden overflow-y-scroll">
-              <main
-                id="main-element"
-                className="w-full overflow-x-hidden overflow-y-scroll"
-              >
+              <main id="main-element" className="w-full overflow-x-hidden overflow-y-scroll">
                 <div className="h-[65px] shadow-sm"></div>
                 {children}
                 {announcement}
-                <div className="fixed bottom-16 left-1/2 right-1/2 z-[100] flex w-max -translate-x-1/2 gap-4">
+                {/*                 <div className="fixed bottom-16 left-1/2 right-1/2 z-[100] flex w-max -translate-x-1/2 gap-4">
                   <div className="duration-250 backdrop-blur-xs flex h-16 w-[400px] rounded-full border-2 border-gray-400/30 bg-neutral-600/20 bg-opacity-80 bg-clip-padding shadow-md backdrop-filter hover:border-gray-600/20 hover:bg-neutral-800/20 hover:shadow-xl hover:backdrop-blur-sm">
                     <div className="m-auto h-14 w-20 rounded-full bg-white/90 shadow-sm"></div>
                   </div>
-                </div>
+                </div> */}
               </main>
             </div>
           </SidebarProvider>

@@ -242,7 +242,7 @@ model Session {
   isCurrent                                      Boolean                                 @default(false)
   isMainShown                                    Boolean                                 @default(false)
   //
-  isPartlyVisible                                Boolean                                 @default(false)
+  isPartlyVisible                                Boolean                                 @default(false) //REMOVE
   isVisible                                      Boolean                                 @default(false)
   //
   directorPrice                                  Int                                     @default(0)

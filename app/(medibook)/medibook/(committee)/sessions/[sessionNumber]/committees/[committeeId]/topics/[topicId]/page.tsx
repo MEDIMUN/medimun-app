@@ -13,61 +13,66 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 export default function Page(props) {
-	return (
-		<Suspense fallback={<div>Loading...</div>}>
-			<SpecificTopic {...props} />
-		</Suspense>
-	);
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SpecificTopic {...props} />
+    </Suspense>
+  );
 }
 
 export async function SpecificTopic(props) {
-	await connection();
-	const params = await props.params;
-	const authSession = await auth();
-	const isManagement = authorize(authSession, [s.management]);
+  await connection();
+  const params = await props.params;
+  const authSession = await auth();
+  const isManagement = authorize(authSession, [s.management]);
 
-	const selectedTopic = await prisma.topic
-		.findUniqueOrThrow({
-			where: {
-				id: params.topicId,
-				description: { not: null },
-				...(!isManagement ? {} : { committee: { isVisible: true } }),
-				...(!isManagement ? {} : { committee: { session: { isPartlyVisible: true } } }),
-			},
-			include: { committee: { include: { session: true } } },
-		})
-		.catch(() => redirect(`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/topics`));
+  const selectedTopic = await prisma.topic
+    .findUniqueOrThrow({
+      where: {
+        id: params.topicId,
+        description: { not: null },
+        ...(!isManagement ? {} : { committee: { isVisible: true } }),
+        ...(!isManagement ? {} : { committee: { session: { isVisible: true } } }),
+      },
+      include: { committee: { include: { session: true } } },
+    })
+    .catch(() => redirect(`/medibook/sessions/${params.sessionNumber}/committees/${params.committeeId}/topics`));
 
-	const isChairOfCommittee = authorizeChairCommittee(authSession.user.currentRoles, selectedTopic.committee.id);
+  const isChairOfCommittee = authorizeChairCommittee(authSession.user.currentRoles, selectedTopic.committee.id);
 
-	return (
-		<>
-			<TopBar
-				hideBackdrop
-				buttonText={`${selectedTopic.committee.name} Topics`}
-				buttonHref={`/medibook/sessions/${selectedTopic.committee.session.number}/committees/${selectedTopic.committee.slug || selectedTopic.committee.id}/topics`}
-				hideSearchBar
-				title={selectedTopic.title}>
-				{isManagement && <SearchParamsButton searchParams={{ "delete-topic": selectedTopic.id }}>Delete</SearchParamsButton>}
-				{(isManagement || isChairOfCommittee) && <SearchParamsButton searchParams={{ "edit-topic": selectedTopic.id }}>Edit</SearchParamsButton>}
-			</TopBar>
-			<MainWrapper>
-				<Suspense fallback={<div>404</div>}>
-					<MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedTopic.description} />
-				</Suspense>
-				<Divider className="mt-[750px]" />
-				<Subheading className="font-extralight!">
-					{"We are not responsible for the contents of topic descriptions. Please refer to our "}
-					<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
-						code of conduct
-					</Link>
-					{" and "}
-					<Link className="underline hover:text-primary" href="/conduct#announcements" target="_blank">
-						terms of service
-					</Link>
-					{" for more information."}
-				</Subheading>
-			</MainWrapper>
-		</>
-	);
+  return (
+    <>
+      <TopBar
+        hideBackdrop
+        buttonText={`${selectedTopic.committee.name} Topics`}
+        buttonHref={`/medibook/sessions/${selectedTopic.committee.session.number}/committees/${selectedTopic.committee.slug || selectedTopic.committee.id}/topics`}
+        hideSearchBar
+        title={selectedTopic.title}
+      >
+        {isManagement && (
+          <SearchParamsButton searchParams={{ "delete-topic": selectedTopic.id }}>Delete</SearchParamsButton>
+        )}
+        {(isManagement || isChairOfCommittee) && (
+          <SearchParamsButton searchParams={{ "edit-topic": selectedTopic.id }}>Edit</SearchParamsButton>
+        )}
+      </TopBar>
+      <MainWrapper>
+        <Suspense fallback={<div>404</div>}>
+          <MDXRemote components={{ ...announcementWebsitecomponents }} source={selectedTopic.description} />
+        </Suspense>
+        <Divider className="mt-[750px]" />
+        <Subheading className="font-extralight!">
+          {"We are not responsible for the contents of topic descriptions. Please refer to our "}
+          <Link className="hover:text-primary underline" href="/conduct#announcements" target="_blank">
+            code of conduct
+          </Link>
+          {" and "}
+          <Link className="hover:text-primary underline" href="/conduct#announcements" target="_blank">
+            terms of service
+          </Link>
+          {" for more information."}
+        </Subheading>
+      </MainWrapper>
+    </>
+  );
 }
