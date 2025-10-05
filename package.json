@@ -15,7 +15,7 @@
     "os": false
   },
   "dependencies": {
-    "@headlessui/react": "^0.0.0-insiders.c9bf352",
+    "@headlessui/react": "0.0.0-insiders.c9bf352",
     "@heroui/avatar": "2.2.16-beta.3",
     "@heroui/badge": "2.2.13-beta.2",
     "@heroui/button": "2.2.20-beta.3",
