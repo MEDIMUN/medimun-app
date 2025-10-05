@@ -142,13 +142,7 @@ export function SessionSwitcher({
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
                   {localSelected?.theme || `Session ${romanize(localSelected?.numberInteger)}`}
-                  {!localSelected?.isVisible ? (
-                    <Badge color="red" className="ml-2">
-                      Hidden
-                    </Badge>
-                  ) : (
-                    ""
-                  )}
+                  {!localSelected?.isVisible ? " (Hidden)" : ""}
                 </span>
                 {localSelected?.theme && (
                   <span className="truncate text-xs">Session {romanize(localSelected?.numberInteger)}</span>
