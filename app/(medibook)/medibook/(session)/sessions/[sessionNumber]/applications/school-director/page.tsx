@@ -84,7 +84,7 @@ export default async function SchoolDirectorApplicationsPage(props: {
     ])
     .catch((e) => {
       console.error(e);
-      notFound();
+      notFound;
     });
 
   const approvedCount = totalItems.find((item) => item.isApproved === true)?._count?.id || 0;

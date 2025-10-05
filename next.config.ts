@@ -29,9 +29,8 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-
   typescript: { ignoreBuildErrors: true },
-  compiler: { removeConsole: process.env.NODE_ENV === "production" },
+  compiler: { removeConsole: process.env.REMOVE_CONSOLE === "true" },
 
   webpack: (config) => {
     config.resolve.alias.canvas = false;
@@ -47,21 +46,11 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     staleTimes: { dynamic: 30, static: 3600 },
 
-    optimizePackageImports: [
-      "@react-email",
-      "@react-pdf/renderer",
-      "lucide-react",
-      "@headlessui/react",
-    ],
+    optimizePackageImports: ["@react-email", "@react-pdf/renderer", "lucide-react", "@headlessui/react"],
 
     serverActions: {
       bodySizeLimit: "50mb",
-      allowedOrigins: [
-        "https://www.medimun.org",
-        "www.medimun.org",
-        "www.medimun.org.",
-        "https://www.medimun.org.",
-      ],
+      allowedOrigins: ["https://www.medimun.org", "www.medimun.org", "www.medimun.org.", "https://www.medimun.org."],
     },
   },
   reactStrictMode: true,
