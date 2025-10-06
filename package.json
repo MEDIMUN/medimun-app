@@ -1,6 +1,6 @@
 {
   "name": "medimun-app",
-  "version": "0.9.88",
+  "version": "0.9.89",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --experimental-https --port 443",
