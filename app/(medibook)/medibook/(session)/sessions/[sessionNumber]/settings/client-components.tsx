@@ -1,5 +1,5 @@
 "use client";
-import { Button, ButtonGroup } from "@heroui/button";
+import { Button } from "@heroui/button";
 import { Divider } from "@/components/divider";
 import { Subheading } from "@/components/heading";
 import { Input } from "@/components/input";
@@ -760,4 +760,8 @@ function SessionActionList({ title, bullets }: { title: string; bullets: string[
       </ul>
     </div>
   );
+}
+
+function ButtonGroup({ children }) {
+  return <div className="ml-auto flex flex-wrap justify-end gap-2">{children}</div>;
 }

@@ -36,14 +36,17 @@ const nextConfig: NextConfig = {
     config.resolve.alias.canvas = false;
     return config;
   },
-
   transpilePackages: ["next-auth", "prettier"],
+
+  reactCompiler: true,
 
   experimental: {
     viewTransition: true,
+
     cacheComponents: true,
+
     ppr: true,
-    reactCompiler: true,
+
     staleTimes: { dynamic: 30, static: 3600 },
 
     optimizePackageImports: ["@react-email", "@react-pdf/renderer", "lucide-react", "@headlessui/react"],
