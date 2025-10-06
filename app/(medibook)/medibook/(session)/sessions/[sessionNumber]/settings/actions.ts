@@ -204,7 +204,7 @@ export async function setMainShown(sessionId) {
     console.log(e);
     return { ok: false, message: ["Could not set main shown session."] };
   }
-  return { ok: true, message: ["Session set as current."] };
+  return { ok: true, message: ["Session set as main shown."] };
 }
 
 export async function setVisible(sessionId: string) {
@@ -228,9 +228,9 @@ export async function setVisible(sessionId: string) {
       data: { isVisible: true },
     });
   } catch {
-    return { ok: false, message: "Could not set fully visible session." };
+    return { ok: false, message: ["Could not set session as visible."] };
   }
-  return { ok: true, message: "Session set as fully visible." };
+  return { ok: true, message: ["Session set as fully visible."] };
 }
 
 export async function setHidden(sessionId: string) {

@@ -38,11 +38,14 @@ import {
   authorizeChairCommittee,
   authorizeDelegateCommittee,
   authorizeDirect,
+  authorizeDirectPerSession,
   authorizeManagerDepartment,
   authorizeMemberDepartment,
+  authorizePerSession,
   s,
 } from "@/lib/authorize";
 import { romanize } from "@/lib/romanize";
+import { areSchoolDirectorApplicationsOpen } from "@/app/(medibook)/medibook/(session)/sessions/[sessionNumber]/applications/school-director/page";
 
 export function AppSidebar({ sessions, authSession, ...props }: React.ComponentProps<typeof Sidebar>) {
   const {
@@ -350,6 +353,20 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
     },
   ].filter((item) => item.isVisible);
 
+  const applicationsOpen = areSchoolDirectorApplicationsOpen(selectedSessionData);
+
+  const displaySchoolDirectorApplication =
+    applicationsOpen && !authorizeDirectPerSession(authSession, [s.schooldirector], [selectedSession]);
+
+  const individualApplications = [
+    {
+      title: "School Director",
+      url: `${sessionBasePath}/apply/school-director`,
+      icon: BriefcaseBusiness,
+      isVisible: displaySchoolDirectorApplication,
+    },
+  ].filter((item) => item.isVisible);
+
   const isChair = authorizeDirect(authSession, [s.chair]);
 
   const user = {
@@ -379,6 +396,10 @@ export function AppSidebar({ sessions, authSession, ...props }: React.ComponentP
         <SimpleSection items={globalItems} title="Global" />
 
         <SimpleSection items={sessionItems} title={`Session ${romanize(selectedSession)}`} />
+        {!!individualApplications.length && (
+          <SimpleSection items={individualApplications} title={`Individual Applications`} />
+        )}
+
         {!!sessionCommitteeLinks.length && <NavCollapsible title="Session Committees" items={sessionCommitteeLinks} />}
         {!!sessionDepartmentLinks.length && (
           <NavCollapsible title="Session Departments" items={sessionDepartmentLinks} />
