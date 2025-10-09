@@ -35,9 +35,8 @@ export function ModalEditAnnouncement({ selectedAnnouncement, authSession }) {
   const [debouncedMarkDown] = useDebouncedValue(markDown, 5000);
 
   function onClose() {
-    if ()
-     removeSearchParams({ "edit-announcement": "" })
-    router.push(pathname);
+    if (pathname) router.push(pathname);
+    removeSearchParams({ "edit-announcement": "" });
   }
 
   async function handleSubmit(formData: FormData) {
