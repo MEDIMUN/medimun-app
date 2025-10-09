@@ -45,8 +45,6 @@ const nextConfig: NextConfig = {
 
     cacheComponents: true,
 
-    ppr: true,
-
     staleTimes: { dynamic: 30, static: 3600 },
 
     optimizePackageImports: ["@react-email", "@react-pdf/renderer", "lucide-react", "@headlessui/react"],
