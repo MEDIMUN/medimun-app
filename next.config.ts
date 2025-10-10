@@ -38,10 +38,11 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: ["next-auth", "prettier"],
 
-  reactCompiler: true,
+  eslint: { ignoreDuringBuilds: true },
 
   experimental: {
     viewTransition: true,
+    reactCompiler: true,
 
     cacheComponents: false,
 

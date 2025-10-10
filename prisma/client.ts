@@ -2,8 +2,8 @@ import { PrismaClient } from "@prisma/client";
 
 // add prisma to the NodeJS global type
 interface CustomNodeJsGlobal extends NodeJS.Global {
-	"use cache";
-	prisma: PrismaClient;
+  /* 	"use cache";
+   */ prisma: PrismaClient;
 }
 
 // Prevent multiple instances of Prisma Client in development
