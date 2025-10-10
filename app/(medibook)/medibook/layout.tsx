@@ -63,7 +63,7 @@ async function SessionsSidebar() {
     .catch();
 
   return <AppSidebar authSession={authSession} sessions={sessions} />;
-}
+// }
 
 export default function RootLayout({
   children,

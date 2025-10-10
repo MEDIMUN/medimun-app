@@ -1,11 +1,6 @@
 "use client";
 import { Button } from "@/components/button";
-import {
-  Dropdown,
-  DropdownButton,
-  DropdownItem,
-  DropdownMenu,
-} from "@/components/dropdown";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/dropdown";
 import { Input, InputGroup } from "@/components/input";
 import { Text, TextLink } from "@/components/text";
 import { useUpdateEffect } from "@/hooks/use-update-effect";
@@ -13,11 +8,7 @@ import { cn } from "@/lib/cn";
 import { removeSearchParams, updateSearchParams } from "@/lib/search-params";
 import { useDebouncedValue } from "@mantine/hooks";
 import { signOut, useSession } from "next-auth/react";
-import {
-  useRouter as useNextRouter,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { useRouter as useNextRouter, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { authorizedToEditResource } from "./@resourceModals/default";
@@ -42,22 +33,11 @@ import { ChevronLeft, Clock, Ellipsis, Phone, Search, X } from "lucide-react";
 import Image from "next/image";
 import MiniLogo from "@/public/assets/branding/logos/miniaturelogo.svg";
 import { FastLink } from "@/components/fast-link";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heading, Subheading } from "@/components/heading";
 import { Divider } from "@/components/divider";
 import { FastLink as Link } from "@/components/fast-link";
-import {
-  Dialog,
-  DialogActions,
-  DialogBody,
-  DialogTitle,
-} from "@/components/dialog";
+import { Dialog, DialogActions, DialogBody, DialogTitle } from "@/components/dialog";
 import { TopBar as ToooopBar } from "@/components/top-bar";
 
 export function TopBar(props) {
@@ -69,23 +49,15 @@ export function DirectionDropdown({ defaultValue, items, ...props }) {
   const searchParams = useSearchParams();
 
   function handleOnChange(value: string) {
-    const selectedItem = items.find(
-      (item) => item.value + item.order === value,
-    );
+    const selectedItem = items.find((item) => item.value + item.order === value);
     if (selectedItem) {
-      updateSearchParams(
-        { order: selectedItem.value, direction: selectedItem.order },
-        router,
-      );
+      updateSearchParams({ order: selectedItem.value, direction: selectedItem.order }, router);
     }
   }
 
   const currentValue =
-    items.find(
-      (item) =>
-        item.value + item.order ===
-        searchParams.get("order") + searchParams.get("direction"),
-    ) || items.find((item) => item.value + item.order === defaultValue);
+    items.find((item) => item.value + item.order === searchParams.get("order") + searchParams.get("direction")) ||
+    items.find((item) => item.value + item.order === defaultValue);
 
   return (
     <Select
@@ -101,11 +73,7 @@ export function DirectionDropdown({ defaultValue, items, ...props }) {
           <SelectItem key={index} value={option.value + option.order}>
             <span className="font-medium">{option.label}</span>
             <span className="text-muted-foreground ml-2">
-              {option.description
-                ? option.description
-                : option.order.includes("asc")
-                  ? "↑"
-                  : "↓"}
+              {option.description ? option.description : option.order.includes("asc") ? "↑" : "↓"}
             </span>
           </SelectItem>
         ))}
@@ -114,12 +82,7 @@ export function DirectionDropdown({ defaultValue, items, ...props }) {
   );
 }
 
-export function SearchBar({
-  placeholder = "Search...",
-  debounceDelay = 500,
-  defaultValue = "",
-  className = "",
-}) {
+export function SearchBar({ placeholder = "Search...", debounceDelay = 500, defaultValue = "", className = "" }) {
   const router = useNextRouter();
   const searchParams = useSearchParams();
   const currentSearch = searchParams && searchParams.get("search");
@@ -195,9 +158,7 @@ export function TopBar3({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  sortOptions =
-    sortOptions &&
-    sortOptions.map((option, index) => ({ ...option, key: index }));
+  sortOptions = sortOptions && sortOptions.map((option, index) => ({ ...option, key: index }));
   return (
     <>
       {!hideBackdrop && (
@@ -218,13 +179,7 @@ export function TopBar3({
           ></div>
         </>
       )}
-      <div
-        id="clientTopbar"
-        className={cn(
-          "z-10 flex flex-wrap items-end justify-between gap-4",
-          className,
-        )}
-      >
+      <div id="clientTopbar" className={cn("z-10 flex flex-wrap items-end justify-between gap-4", className)}>
         <div className="w-full sm:flex-1">
           {buttonText && buttonHref && (
             <Link href={buttonHref}>
@@ -234,9 +189,7 @@ export function TopBar3({
                   width={18}
                   className="my-auto ml-1 min-h-5 min-w-5 -translate-y-[0.5px] text-zinc-400"
                 />
-                <Text className="mr-[11px] min-w-max text-sm">
-                  {buttonText}
-                </Text>
+                <Text className="mr-[11px] min-w-max text-sm">{buttonText}</Text>
               </div>
             </Link>
           )}
@@ -244,35 +197,20 @@ export function TopBar3({
           <Subheading level={6} className="font-light!">
             {subheading}
           </Subheading>
-          <div
-            className={cn(
-              "flex flex-col gap-4 md:flex-row",
-              (!hideSearchBar || sortOptions) && "mt-4",
-            )}
-          >
+          <div className={cn("flex flex-col gap-4 md:flex-row", (!hideSearchBar || sortOptions) && "mt-4")}>
             {!hideSearchBar && (
               <div className="w-full flex-1">
-                <SearchBar
-                  className="rounded-xl shadow-sm"
-                  placeholder={searchText}
-                />
+                <SearchBar className="rounded-xl shadow-sm" placeholder={searchText} />
               </div>
             )}
             {sortOptions && (
               <div>
-                <DirectionDropdown
-                  items={sortOptions}
-                  defaultValue={defaultSort}
-                />
+                <DirectionDropdown items={sortOptions} defaultValue={defaultSort} />
               </div>
             )}
           </div>
         </div>
-        {children && (
-          <div className="grid w-full grid-cols-1 gap-4 md:flex md:w-auto md:flex-row">
-            {children}
-          </div>
-        )}
+        {children && <div className="grid w-full grid-cols-1 gap-4 md:flex md:w-auto md:flex-row">{children}</div>}
       </div>
 
       {showDivider && <Divider soft />}
@@ -316,18 +254,13 @@ export function TopBar2({
   hideBackdrop?: boolean;
   config?: any;
 }) {
-  sortOptions =
-    sortOptions &&
-    sortOptions.map((option, index) => ({ ...option, key: index }));
+  sortOptions = sortOptions && sortOptions.map((option, index) => ({ ...option, key: index }));
 
   const [isMounted, setIsMounted] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const isSearchActive = !(searchParams?.get("search") == undefined);
-  const [debouncedSearch] = useDebouncedValue(
-    searchParams?.get("search") || "",
-    500,
-  );
+  const [debouncedSearch] = useDebouncedValue(searchParams?.get("search") || "", 500);
   const searchInputRef = useRef(null);
   const spacerRef = useRef(null);
   const [configShown, setConfigShown] = useState(false);
@@ -342,12 +275,7 @@ export function TopBar2({
   /* 	if (isMounted)
    */ return (
     <>
-      <Dialog
-        open={configShown}
-        onClose={() => setConfigShown(false)}
-        title="Options"
-        className="w-full max-w-[500px]"
-      >
+      <Dialog open={configShown} onClose={() => setConfigShown(false)} title="Options" className="w-full max-w-[500px]">
         <DialogTitle>Options</DialogTitle>
         <DialogBody>{config}</DialogBody>
         <DialogActions>
@@ -358,25 +286,13 @@ export function TopBar2({
         <div className="flex h-[65px] w-full items-center">
           <div className="flex w-full items-center">
             <div className="border-sidebar-border flex h-[65px] w-full flex-col overflow-y-hidden border-b duration-200">
-              <div
-                className={cn(
-                  "fixed top-0 flex min-h-[65px] items-center px-2",
-                )}
-              >
+              <div className={cn("fixed top-0 flex min-h-[65px] items-center px-2")}>
                 <Breadcrumb className="px-2 md:px-4">
                   <BreadcrumbList>
                     <BreadcrumbItem>
-                      <BreadcrumbLink
-                        href="/medibook"
-                        className="flex items-center gap-2"
-                      >
+                      <BreadcrumbLink href="/medibook" className="flex items-center gap-2">
                         <Image alt="Mini MediBook Logo" src={MiniLogo} />
-                        <BreadcrumbPage
-                          className={cn(
-                            "md:block",
-                            !hideBreadcrums && "hidden",
-                          )}
-                        >
+                        <BreadcrumbPage className={cn("md:block", !hideBreadcrums && "hidden")}>
                           MediBook
                         </BreadcrumbPage>
                       </BreadcrumbLink>
@@ -385,9 +301,7 @@ export function TopBar2({
                       <>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                          <BreadcrumbLink href={buttonHref}>
-                            {buttonText}
-                          </BreadcrumbLink>
+                          <BreadcrumbLink href={buttonHref}>{buttonText}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
@@ -404,16 +318,12 @@ export function TopBar2({
               <div
                 className={cn(
                   "bg-sidebar-primary-foreground flex min-h-[65px] items-center",
-                  isSearchActive
-                    ? "translate-y-[0px] duration-300"
-                    : "translate-y-[65px] duration-300",
+                  isSearchActive ? "translate-y-[0px] duration-300" : "translate-y-[65px] duration-300",
                 )}
               >
                 <SInput
                   ref={searchInputRef}
-                  onChange={(e) =>
-                    updateSearchParams({ search: e.target.value })
-                  }
+                  onChange={(e) => updateSearchParams({ search: e.target.value })}
                   value={searchParams ? (searchParams.get("search") ?? "") : ""}
                   placeholder="Search..."
                   type="search"
@@ -440,11 +350,7 @@ export function TopBar2({
                   size="icon"
                   className={cn("h-8 w-8", className)}
                 >
-                  {isSearchActive ? (
-                    <X className="-ml-px" />
-                  ) : (
-                    <Search className="-ml-px" />
-                  )}
+                  {isSearchActive ? <X className="-ml-px" /> : <Search className="-ml-px" />}
                   <span className="sr-only">Search</span>
                 </Button>
               </div>
@@ -465,9 +371,7 @@ export function TopBar2({
             <FastLink href={buttonHref}>
               <div className="-ml-[2px] -mt-1 flex max-w-min text-sm leading-none">
                 <ChevronLeft className="m-auto size-4" />
-                <Text className="mr-[11px] min-w-max text-sm">
-                  {buttonText}
-                </Text>
+                <Text className="mr-[11px] min-w-max text-sm">{buttonText}</Text>
               </div>
             </FastLink>
           )}
@@ -477,26 +381,17 @@ export function TopBar2({
                 <h1 className="text-2xl font-semibold md:text-2xl">{title}</h1>
               </div>
               {subheading && (
-                <h2 className="text-muted-foreground font-[Gilroy] text-base font-semibold">
-                  {subheading}
-                </h2>
+                <h2 className="text-muted-foreground font-[Gilroy] text-base font-semibold">{subheading}</h2>
               )}
             </div>
           )}
-          <div
-            className={cn(
-              "flex flex-col gap-4 md:flex-row",
-              (!hideSearchBar || sortOptions) && "mt-4",
-            )}
-          >
+          <div className={cn("flex flex-col gap-4 md:flex-row", (!hideSearchBar || sortOptions) && "mt-4")}>
             {!hideSearchBar && (
               <div className="w-full flex-1">
                 <SInput
                   className="bg-white dark:bg-black"
                   ref={searchInputRef}
-                  onChange={(e) =>
-                    updateSearchParams({ search: e.target.value })
-                  }
+                  onChange={(e) => updateSearchParams({ search: e.target.value })}
                   value={searchParams ? (searchParams.get("search") ?? "") : ""}
                   placeholder="Search..."
                   type="search"
@@ -505,11 +400,7 @@ export function TopBar2({
             )}
             {sortOptions && (
               <div>
-                <DirectionDropdown
-                  className="bg-white dark:bg-black"
-                  items={sortOptions}
-                  defaultValue={defaultSort}
-                />
+                <DirectionDropdown className="bg-white dark:bg-black" items={sortOptions} defaultValue={defaultSort} />
               </div>
             )}
           </div>
@@ -517,11 +408,7 @@ export function TopBar2({
         {(children || config) && (
           <div className="grid w-full grid-cols-1 gap-4 md:flex md:w-auto md:flex-row">
             {children}
-            {config && (
-              <Button onClick={() => setConfigShown(!configShown)}>
-                Options
-              </Button>
-            )}
+            {config && <Button onClick={() => setConfigShown(!configShown)}>Options</Button>}
           </div>
         )}
       </div>
@@ -543,10 +430,8 @@ export function SearchParamsButton({
   const router = useNextRouter();
 
   function handleOnClick() {
-    if (searchParams)
-      updateSearchParams(searchParams, useRouter ? router : null);
-    if (removeSearchParams)
-      removeSearchParams(deleteSearchParams, useRouter ? router : null);
+    if (searchParams) updateSearchParams(searchParams, useRouter ? router : null);
+    if (removeSearchParams) removeSearchParams(deleteSearchParams, useRouter ? router : null);
     router.refresh();
   }
 
@@ -558,8 +443,7 @@ export function SocketHandler() {
   const { socket } = useSocket();
   const router = useRouter();
   const [isConnected, setIsConnected] = useState(false);
-  const [notConnectedFor30Seconds, setNotConnectedFor30Seconds] =
-    useState(false);
+  const [notConnectedFor30Seconds, setNotConnectedFor30Seconds] = useState(false);
 
   useEffect(() => {
     if (!socket) return;
@@ -633,8 +517,8 @@ export function SocketHandler() {
             MediBook requires an active internet connection.
           </p>
           <p className="mt-6 text-pretty text-lg font-medium text-white sm:text-xl/8">
-            This also happens after app updates, please refresh the page to
-            reconnect if you are sure you have an active internet connection.
+            This also happens after app updates, please refresh the page to reconnect if you are sure you have an active
+            internet connection.
           </p>
           <div className="fixed left-0 top-0 flex w-full gap-4 bg-white p-4">
             <Spinner size="sm" />
@@ -670,12 +554,9 @@ export function UserTooltip({ userId, children }) {
     handleFetchUser();
   }, [isOpen]);
 
-  const fullName =
-    user?.displayName || `${user?.officialName} ${user?.officialSurname}`;
+  const fullName = user?.displayName || `${user?.officialName} ${user?.officialSurname}`;
 
-  const nationalityCountry = countries.find(
-    (c) => c.countryCode == user?.nationality,
-  );
+  const nationalityCountry = countries.find((c) => c.countryCode == user?.nationality);
 
   function Inside() {
     if (isFetching)
@@ -699,9 +580,7 @@ export function UserTooltip({ userId, children }) {
             }}
           />
           <div className="ml-auto flex gap-2">
-            <FastLink
-              href={`/medibook/messenger/@${user?.username || user?.id}?new=true`}
-            >
+            <FastLink href={`/medibook/messenger/@${user?.username || user?.id}?new=true`}>
               <Button color="primary" className="my-auto h-8">
                 Message
               </Button>
@@ -738,9 +617,7 @@ export function UserTooltip({ userId, children }) {
             {user?.bestTimeToReach && (
               <div className="flex gap-1">
                 <Clock size={18} className="my-auto h-4 w-4" />
-                <Text className="my-auto line-clamp-1">
-                  {user?.bestTimeToReach}
-                </Text>
+                <Text className="my-auto line-clamp-1">{user?.bestTimeToReach}</Text>
               </div>
             )}
           </div>
@@ -818,9 +695,7 @@ export function SessionResourceDropdown({ selectedResource }) {
     ? `https://${selectedResource.id.driveUrl}`
     : `https://www.medimun.org/resources/${selectedResource.id}`;
 
-  const authorizedToEdit =
-    status === "authenticated" &&
-    authorizedToEditResource(authSession, selectedResource);
+  const authorizedToEdit = status === "authenticated" && authorizedToEditResource(authSession, selectedResource);
 
   function handleOnClickEditResource() {
     updateSearchParams({ "edit-resource": selectedResource.id }, router);
@@ -847,20 +722,13 @@ export function SessionResourceDropdown({ selectedResource }) {
           View
         </DropdownItem>
         {!selectedResource.driveUrl && (
-          <FileDownloader
-            resourceId={selectedResource.id}
-            fileName={selectedResource.name}
-          />
+          <FileDownloader resourceId={selectedResource.id} fileName={selectedResource.name} />
         )}
         <DropdownItem onClick={shareHandler}>Share</DropdownItem>
         {authorizedToEdit && (
           <>
-            <DropdownItem onClick={handleOnClickEditResource}>
-              Edit Details
-            </DropdownItem>
-            <DropdownItem onClick={handleOnClickDeleteResource}>
-              Delete File
-            </DropdownItem>
+            <DropdownItem onClick={handleOnClickEditResource}>Edit Details</DropdownItem>
+            <DropdownItem onClick={handleOnClickDeleteResource}>Delete File</DropdownItem>
           </>
         )}
       </DropdownMenu>
@@ -884,10 +752,7 @@ export function SearchParamsDropDropdownItem({
   //if dev http://localhost, if prod https://www.medimun.org
 
   function handleOnClick() {
-    const domain =
-      process.env.NODE_ENV === "development"
-        ? "https://localhost"
-        : "https://www.medimun.org";
+    const domain = process.env.NODE_ENV === "development" ? "https://localhost" : "https://www.medimun.org";
     if (url) {
       const baseUrl = new URL(url ? `${domain}${url}` : window.location.href);
       for (const [key, value] of Object.entries(searchParams)) {
@@ -896,7 +761,7 @@ export function SearchParamsDropDropdownItem({
       router.push(baseUrl.toString(), { scroll: false });
       router.refresh();
     } else {
-      updateSearchParams(searchParams, useRouter ? router : null);
+      updateSearchParams(searchParams, router ? router : null);
       router.refresh();
     }
   }

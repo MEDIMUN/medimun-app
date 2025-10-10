@@ -40,7 +40,8 @@
     "get-countries.js",
     "next-env.d.ts",
     "next.config.mjs",
-    "**/*.mts"
+    "**/*.mts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
