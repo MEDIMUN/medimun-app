@@ -43,7 +43,7 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
 
-    cacheComponents: true,
+    cacheComponents: false,
 
     staleTimes: { dynamic: 30, static: 3600 },
 
