@@ -7,10 +7,13 @@ ENV DATABASE_URL=$DATABASE_URL
 # Set working directory
 WORKDIR /usr/src/app
 
+# Install OpenSSL (required by Prisma)
+RUN apk add --no-cache openssl
+
 # Copy only what’s needed to install dependencies
 COPY package.json prisma ./
 
-# Install dependencies (no lockfile)
+# Install dependencies
 RUN bun install
 
 # Generate Prisma client
@@ -22,12 +25,16 @@ COPY . .
 # Build the application
 RUN bun run build
 
-# Production image
+
+# --- Production image ---
 FROM oven/bun:1 as production
 
 WORKDIR /usr/src/app
 
-# Copy the built app and dependencies from the builder
+# Install OpenSSL in runtime too
+RUN apk add --no-cache openssl
+
+# Copy from builder
 COPY --from=builder /usr/src/app /usr/src/app
 
 # Set environment for production
