@@ -7,16 +7,16 @@ ENV DATABASE_URL=$DATABASE_URL
 # Set working directory
 WORKDIR /usr/src/app
 
-# Copy files needed for installation
-COPY bun.lockb package.json prisma ./
+# Copy only what’s needed to install dependencies
+COPY package.json prisma ./
 
-# Install dependencies (cached layer)
-RUN bun install --frozen-lockfile
+# Install dependencies (no lockfile)
+RUN bun install
 
 # Generate Prisma client
 RUN bunx prisma generate
 
-# Copy the rest of the app
+# Copy the rest of the application
 COPY . .
 
 # Build the application
@@ -27,7 +27,7 @@ FROM oven/bun:1 as production
 
 WORKDIR /usr/src/app
 
-# Copy built app and dependencies from builder
+# Copy the built app and dependencies from the builder
 COPY --from=builder /usr/src/app /usr/src/app
 
 # Set environment for production
