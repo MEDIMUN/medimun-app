@@ -228,18 +228,20 @@ export default async function Page(props) {
           hideSearchBar
           title="Delegation Assignment"
         />
-        <DescriptionList>
-          <DescriptionTerm>Application ID</DescriptionTerm>
-          <DescriptionDetails>{delegationAssignmentProposal.id}</DescriptionDetails>
-          <DescriptionTerm>Application Status</DescriptionTerm>
-          <DescriptionDetails>
-            <Badge color="yellow">Pending</Badge>
-          </DescriptionDetails>
-          <DescriptionTerm>Student Assignment Proposal</DescriptionTerm>
-          <DescriptionDetails>
-            <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">{renderAssignments(parsedAssignment)}</div>
-          </DescriptionDetails>
-        </DescriptionList>
+        <MainWrapper>
+          <DescriptionList>
+            <DescriptionTerm>Application ID</DescriptionTerm>
+            <DescriptionDetails>{delegationAssignmentProposal.id}</DescriptionDetails>
+            <DescriptionTerm>Application Status</DescriptionTerm>
+            <DescriptionDetails>
+              <Badge color="yellow">Pending</Badge>
+            </DescriptionDetails>
+            <DescriptionTerm>Student Assignment Proposal</DescriptionTerm>
+            <DescriptionDetails>
+              <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">{renderAssignments(parsedAssignment)}</div>
+            </DescriptionDetails>
+          </DescriptionList>
+        </MainWrapper>
       </>
     );
   }
@@ -254,16 +256,18 @@ export default async function Page(props) {
           hideSearchBar
           title="Delegation Application"
         />
-        <div className="mt-4 rounded-md bg-red-50 p-4">
-          <div className="flex">
-            <div className="shrink-0">
-              <CircleX aria-hidden="true" className="h-5 w-5 text-red-400" />
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Applications are currently closed.</h3>
+        <MainWrapper>
+          <div className="mt-4 rounded-md bg-red-50 p-4">
+            <div className="flex">
+              <div className="shrink-0">
+                <CircleX aria-hidden="true" className="h-5 w-5 text-red-400" />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">Applications are currently closed.</h3>
+              </div>
             </div>
           </div>
-        </div>
+        </MainWrapper>
       </>
     );
   }
@@ -277,164 +281,168 @@ export default async function Page(props) {
         hideSearchBar
         title="Delegation Application"
       />
-      <div className="flex flex-col gap-4">
-        {!applicationsOpen && !selectedSchoolHasApplication && (
-          <div className="rounded-md bg-red-50 p-4">
-            <div className="flex">
-              <div className="shrink-0">
-                <CircleX aria-hidden="true" className="h-5 w-5 text-red-400" />
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Applications are currently closed.</h3>
-              </div>
-            </div>
-          </div>
-        )}
-        {selectedSchoolHasApplication && !grantedDelegation && (
-          <div className="rounded-md bg-zinc-50 px-4">
-            <DescriptionList>
-              <DescriptionTerm>Application ID</DescriptionTerm>
-              <DescriptionDetails>{selectedSchoolHasApplication.id}</DescriptionDetails>
-              <DescriptionTerm>Number of GA Delegations Requested</DescriptionTerm>
-              <DescriptionDetails>{selectedSchoolHasApplication.numberOfGACountries}</DescriptionDetails>
-              <DescriptionTerm>Preferred Countries</DescriptionTerm>
-              <DescriptionDetails className="flex flex-wrap gap-1">
-                {selectedSchoolHasApplication.countyPreferences.map((country) => {
-                  const selectedCountry = countries.find((c) => c.countryCode === country);
-                  return (
-                    <Badge key={country}>
-                      {selectedCountry?.flag} {selectedCountry?.countryNameEn}
-                    </Badge>
-                  );
-                })}
-              </DescriptionDetails>
-              <DescriptionTerm>Application Status</DescriptionTerm>
-              <DescriptionDetails>
-                <Badge color="yellow">Submitted & Pending</Badge>
-              </DescriptionDetails>
-            </DescriptionList>
-          </div>
-        )}
-        {grantedDelegation && (
-          <div className="rounded-md bg-zinc-50 p-4">
-            <div className="flex">
-              <div className="shrink-0">
-                <Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-zinc-800">Your delegation application has been processed: </h3>
-                <div className="mt-2 text-sm text-zinc-700">
-                  <ul role="list" className="list-disc space-y-1 pl-5">
-                    <li>
-                      The application fee for this session is {selectedSession.directorPrice}€ per school director and{" "}
-                      {selectedSession.delegatePrice}€ per delegate.
-                    </li>
-                    <li>
-                      If you have any questions or need assistance with your application, please contact us at{" "}
-                      <Link href="mailto:info@medimun.org">info@medimun.org</Link>.
-                    </li>
-                    <li>
-                      Select all students you will assign to GAs, Security Councils, and other committees below; you
-                      will assign the selected students in the next stage.
-                    </li>
-                    <li>
-                      To appear in the list below, students must have a MediBook account, select {selectedSchool.name}{" "}
-                      as their school in their account settings, provide a valid birthday, and be aged between{" "}
-                      {selectedSession.minimumDelegateAgeOnFirstConferenceDay} and{" "}
-                      {selectedSession.maximumDelegateAgeOnFirstConferenceDay} years old on the first day of the
-                      conference. For questions about our age policy or if a student who should be listed does not
-                      appear, please contact us at <Link href="mailto:info@medimun.org">info@medimun.org</Link>.
-                    </li>
-                    <li>
-                      Once you complete this stage of the application, our team will review and confirm your choices.
-                      Your delegates will receive their roles, and you will receive an invoice in the payments section
-                      under the School Management tab in the sidebar.
-                    </li>
-                  </ul>
+      <MainWrapper>
+        <div className="flex flex-col gap-4">
+          {!applicationsOpen && !selectedSchoolHasApplication && (
+            <div className="rounded-md bg-red-50 p-4">
+              <div className="flex">
+                <div className="shrink-0">
+                  <CircleX aria-hidden="true" className="h-5 w-5 text-red-400" />
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">Applications are currently closed.</h3>
                 </div>
               </div>
             </div>
-          </div>
-        )}
-        {grantedDelegation && (
-          <div className="rounded-md bg-zinc-50 px-4">
-            <DescriptionList>
-              <DescriptionTerm>Number of GA Delegations</DescriptionTerm>
-              <DescriptionDetails>
-                {grantedDelegation.countries.filter((c) => c !== "NOTGRANTED").length}
-              </DescriptionDetails>
-              <DescriptionTerm>Assigned GA Countries</DescriptionTerm>
-              <DescriptionDetails className="flex flex-wrap gap-1">
-                {grantedDelegation.countries
-                  .filter((c) => c !== "NOTGRANTED")
-                  .map((country) => {
+          )}
+          {selectedSchoolHasApplication && !grantedDelegation && (
+            <div className="rounded-md bg-zinc-50 px-4">
+              <DescriptionList>
+                <DescriptionTerm>Application ID</DescriptionTerm>
+                <DescriptionDetails>{selectedSchoolHasApplication.id}</DescriptionDetails>
+                <DescriptionTerm>Number of GA Delegations Requested</DescriptionTerm>
+                <DescriptionDetails>{selectedSchoolHasApplication.numberOfGACountries}</DescriptionDetails>
+                <DescriptionTerm>Preferred Countries</DescriptionTerm>
+                <DescriptionDetails className="flex flex-wrap gap-1">
+                  {selectedSchoolHasApplication.countyPreferences.map((country) => {
                     const selectedCountry = countries.find((c) => c.countryCode === country);
                     return (
-                      <Badge className="max-w-max" key={country}>
+                      <Badge key={country}>
                         {selectedCountry?.flag} {selectedCountry?.countryNameEn}
                       </Badge>
                     );
                   })}
-              </DescriptionDetails>
-            </DescriptionList>
-          </div>
-        )}
-        {selectedSchoolHasApplication && grantedDelegation && (
-          <SelectStudents
-            numberOfStudents={numberOfStudents}
-            grantedDelegation={grantedDelegation}
-            students={schoolStudents}
-            selectedSession={selectedSession}
-          />
-        )}
-        {!selectedSchoolHasApplication && (
-          <div className="rounded-md bg-zinc-50 p-4">
-            <div className="flex">
-              <div className="shrink-0">
-                <Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-zinc-800">Important application details before you apply:</h3>
-                <div className="mt-2 text-sm text-zinc-700">
-                  <ul role="list" className="list-disc space-y-1 pl-5">
-                    <li>
-                      Please fill out the form below to apply for a delegation. You can only apply once per session per
-                      school.
-                    </li>
-                    <li>
-                      You can&apos;t change your application once it has been submitted, so please make sure all the
-                      information is correct before you submit.
-                    </li>
-                    <li>
-                      The application fee for this session is {selectedSession.directorPrice}€ per school director and{" "}
-                      {selectedSession.delegatePrice}€ per delegate.
-                    </li>
-                    <li>
-                      If you have any questions or need help with your application, please contact us at{" "}
-                      <Link href="mailto:info@medimun.org">info@medimun.org</Link>.
-                    </li>
-                    <li>
-                      You can check the status of your application here, and you will also receive an email once your
-                      application has been reviewed and you will have access to the next step.
-                    </li>
-                  </ul>
+                </DescriptionDetails>
+                <DescriptionTerm>Application Status</DescriptionTerm>
+                <DescriptionDetails>
+                  <Badge color="yellow">Submitted & Pending</Badge>
+                </DescriptionDetails>
+              </DescriptionList>
+            </div>
+          )}
+          {grantedDelegation && (
+            <div className="rounded-md bg-zinc-50 p-4">
+              <div className="flex">
+                <div className="shrink-0">
+                  <Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-zinc-800">
+                    Your delegation application has been processed:{" "}
+                  </h3>
+                  <div className="mt-2 text-sm text-zinc-700">
+                    <ul role="list" className="list-disc space-y-1 pl-5">
+                      <li>
+                        The application fee for this session is {selectedSession.directorPrice}€ per school director and{" "}
+                        {selectedSession.delegatePrice}€ per delegate.
+                      </li>
+                      <li>
+                        If you have any questions or need assistance with your application, please contact us at{" "}
+                        <Link href="mailto:info@medimun.org">info@medimun.org</Link>.
+                      </li>
+                      <li>
+                        Select all students you will assign to GAs, Security Councils, and other committees below; you
+                        will assign the selected students in the next stage.
+                      </li>
+                      <li>
+                        To appear in the list below, students must have a MediBook account, select {selectedSchool.name}{" "}
+                        as their school in their account settings, provide a valid birthday, and be aged between{" "}
+                        {selectedSession.minimumDelegateAgeOnFirstConferenceDay} and{" "}
+                        {selectedSession.maximumDelegateAgeOnFirstConferenceDay} years old on the first day of the
+                        conference. For questions about our age policy or if a student who should be listed does not
+                        appear, please contact us at <Link href="mailto:info@medimun.org">info@medimun.org</Link>.
+                      </li>
+                      <li>
+                        Once you complete this stage of the application, our team will review and confirm your choices.
+                        Your delegates will receive their roles, and you will receive an invoice in the payments section
+                        under the School Management tab in the sidebar.
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
+          {grantedDelegation && (
+            <div className="rounded-md bg-zinc-50 px-4">
+              <DescriptionList>
+                <DescriptionTerm>Number of GA Delegations</DescriptionTerm>
+                <DescriptionDetails>
+                  {grantedDelegation.countries.filter((c) => c !== "NOTGRANTED").length}
+                </DescriptionDetails>
+                <DescriptionTerm>Assigned GA Countries</DescriptionTerm>
+                <DescriptionDetails className="flex flex-wrap gap-1">
+                  {grantedDelegation.countries
+                    .filter((c) => c !== "NOTGRANTED")
+                    .map((country) => {
+                      const selectedCountry = countries.find((c) => c.countryCode === country);
+                      return (
+                        <Badge className="max-w-max" key={country}>
+                          {selectedCountry?.flag} {selectedCountry?.countryNameEn}
+                        </Badge>
+                      );
+                    })}
+                </DescriptionDetails>
+              </DescriptionList>
+            </div>
+          )}
+          {selectedSchoolHasApplication && grantedDelegation && (
+            <SelectStudents
+              numberOfStudents={numberOfStudents}
+              grantedDelegation={grantedDelegation}
+              students={schoolStudents}
+              selectedSession={selectedSession}
+            />
+          )}
+          {!selectedSchoolHasApplication && (
+            <div className="rounded-md bg-zinc-50 p-4">
+              <div className="flex">
+                <div className="shrink-0">
+                  <Info aria-hidden="true" className="h-5 w-5 text-zinc-400" />
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-zinc-800">Important application details before you apply:</h3>
+                  <div className="mt-2 text-sm text-zinc-700">
+                    <ul role="list" className="list-disc space-y-1 pl-5">
+                      <li>
+                        Please fill out the form below to apply for a delegation. You can only apply once per session
+                        per school.
+                      </li>
+                      <li>
+                        You can&apos;t change your application once it has been submitted, so please make sure all the
+                        information is correct before you submit.
+                      </li>
+                      <li>
+                        The application fee for this session is {selectedSession.directorPrice}€ per school director and{" "}
+                        {selectedSession.delegatePrice}€ per delegate.
+                      </li>
+                      <li>
+                        If you have any questions or need help with your application, please contact us at{" "}
+                        <Link href="mailto:info@medimun.org">info@medimun.org</Link>.
+                      </li>
+                      <li>
+                        You can check the status of your application here, and you will also receive an email once your
+                        application has been reviewed and you will have access to the next step.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        {!selectedSchoolHasApplication && applicationsOpen && (
+          <>
+            <Divider className="my-10" soft />
+            <SelectCountriesSection
+              selectedSchool={selectedSchool}
+              filteredCountries={filteredCountries}
+              selectedSession={selectedSession}
+              numberOfGACommittees={numberOfGACommittees}
+            />
+          </>
         )}
-      </div>
-      {!selectedSchoolHasApplication && applicationsOpen && (
-        <>
-          <Divider className="my-10" soft />
-          <SelectCountriesSection
-            selectedSchool={selectedSchool}
-            filteredCountries={filteredCountries}
-            selectedSession={selectedSession}
-            numberOfGACommittees={numberOfGACommittees}
-          />
-        </>
-      )}
+      </MainWrapper>
     </>
   );
 }

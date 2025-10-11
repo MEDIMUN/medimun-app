@@ -43,9 +43,9 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
     reactCompiler: true,
-
+    browserDebugInfoInTerminal: true,
     cacheComponents: false,
-
+    cssChunking: true,
     staleTimes: { dynamic: 30, static: 3600 },
 
     optimizePackageImports: ["@react-email", "@react-pdf/renderer", "lucide-react", "@headlessui/react"],

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -37,11 +36,6 @@ const seen = new Set<string>();
 const imageCache = new Map<string, PrefetchImage[]>();
 
 export const FastLink: React.FC<LinkProps> = ({ children, prefetchImages = false, ...props }) => {
-  return (
-    <Link {...props} prefetch={true}>
-      {children}
-    </Link>
-  );
   const linkRef = useRef<HTMLAnchorElement>(null);
   const router = useRouter();
   let prefetchTimeout: NodeJS.Timeout | null = null;
