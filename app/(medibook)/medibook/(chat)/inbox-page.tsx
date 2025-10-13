@@ -1,4 +1,4 @@
-import { SearchBar, SearchParamsButton, TopBar, TopBar2 } from "../client-components";
+import { SearchBar, SearchParamsButton, TopBar } from "../client-components";
 import prisma from "@/prisma/client";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
@@ -74,29 +74,22 @@ export async function Inboxes({ children, searchParams }) {
   return (
     <div className="h-full w-full md:w-[400px] md:border-r">
       <div className="bg-zinc-100 px-4 py-4 dark:bg-zinc-900">
-        <TopBar2 hideBackdrop title="Messages" buttonHref="/medibook" hideSearchBar buttonText="Home"></TopBar2>
+        <TopBar
+          hideTitle
+          headerClassName="z-[1000] w-full"
+          hideBackdrop
+          title="Messages"
+          hide
+          buttonHref="/medibook"
+          hideSearchBar
+          buttonText="Home"
+        ></TopBar>
         <div className="mb mt-1 flex w-full flex-col gap-2">
           <SearchBar className="w-[500px]! flex-1" />
           <SearchParamsButton disabled>New Group</SearchParamsButton>
         </div>
       </div>
       <div className="p-2">
-        <div className="mb-2 rounded-md bg-yellow-50 p-4">
-          <div className="flex">
-            <div className="shrink-0">
-              <TriangleAlert size={18} aria-hidden="true" className="size-5 text-yellow-400" />
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-yellow-800">We are testing this feature</h3>
-              <div className="mt-2 text-sm text-yellow-700">
-                <p>
-                  Some users are not allowed to send messages yet. If you receive a message from a user who is allowed
-                  to send messages, it will appear here and you will be able to reply.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
         <MessageSidebar groupsOfUser={groupsOfUser} authSession={authSession} />
       </div>
     </div>

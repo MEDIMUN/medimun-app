@@ -232,6 +232,7 @@ export function TopBar2({
   buttonHref = "",
   showDivider = false,
   hideBackdrop = false,
+  headerClassName = "",
   config,
 }: {
   className?: string;
@@ -252,6 +253,7 @@ export function TopBar2({
   buttonHref?: string;
   showDivider?: boolean;
   hideBackdrop?: boolean;
+  headerClassName?: string;
   config?: any;
 }) {
   sortOptions = sortOptions && sortOptions.map((option, index) => ({ ...option, key: index }));
@@ -273,7 +275,10 @@ export function TopBar2({
     router.refresh();
   }, [debouncedSearch]);
   /* 	if (isMounted)
-   */ return (
+  
+   */
+
+  return (
     <>
       <Dialog open={configShown} onClose={() => setConfigShown(false)} title="Options" className="w-full max-w-[500px]">
         <DialogTitle>Options</DialogTitle>
@@ -282,7 +287,12 @@ export function TopBar2({
           <Button onClick={() => setConfigShown(false)}>Close</Button>
         </DialogActions>
       </Dialog>
-      <header className="bg-sidebar-primary-foreground dark:bg-sidebar border-sidebar-border -transition-[width,height] -ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 fixed right-0 top-0 z-50 flex h-[65px] w-full shrink-0 flex-col items-center border-b md:w-[calc(100%-288px)]">
+      <header
+        className={cn(
+          "bg-sidebar-primary-foreground dark:bg-sidebar border-sidebar-border -transition-[width,height] -ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 fixed right-0 top-0 z-50 flex h-[65px] w-full shrink-0 flex-col items-center border-b md:w-[calc(100%-288px)]",
+          headerClassName,
+        )}
+      >
         <div className="flex h-[65px] w-full items-center">
           <div className="flex w-full items-center">
             <div className="border-sidebar-border flex h-[65px] w-full flex-col overflow-y-hidden border-b duration-200">

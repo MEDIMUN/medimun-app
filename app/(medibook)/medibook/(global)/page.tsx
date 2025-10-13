@@ -3,7 +3,8 @@ import { NameDisplay, WelcomeImage } from "./_components/name";
 import { TopBar } from "../client-components";
 import { Suspense } from "react";
 import { MainWrapper } from "@/components/main-wrapper";
-
+/* import { getSocketInstance } from "@/socket/server";
+ */
 export default async function Home() {
   const actions = [
     {
@@ -60,6 +61,16 @@ export default async function Home() {
         }
       />
       <MainWrapper>
+        {/*         <button
+          onClick={async () => {
+            "use server";
+            const socket = getSocketInstance();
+            if (socket) socket.to(`private-user-356217598077`).emit("toast.success", "Fuck you.");
+          }}
+          className="mb-6 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        >
+          Test
+        </button> */}
         <WelcomeImage />
         <ActionList actions={actions} />
       </MainWrapper>
