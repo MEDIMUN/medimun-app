@@ -473,27 +473,12 @@ export function SignUpForm({ allowSignUp }) {
               continue. The code is valid for 10 minutes. If you haven’t received the email, please check your spam
               folder or contact us so that we can directly verify your email.
             </Description>
-            <OTPInput
+            <Input
               maxLength={6}
-              onChange={(val) => setVerificationCode(val)}
+              minLength={6}
+              onChange={(e) => setVerificationCode(e.target.value)}
               value={verificationCode}
-              containerClassName="group mt-3 flex items-center has-disabled:opacity-30"
-              render={({ slots }) => (
-                <>
-                  <div className="flex">
-                    {slots.slice(0, 3).map((slot, idx) => (
-                      <Slot key={idx} {...slot} />
-                    ))}
-                  </div>
-                  <FakeDash />
-                  <div className="flex">
-                    {slots.slice(3).map((slot, idx) => (
-                      <Slot key={idx} {...slot} />
-                    ))}
-                  </div>
-                </>
-              )}
-            />
+            ></Input>
           </Field>
           <Button
             className="mt-5 w-full"
