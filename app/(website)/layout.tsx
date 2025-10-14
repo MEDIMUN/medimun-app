@@ -25,25 +25,16 @@ export const metadata = {
 };
 
 async function DynamicNavbar() {
-  const selectedSession = await prisma.session
-    .findFirst({ where: { isMainShown: true } })
-    .catch(notFound);
+  const selectedSession = await prisma.session.findFirst({ where: { isMainShown: true } }).catch(notFound);
 
   return <WebsiteNavbar selectedSession={selectedSession} />;
 }
 
 export default async function RootLayout({ children }) {
   return (
-    <html
-      suppressHydrationWarning
-      lang="en"
-      className="scrollbar-hide! dark bg-black"
-    >
+    <html suppressHydrationWarning lang="en" className="scrollbar-hide! dark bg-black">
       <head>
-        <meta
-          name="facebook-domain-verification"
-          content="znip7rtrzxmwzw42ursabu6wfn8m7v"
-        />
+        <meta name="facebook-domain-verification" content="znip7rtrzxmwzw42ursabu6wfn8m7v" />
         <script
           defer
           src="https://cloud.umami.is/script.js"

@@ -1,73 +1,47 @@
 "use client";
 
-import { Divider } from "@/components/divider";
 import { cn } from "@/lib/cn";
 import Link from "next/link";
-import { Input } from "@/components/input";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@heroui/button";
 import { Description, Field, Label } from "@/components/fieldset";
 import { Text, TextLink } from "@/components/text";
 import { approveHalfUser, checkEmail, createNewUser, createPendingUser } from "./actions";
-import { OTPInput, SlotProps } from "input-otp";
 import { Checkbox, CheckboxField } from "@/components/checkbox";
 import Confetti from "react-confetti";
 import useWindowDimensions from "@/hooks/use-window-dimentions";
 import { Badge } from "@/components/badge";
 import { Select } from "@/components/select";
-
-function FakeCaret() {
-  return (
-    <div className="animate-caret-blink pointer-events-none absolute inset-0 flex items-center justify-center">
-      <div className="h-8 w-px bg-white" />
-    </div>
-  );
-}
-
-function Slot(props: SlotProps) {
-  return (
-    <div
-      className={cn(
-        "relative h-10 w-[44px] bg-white",
-        "flex items-center justify-center",
-        "transition-all duration-300",
-        "border-y border-r first:rounded-l-md first:border-l last:rounded-r-md",
-        "group-focus-within:border-accent-foreground/20 group-hover:border-accent-foreground/20",
-        "outline-accent-foreground/20 outline outline-0",
-        { "outline-primary caret0-black outline-1": props.isActive },
-      )}
-    >
-      {props.char !== null && <div>{props.char}</div>}
-      {props.hasFakeCaret && <FakeCaret />}
-    </div>
-  );
-}
-
-// Inspired by Stripe's MFA input.
-function FakeDash() {
-  return (
-    <div className="flex w-10 items-center justify-center">
-      <div className="h-1 w-3 rounded-full border-zinc-100 bg-white" />
-    </div>
-  );
-}
+import { updateSearchParams } from "@/lib/search-params";
+import { Input } from "@heroui/input";
+import { flushSync } from "react-dom";
+import { XCircleIcon } from "lucide-react";
 
 export function SignUpForm({ allowSignUp }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [stage, setStage] = useState("START");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [verificationCodeId, setVerificationCodeId] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const verificationCodeId = searchParams?.get("verificationCodeId") || "";
+  const [showPersonalEmailError, setShowPersonalEmailError] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [schools, setSchools] = useState([]);
   const [email, setEmail] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const { width, height } = useWindowDimensions();
+  const stage = searchParams && searchParams.get("stage") ? searchParams.get("stage") : "START";
+
+  function setStage(newStage) {
+    updateSearchParams({ stage: newStage });
+  }
+
+  function setVerificationCodeId(id) {
+    updateSearchParams({ verificationCodeId: id });
+  }
 
   async function handleStage1() {
     if (isLoading) return;
@@ -151,22 +125,42 @@ export function SignUpForm({ allowSignUp }) {
         <form className="flex h-[calc(100%-56px)] flex-col" action={handleStage1}>
           <Field>
             <Label>Email</Label>
-            <Description>
-              <span className="text-xs">
-                <b>
-                  The English School Students must use their personal email accounts. You can connect your school
-                  account later.
-                </b>
-                <br />
+            <Description className="mb-2">
+              <span className="text-md">
                 If you’ve attended before, please use the same email address you registered with or the one provided by
                 your school during your previous session registration.
               </span>
             </Description>
+            {showPersonalEmailError && (
+              <div className="text-md mb-4 rounded-md bg-red-50 p-4 dark:bg-red-500/15 dark:outline-1 dark:outline-red-500/25">
+                <div className="flex">
+                  <div className="shrink-0">
+                    <XCircleIcon aria-hidden="true" className="size-5 text-red-400" />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+                      Please use your personal email.
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <Input
-              onChange={(e) => setEmail(e.target.value.replace("englishschool.ac.cy", ""))}
+              onChange={(e) => {
+                let processed = e.target.value.trim().toLowerCase();
+                if (processed.includes("englishschool.ac.cy")) setShowPersonalEmailError(true);
+
+                if (processed.length > 100) {
+                  toast.error("Email cannot be longer than 100 characters.");
+                  processed = processed.slice(0, 100);
+                }
+                setEmail(processed.replace(/englishschool\.ac\.cy/g, ""));
+              }}
               value={email}
-              className="animate-appearance-in delay-150"
               name="email"
+              variant="bordered"
+              type="email"
               placeholder="user@email.com"
             />
           </Field>
@@ -387,21 +381,12 @@ export function SignUpForm({ allowSignUp }) {
               continue. The code is valid for 10 minutes. If you haven’t received the email, please check your spam
               folder or contact us so that we can directly verify your email.
             </Description>
-            <div className="flex items-center">
-              <OTPInput
-                maxLength={6}
-                onChange={(val) => setVerificationCode(val)}
-                value={verificationCode}
-                containerClassName="group mt-3 flex text-black !caret-black items-center has-disabled:opacity-30"
-                render={({ slots }) => (
-                  <div className="flex">
-                    {slots.map((slot, idx) => (
-                      <Slot key={idx} {...slot} />
-                    ))}
-                  </div>
-                )}
-              />
-            </div>
+            <Input
+              maxLength={6}
+              minLength={6}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              value={verificationCode}
+            ></Input>
           </Field>
           <Button
             className="mt-5 w-full"
@@ -432,7 +417,7 @@ export function SignUpForm({ allowSignUp }) {
                 preferred name later in account settings.
               </span>
             </Description>
-            <Input name="officialName" />
+            <Input variant="bordered" className="mt-4" name="officialName" />
           </Field>
           <Field className="animate-appearance-in delay-300">
             <Label>
@@ -443,7 +428,7 @@ export function SignUpForm({ allowSignUp }) {
                 Your surname as it appears on your passport. You can change this later in account settings.
               </span>
             </Description>
-            <Input className="mt-5" name="officialSurname" />
+            <Input variant="bordered" className="mt-4" name="officialSurname" />
           </Field>
           <Field className="animate-appearance-in delay-500">
             <Label>School</Label>
