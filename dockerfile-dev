@@ -1,0 +1,30 @@
+# --- Dev stage ---
+FROM oven/bun:1 AS dev
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Install OpenSSL (for Prisma)
+RUN apt-get update -y && apt-get install -y openssl
+
+# Copy package files and Prisma schema first for dependency install
+COPY package.json prisma ./
+
+# Install dependencies (without freezing versions)
+RUN bun install
+
+# Generate Prisma client
+RUN bunx prisma generate
+
+# Copy the rest of the app (or mount in docker-compose)
+COPY . .
+
+# Set environment for development
+ENV NODE_ENV=development
+ENV PORT=3000
+
+# Expose port
+EXPOSE 3000
+
+# Run in development mode with file watching / hot reload
+CMD ["bun", "run", "dev"]
