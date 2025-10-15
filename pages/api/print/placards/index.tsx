@@ -188,7 +188,7 @@ function MyDocument({
     committeeName: string;
     index: number;
     countryCode: string;
-  };
+  }[];
 }) {
   const numberOfPages = allDelegates.length;
 
