@@ -41,196 +41,193 @@ Font.register({
 });
 
 export default async function handler(req, res) {
-  try {
-    const authSession = await auth({ req, res });
+  const authSession = await auth({ req, res });
 
-    if (!authSession) {
-      return res.status(401).send("Unauthorized");
-    }
+  if (!authSession) {
+    return res.status(401).send("Unauthorized");
+  }
 
-    const isManagement = authorize(authSession, [s.management]);
+  const isManagement = authorize(authSession, [s.management]);
 
-    if (!isManagement) {
-      return res.status(403).send("Forbidden");
-    }
+  if (!isManagement) {
+    return res.status(403).send("Forbidden");
+  }
 
-    const selectedSessionNumber = Number(req.query.session);
-    const roles = [
-      "delegate",
-      "chair",
-      "member",
-      "manager",
-      "schoolDirector",
-      "secretaryGeneral",
-      "deputySecretaryGeneral",
-      "presidentOfTheGeneralAssembly",
-      "deputyPresidentOfTheGeneralAssembly",
-      "Director",
-      "seniorDirector",
-    ];
-    const selectedRoles = req.query.roles?.split(",").filter((role) => roles.includes(role));
-    const gapNumber = Number(req.query.gap);
-    if (isNaN(gapNumber) || gapNumber < 0 || gapNumber > 10) {
-      return res.status(400).send("Invalid gap");
-    }
+  const selectedSessionNumber = Number(req.query.session);
+  const roles = [
+    "delegate",
+    "chair",
+    "member",
+    "manager",
+    "schoolDirector",
+    "secretaryGeneral",
+    "deputySecretaryGeneral",
+    "presidentOfTheGeneralAssembly",
+    "deputyPresidentOfTheGeneralAssembly",
+    "Director",
+    "seniorDirector",
+  ];
+  const selectedRoles = req.query.roles?.split(",").filter((role) => roles.includes(role));
+  const gapNumber = Number(req.query.gap);
+  if (isNaN(gapNumber) || gapNumber < 0 || gapNumber > 10) {
+    return res.status(400).send("Invalid gap");
+  }
 
-    const selectedSession = await prisma.session
-      .findFirstOrThrow({
-        where: { numberInteger: selectedSessionNumber },
-        include: {
-          committee: {
-            include: {
-              ExtraCountry: true,
-            },
+  const selectedSession = await prisma.session
+    .findFirstOrThrow({
+      where: { numberInteger: selectedSessionNumber },
+      include: {
+        committee: {
+          include: {
+            ExtraCountry: true,
           },
         },
-      })
-      .catch(() => {
-        return res.status(404).send("Session not found");
-      });
-
-    const usersInSession = await prisma.user.findMany({
-      where: {
-        OR: [
-          ...(selectedRoles?.includes("Director") ? [{ Director: { some: {} } }] : []),
-          ...(selectedRoles?.includes("seniorDirector") ? [{ seniorDirector: { some: {} } }] : []),
-          ...(selectedRoles?.includes("delegate")
-            ? [{ delegate: { some: { committee: { session: { numberInteger: selectedSessionNumber } } } } }]
-            : []),
-          ...(selectedRoles?.includes("chair")
-            ? [{ chair: { some: { committee: { session: { numberInteger: selectedSessionNumber } } } } }]
-            : []),
-          ...(selectedRoles?.includes("member")
-            ? [{ member: { some: { department: { session: { numberInteger: selectedSessionNumber } } } } }]
-            : []),
-          ...(selectedRoles?.includes("manager")
-            ? [{ manager: { some: { department: { session: { numberInteger: selectedSessionNumber } } } } }]
-            : []),
-          ...(selectedRoles?.includes("schoolDirector")
-            ? [{ schoolDirector: { some: { session: { numberInteger: selectedSessionNumber } } } }]
-            : []),
-          ...(selectedRoles?.includes("secretaryGeneral")
-            ? [{ secretaryGeneral: { some: { session: { numberInteger: selectedSessionNumber } } } }]
-            : []),
-          ...(selectedRoles?.includes("deputySecretaryGeneral")
-            ? [{ deputySecretaryGeneral: { some: { session: { numberInteger: selectedSessionNumber } } } }]
-            : []),
-          ...(selectedRoles?.includes("presidentOfTheGeneralAssembly")
-            ? [{ presidentOfTheGeneralAssembly: { some: { session: { numberInteger: selectedSessionNumber } } } }]
-            : []),
-          ...(selectedRoles?.includes("deputyPresidentOfTheGeneralAssembly")
-            ? [{ deputyPresidentOfTheGeneralAssembly: { some: { session: { numberInteger: selectedSessionNumber } } } }]
-            : []),
-        ],
       },
-      select: {
-        officialName: true,
-        officialSurname: true,
-        displayName: true,
-        id: true,
-        pronouns: true,
-        seniorDirector: true,
-        Director: true,
-        Student: true,
-        delegate: {
-          where: { committee: { session: { numberInteger: selectedSessionNumber } } },
-          include: { committee: { select: { name: true, shortName: true } } },
-        },
-        chair: {
-          where: { committee: { session: { numberInteger: selectedSessionNumber } } },
-          include: { committee: { select: { name: true, shortName: true } } },
-        },
-
-        member: {
-          where: { department: { session: { numberInteger: selectedSessionNumber } } },
-          include: { department: { select: { name: true, shortName: true } } },
-        },
-        manager: {
-          where: { department: { session: { numberInteger: selectedSessionNumber } } },
-          include: { department: { select: { name: true, shortName: true } } },
-        },
-        schoolDirector: {
-          where: { session: { numberInteger: selectedSessionNumber } },
-          include: { school: true },
-        },
-        secretaryGeneral: { where: { session: { numberInteger: selectedSessionNumber } } },
-        presidentOfTheGeneralAssembly: { where: { session: { numberInteger: selectedSessionNumber } } },
-        deputySecretaryGeneral: { where: { session: { numberInteger: selectedSessionNumber } } },
-        deputyPresidentOfTheGeneralAssembly: { where: { session: { numberInteger: selectedSessionNumber } } },
-      },
-      orderBy: {
-        officialName: "desc",
-      },
+    })
+    .catch(() => {
+      return res.status(404).send("Session not found");
     });
 
-    const sortedUsers = usersInSession.sort((a, b) => {
-      if (!!a.seniorDirector.length) return -1;
-      if (!!b.seniorDirector.length) return 1;
+  const usersInSession = await prisma.user.findMany({
+    where: {
+      OR: [
+        ...(selectedRoles?.includes("Director") ? [{ Director: { some: {} } }] : []),
+        ...(selectedRoles?.includes("seniorDirector") ? [{ seniorDirector: { some: {} } }] : []),
+        ...(selectedRoles?.includes("delegate")
+          ? [{ delegate: { some: { committee: { session: { numberInteger: selectedSessionNumber } } } } }]
+          : []),
+        ...(selectedRoles?.includes("chair")
+          ? [{ chair: { some: { committee: { session: { numberInteger: selectedSessionNumber } } } } }]
+          : []),
+        ...(selectedRoles?.includes("member")
+          ? [{ member: { some: { department: { session: { numberInteger: selectedSessionNumber } } } } }]
+          : []),
+        ...(selectedRoles?.includes("manager")
+          ? [{ manager: { some: { department: { session: { numberInteger: selectedSessionNumber } } } } }]
+          : []),
+        ...(selectedRoles?.includes("schoolDirector")
+          ? [{ schoolDirector: { some: { session: { numberInteger: selectedSessionNumber } } } }]
+          : []),
+        ...(selectedRoles?.includes("secretaryGeneral")
+          ? [{ secretaryGeneral: { some: { session: { numberInteger: selectedSessionNumber } } } }]
+          : []),
+        ...(selectedRoles?.includes("deputySecretaryGeneral")
+          ? [{ deputySecretaryGeneral: { some: { session: { numberInteger: selectedSessionNumber } } } }]
+          : []),
+        ...(selectedRoles?.includes("presidentOfTheGeneralAssembly")
+          ? [{ presidentOfTheGeneralAssembly: { some: { session: { numberInteger: selectedSessionNumber } } } }]
+          : []),
+        ...(selectedRoles?.includes("deputyPresidentOfTheGeneralAssembly")
+          ? [{ deputyPresidentOfTheGeneralAssembly: { some: { session: { numberInteger: selectedSessionNumber } } } }]
+          : []),
+      ],
+    },
+    select: {
+      officialName: true,
+      officialSurname: true,
+      displayName: true,
+      id: true,
+      pronouns: true,
+      seniorDirector: true,
+      Director: true,
+      Student: true,
+      delegate: {
+        where: { committee: { session: { numberInteger: selectedSessionNumber } } },
+        include: { committee: { select: { name: true, shortName: true } } },
+      },
+      chair: {
+        where: { committee: { session: { numberInteger: selectedSessionNumber } } },
+        include: { committee: { select: { name: true, shortName: true } } },
+      },
 
-      if (!!a.Director.length) return -1;
-      if (!!b.Director.length) return 1;
+      member: {
+        where: { department: { session: { numberInteger: selectedSessionNumber } } },
+        include: { department: { select: { name: true, shortName: true } } },
+      },
+      manager: {
+        where: { department: { session: { numberInteger: selectedSessionNumber } } },
+        include: { department: { select: { name: true, shortName: true } } },
+      },
+      schoolDirector: {
+        where: { session: { numberInteger: selectedSessionNumber } },
+        include: { school: true },
+      },
+      secretaryGeneral: { where: { session: { numberInteger: selectedSessionNumber } } },
+      presidentOfTheGeneralAssembly: { where: { session: { numberInteger: selectedSessionNumber } } },
+      deputySecretaryGeneral: { where: { session: { numberInteger: selectedSessionNumber } } },
+      deputyPresidentOfTheGeneralAssembly: { where: { session: { numberInteger: selectedSessionNumber } } },
+    },
+    orderBy: {
+      officialName: "desc",
+    },
+  });
 
-      if (!!a.secretaryGeneral.length) return -1;
-      if (!!b.secretaryGeneral.length) return 1;
+  const sortedUsers = usersInSession.sort((a, b) => {
+    if (!!a.seniorDirector.length) return -1;
+    if (!!b.seniorDirector.length) return 1;
 
-      if (!!a.presidentOfTheGeneralAssembly.length) return -1;
-      if (!!b.presidentOfTheGeneralAssembly.length) return 1;
+    if (!!a.Director.length) return -1;
+    if (!!b.Director.length) return 1;
 
-      if (!!a.deputySecretaryGeneral.length) return -1;
-      if (!!b.deputySecretaryGeneral.length) return 1;
+    if (!!a.secretaryGeneral.length) return -1;
+    if (!!b.secretaryGeneral.length) return 1;
 
-      if (!!a.deputyPresidentOfTheGeneralAssembly.length) return -1;
-      if (!!b.deputyPresidentOfTheGeneralAssembly.length) return 1;
+    if (!!a.presidentOfTheGeneralAssembly.length) return -1;
+    if (!!b.presidentOfTheGeneralAssembly.length) return 1;
 
-      if (!!a.manager.length) return -1;
-      if (!!b.manager.length) return 1;
+    if (!!a.deputySecretaryGeneral.length) return -1;
+    if (!!b.deputySecretaryGeneral.length) return 1;
 
-      if (!!a.chair.length) return -1;
-      if (!!b.chair.length) return 1;
+    if (!!a.deputyPresidentOfTheGeneralAssembly.length) return -1;
+    if (!!b.deputyPresidentOfTheGeneralAssembly.length) return 1;
 
-      if (!!a.member.length) return -1;
-      if (!!b.member.length) return 1;
+    if (!!a.manager.length) return -1;
+    if (!!b.manager.length) return 1;
 
-      //sort based on committee name
+    if (!!a.chair.length) return -1;
+    if (!!b.chair.length) return 1;
 
-      if (!!a.delegate.length && !!b.delegate.length) {
-        if (a.delegate[0].committee.name < b.delegate[0].committee.name) return -1;
-        if (a.delegate[0].committee.name > b.delegate[0].committee.name) return 1;
-        return 0;
-      }
+    if (!!a.member.length) return -1;
+    if (!!b.member.length) return 1;
 
-      if (!!a.schoolDirector.length) return -1;
-      if (!!b.schoolDirector.length) return 1;
+    //sort based on committee name
 
+    if (!!a.delegate.length && !!b.delegate.length) {
+      if (a.delegate[0].committee.name < b.delegate[0].committee.name) return -1;
+      if (a.delegate[0].committee.name > b.delegate[0].committee.name) return 1;
       return 0;
-    });
-
-    if (sortedUsers.length === 0) {
-      const stream = await renderToStream(<BlankPage />);
-      res.setHeader("Content-Type", "application/pdf");
-      stream.pipe(res);
-      return;
     }
 
-    try {
-      const stream = await renderToStream(
-        <MyDocument gapNumber={gapNumber} selectedSession={selectedSession} sortedUsers={sortedUsers} />,
+    if (!!a.schoolDirector.length) return -1;
+    if (!!b.schoolDirector.length) return 1;
+
+    return 0;
+  });
+
+  if (sortedUsers.length === 0) {
+    const stream = await renderToStream(<BlankPage />);
+    res.setHeader("Content-Type", "application/pdf");
+    stream.pipe(res);
+    return;
+  }
+
+  try {
+    const stream = await renderToStream(
+      <MyDocument gapNumber={gapNumber} selectedSession={selectedSession} sortedUsers={sortedUsers} />,
+    );
+
+    res.setHeader("Content-Type", "application/pdf");
+    if (req.query.download)
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="MEDIMUN-Session-${romanize(selectedSession.numberInteger)}-Nametags.pdf"`,
       );
-
-      res.setHeader("Content-Type", "application/pdf");
-      if (req.query.download)
-        res.setHeader(
-          "Content-Disposition",
-          `attachment; filename="MEDIMUN-Session-${romanize(selectedSession.numberInteger)}-Nametags.pdf"`,
-        );
-      stream.pipe(res);
-    } catch (error) {
-      const stream = await renderToStream(<BlankPage />);
-      res.setHeader("Content-Type", "application/pdf");
-      stream.pipe(res);
-    }
-  } catch (e) {
-    console.error(e);
+    stream.pipe(res);
+  } catch (error) {
+    console.error(error);
+    const stream = await renderToStream(<BlankPage />);
+    res.setHeader("Content-Type", "application/pdf");
+    stream.pipe(res);
   }
 }
 

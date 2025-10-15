@@ -126,6 +126,7 @@ export default async function handler(req, res) {
     if (req.query.download) res.setHeader("Content-Disposition", `attachment; filename="MEDIMUN-Placards.pdf"`);
     stream.pipe(res);
   } catch (error) {
+    console.error(error);
     const stream = await renderToStream(<BlankPage />);
     res.setHeader("Content-Type", "application/pdf");
     stream.pipe(res);

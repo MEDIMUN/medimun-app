@@ -1,5 +1,5 @@
-# Use Bun official image for building and runtime
-FROM oven/bun:1 as builder
+# --- Builder stage ---
+FROM oven/bun:1 AS builder
 
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
@@ -10,7 +10,7 @@ WORKDIR /usr/src/app
 # Install OpenSSL (required by Prisma)
 RUN apt-get update -y && apt-get install -y openssl
 
-# Copy only what’s needed to install dependencies
+# Copy only what's needed to install dependencies
 COPY package.json prisma ./
 
 # Install dependencies
@@ -26,15 +26,16 @@ COPY . .
 RUN bun run build
 
 
-# --- Production image ---
-FROM oven/bun:1 as production
+# --- Production stage ---
+FROM oven/bun:1 AS production
 
 WORKDIR /usr/src/app
 
-# Install OpenSSL in runtime too
-RUN apt-get update -y && apt-get install -y openssl
+# Copy OpenSSL libraries from builder (avoid re-installing)
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libssl.so* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libcrypto.so* /usr/lib/x86_64-linux-gnu/
 
-# Copy built app and deps from builder
+# Copy built app and dependencies
 COPY --from=builder /usr/src/app /usr/src/app
 
 # Set environment for production
