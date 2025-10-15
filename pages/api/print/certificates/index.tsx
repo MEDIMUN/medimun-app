@@ -42,7 +42,7 @@ Font.register({
 });
 
 export default async function handler(req, res) {
-  const authSession = await auth({ req, res, query: req.query, resolvedUrl: req.url || "" });
+  const authSession = await auth(req, res);
 
   if (!authSession) {
     return res.status(401).send("Unauthorized");
